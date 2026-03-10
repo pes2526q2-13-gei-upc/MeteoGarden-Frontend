@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/home_shell.dart';
+import '../screens/login_page.dart';
 
 class MeteoGardenApp extends StatelessWidget {
   const MeteoGardenApp({super.key});
@@ -13,7 +13,7 @@ class MeteoGardenApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const HomeShell(),
+      home: LoginPage(), //const HomeShell(),
     );
   }
 }
