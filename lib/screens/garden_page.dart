@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_gareden/screens/album_page.dart';
 
 import '../../models/weather_info.dart';
 import '../../services/weather_service.dart';
 import '../../widgets/pot_widget.dart';
 import '../../widgets/weather_card.dart';
 import 'botiga_page.dart';
+import 'inventory_page.dart';
 
 enum PotState { locked, readyToPlant, empty }
 
@@ -23,12 +25,12 @@ class _GardenPageState extends State<GardenPage> {
   void initState() {
     super.initState();
     potStates = List.generate(16, (_) => PotState.empty);
-    _weatherFuture = WeatherService.fetchCurrent(city: 'Òdena');
+    _weatherFuture = WeatherService.fetchCurrent(city: "Òdena");
   }
 
   void _refreshWeather() {
     setState(() {
-      _weatherFuture = WeatherService.fetchCurrent(city: 'Òdena');
+      _weatherFuture = WeatherService.fetchCurrent(city: "Òdena");
     });
   }
 
@@ -79,8 +81,9 @@ class _GardenPageState extends State<GardenPage> {
             builder: (context, snap) {
               if (snap.connectionState == ConnectionState.waiting) {
                 return WeatherCard(
+                  nomEstacio: "",
                   title: "Carregant meteo...",
-                  subtitle: "Un moment 😄",
+                  subtitle: "Esperi un moment",
                   trailing: const SizedBox(
                     height: 18,
                     width: 18,
@@ -92,8 +95,9 @@ class _GardenPageState extends State<GardenPage> {
 
               if (snap.hasError) {
                 return WeatherCard(
+                  nomEstacio: "",
                   title: "No s'ha pogut carregar la meteo",
-                  subtitle: "Toca per reintentar",
+                  subtitle: snap.error.toString(),
                   trailing: const Icon(Icons.warning_amber_rounded),
                   onRefresh: _refreshWeather,
                 );
@@ -101,7 +105,8 @@ class _GardenPageState extends State<GardenPage> {
 
               final w = snap.data!;
               return WeatherCard(
-                title: "${w.temp.toStringAsFixed(1)}°C · ${w.condition}",
+                nomEstacio: w.stationName,
+                title: "Temperatura: ${w.temp.toStringAsFixed(1)}°C · Precipitació: ${w.precipitation}",
                 subtitle: "Vent: ${w.wind.toStringAsFixed(1)} m/s",
                 trailing: const Icon(Icons.refresh),
                 onRefresh: _refreshWeather,
@@ -158,6 +163,41 @@ class _GardenPageState extends State<GardenPage> {
                   width: 150,
                 ),
               ),
+            ),
+          ),
+        ),
+
+        // INVENTORY
+        Positioned(
+          left: 2,
+          top: MediaQuery.of(context).size.height * 0.14,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const InventoryPage()),
+              );
+            },
+            child: Image.asset(
+              'assets/images/inventory_imagen.png',
+              width: 80,
+            ),
+          ),
+        ),
+
+
+        // INVENTORY
+        Positioned(
+          left: 2,
+          top: MediaQuery.of(context).size.height * 0.225,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AlbumPage()),
+              );
+            },
+            child: Image.asset(
+              'assets/images/album_image.png',
+              width: 80,
             ),
           ),
         ),

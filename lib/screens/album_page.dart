@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class InventoryPage extends StatelessWidget {
-  const InventoryPage({super.key});
+class AlbumPage extends StatelessWidget {
+  const AlbumPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('InventoryPage')),
+      appBar: AppBar(title: const Text('Album')),
       body: const Center(
         child: Text(
-          'Aquí hi haurà els productes de la botiga',
+          'Aquí hi haurà un album',
           style: TextStyle(fontSize: 18),
         ),
       ),

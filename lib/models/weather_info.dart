@@ -1,19 +1,22 @@
 class WeatherInfo {
+  final String stationName;
   final double temp;
-  final String condition;
+  final String precipitation;
   final double wind;
 
   WeatherInfo({
+    required this.stationName,
     required this.temp,
-    required this.condition,
+    required this.precipitation,
     required this.wind,
   });
 
   factory WeatherInfo.fromJson(Map<String, dynamic> json) {
     return WeatherInfo(
-      temp: (json['temp'] as num).toDouble(),
-      condition: json['condition'] as String,
-      wind: (json['wind'] as num).toDouble(),
+      stationName: json['stationName']?.toString() ?? '',
+      temp: double.tryParse(json['temperature'].toString()) ?? 0.0,
+      precipitation: json['precipitation']?.toString() ?? '',
+      wind: double.tryParse(json['wind']?.toString() ?? '0') ?? 0.0,
     );
   }
 }
