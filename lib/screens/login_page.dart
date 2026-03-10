@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_gareden/screens/home_shell.dart';
+import '../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -93,6 +94,31 @@ class _LoginPageState extends State<LoginPage> {
                           width: double.infinity,
                           child: FilledButton.icon(
                             onPressed: _goToHome,
+                            /* tot lo comentat s'ha de substituir per _goToHome quan la autentificació
+                            funcioni correctament
+                            () async {
+                              bool success = await AuthService.login(
+                                emailController.text,
+                                passwordController.text
+                              );
+
+                              if (success) {
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("Login correcto"))
+                                );
+
+                              } else {
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("Error de login"))
+                                );
+
+                              }
+
+                            },
+                            child: Text("Login"),
+                            */
                             icon: const Icon(Icons.login),
                             label: const Text("Iniciar sessió"),
                             style: FilledButton.styleFrom(
