@@ -10,12 +10,8 @@ class GardenService {
     required String gardenName,
   }) async {
     final url = "$baseUrl/users/$username/gardens/$gardenName/plants/";
-    print("URL -> $url");
 
     final response = await http.get(Uri.parse(url));
-
-    print("STATUS -> ${response.statusCode}");
-    print("BODY -> ${response.body}");
 
     if (response.statusCode != 200) {
       throw Exception("Error ${response.statusCode}: ${response.body}");

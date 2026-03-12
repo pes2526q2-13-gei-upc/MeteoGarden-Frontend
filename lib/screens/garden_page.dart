@@ -68,20 +68,22 @@ class _GardenPageState extends State<GardenPage> {
       builder: (_) => PotInfoSheet(
         pot: pot,
         onWater: () async {
-          final result = await GardenService.waterPlant(
-            username: widget.username,
-            gardenName: widget.gardenName,
-            potNumber: pot.potNumber,
-          );
+        await GardenService.waterPlant(
+          username: widget.username,
+          gardenName: widget.gardenName,
+          potNumber: pot.potNumber,
+        );
 
-          Navigator.pop(context);
+        if (!mounted) return;
 
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("Planta regada 🌧️")));
+        Navigator.pop(context);
 
-          _refreshGarden();
-        },
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Planta regada 🌧️")));
+
+        _refreshGarden();
+      },
       ),
     );
   }
