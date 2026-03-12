@@ -40,10 +40,11 @@ class GardenService {
     final response = await http.patch(Uri.parse(url));
 
     if (response.statusCode != 200) {
-      throw Exception("Error regant planta: ${response.statusCode} ${response.body}");
+      throw Exception(
+        "Error regant planta: ${response.statusCode} ${response.body}",
+      );
     }
 
     return jsonDecode(response.body);
   }
-
 }

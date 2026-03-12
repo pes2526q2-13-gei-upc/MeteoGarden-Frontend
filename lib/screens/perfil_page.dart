@@ -31,10 +31,7 @@ class _PerfilPageState extends State<PerfilPage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.green.withOpacity(0.12),
-              Colors.white,
-            ],
+            colors: [Colors.green.withOpacity(0.12), Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -76,22 +73,20 @@ class _PerfilPageState extends State<PerfilPage> {
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                     sliver: SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          _StatsRow(
-                            coins: p.coins,
-                            plantsDiscovered: p.plantsDiscovered,
-                          ),
-                          const SizedBox(height: 12),
+                      delegate: SliverChildListDelegate([
+                        _StatsRow(
+                          coins: p.coins,
+                          plantsDiscovered: p.plantsDiscovered,
+                        ),
+                        const SizedBox(height: 12),
 
-                          // INFORMACIÓ (bonica)
-                          InfoCard(profile: p),
+                        // INFORMACIÓ (bonica)
+                        InfoCard(profile: p),
 
-                          const SizedBox(height: 12),
+                        const SizedBox(height: 12),
 
-                          const SizedBox(height: 20),
-                        ],
-                      ),
+                        const SizedBox(height: 20),
+                      ]),
                     ),
                   ),
                 ],
@@ -237,10 +232,7 @@ class _StatsRow extends StatelessWidget {
   final int coins;
   final int plantsDiscovered;
 
-  const _StatsRow({
-    required this.coins,
-    required this.plantsDiscovered,
-  });
+  const _StatsRow({required this.coins, required this.plantsDiscovered});
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +338,7 @@ class InfoCard extends StatelessWidget {
             blurRadius: 12,
             color: Colors.black.withOpacity(0.06),
             offset: const Offset(0, 6),
-          )
+          ),
         ],
       ),
       child: Column(
@@ -357,7 +349,11 @@ class InfoCard extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 18),
-          _InfoTile(icon: Icons.person, label: "Usuari", value: profile.username),
+          _InfoTile(
+            icon: Icons.person,
+            label: "Usuari",
+            value: profile.username,
+          ),
           const Divider(),
           _InfoTile(
             icon: Icons.email,
@@ -412,7 +408,10 @@ class _InfoTile extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 value,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -421,7 +420,6 @@ class _InfoTile extends StatelessWidget {
     );
   }
 }
-
 
 class _LoadingProfile extends StatelessWidget {
   const _LoadingProfile();

@@ -8,7 +8,6 @@ class WeatherService {
   static const String _baseUrl = 'http://10.0.2.2:8000';
 
   static Future<WeatherInfo> fetchCurrent({required String city}) async {
-    
     final uri = Uri.parse('$_baseUrl/api/weather/current/?stationName=$city');
 
     final res = await http.get(uri);

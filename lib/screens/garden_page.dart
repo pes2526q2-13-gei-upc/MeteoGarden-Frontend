@@ -58,17 +58,16 @@ class _GardenPageState extends State<GardenPage> {
   }
 
   void onTapPot(GardenPot pot) {
-     if (!pot.occupied || pot.plant == null) {
-    _showSeedSelection(pot);
-    return;
-  }
+    if (!pot.occupied || pot.plant == null) {
+      _showSeedSelection(pot);
+      return;
+    }
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => PotInfoSheet(
         pot: pot,
         onWater: () async {
-
           final result = await GardenService.waterPlant(
             username: widget.username,
             gardenName: widget.gardenName,
@@ -77,11 +76,9 @@ class _GardenPageState extends State<GardenPage> {
 
           Navigator.pop(context);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Planta regada 🌧️"),
-            ),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Planta regada 🌧️")));
 
           _refreshGarden();
         },
@@ -90,67 +87,65 @@ class _GardenPageState extends State<GardenPage> {
   }
 
   void _showSeedSelection(GardenPot pot) {
-  showModalBottomSheet(
-    context: context,
-    backgroundColor: Colors.transparent,
-    isScrollControlled: true,
-    builder: (_) {
-      return FutureBuilder<List<SeedOption>>(
-        future: SeedService.fetchSeeds(username: widget.username),
-        builder: (context, snap) {
-          if (snap.connectionState == ConnectionState.waiting) {
-            return Container(
-              padding: const EdgeInsets.fromLTRB(20, 30, 20, 40),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-              ),
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) {
+        return FutureBuilder<List<SeedOption>>(
+          future: SeedService.fetchSeeds(username: widget.username),
+          builder: (context, snap) {
+            if (snap.connectionState == ConnectionState.waiting) {
+              return Container(
+                padding: const EdgeInsets.fromLTRB(20, 30, 20, 40),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            }
 
-          if (snap.hasError) {
-            return Container(
-              padding: const EdgeInsets.fromLTRB(20, 30, 20, 40),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-              ),
-              child: Text(
-                "Error carregant llavors:\n${snap.error}",
-                textAlign: TextAlign.center,
-              ),
-            );
-          }
-
-          final seeds = snap.data ?? [];
-
-          return SeedSelectionSheet(
-            pot: pot,
-            seeds: seeds,
-            onSeedSelected: (seed) {
-              Navigator.pop(context);
-
-              ScaffoldMessenger.of(this.context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Has triat ${seed.scientificName} pel test ${pot.potNumber}",
-                  ),
+            if (snap.hasError) {
+              return Container(
+                padding: const EdgeInsets.fromLTRB(20, 30, 20, 40),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                child: Text(
+                  "Error carregant llavors:\n${snap.error}",
+                  textAlign: TextAlign.center,
                 ),
               );
+            }
 
-              // aquí després:
-              // crida API per plantar
-              // _refreshGarden();
-            },
-          );
-        },
-      );
-    },
-  );
-}
+            final seeds = snap.data ?? [];
+
+            return SeedSelectionSheet(
+              pot: pot,
+              seeds: seeds,
+              onSeedSelected: (seed) {
+                Navigator.pop(context);
+
+                ScaffoldMessenger.of(this.context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      "Has triat ${seed.scientificName} pel test ${pot.potNumber}",
+                    ),
+                  ),
+                );
+
+                // aquí després:
+                // crida API per plantar
+                // _refreshGarden();
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +194,8 @@ class _GardenPageState extends State<GardenPage> {
               final w = snap.data!;
               return WeatherCard(
                 nomEstacio: w.stationName,
-                title: "Temperatura: ${w.temp.toStringAsFixed(1)}°C · Precipitació: ${w.precipitation}",
+                title:
+                    "Temperatura: ${w.temp.toStringAsFixed(1)}°C · Precipitació: ${w.precipitation}",
                 subtitle: "Vent: ${w.wind.toStringAsFixed(1)} m/s",
                 trailing: const Icon(Icons.refresh),
                 onRefresh: _refreshWeather,
@@ -255,7 +251,10 @@ class _GardenPageState extends State<GardenPage> {
 
                 return GridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 8,
+                  ),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
                     crossAxisSpacing: 32,
@@ -265,10 +264,7 @@ class _GardenPageState extends State<GardenPage> {
                   itemCount: pots.length,
                   itemBuilder: (context, index) {
                     final pot = pots[index];
-                    return PotWidget(
-                      pot: pot,
-                      onTap: () => onTapPot(pot),
-                    );
+                    return PotWidget(pot: pot, onTap: () => onTapPot(pot));
                   },
                 );
               },
@@ -284,16 +280,13 @@ class _GardenPageState extends State<GardenPage> {
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const BotigaPage()),
-                );
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const BotigaPage()));
               },
               child: Padding(
                 padding: const EdgeInsets.all(5),
-                child: Image.asset(
-                  'assets/images/botiga.png',
-                  width: 150,
-                ),
+                child: Image.asset('assets/images/botiga.png', width: 150),
               ),
             ),
           ),
@@ -304,14 +297,11 @@ class _GardenPageState extends State<GardenPage> {
           top: MediaQuery.of(context).size.height * 0.14,
           child: GestureDetector(
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const InventoryPage()),
-              );
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const InventoryPage()));
             },
-            child: Image.asset(
-              'assets/images/inventory_imagen.png',
-              width: 80,
-            ),
+            child: Image.asset('assets/images/inventory_imagen.png', width: 80),
           ),
         ),
 
@@ -320,14 +310,11 @@ class _GardenPageState extends State<GardenPage> {
           top: MediaQuery.of(context).size.height * 0.225,
           child: GestureDetector(
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const AlbumPage()),
-              );
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const AlbumPage()));
             },
-            child: Image.asset(
-              'assets/images/album_image.png',
-              width: 80,
-            ),
+            child: Image.asset('assets/images/album_image.png', width: 80),
           ),
         ),
       ],

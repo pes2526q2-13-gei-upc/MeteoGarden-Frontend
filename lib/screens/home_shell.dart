@@ -19,8 +19,7 @@ class _HomeShellState extends State<HomeShell> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    GardenPage( username: "laia",
-    gardenName: "jardin1",),
+    GardenPage(username: "laia", gardenName: "jardin1"),
     FriendsPage(),
     PhotoPage(),
     MissionsPage(),
@@ -46,22 +45,10 @@ class _HomeShellState extends State<HomeShell> {
             icon: Icon(Icons.local_florist),
             label: 'Jardí',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Amics',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.camera),
-            label: 'Camera',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flag),
-            label: 'Missions',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_2),
-            label: 'Perfil',
-          )
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Amics'),
+          BottomNavigationBarItem(icon: Icon(Icons.camera), label: 'Camera'),
+          BottomNavigationBarItem(icon: Icon(Icons.flag), label: 'Missions'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_2), label: 'Perfil'),
         ],
       ),
     );

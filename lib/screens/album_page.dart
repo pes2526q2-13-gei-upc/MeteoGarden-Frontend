@@ -8,10 +8,7 @@ class AlbumPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Album')),
       body: const Center(
-        child: Text(
-          'Aquí hi haurà un album',
-          style: TextStyle(fontSize: 18),
-        ),
+        child: Text('Aquí hi haurà un album', style: TextStyle(fontSize: 18)),
       ),
     );
   }

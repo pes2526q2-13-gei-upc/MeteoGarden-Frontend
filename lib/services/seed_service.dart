@@ -6,9 +6,7 @@ class SeedService {
   static const String baseUrl = "http://10.0.2.2:8000/api";
   // si algun dia proves a web/Windows: 127.0.0.1 en lloc de 10.0.2.2
 
-  static Future<List<SeedOption>> fetchSeeds({
-    required String username,
-  }) async {
+  static Future<List<SeedOption>> fetchSeeds({required String username}) async {
     /*
     final url = "$baseUrl/users/$username/seeds/";
     print("SEEDS URL -> $url");
@@ -25,19 +23,10 @@ class SeedService {
     final List<dynamic> data = jsonDecode(response.body);
     return data.map((e) => SeedOption.fromJson(e)).toList();
     */
-        return [
-      SeedOption(
-        scientificName: "Rosa canina",
-        amount: 3,
-      ),
-      SeedOption(
-        scientificName: "Lavandula angustifolia",
-        amount: 5,
-      ),
-      SeedOption(
-        scientificName: "Helianthus annuus",
-        amount: 2,
-      ),
+    return [
+      SeedOption(scientificName: "Rosa canina", amount: 3),
+      SeedOption(scientificName: "Lavandula angustifolia", amount: 5),
+      SeedOption(scientificName: "Helianthus annuus", amount: 2),
     ];
   }
 }

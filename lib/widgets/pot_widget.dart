@@ -5,11 +5,7 @@ class PotWidget extends StatelessWidget {
   final GardenPot pot;
   final VoidCallback onTap;
 
-  const PotWidget({
-    super.key,
-    required this.pot,
-    required this.onTap,
-  });
+  const PotWidget({super.key, required this.pot, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +16,7 @@ class PotWidget extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Image.asset(
-            'assets/images/test3.png',
-            fit: BoxFit.contain,
-          ),
+          Image.asset('assets/images/test3.png', fit: BoxFit.contain),
 
           if (hasPlant)
             Positioned(
@@ -31,7 +24,7 @@ class PotWidget extends StatelessWidget {
               child: Column(
                 children: [
                   const Icon(
-                    //AQUI POSEM LA FOTO DE 
+                    //AQUI POSEM LA FOTO DE
                     Icons.local_florist,
                     size: 30,
                     color: Colors.green,
@@ -62,7 +55,7 @@ class PotWidget extends StatelessWidget {
                       value: (pot.waterLevel!.clamp(0, 100)) / 100,
                       minHeight: 5,
                       backgroundColor: Colors.white30,
-                      color: Colors.blue
+                      color: Colors.blue,
                     ),
                   ),
               ],

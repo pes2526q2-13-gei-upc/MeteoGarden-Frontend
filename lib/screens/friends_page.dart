@@ -8,10 +8,7 @@ class FriendsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('FriendsPage')),
       body: const Center(
-        child: Text(
-          'FriendsPage',
-          style: TextStyle(fontSize: 18),
-        ),
+        child: Text('FriendsPage', style: TextStyle(fontSize: 18)),
       ),
     );
   }

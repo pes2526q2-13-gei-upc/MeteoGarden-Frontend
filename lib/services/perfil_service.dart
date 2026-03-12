@@ -22,12 +22,12 @@ class PerfilService {
     return PerfilInfo.fromJson(data);
     */
     return PerfilInfo(
-        username: 'Jana',
-        email: 'jana@meteogarden.cat',
-        city: 'Òdena',
-        level: 6,
-        coins: 245,
-        plantsDiscovered: 17,
-      );
+      username: 'Jana',
+      email: 'jana@meteogarden.cat',
+      city: 'Òdena',
+      level: 6,
+      coins: 245,
+      plantsDiscovered: 17,
+    );
   }
 }

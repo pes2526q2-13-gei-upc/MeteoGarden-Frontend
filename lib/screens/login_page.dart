@@ -22,9 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   void _goToHome() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => const HomeShell(),
-      ),
+      MaterialPageRoute(builder: (_) => const HomeShell()),
     );
   }
 
@@ -34,10 +32,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.green.withOpacity(0.12),
-              Colors.white,
-            ],
+            colors: [Colors.green.withOpacity(0.12), Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -135,30 +130,21 @@ class _LoginHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-       crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-          Padding(
+        Padding(
           padding: const EdgeInsets.all(5),
-          child: Image.asset(
-            'assets/images/logo.png',
-            width: 150,
-          ),
+          child: Image.asset('assets/images/logo.png', width: 150),
         ),
         const SizedBox(height: 18),
         const Text(
           "Benvinguda a MeteoGarden",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 8),
         Text(
           "Inicia sessió per continuar cuidant el teu jardí.",
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.black.withOpacity(0.65),
-          ),
+          style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.65)),
         ),
       ],
     );
@@ -189,10 +175,7 @@ class _InputField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
         TextField(
@@ -210,15 +193,11 @@ class _InputField extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: Colors.black.withOpacity(0.08),
-              ),
+              borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: Colors.black.withOpacity(0.08),
-              ),
+              borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),

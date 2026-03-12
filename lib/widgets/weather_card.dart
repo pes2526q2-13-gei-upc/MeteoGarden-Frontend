@@ -16,30 +16,33 @@ class WeatherCard extends StatelessWidget {
     required this.onRefresh,
   });
 
-  //MODIFICAR SEGONS ELS ATRIBUTS DE LA PRECIPITACIO 
+  //MODIFICAR SEGONS ELS ATRIBUTS DE LA PRECIPITACIO
   IconData _weatherIcon() {
-  try {
-    final parts = title.split('·');
-    final precipitation = parts.length > 1
-        ? double.tryParse(parts[1].trim()) ?? 0.0
-        : 0.0;
+    try {
+      final parts = title.split('·');
+      final precipitation = parts.length > 1
+          ? double.tryParse(parts[1].trim()) ?? 0.0
+          : 0.0;
 
-    final windText = subtitle.replaceAll('Vent:', '').replaceAll('m/s', '').trim();
-    final wind = double.tryParse(windText) ?? 0.0;
+      final windText = subtitle
+          .replaceAll('Vent:', '')
+          .replaceAll('m/s', '')
+          .trim();
+      final wind = double.tryParse(windText) ?? 0.0;
 
-    if (precipitation > 0) {
-      return Icons.grain; // pluja
+      if (precipitation > 0) {
+        return Icons.grain; // pluja
+      }
+
+      if (wind >= 8) {
+        return Icons.air; // vent fort
+      }
+
+      return Icons.wb_sunny; // sol
+    } catch (_) {
+      return Icons.cloud;
     }
-
-    if (wind >= 8) {
-      return Icons.air; // vent fort
-    }
-
-    return Icons.wb_sunny; // sol
-  } catch (_) {
-    return Icons.cloud;
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +60,7 @@ class WeatherCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                _weatherIcon(),
-                color: Colors.white,
-                size: 28,
-              ),
+              Icon(_weatherIcon(), color: Colors.white, size: 28),
 
               const SizedBox(width: 10),
 
@@ -69,7 +68,6 @@ class WeatherCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     // NOM ESTACIÓ
                     Text(
                       nomEstacio,
