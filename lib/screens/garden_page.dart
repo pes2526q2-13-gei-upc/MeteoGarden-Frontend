@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meteo_gareden/screens/album_page.dart';
+import 'package:meteo_garden/screens/album_page.dart';
 
 import '../../models/garden.dart';
 import '../../models/weather_info.dart';

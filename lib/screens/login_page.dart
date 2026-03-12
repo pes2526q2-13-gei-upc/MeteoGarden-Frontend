@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meteo_gareden/screens/home_shell.dart';
+import 'package:meteo_garden/screens/home_shell.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
