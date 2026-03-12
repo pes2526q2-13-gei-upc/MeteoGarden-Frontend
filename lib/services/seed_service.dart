@@ -9,6 +9,7 @@ class SeedService {
   static Future<List<SeedOption>> fetchSeeds({
     required String username,
   }) async {
+    /*
     final url = "$baseUrl/users/$username/seeds/";
     print("SEEDS URL -> $url");
 
@@ -23,5 +24,20 @@ class SeedService {
 
     final List<dynamic> data = jsonDecode(response.body);
     return data.map((e) => SeedOption.fromJson(e)).toList();
+    */
+        return [
+      SeedOption(
+        scientificName: "Rosa canina",
+        amount: 3,
+      ),
+      SeedOption(
+        scientificName: "Lavandula angustifolia",
+        amount: 5,
+      ),
+      SeedOption(
+        scientificName: "Helianthus annuus",
+        amount: 2,
+      ),
+    ];
   }
 }
