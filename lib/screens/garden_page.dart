@@ -1,31 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_gareden/screens/album_page.dart';
 
+import '../../models/garden.dart';
 import '../../models/weather_info.dart';
+import '../../services/garden_service.dart';
 import '../../services/weather_service.dart';
 import '../../widgets/pot_widget.dart';
 import '../../widgets/weather_card.dart';
 import 'botiga_page.dart';
 import 'inventory_page.dart';
-
-enum PotState { locked, readyToPlant, empty }
+import '../../widgets/pot_info_sheet.dart';
+import '../../widgets/seed_selection_sheet.dart';
+import '../../models/seed_option.dart';
+import '../../services/seed_service.dart';
 
 class GardenPage extends StatefulWidget {
-  const GardenPage({super.key});
+  final String username;
+  final String gardenName;
+
+  const GardenPage({
+    super.key,
+    required this.username,
+    required this.gardenName,
+  });
 
   @override
   State<GardenPage> createState() => _GardenPageState();
 }
 
 class _GardenPageState extends State<GardenPage> {
-  late List<PotState> potStates;
   late Future<WeatherInfo> _weatherFuture;
+  late Future<List<GardenPot>> _potsFuture;
 
   @override
   void initState() {
     super.initState();
-    potStates = List.generate(16, (_) => PotState.empty);
     _weatherFuture = WeatherService.fetchCurrent(city: "Òdena");
+    _potsFuture = GardenService.fetchGardenPlants(
+      username: widget.username,
+      gardenName: widget.gardenName,
+    );
   }
 
   void _refreshWeather() {
@@ -34,28 +48,109 @@ class _GardenPageState extends State<GardenPage> {
     });
   }
 
-  void onTapPot(int index) {
-    final state = potStates[index];
-
-    if (state == PotState.locked) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("🔒 Test bloquejat")),
-      );
-      return;
-    }
-
+  void _refreshGarden() {
     setState(() {
-      if (state == PotState.readyToPlant) {
-        potStates[index] = PotState.empty;
-      } else if (state == PotState.empty) {
-        potStates[index] = PotState.readyToPlant;
-      }
+      _potsFuture = GardenService.fetchGardenPlants(
+        username: widget.username,
+        gardenName: widget.gardenName,
+      );
     });
+  }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Has pressionat el test $index")),
+  void onTapPot(GardenPot pot) {
+     if (!pot.occupied || pot.plant == null) {
+    _showSeedSelection(pot);
+    return;
+  }
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => PotInfoSheet(
+        pot: pot,
+        onWater: () async {
+
+          final result = await GardenService.waterPlant(
+            username: widget.username,
+            gardenName: widget.gardenName,
+            potNumber: pot.potNumber,
+          );
+
+          Navigator.pop(context);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Planta regada 🌧️"),
+            ),
+          );
+
+          _refreshGarden();
+        },
+      ),
     );
   }
+
+  void _showSeedSelection(GardenPot pot) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    builder: (_) {
+      return FutureBuilder<List<SeedOption>>(
+        future: SeedService.fetchSeeds(username: widget.username),
+        builder: (context, snap) {
+          if (snap.connectionState == ConnectionState.waiting) {
+            return Container(
+              padding: const EdgeInsets.fromLTRB(20, 30, 20, 40),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+
+          if (snap.hasError) {
+            return Container(
+              padding: const EdgeInsets.fromLTRB(20, 30, 20, 40),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Text(
+                "Error carregant llavors:\n${snap.error}",
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+
+          final seeds = snap.data ?? [];
+
+          return SeedSelectionSheet(
+            pot: pot,
+            seeds: seeds,
+            onSeedSelected: (seed) {
+              Navigator.pop(context);
+
+              ScaffoldMessenger.of(this.context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    "Has triat ${seed.scientificName} pel test ${pot.potNumber}",
+                  ),
+                ),
+              );
+
+              // aquí després:
+              // crida API per plantar
+              // _refreshGarden();
+            },
+          );
+        },
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +158,6 @@ class _GardenPageState extends State<GardenPage> {
 
     return Stack(
       children: [
-        // Fons
         Positioned.fill(
           child: Image.asset(
             'assets/images/imatge_fondo1.png',
@@ -71,7 +165,6 @@ class _GardenPageState extends State<GardenPage> {
           ),
         ),
 
-        // Targeta meteo a dalt
         Positioned(
           top: MediaQuery.of(context).padding.top + 12,
           left: 12,
@@ -83,7 +176,7 @@ class _GardenPageState extends State<GardenPage> {
                 return WeatherCard(
                   nomEstacio: "",
                   title: "Carregant meteo...",
-                  subtitle: "Esperi un moment",
+                  subtitle: "Espera un moment",
                   trailing: const SizedBox(
                     height: 18,
                     width: 18,
@@ -97,7 +190,7 @@ class _GardenPageState extends State<GardenPage> {
                 return WeatherCard(
                   nomEstacio: "",
                   title: "No s'ha pogut carregar la meteo",
-                  subtitle: snap.error.toString(),
+                  subtitle: " ",
                   trailing: const Icon(Icons.warning_amber_rounded),
                   onRefresh: _refreshWeather,
                 );
@@ -115,35 +208,74 @@ class _GardenPageState extends State<GardenPage> {
           ),
         ),
 
-        // Grid de tests a baix
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 90,
+          left: 16,
+          child: Text(
+            widget.gardenName,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  blurRadius: 4,
+                  color: Colors.black54,
+                  offset: Offset(1, 1),
+                ),
+              ],
+            ),
+          ),
+        ),
+
         Positioned(
           left: 0,
           right: 0,
           bottom: 0,
           child: SizedBox(
             height: h * 0.50,
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                crossAxisSpacing: 32,
-                mainAxisSpacing: 32,
-                childAspectRatio: 1,
-              ),
-              itemCount: 16,
-              itemBuilder: (context, index) {
-                return PotWidget(
-                  index: index,
-                  state: potStates[index],
-                  onTap: () => onTapPot(index),
+            child: FutureBuilder<List<GardenPot>>(
+              future: _potsFuture,
+              builder: (context, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snap.hasError) {
+                  return Center(
+                    child: Text(
+                      "Error carregant els tests:\n${snap.error}",
+                      style: const TextStyle(color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+
+                final pots = snap.data!;
+
+                return GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 32,
+                    mainAxisSpacing: 32,
+                    childAspectRatio: 1,
+                  ),
+                  itemCount: pots.length,
+                  itemBuilder: (context, index) {
+                    final pot = pots[index];
+                    return PotWidget(
+                      pot: pot,
+                      onTap: () => onTapPot(pot),
+                    );
+                  },
                 );
               },
             ),
           ),
         ),
 
-        // Botó imatge Botiga
         Positioned(
           right: 0,
           top: MediaQuery.of(context).size.height * 0.24,
@@ -167,7 +299,6 @@ class _GardenPageState extends State<GardenPage> {
           ),
         ),
 
-        // INVENTORY
         Positioned(
           left: 2,
           top: MediaQuery.of(context).size.height * 0.14,
@@ -184,8 +315,6 @@ class _GardenPageState extends State<GardenPage> {
           ),
         ),
 
-
-        // INVENTORY
         Positioned(
           left: 2,
           top: MediaQuery.of(context).size.height * 0.225,

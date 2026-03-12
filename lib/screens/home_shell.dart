@@ -6,6 +6,7 @@ import 'missions_page.dart';
 import 'perfil_page.dart';
 import 'photo_page.dart';
 import 'inventory_page.dart';
+import 'friends_page.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -17,13 +18,15 @@ class HomeShell extends StatefulWidget {
 class _HomeShellState extends State<HomeShell> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    GardenPage(),
-    AlbumPage(),
+  final List<Widget> _pages = [
+    GardenPage( username: "laia",
+    gardenName: "jardin1",),
+    FriendsPage(),
     PhotoPage(),
     MissionsPage(),
     PerfilPage(),
     InventoryPage(),
+    AlbumPage(),
   ];
 
   @override
