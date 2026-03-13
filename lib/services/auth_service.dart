@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 
 class AuthService {
-/*
+
   static Future<bool> login(String username, String password) async {
 
-    final url = Uri.parse("https://api.tuservidor.com/login"); // posar la URL del backend
+    final url = Uri.parse("http://127.0.0.1:8000/api/login/"); // url del endpoint de login al backend
 
     final response = await http.post(
       url,
@@ -27,8 +28,9 @@ class AuthService {
       return true;
 
     } else {
+      debugPrint("Error: ${response.body}");
       return false;
     }
   }
-  */
+
 }

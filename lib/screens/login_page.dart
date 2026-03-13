@@ -88,10 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
-                            onPressed: _goToHome,
-                            /* tot lo comentat s'ha de substituir per _goToHome quan la autentificació
-                            funcioni correctament
-                            () async {
+                            onPressed: () async {
                               bool success = await AuthService.login(
                                 usernameController.text,
                                 passwordController.text
@@ -113,8 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                               }
 
                             },
-                            child: Text("Login"),
-                            */
+                          
                             icon: const Icon(Icons.login),
                             label: const Text("Iniciar sessió"),
                             style: FilledButton.styleFrom(
