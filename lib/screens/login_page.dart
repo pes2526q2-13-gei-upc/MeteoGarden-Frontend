@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_gareden/screens/home_shell.dart';
 import 'package:meteo_gareden/screens/crea_nova_conta.dart';
-import '../services/auth_service.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:meteo_gareden/services/dades_usr.dart';
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,6 +29,36 @@ class _LoginPageState extends State<LoginPage> {
       context,
       MaterialPageRoute(builder: (_) => const HomeShell()),
     );
+  }
+
+  void _login() async {
+    final url = Uri.parse("http://127.0.0.1:8000/api/login/"); // url del endpoint de login al backend
+
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: jsonEncode({
+        "username": usernameController.text,
+        "password": passwordController.text
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      
+      final data = jsonDecode(response.body);
+
+      Provider.of<UserModel>(context, listen: false).setToken(data['token']);
+
+      _goToHome();
+
+    } else {
+      debugPrint("Error: ${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error de login'))
+      );
+    }
   }
 
   @override
@@ -88,29 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
-                            onPressed: () async {
-                              bool success = await AuthService.login(
-                                usernameController.text,
-                                passwordController.text
-                              );
-
-                              if (success) {
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content:   Text("Login correcto"))
-                                );
-                                _goToHome();
-
-                              } else {
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Error de login"))
-                                );
-
-                              }
-
-                            },
-                          
+                            onPressed: _login,
                             icon: const Icon(Icons.login),
                             label: const Text("Iniciar sessió"),
                             style: FilledButton.styleFrom(
