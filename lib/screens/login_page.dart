@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_gareden/screens/home_shell.dart';
+import 'package:meteo_gareden/screens/crea_nova_conta.dart';
 import '../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,12 +11,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
   void dispose() {
-    emailController.dispose();
+    usernameController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -23,9 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   void _goToHome() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => const HomeShell(),
-      ),
+      MaterialPageRoute(builder: (_) => const HomeShell()),
     );
   }
 
@@ -35,10 +34,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.green.withOpacity(0.12),
-              Colors.white,
-            ],
+            colors: [Colors.green.withOpacity(0.12), Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -73,11 +69,10 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 24),
 
                         _InputField(
-                          controller: emailController,
-                          label: "Email",
-                          hint: "Introdueix el teu correu",
-                          icon: Icons.email_outlined,
-                          keyboardType: TextInputType.emailAddress,
+                          controller: usernameController,
+                          label: "Nom d'usuari",
+                          hint: "Introdueix el teu nom d'usuari",
+                          icon: Icons.person_outline,
                         ),
                         const SizedBox(height: 16),
 
@@ -98,15 +93,16 @@ class _LoginPageState extends State<LoginPage> {
                             funcioni correctament
                             () async {
                               bool success = await AuthService.login(
-                                emailController.text,
+                                usernameController.text,
                                 passwordController.text
                               );
 
                               if (success) {
 
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Login correcto"))
+                                  SnackBar(content:   Text("Login correcto"))
                                 );
+                                _goToHome();
 
                               } else {
 
@@ -136,6 +132,62 @@ class _LoginPageState extends State<LoginPage> {
 
                         const SizedBox(height: 14),
 
+                        // login with social providers and link to create account
+                        Center(
+                          child: Column(
+                            children: [
+                              const Text(
+                                'o continuar amb',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      // TODO: implementar login amb Google
+                                    },
+                                    icon: const Icon(Icons.g_mobiledata),
+                                    label: const Text('Google'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                    ),
+                                  ),
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      // TODO: implementar login amb Facebook
+                                    },
+                                    icon: const Icon(Icons.facebook),
+                                    label: const Text('Facebook'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF1877F2),
+                                      foregroundColor: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const CreaNovaConta(),
+                                    ),
+                                  );
+                                },
+                                child: const Text('Crear compte'),
+                              ),
+                            ],
+                          ),
+                        ),
+
                         Center(
                           child: TextButton(
                             onPressed: () {},
@@ -161,30 +213,21 @@ class _LoginHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-       crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-          Padding(
+        Padding(
           padding: const EdgeInsets.all(5),
-          child: Image.asset(
-            'assets/images/logo.png',
-            width: 150,
-          ),
+          child: Image.asset('assets/images/logo.png', width: 150),
         ),
         const SizedBox(height: 18),
         const Text(
           "Benvinguda a MeteoGarden",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 8),
         Text(
           "Inicia sessió per continuar cuidant el teu jardí.",
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.black.withOpacity(0.65),
-          ),
+          style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.65)),
         ),
       ],
     );
@@ -215,10 +258,7 @@ class _InputField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
         TextField(
@@ -236,15 +276,11 @@ class _InputField extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: Colors.black.withOpacity(0.08),
-              ),
+              borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: Colors.black.withOpacity(0.08),
-              ),
+              borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),

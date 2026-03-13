@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class AuthService {
 /*
-  static Future<bool> login(String email, String password) async {
+  static Future<bool> login(String username, String password) async {
 
     final url = Uri.parse("https://api.tuservidor.com/login"); // posar la URL del backend
 
@@ -13,13 +13,13 @@ class AuthService {
         "Content-Type": "application/json"
       },
       body: jsonEncode({
-        "email": email,
+        "username": username,
         "password": password
       }),
     );
 
     if (response.statusCode == 200) {
-
+      // aqui s'ha de guardar tots els 
       final data = jsonDecode(response.body);
 
       print(data["token"]);
