@@ -1,10 +1,10 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+//import 'dart:convert';
+//import 'package:http/http.dart' as http;
 
 import '../models/perfil_info.dart';
 
 class PerfilService {
-  static const String _baseUrl = 'http://10.0.2.2:8000';
+  //static const String _baseUrl = 'http://10.0.2.2:8000';
 
   static Future<PerfilInfo> fetchMe() async {
     /*
@@ -22,12 +22,12 @@ class PerfilService {
     return PerfilInfo.fromJson(data);
     */
     return PerfilInfo(
-        username: 'Jana',
-        email: 'jana@meteogarden.cat',
-        city: 'Òdena',
-        level: 6,
-        coins: 245,
-        plantsDiscovered: 17,
-      );
+      username: 'Jana',
+      email: 'jana@meteogarden.cat',
+      city: 'Òdena',
+      level: 6,
+      coins: 245,
+      plantsDiscovered: 17,
+    );
   }
 }

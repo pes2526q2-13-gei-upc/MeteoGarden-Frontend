@@ -6,10 +6,10 @@ class InventoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Inventari 🎒')),
+      appBar: AppBar(title: const Text('InventoryPage')),
       body: const Center(
         child: Text(
-          'Aquí hi haurà llavors i pocions',
+          'Aquí hi haurà els productes de la botiga',
           style: TextStyle(fontSize: 18),
         ),
       ),

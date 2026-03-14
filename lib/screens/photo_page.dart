@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class MissionsPage extends StatelessWidget {
-  const MissionsPage({super.key});
+class PhotoPage extends StatelessWidget {
+  const PhotoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Missions 🏆')),
+      appBar: AppBar(title: const Text('fotografiar')),
       body: const Center(
         child: Text(
-          'Aquí hi haurà missions actives',
+          'aqui hi ha la programació de fer fotogarfies',
           style: TextStyle(fontSize: 18),
         ),
       ),

@@ -31,10 +31,7 @@ class _PerfilPageState extends State<PerfilPage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.green.withOpacity(0.12),
-              Colors.white,
-            ],
+            colors: [Colors.green.withValues(alpha: 0.12), Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -76,22 +73,16 @@ class _PerfilPageState extends State<PerfilPage> {
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                     sliver: SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          _StatsRow(
-                            coins: p.coins,
-                            plantsDiscovered: p.plantsDiscovered,
-                          ),
-                          const SizedBox(height: 12),
-
-                          // INFORMACIÓ (bonica)
-                          InfoCard(profile: p),
-
-                          const SizedBox(height: 12),
-
-                          const SizedBox(height: 20),
-                        ],
-                      ),
+                      delegate: SliverChildListDelegate([
+                        _StatsRow(
+                          coins: p.coins,
+                          plantsDiscovered: p.plantsDiscovered,
+                        ),
+                        const SizedBox(height: 12),
+                        InfoCard(profile: p),
+                        const SizedBox(height: 12),
+                        const SizedBox(height: 20),
+                      ]),
                     ),
                   ),
                 ],
@@ -129,12 +120,12 @@ class _Header extends StatelessWidget {
       child: Material(
         elevation: 0,
         borderRadius: BorderRadius.circular(20),
-        color: Colors.white.withOpacity(0.85),
+        color: Colors.white.withValues(alpha: 0.85),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.black.withOpacity(0.06)),
+            border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,8 +137,10 @@ class _Header extends StatelessWidget {
                     width: 54,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.green.withOpacity(0.15),
-                      border: Border.all(color: Colors.green.withOpacity(0.25)),
+                      color: Colors.green.withValues(alpha: 0.15),
+                      border: Border.all(
+                        color: Colors.green.withValues(alpha: 0.25),
+                      ),
                     ),
                     child: const Icon(Icons.person, size: 30),
                   ),
@@ -167,7 +160,7 @@ class _Header extends StatelessWidget {
                         Text(
                           displayCity,
                           style: TextStyle(
-                            color: Colors.black.withOpacity(0.6),
+                            color: Colors.black.withValues(alpha: 0.6),
                             fontSize: 13,
                           ),
                         ),
@@ -215,8 +208,8 @@ class _Pill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        color: Colors.green.withOpacity(0.10),
-        border: Border.all(color: Colors.green.withOpacity(0.18)),
+        color: Colors.green.withValues(alpha: 0.10),
+        border: Border.all(color: Colors.green.withValues(alpha: 0.18)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -237,10 +230,7 @@ class _StatsRow extends StatelessWidget {
   final int coins;
   final int plantsDiscovered;
 
-  const _StatsRow({
-    required this.coins,
-    required this.plantsDiscovered,
-  });
+  const _StatsRow({required this.coins, required this.plantsDiscovered});
 
   @override
   Widget build(BuildContext context) {
@@ -281,12 +271,12 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       borderRadius: BorderRadius.circular(18),
-      color: Colors.white.withOpacity(0.9),
+      color: Colors.white.withValues(alpha: 0.9),
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: Colors.black.withOpacity(0.06)),
+          border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
         ),
         child: Row(
           children: [
@@ -294,7 +284,7 @@ class _StatCard extends StatelessWidget {
               height: 38,
               width: 38,
               decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.12),
+                color: Colors.green.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon),
@@ -307,7 +297,7 @@ class _StatCard extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      color: Colors.black.withOpacity(0.65),
+                      color: Colors.black.withValues(alpha: 0.65),
                       fontSize: 12,
                     ),
                   ),
@@ -344,9 +334,9 @@ class InfoCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 12,
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             offset: const Offset(0, 6),
-          )
+          ),
         ],
       ),
       child: Column(
@@ -357,7 +347,11 @@ class InfoCard extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 18),
-          _InfoTile(icon: Icons.person, label: "Usuari", value: profile.username),
+          _InfoTile(
+            icon: Icons.person,
+            label: "Usuari",
+            value: profile.username,
+          ),
           const Divider(),
           _InfoTile(
             icon: Icons.email,
@@ -395,7 +389,7 @@ class _InfoTile extends StatelessWidget {
           height: 38,
           width: 38,
           decoration: BoxDecoration(
-            color: Colors.green.withOpacity(0.15),
+            color: Colors.green.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, size: 20),
@@ -412,7 +406,10 @@ class _InfoTile extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 value,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -421,7 +418,6 @@ class _InfoTile extends StatelessWidget {
     );
   }
 }
-
 
 class _LoadingProfile extends StatelessWidget {
   const _LoadingProfile();
