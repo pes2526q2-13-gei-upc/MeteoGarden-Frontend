@@ -247,7 +247,7 @@ class _InputField extends StatelessWidget {
   final String hint;
   final IconData icon;
   final bool obscureText;
-  final TextInputType? keyboardType;
+  //final TextInputType? keyboardType;
 
   const _InputField({
     required this.controller,
@@ -255,7 +255,7 @@ class _InputField extends StatelessWidget {
     required this.hint,
     required this.icon,
     this.obscureText = false,
-    this.keyboardType,
+    //this.keyboardType,
   });
 
   @override
@@ -271,7 +271,7 @@ class _InputField extends StatelessWidget {
         TextField(
           controller: controller,
           obscureText: obscureText,
-          keyboardType: keyboardType,
+          //keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: Icon(icon),
