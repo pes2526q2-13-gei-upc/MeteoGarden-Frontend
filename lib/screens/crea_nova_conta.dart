@@ -29,50 +29,46 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     super.dispose();
   }
 
-void _submit() async {
+  void _submit() async {
+    final url = Uri.parse("http://127.0.0.1:8000/api/register/");
 
-  final url = Uri.parse("http://127.0.0.1:8000/api/register/");
-
-  final response = await http.post(
-    url,
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: jsonEncode({
-      'username': usernameController.text,
-      'password': passwordController.text,
-      'email': emailController.text,
-      'city': cityController.text,
-      'language': languageController.text,
-    }),
-  );
-
-  if (response.statusCode == 200) {
-
-    debugPrint("Cuenta creada");
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Compte creat'))
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'username': usernameController.text,
+        'password': passwordController.text,
+        'email': emailController.text,
+        'city': cityController.text,
+        'language': languageController.text,
+      }),
     );
 
-    Provider.of<UserModel>(context, listen: false).setToken(jsonDecode(response.body)['token']);
+    if (response.statusCode == 200) {
+      debugPrint("Cuenta creada");
 
-    Navigator.pop(context);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomeShell()),
-    );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Compte creat')));
 
-  } else {
+      Provider.of<UserModel>(
+        context,
+        listen: false,
+      ).setToken(jsonDecode(response.body)['token']);
 
-    debugPrint("Error: ${response.body}");
+      Navigator.pop(context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeShell()),
+      );
+    } else {
+      debugPrint("Error: ${response.body}");
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Error creant el compte'))
-    );
-
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Error creant el compte')));
+    }
   }
-}
 
   InputDecoration _inputDecoration(String hint) => InputDecoration(
     hintText: hint,

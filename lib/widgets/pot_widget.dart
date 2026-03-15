@@ -20,10 +20,7 @@ class PotWidget extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Image.asset(
-            'assets/images/test3.png',
-            fit: BoxFit.contain,
-          ),
+          Image.asset('assets/images/test3.png', fit: BoxFit.contain),
           if (state == PotState.locked)
             Container(
               decoration: BoxDecoration(

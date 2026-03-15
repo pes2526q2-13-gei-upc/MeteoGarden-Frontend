@@ -36,9 +36,9 @@ class _GardenPageState extends State<GardenPage> {
     final state = potStates[index];
 
     if (state == PotState.locked) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("🔒 Test bloquejat")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("🔒 Test bloquejat")));
       return;
     }
 
@@ -50,9 +50,9 @@ class _GardenPageState extends State<GardenPage> {
       }
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Has pressionat el test $index")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Has pressionat el test $index")));
   }
 
   @override
@@ -147,16 +147,13 @@ class _GardenPageState extends State<GardenPage> {
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const BotigaPage()),
-                );
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const BotigaPage()));
               },
               child: Padding(
                 padding: const EdgeInsets.all(5),
-                child: Image.asset(
-                  'assets/images/botiga.png',
-                  width: 150,
-                ),
+                child: Image.asset('assets/images/botiga.png', width: 150),
               ),
             ),
           ),

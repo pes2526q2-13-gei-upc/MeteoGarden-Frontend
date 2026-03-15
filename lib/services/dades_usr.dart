@@ -10,7 +10,7 @@ class UserModel with ChangeNotifier {
   String monedes = '';
   String token = '';
 
- /*
+  /*
 Per utilitzar les dades desde qualsevol screen s'ha de fer:
 
 final user = Provider.of<UserModel>(context);
@@ -30,8 +30,14 @@ s'ha de crear una funció que editi aquella dada i cridar desde la pantalla en l
  
  */
 
-  void setUser(String name, String mail, String cityName, String langaugenew, 
-  String lastEntryNew, String numPlantsCollectedNew) {
+  void setUser(
+    String name,
+    String mail,
+    String cityName,
+    String langaugenew,
+    String lastEntryNew,
+    String numPlantsCollectedNew,
+  ) {
     username = name;
     email = mail;
     city = cityName;

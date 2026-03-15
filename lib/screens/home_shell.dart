@@ -43,14 +43,8 @@ class _HomeShellState extends State<HomeShell> {
             icon: Icon(Icons.shopping_bag),
             label: 'Inventari',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flag),
-            label: 'Missions',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_2),
-            label: 'Perfil',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.flag), label: 'Missions'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_2), label: 'Perfil'),
         ],
       ),
     );

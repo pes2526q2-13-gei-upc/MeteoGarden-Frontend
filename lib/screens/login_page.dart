@@ -32,32 +32,30 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() async {
-    final url = Uri.parse("http://127.0.0.1:8000/api/login/"); // url del endpoint de login al backend
+    final url = Uri.parse(
+      "http://127.0.0.1:8000/api/login/",
+    ); // url del endpoint de login al backend
 
     final response = await http.post(
       url,
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "username": usernameController.text,
-        "password": passwordController.text
+        "password": passwordController.text,
       }),
     );
 
     if (response.statusCode == 200) {
-      
       final data = jsonDecode(response.body);
 
       Provider.of<UserModel>(context, listen: false).setToken(data['token']);
 
       _goToHome();
-
     } else {
       debugPrint("Error: ${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error de login'))
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Error de login')));
     }
   }
 

@@ -20,6 +20,5 @@ class WeatherService {
     return WeatherInfo.fromJson(data);
     */
     return WeatherInfo(temp: 30, condition: "sol", wind: 11.2);
-      
   }
 }
