@@ -8,7 +8,7 @@ class UserModel with ChangeNotifier {
   String lastEntry = '';
   String numPlantsCollected = '';
   String monedes = '';
-  String Token = '';
+  String token = '';
 
  /*
 Per utilitzar les dades desde qualsevol screen s'ha de fer:
@@ -42,7 +42,7 @@ s'ha de crear una funció que editi aquella dada i cridar desde la pantalla en l
   }
 
   void setToken(String token) {
-    Token = token;
+    token = token;
     notifyListeners(); // avisa a totes les pantalles
   }
 }
