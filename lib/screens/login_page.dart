@@ -230,7 +230,10 @@ class _LoginHeader extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           "Inicia sessió per continuar cuidant el teu jardí.",
-          style: TextStyle(fontSize: 14, color: Colors.black.withValues(alpha: 0.65)),
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.black.withValues(alpha: 0.65),
+          ),
         ),
       ],
     );
@@ -279,11 +282,15 @@ class _InputField extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
+              borderSide: BorderSide(
+                color: Colors.black.withValues(alpha: 0.08),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
+              borderSide: BorderSide(
+                color: Colors.black.withValues(alpha: 0.08),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),

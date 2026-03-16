@@ -86,7 +86,10 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.green.withValues(alpha: 0.06), width: 1.4),
+      borderSide: BorderSide(
+        color: Colors.green.withValues(alpha: 0.06),
+        width: 1.4,
+      ),
     ),
   );
 
