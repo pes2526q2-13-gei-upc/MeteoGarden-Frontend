@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:meteo_gareden/screens/home_shell.dart';
-import 'package:meteo_gareden/screens/crea_nova_conta.dart';
+import 'package:meteo_garden/screens/home_shell.dart';
+import 'package:meteo_garden/screens/crea_nova_conta.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:meteo_gareden/services/dades_usr.dart';
+import 'package:meteo_garden/services/dades_usr.dart';
 import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
         "password": passwordController.text,
       }),
     );
-
+    if (!mounted) return;
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
@@ -230,7 +230,7 @@ class _LoginHeader extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           "Inicia sessió per continuar cuidant el teu jardí.",
-          style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.65)),
+          style: TextStyle(fontSize: 14, color: Colors.black.withValues(alpha: 0.65)),
         ),
       ],
     );
@@ -279,11 +279,11 @@ class _InputField extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
+              borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
+              borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),

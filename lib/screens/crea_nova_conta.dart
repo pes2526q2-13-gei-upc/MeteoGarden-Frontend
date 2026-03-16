@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:meteo_gareden/screens/home_shell.dart';
+import 'package:meteo_garden/screens/home_shell.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'package:meteo_gareden/services/dades_usr.dart';
+import 'package:meteo_garden/services/dades_usr.dart';
 
 class CreaNovaConta extends StatefulWidget {
   const CreaNovaConta({super.key});
@@ -44,6 +44,8 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       }),
     );
 
+    if (!mounted) return;
+
     if (response.statusCode == 200) {
       debugPrint("Cuenta creada");
 
@@ -56,7 +58,6 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
         listen: false,
       ).setToken(jsonDecode(response.body)['token']);
 
-      Navigator.pop(context);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeShell()),
@@ -73,19 +74,19 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   InputDecoration _inputDecoration(String hint) => InputDecoration(
     hintText: hint,
     filled: true,
-    fillColor: Colors.green.withOpacity(0.04),
+    fillColor: Colors.green.withValues(alpha: 0.04),
     contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
+      borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
+      borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.green.withOpacity(0.6), width: 1.4),
+      borderSide: BorderSide(color: Colors.green.withValues(alpha: 0.06), width: 1.4),
     ),
   );
 
