@@ -49,7 +49,8 @@ class _LoginPageState extends State<LoginPage> {
       final data = jsonDecode(response.body);
 
       Provider.of<UserModel>(context, listen: false).setToken(data['token']);
-
+       await _fetchAndSaveProfile(data['token']);
+      if (!mounted) return;
       _goToHome();
     } else {
       debugPrint("Error: ${response.body}");
@@ -208,6 +209,41 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  Future<void> _fetchAndSaveProfile(String token) async {
+  final url = Uri.parse("http://10.0.2.2:8000/api/get_profile/");
+
+  final response = await http.get(
+    url,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Token $token",
+    },
+  );
+
+  if (!mounted) return;
+
+  debugPrint("PROFILE STATUS: ${response.statusCode}");
+  debugPrint("PROFILE BODY: ${response.body}");
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+
+    Provider.of<UserModel>(context, listen: false).setProfile(
+      newUsername: data['username'] ?? '',
+      newEmail: data['email'] ?? '',
+      newCity: data['city'] ?? '',
+      newLanguage: data['language'] ?? '',
+      newLastEntry: data['lastEntry'] ?? '',
+      newNumPlantsCollected: data['numPlantsCollected'] ?? 0,
+      newMonedes: data['coins'] ?? 0,
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('No s\'ha pogut carregar el perfil')),
+    );
+  }
+}
 }
 
 class _LoginHeader extends StatelessWidget {
