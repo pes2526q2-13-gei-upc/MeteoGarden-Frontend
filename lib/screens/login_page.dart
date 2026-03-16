@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() async {
     final url = Uri.parse(
-      "http://127.0.0.1:8000/api/login/",
+      "http://10.0.2.2:8000/api/login/",
     ); // url del endpoint de login al backend
 
     final response = await http.post(
