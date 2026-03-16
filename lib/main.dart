@@ -6,9 +6,7 @@ import 'package:meteo_garden/services/dades_usr.dart';
 void main() {
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => UserModel()),
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => UserModel())],
       child: const MeteoGardenApp(),
     ),
   );
@@ -22,10 +20,7 @@ class MeteoGardenApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'MeteoGarden',
-      theme: ThemeData(
-        colorSchemeSeed: Colors.green,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(colorSchemeSeed: Colors.green, useMaterial3: true),
       home: const LoginPage(),
     );
   }
