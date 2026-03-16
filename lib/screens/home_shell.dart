@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'garden_page.dart';
-import 'inventory_page.dart';
+import 'album_page.dart';
 import 'missions_page.dart';
 import 'perfil_page.dart';
+import 'photo_page.dart';
+import 'inventory_page.dart';
+import 'friends_page.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -15,11 +18,14 @@ class HomeShell extends StatefulWidget {
 class _HomeShellState extends State<HomeShell> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    GardenPage(),
-    InventoryPage(),
+  final List<Widget> _pages = [
+    GardenPage(username: "laia", gardenName: "jardin1"),
+    FriendsPage(),
+    PhotoPage(),
     MissionsPage(),
     PerfilPage(),
+    InventoryPage(),
+    AlbumPage(),
   ];
 
   @override
@@ -39,10 +45,8 @@ class _HomeShellState extends State<HomeShell> {
             icon: Icon(Icons.local_florist),
             label: 'Jardí',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
-            label: 'Inventari',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Amics'),
+          BottomNavigationBarItem(icon: Icon(Icons.camera), label: 'Camera'),
           BottomNavigationBarItem(icon: Icon(Icons.flag), label: 'Missions'),
           BottomNavigationBarItem(icon: Icon(Icons.person_2), label: 'Perfil'),
         ],

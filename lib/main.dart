@@ -4,10 +4,5 @@ import 'package:provider/provider.dart';
 import 'package:meteo_gareden/services/dades_usr.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => UserModel(),
-      child: const MeteoGardenApp(),
-    ),
-  );
+  runApp(const MeteoGardenApp());
 }
