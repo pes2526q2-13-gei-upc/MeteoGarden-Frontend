@@ -79,8 +79,12 @@ class _PerfilPageState extends State<PerfilPage> {
                           plantsDiscovered: p.plantsDiscovered,
                         ),
                         const SizedBox(height: 12),
+
+                        // INFORMACIÓ (bonica)
                         InfoCard(profile: p),
+
                         const SizedBox(height: 12),
+
                         const SizedBox(height: 20),
                       ]),
                     ),

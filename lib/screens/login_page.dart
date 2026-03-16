@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_garden/screens/home_shell.dart';
+import 'package:meteo_garden/screens/crea_nova_conta.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:meteo_garden/services/dades_usr.dart';
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,12 +14,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
   void dispose() {
-    emailController.dispose();
+    usernameController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -24,6 +29,34 @@ class _LoginPageState extends State<LoginPage> {
       context,
       MaterialPageRoute(builder: (_) => const HomeShell()),
     );
+  }
+
+  void _login() async {
+    final url = Uri.parse(
+      "http://127.0.0.1:8000/api/login/",
+    ); // url del endpoint de login al backend
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "username": usernameController.text,
+        "password": passwordController.text,
+      }),
+    );
+    if (!mounted) return;
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      Provider.of<UserModel>(context, listen: false).setToken(data['token']);
+
+      _goToHome();
+    } else {
+      debugPrint("Error: ${response.body}");
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Error de login')));
+    }
   }
 
   @override
@@ -68,11 +101,10 @@ class _LoginPageState extends State<LoginPage> {
                         const _LoginHeader(),
                         const SizedBox(height: 24),
                         _InputField(
-                          controller: emailController,
-                          label: "Email",
-                          hint: "Introdueix el teu correu",
-                          icon: Icons.email_outlined,
-                          keyboardType: TextInputType.emailAddress,
+                          controller: usernameController,
+                          label: "Nom d'usuari",
+                          hint: "Introdueix el teu nom d'usuari",
+                          icon: Icons.person_outline,
                         ),
                         const SizedBox(height: 16),
                         _InputField(
@@ -86,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
-                            onPressed: _goToHome,
+                            onPressed: _login,
                             icon: const Icon(Icons.login),
                             label: const Text("Iniciar sessió"),
                             style: FilledButton.styleFrom(
@@ -102,6 +134,63 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         const SizedBox(height: 14),
+
+                        // login with social providers and link to create account
+                        Center(
+                          child: Column(
+                            children: [
+                              const Text(
+                                'o continuar amb',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      // TODO: implementar login amb Google
+                                    },
+                                    icon: const Icon(Icons.g_mobiledata),
+                                    label: const Text('Google'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.black,
+                                    ),
+                                  ),
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      // TODO: implementar login amb Facebook
+                                    },
+                                    icon: const Icon(Icons.facebook),
+                                    label: const Text('Facebook'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF1877F2),
+                                      foregroundColor: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const CreaNovaConta(),
+                                    ),
+                                  );
+                                },
+                                child: const Text('Crear compte'),
+                              ),
+                            ],
+                          ),
+                        ),
+
                         Center(
                           child: TextButton(
                             onPressed: () {},
@@ -157,7 +246,7 @@ class _InputField extends StatelessWidget {
   final String hint;
   final IconData icon;
   final bool obscureText;
-  final TextInputType? keyboardType;
+  //final TextInputType? keyboardType;
 
   const _InputField({
     required this.controller,
@@ -165,7 +254,7 @@ class _InputField extends StatelessWidget {
     required this.hint,
     required this.icon,
     this.obscureText = false,
-    this.keyboardType,
+    //this.keyboardType,
   });
 
   @override
@@ -181,7 +270,7 @@ class _InputField extends StatelessWidget {
         TextField(
           controller: controller,
           obscureText: obscureText,
-          keyboardType: keyboardType,
+          //keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: Icon(icon),
