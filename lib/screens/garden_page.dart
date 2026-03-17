@@ -12,7 +12,9 @@ import 'inventory_page.dart';
 import '../../widgets/pot_info_sheet.dart';
 import '../../widgets/seed_selection_sheet.dart';
 import '../../models/seed_option.dart';
-import '../../services/seed_service.dart';
+
+import 'package:provider/provider.dart';
+import '../models/dades_usr.dart';
 
 class GardenPage extends StatefulWidget {
   final String username;
@@ -29,14 +31,18 @@ class GardenPage extends StatefulWidget {
 }
 
 class _GardenPageState extends State<GardenPage> {
+  late final GardenService _gardenService;
   late Future<WeatherInfo> _weatherFuture;
   late Future<List<GardenPot>> _potsFuture;
 
   @override
   void initState() {
     super.initState();
+
+    _gardenService = GardenService(baseUrl: "http://10.0.2.2:8000");
+
     _weatherFuture = WeatherService.fetchCurrent(city: "Òdena");
-    _potsFuture = GardenService.fetchGardenPlants(
+    _potsFuture = _gardenService.fetchGardenPlants(
       username: widget.username,
       gardenName: widget.gardenName,
     );
@@ -50,7 +56,7 @@ class _GardenPageState extends State<GardenPage> {
 
   void _refreshGarden() {
     setState(() {
-      _potsFuture = GardenService.fetchGardenPlants(
+      _potsFuture = _gardenService.fetchGardenPlants(
         username: widget.username,
         gardenName: widget.gardenName,
       );
@@ -62,13 +68,14 @@ class _GardenPageState extends State<GardenPage> {
       _showSeedSelection(pot);
       return;
     }
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => PotInfoSheet(
         pot: pot,
         onWater: () async {
-          await GardenService.waterPlant(
+          await _gardenService.waterPlant(
             username: widget.username,
             gardenName: widget.gardenName,
             potNumber: pot.potNumber,
@@ -95,7 +102,7 @@ class _GardenPageState extends State<GardenPage> {
       isScrollControlled: true,
       builder: (_) {
         return FutureBuilder<List<SeedOption>>(
-          future: SeedService.fetchSeeds(username: widget.username),
+          future: _gardenService.fetchSeeds(widget.username),
           builder: (context, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
               return Container(
@@ -151,8 +158,10 @@ class _GardenPageState extends State<GardenPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserModel>(context);
+    final username = user.username;
     final h = MediaQuery.of(context).size.height;
-
+    final monedes = user.monedes;
     return Stack(
       children: [
         Positioned.fill(
@@ -299,9 +308,14 @@ class _GardenPageState extends State<GardenPage> {
           top: MediaQuery.of(context).size.height * 0.14,
           child: GestureDetector(
             onTap: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const InventoryPage()));
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => InventoryPage(
+                    baseUrl: "http://10.0.2.2:8000",
+                    username: username,
+                  ),
+                ),
+              );
             },
             child: Image.asset('assets/images/inventory_imagen.png', width: 80),
           ),
