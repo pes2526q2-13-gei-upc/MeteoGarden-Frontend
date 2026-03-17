@@ -40,19 +40,24 @@ class GardenService {
     throw Exception('Error carregant els tests: ${response.statusCode}');
   }
 
-  Future<void> waterPlant({
+  Future<String> waterPlant({
     required String username,
     required String gardenName,
     required int potNumber,
   }) async {
-    final response = await http.post(
-      Uri.parse(
-        '$baseUrl/api/users/$username/gardens/$gardenName/pots/$potNumber/water/',
-      ),
+    final url = Uri.parse(
+      '$baseUrl/api/users/$username/gardens/$gardenName/pots/$potNumber/water/',
     );
 
-    if (response.statusCode != 200) {
-      throw Exception('Error regant la planta: ${response.statusCode}');
+    final response = await http.patch(url);
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return data['message'] ?? 'Plant watered successfully.';
+    } else {
+      throw Exception(
+        data['message'] ?? data['error'] ?? 'Error watering plant.',
+      );
     }
   }
 

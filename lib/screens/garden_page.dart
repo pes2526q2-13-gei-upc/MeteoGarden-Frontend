@@ -32,27 +32,36 @@ class GardenPage extends StatefulWidget {
 
 class _GardenPageState extends State<GardenPage> {
   late final GardenService _gardenService;
-  late Future<WeatherInfo> _weatherFuture;
+  Future<WeatherInfo>? _weatherFuture;
   late Future<List<GardenPot>> _potsFuture;
 
   @override
-  void initState() {
-    super.initState();
+void initState() {
+  super.initState();
 
-    _gardenService = GardenService(baseUrl: "http://10.0.2.2:8000");
+  _gardenService = GardenService(baseUrl: "http://10.0.2.2:8000");
 
-    _weatherFuture = WeatherService.fetchCurrent(city: "Òdena");
-    _potsFuture = _gardenService.fetchGardenPlants(
-      username: widget.username,
-      gardenName: widget.gardenName,
-    );
-  }
+  _potsFuture = _gardenService.fetchGardenPlants(
+    username: widget.username,
+    gardenName: widget.gardenName,
+  );
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final user = Provider.of<UserModel>(context, listen: false);
+
+    setState(() {
+      _weatherFuture = WeatherService.fetchCurrent(city: user.city);
+    });
+  });
+}
 
   void _refreshWeather() {
-    setState(() {
-      _weatherFuture = WeatherService.fetchCurrent(city: "Òdena");
-    });
-  }
+  final user = Provider.of<UserModel>(context, listen: false);
+    print("CIUTAT: ${user.city}"); // continuar aqui 
+  setState(() {
+    _weatherFuture = WeatherService.fetchCurrent(city: user.city);
+  });
+}
 
   void _refreshGarden() {
     setState(() {
@@ -75,21 +84,35 @@ class _GardenPageState extends State<GardenPage> {
       builder: (_) => PotInfoSheet(
         pot: pot,
         onWater: () async {
-          await _gardenService.waterPlant(
-            username: widget.username,
-            gardenName: widget.gardenName,
-            potNumber: pot.potNumber,
-          );
+          try {
+            final missatge = await _gardenService.waterPlant(
+              username: widget.username,
+              gardenName: widget.gardenName,
+              potNumber: pot.potNumber,
+            );
 
-          if (!mounted) return;
+            if (!mounted) return;
 
-          Navigator.pop(context);
+            Navigator.pop(context);
 
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text("Planta regada 🌧️")));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(missatge)));
 
-          _refreshGarden();
+            _refreshGarden();
+          } catch (e) {
+            if (!mounted) return;
+
+            Navigator.pop(context);
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  e.toString().replaceFirst('Exception: ', ''),
+                ),
+              ),
+            );
+          }
         },
       ),
     );
@@ -160,8 +183,9 @@ class _GardenPageState extends State<GardenPage> {
   Widget build(BuildContext context) {
     final user = Provider.of<UserModel>(context);
     final username = user.username;
-    final h = MediaQuery.of(context).size.height;
     final monedes = user.monedes;
+    final h = MediaQuery.of(context).size.height;
+
     return Stack(
       children: [
         Positioned.fill(
@@ -171,6 +195,50 @@ class _GardenPageState extends State<GardenPage> {
           ),
         ),
 
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 120,
+          right: 16,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/coin.png',
+                  width: 22,
+                  height: 22,
+                  errorBuilder: (_, __, ___) => const Icon(
+                    Icons.monetization_on,
+                    color: Colors.amber,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '$monedes',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF5D4037),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+    if (_weatherFuture != null)
         Positioned(
           top: MediaQuery.of(context).padding.top + 12,
           left: 12,
@@ -212,26 +280,6 @@ class _GardenPageState extends State<GardenPage> {
                 onRefresh: _refreshWeather,
               );
             },
-          ),
-        ),
-
-        Positioned(
-          top: MediaQuery.of(context).padding.top + 90,
-          left: 16,
-          child: Text(
-            widget.gardenName,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  blurRadius: 4,
-                  color: Colors.black54,
-                  offset: Offset(1, 1),
-                ),
-              ],
-            ),
           ),
         ),
 
