@@ -1,5 +1,4 @@
-
-  /*
+/*
 Per utilitzar les dades desde qualsevol screen s'ha de fer:
 
 final user = Provider.of<UserModel>(context);
@@ -19,7 +18,7 @@ s'ha de crear una funció que editi aquella dada i cridar desde la pantalla en l
  
  */
 
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class UserModel with ChangeNotifier {
   String username = '';
