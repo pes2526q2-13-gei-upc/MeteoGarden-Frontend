@@ -105,13 +105,16 @@ class _InventoryPageState extends State<InventoryPage>
   int get _totalItems => _seeds.length + _products.length;
 
   List<SeedOption> get _filteredSeeds => _seeds
-      .where((s) =>
-          s.scientificName.toLowerCase().contains(_searchQuery.toLowerCase()))
+      .where(
+        (s) =>
+            s.scientificName.toLowerCase().contains(_searchQuery.toLowerCase()),
+      )
       .toList();
 
   List<ProductItem> get _filteredProducts => _products
-      .where((p) =>
-          p.productName.toLowerCase().contains(_searchQuery.toLowerCase()))
+      .where(
+        (p) => p.productName.toLowerCase().contains(_searchQuery.toLowerCase()),
+      )
       .toList();
 
   @override
@@ -148,7 +151,7 @@ class _InventoryPageState extends State<InventoryPage>
                         Image.asset(
                           'assets/images/logo.png',
                           height: 28,
-                          errorBuilder: (_, __, ___) => const Icon(
+                          errorBuilder: (_, _, _) => const Icon(
                             Icons.eco,
                             color: Color(0xFF4CAF50),
                             size: 28,
@@ -214,12 +217,17 @@ class _InventoryPageState extends State<InventoryPage>
         decoration: InputDecoration(
           hintText: 'Cerca una llavor o poció...',
           hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
-          prefixIcon:
-              const Icon(Icons.search, color: Color(0xFF9E9E9E), size: 20),
+          prefixIcon: const Icon(
+            Icons.search,
+            color: Color(0xFF9E9E9E),
+            size: 20,
+          ),
           filled: true,
           fillColor: Colors.white,
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 16,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
@@ -238,7 +246,7 @@ class _InventoryPageState extends State<InventoryPage>
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -253,8 +261,10 @@ class _InventoryPageState extends State<InventoryPage>
           indicatorSize: TabBarIndicatorSize.tab,
           labelColor: Colors.white,
           unselectedLabelColor: const Color(0xFF4CAF50),
-          labelStyle:
-              const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
           dividerColor: Colors.transparent,
           tabs: const [
             Tab(
@@ -316,10 +326,7 @@ class _InventoryPageState extends State<InventoryPage>
 
     return TabBarView(
       controller: _tabController,
-      children: [
-        _buildSeedsGrid(),
-        _buildProductsGrid(),
-      ],
+      children: [_buildSeedsGrid(), _buildProductsGrid()],
     );
   }
 
@@ -365,8 +372,7 @@ class _InventoryPageState extends State<InventoryPage>
             childAspectRatio: 0.85,
           ),
           itemCount: items.length,
-          itemBuilder: (context, index) =>
-              _ProductCard(product: items[index]),
+          itemBuilder: (context, index) => _ProductCard(product: items[index]),
         ),
       ),
     );
@@ -404,7 +410,7 @@ class _SeedCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.07),
+            color: Colors.black.withValues(alpha: 0.07),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -419,7 +425,7 @@ class _SeedCard extends StatelessWidget {
               child: Image.asset(
                 'assets/images/seeds/${seed.scientificName.toLowerCase().replaceAll(' ', '_')}.png',
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => const Icon(
+                errorBuilder: (_, _, _) => const Icon(
                   Icons.local_florist,
                   size: 40,
                   color: Color(0xFF66BB6A),
@@ -440,10 +446,7 @@ class _SeedCard extends StatelessWidget {
             ),
             Text(
               'Quantitat: ${seed.amount}',
-              style: TextStyle(
-                fontSize: 10,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -467,7 +470,7 @@ class _ProductCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.07),
+            color: Colors.black.withValues(alpha: 0.07),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -482,7 +485,7 @@ class _ProductCard extends StatelessWidget {
               child: Image.asset(
                 'assets/images/products/${product.productName.toLowerCase().replaceAll(' ', '_')}.png',
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => const Icon(
+                errorBuilder: (_, _, _) => const Icon(
                   Icons.science,
                   size: 40,
                   color: Color(0xFF7E57C2),
@@ -503,10 +506,7 @@ class _ProductCard extends StatelessWidget {
             ),
             Text(
               'Quantitat: ${product.amount}',
-              style: TextStyle(
-                fontSize: 10,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
             ),
           ],
         ),

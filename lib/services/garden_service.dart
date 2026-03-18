@@ -8,15 +8,12 @@ class ProductItem {
   final String productName;
   final int amount;
 
-  ProductItem({
-    required this.productName,
-    required this.amount,
-  });
+  ProductItem({required this.productName, required this.amount});
 
   factory ProductItem.fromJson(Map<String, dynamic> json) => ProductItem(
-        productName: json['productName'] as String,
-        amount: json['amount'] as int,
-      );
+    productName: json['productName'] as String,
+    amount: json['amount'] as int,
+  );
 }
 
 class PlantingResult {
@@ -29,7 +26,7 @@ class PlantingResult {
   final double waterLevel;
   final String plantedAt;
   final int remainingSeeds;
- 
+
   PlantingResult({
     required this.message,
     required this.potNumber,
@@ -41,18 +38,18 @@ class PlantingResult {
     required this.plantedAt,
     required this.remainingSeeds,
   });
- 
+
   factory PlantingResult.fromJson(Map<String, dynamic> json) => PlantingResult(
-        message: json['message'] as String,
-        potNumber: json['pot_number'] as int,
-        scientificName: json['plant']['scientificName'] as String,
-        commonName: json['plant']['commonName'] as String,
-        growthPhase: json['growthPhase'] as String,
-        healthLevel: (json['healthLevel'] as num).toDouble(),
-        waterLevel: (json['waterLevel'] as num).toDouble(),
-        plantedAt: json['plantedAt'] as String,
-        remainingSeeds: json['remainingSeeds'] as int,
-      );
+    message: json['message'] as String,
+    potNumber: json['pot_number'] as int,
+    scientificName: json['plant']['scientificName'] as String,
+    commonName: json['plant']['commonName'] as String,
+    growthPhase: json['growthPhase'] as String,
+    healthLevel: (json['healthLevel'] as num).toDouble(),
+    waterLevel: (json['waterLevel'] as num).toDouble(),
+    plantedAt: json['plantedAt'] as String,
+    remainingSeeds: json['remainingSeeds'] as int,
+  );
 }
 
 class GardenService {
@@ -132,15 +129,15 @@ class GardenService {
     final url = Uri.parse(
       '$baseUrl/api/users/$username/gardens/$gardenName/pots/$potNumber/planting/',
     );
- 
+
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'scientificName': scientificName}),
     );
- 
+
     final data = jsonDecode(response.body);
- 
+
     if (response.statusCode == 200 || response.statusCode == 201) {
       return PlantingResult.fromJson(data);
     } else {

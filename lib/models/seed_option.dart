@@ -18,8 +18,6 @@ class ProductItem {
 
   ProductItem({required this.productName, required this.amount});
 
-  factory ProductItem.fromJson(Map<String, dynamic> json) => ProductItem(
-        productName: json['productName'],
-        amount: json['amount'],
-      );
+  factory ProductItem.fromJson(Map<String, dynamic> json) =>
+      ProductItem(productName: json['productName'], amount: json['amount']);
 }

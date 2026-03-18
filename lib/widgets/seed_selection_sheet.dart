@@ -179,10 +179,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                   const SizedBox(height: 4),
                   Text(
                     "Selecciona una llavor pel test ${widget.pot.potNumber}",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade700,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
                   ),
                 ],
               ),
@@ -199,21 +196,18 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
             child: ListView.separated(
               shrinkWrap: true,
               itemCount: widget.seeds.length,
-              separatorBuilder: (context, index) =>
-                  const SizedBox(height: 10),
+              separatorBuilder: (context, index) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
                 final seed = widget.seeds[index];
-                final isSelected = _selectedSeed?.scientificName ==
-                    seed.scientificName;
+                final isSelected =
+                    _selectedSeed?.scientificName == seed.scientificName;
 
                 return InkWell(
                   borderRadius: BorderRadius.circular(20),
                   onTap: () => setState(() => _selectedSeed = seed),
                   child: Ink(
                     decoration: BoxDecoration(
-                      color: isSelected
-                          ? Colors.green.shade50
-                          : Colors.white,
+                      color: isSelected ? Colors.green.shade50 : Colors.white,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: isSelected
@@ -322,10 +316,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
             const SizedBox(height: 12),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
                 borderRadius: BorderRadius.circular(14),
@@ -333,8 +324,11 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.error_outline_rounded,
-                      color: Colors.red.shade400, size: 18),
+                  Icon(
+                    Icons.error_outline_rounded,
+                    color: Colors.red.shade400,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -356,8 +350,9 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed:
-                  (_selectedSeed == null || _isPlanting) ? null : _plantSeed,
+              onPressed: (_selectedSeed == null || _isPlanting)
+                  ? null
+                  : _plantSeed,
               icon: _isPlanting
                   ? const SizedBox(
                       width: 18,
@@ -423,19 +418,13 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
           const SizedBox(height: 10),
           const Text(
             "No tens llavors disponibles",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 6),
           Text(
             "Quan n'aconsegueixis, les podràs plantar aquí.",
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
           ),
         ],
       ),

@@ -36,32 +36,32 @@ class _GardenPageState extends State<GardenPage> {
   late Future<List<GardenPot>> _potsFuture;
 
   @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  _gardenService = GardenService(baseUrl: "http://10.0.2.2:8000");
+    _gardenService = GardenService(baseUrl: "http://10.0.2.2:8000");
 
-  _potsFuture = _gardenService.fetchGardenPlants(
-    username: widget.username,
-    gardenName: widget.gardenName,
-  );
+    _potsFuture = _gardenService.fetchGardenPlants(
+      username: widget.username,
+      gardenName: widget.gardenName,
+    );
 
-  WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = Provider.of<UserModel>(context, listen: false);
+
+      setState(() {
+        _weatherFuture = WeatherService.fetchCurrent(city: user.city);
+      });
+    });
+  }
+
+  void _refreshWeather() {
     final user = Provider.of<UserModel>(context, listen: false);
-
+    //print("CIUTAT: ${user.city}"); // continuar aqui
     setState(() {
       _weatherFuture = WeatherService.fetchCurrent(city: user.city);
     });
-  });
-}
-
-  void _refreshWeather() {
-  final user = Provider.of<UserModel>(context, listen: false);
-    print("CIUTAT: ${user.city}"); // continuar aqui 
-  setState(() {
-    _weatherFuture = WeatherService.fetchCurrent(city: user.city);
-  });
-}
+  }
 
   void _refreshGarden() {
     setState(() {
@@ -107,9 +107,7 @@ void initState() {
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(
-                  e.toString().replaceFirst('Exception: ', ''),
-                ),
+                content: Text(e.toString().replaceFirst('Exception: ', '')),
               ),
             );
           }
@@ -190,11 +188,11 @@ void initState() {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
+                  color: Colors.black.withValues(alpha: 0.15),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
@@ -207,7 +205,7 @@ void initState() {
                   'assets/images/coin.png',
                   width: 22,
                   height: 22,
-                  errorBuilder: (_, __, ___) => const Icon(
+                  errorBuilder: (_, _, _) => const Icon(
                     Icons.monetization_on,
                     color: Colors.amber,
                     size: 22,
@@ -227,50 +225,50 @@ void initState() {
           ),
         ),
 
-    if (_weatherFuture != null)
-        Positioned(
-          top: MediaQuery.of(context).padding.top + 12,
-          left: 12,
-          right: 12,
-          child: FutureBuilder<WeatherInfo>(
-            future: _weatherFuture,
-            builder: (context, snap) {
-              if (snap.connectionState == ConnectionState.waiting) {
+        if (_weatherFuture != null)
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 12,
+            left: 12,
+            right: 12,
+            child: FutureBuilder<WeatherInfo>(
+              future: _weatherFuture,
+              builder: (context, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return WeatherCard(
+                    nomEstacio: "",
+                    title: "Carregant meteo...",
+                    subtitle: "Espera un moment",
+                    trailing: const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    onRefresh: _refreshWeather,
+                  );
+                }
+
+                if (snap.hasError) {
+                  return WeatherCard(
+                    nomEstacio: "",
+                    title: "No s'ha pogut carregar la meteo",
+                    subtitle: " ",
+                    trailing: const Icon(Icons.warning_amber_rounded),
+                    onRefresh: _refreshWeather,
+                  );
+                }
+
+                final w = snap.data!;
                 return WeatherCard(
-                  nomEstacio: "",
-                  title: "Carregant meteo...",
-                  subtitle: "Espera un moment",
-                  trailing: const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
+                  nomEstacio: w.stationName,
+                  title:
+                      "Temperatura: ${w.temp.toStringAsFixed(1)}°C · Precipitació: ${w.precipitation}",
+                  subtitle: "Vent: ${w.wind.toStringAsFixed(1)} m/s",
+                  trailing: const Icon(Icons.refresh),
                   onRefresh: _refreshWeather,
                 );
-              }
-
-              if (snap.hasError) {
-                return WeatherCard(
-                  nomEstacio: "",
-                  title: "No s'ha pogut carregar la meteo",
-                  subtitle: " ",
-                  trailing: const Icon(Icons.warning_amber_rounded),
-                  onRefresh: _refreshWeather,
-                );
-              }
-
-              final w = snap.data!;
-              return WeatherCard(
-                nomEstacio: w.stationName,
-                title:
-                    "Temperatura: ${w.temp.toStringAsFixed(1)}°C · Precipitació: ${w.precipitation}",
-                subtitle: "Vent: ${w.wind.toStringAsFixed(1)} m/s",
-                trailing: const Icon(Icons.refresh),
-                onRefresh: _refreshWeather,
-              );
-            },
+              },
+            ),
           ),
-        ),
 
         Positioned(
           left: 0,
