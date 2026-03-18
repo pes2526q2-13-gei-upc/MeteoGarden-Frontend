@@ -19,6 +19,42 @@ class ProductItem {
       );
 }
 
+class PlantingResult {
+  final String message;
+  final int potNumber;
+  final String scientificName;
+  final String commonName;
+  final String growthPhase;
+  final double healthLevel;
+  final double waterLevel;
+  final String plantedAt;
+  final int remainingSeeds;
+ 
+  PlantingResult({
+    required this.message,
+    required this.potNumber,
+    required this.scientificName,
+    required this.commonName,
+    required this.growthPhase,
+    required this.healthLevel,
+    required this.waterLevel,
+    required this.plantedAt,
+    required this.remainingSeeds,
+  });
+ 
+  factory PlantingResult.fromJson(Map<String, dynamic> json) => PlantingResult(
+        message: json['message'] as String,
+        potNumber: json['pot_number'] as int,
+        scientificName: json['plant']['scientificName'] as String,
+        commonName: json['plant']['commonName'] as String,
+        growthPhase: json['growthPhase'] as String,
+        healthLevel: (json['healthLevel'] as num).toDouble(),
+        waterLevel: (json['waterLevel'] as num).toDouble(),
+        plantedAt: json['plantedAt'] as String,
+        remainingSeeds: json['remainingSeeds'] as int,
+      );
+}
+
 class GardenService {
   final String baseUrl;
 
@@ -85,5 +121,32 @@ class GardenService {
     }
 
     throw Exception('Error carregant pocions: ${response.statusCode}');
+  }
+
+  Future<PlantingResult> plantSeed({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+    required String scientificName,
+  }) async {
+    final url = Uri.parse(
+      '$baseUrl/api/users/$username/gardens/$gardenName/pots/$potNumber/planting/',
+    );
+ 
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'scientificName': scientificName}),
+    );
+ 
+    final data = jsonDecode(response.body);
+ 
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return PlantingResult.fromJson(data);
+    } else {
+      throw Exception(
+        data['message'] ?? data['error'] ?? 'Error plantant la llavor.',
+      );
+    }
   }
 }

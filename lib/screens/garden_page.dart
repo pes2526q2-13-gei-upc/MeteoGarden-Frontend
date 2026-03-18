@@ -157,21 +157,10 @@ void initState() {
             return SeedSelectionSheet(
               pot: pot,
               seeds: seeds,
-              onSeedSelected: (seed) {
-                Navigator.pop(context);
-
-                ScaffoldMessenger.of(this.context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      "Has triat ${seed.scientificName} pel test ${pot.potNumber}",
-                    ),
-                  ),
-                );
-
-                // aquí després:
-                // crida API per plantar
-                // _refreshGarden();
-              },
+              username: widget.username,
+              gardenName: widget.gardenName,
+              gardenService: _gardenService,
+              onPlantingSuccess: _refreshGarden,
             );
           },
         );
