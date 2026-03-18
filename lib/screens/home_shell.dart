@@ -8,6 +8,9 @@ import 'photo_page.dart';
 import 'inventory_page.dart';
 import 'friends_page.dart';
 
+import 'package:provider/provider.dart';
+import '../models/dades_usr.dart';
+
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
 
@@ -18,20 +21,22 @@ class HomeShell extends StatefulWidget {
 class _HomeShellState extends State<HomeShell> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    GardenPage(username: "laia", gardenName: "jardin1"),
-    FriendsPage(),
-    PhotoPage(),
-    MissionsPage(),
-    PerfilPage(),
-    InventoryPage(),
-    AlbumPage(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final username = Provider.of<UserModel>(context).username;
+
+    final List<Widget> pages = [
+      GardenPage(username: "laia", gardenName: "jardin1"),
+      FriendsPage(),
+      PhotoPage(),
+      MissionsPage(),
+      PerfilPage(),
+      InventoryPage(baseUrl: "http://10.0.2.2:8000", username: username),
+      AlbumPage(),
+    ];
+
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
