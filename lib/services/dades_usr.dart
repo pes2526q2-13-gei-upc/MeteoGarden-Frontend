@@ -6,8 +6,8 @@ class UserModel with ChangeNotifier {
   String city = '';
   String language = '';
   String lastEntry = '';
-  String numPlantsCollected = '';
-  String monedes = '';
+  int numPlantsCollected = 0;
+  int monedes = 0;
   String token = '';
 
   /*
@@ -36,7 +36,7 @@ s'ha de crear una funció que editi aquella dada i cridar desde la pantalla en l
     String cityName,
     String langaugenew,
     String lastEntryNew,
-    String numPlantsCollectedNew,
+    int numPlantsCollectedNew,
   ) {
     username = name;
     email = mail;
@@ -50,5 +50,24 @@ s'ha de crear una funció que editi aquella dada i cridar desde la pantalla en l
   void setToken(String token) {
     token = token;
     notifyListeners(); // avisa a totes les pantalles
+  }
+
+  void setProfile({
+    required String newUsername,
+    required String newEmail,
+    required String newCity,
+    required String newLanguage,
+    required String newLastEntry,
+    required int newNumPlantsCollected,
+    required int newMonedes,
+  }) {
+    username = newUsername;
+    email = newEmail;
+    city = newCity;
+    language = newLanguage;
+    lastEntry = newLastEntry;
+    numPlantsCollected = newNumPlantsCollected;
+    monedes = newMonedes;
+    notifyListeners();
   }
 }

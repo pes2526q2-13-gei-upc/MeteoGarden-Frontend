@@ -46,12 +46,12 @@ class _LoginPageState extends State<LoginPage> {
         "password": passwordController.text,
       }),
     );
-
+    if (!mounted) return;
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-
       Provider.of<UserModel>(context, listen: false).setToken(data['token']);
-
+      await _fetchAndSaveProfile(data['token']);
+      if (!mounted) return;
       _goToHome();
     } else {
       debugPrint("Error: ${response.body}");
@@ -215,7 +215,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _fetchAndSaveProfile(String token) async {
     final url = Uri.parse("http://127.0.0.1:8000/api/get_profile/");
-
+    // en emulador es: http://10.0.2.2:8000/api/login/
+    // en local es es: http://127.0.0.1:8000/api/login/
     final response = await http.get(
       url,
       headers: {
@@ -269,7 +270,10 @@ class _LoginHeader extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           "Inicia sessió per continuar cuidant el teu jardí.",
-          style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.65)),
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.black.withValues(alpha: 0.65),
+          ),
         ),
       ],
     );
