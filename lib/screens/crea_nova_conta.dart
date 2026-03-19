@@ -12,25 +12,50 @@ class CreaNovaConta extends StatefulWidget {
   State<CreaNovaConta> createState() => _CreaNovaContaState();
 }
 
+class City {
+  final String code;
+  final String name;
+
+  City({required this.code, required this.name});
+
+  factory City.fromJson(Map<String, dynamic> json) {
+    return City(
+      code: json['code'],
+      name: json['name'],
+    );
+  }
+}
+
 class _CreaNovaContaState extends State<CreaNovaConta> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController languageController = TextEditingController();
+  //final TextEditingController cityController = TextEditingController();
+  String? city;
+  //final TextEditingController languageController = TextEditingController();
+  String? language;
+  final TextEditingController nomjardiController = TextEditingController();
+  List<dynamic> cities = [];
+  City? selectedCity;
 
   @override
   void dispose() {
     usernameController.dispose();
     passwordController.dispose();
     emailController.dispose();
-    cityController.dispose();
-    languageController.dispose();
+    //cityController.dispose();
+    //languageController.dispose();
+    nomjardiController.dispose();
     super.dispose();
   }
 
   void _submit() async {
     final url = Uri.parse("http://127.0.0.1:8000/api/register/");
+<<<<<<< Updated upstream
+=======
+    //en emulador es: 10.0.2.2:8000
+    //en web es: 127.0.0.1:8000
+>>>>>>> Stashed changes
 
     final response = await http.post(
       url,
@@ -39,8 +64,12 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
         'username': usernameController.text,
         'password': passwordController.text,
         'email': emailController.text,
-        'city': cityController.text,
-        'language': languageController.text,
+        //'city': cityController.text,
+        'city': selectedCity?.name,
+        //'language': languageController.text,
+        'language': language,
+        'stationCode': selectedCity?.code,
+        'gardenName': nomjardiController.text,
       }),
     );
 
@@ -70,6 +99,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     }
   }
 
+<<<<<<< Updated upstream
   InputDecoration _inputDecoration(String hint) => InputDecoration(
     hintText: hint,
     filled: true,
@@ -88,6 +118,51 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       borderSide: BorderSide(color: Colors.green.withOpacity(0.6), width: 1.4),
     ),
   );
+=======
+  @override
+  void initState() {
+    super.initState();
+    fetchCities();
+  }
+
+  Future<void> fetchCities() async {
+    //consulta de la uri per obtenir les ciuats: // $_baseUrl/api/stations/
+    // retorna el codi i el nom de la ciutat
+    final response = await http.get(
+      Uri.parse('http://127.0.0.1:8000/api/stations/')
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        cities = (jsonDecode(response.body) as List).map((e) => City.fromJson(e)).toList();
+      });
+    } else {
+      print('Error carregant ciutats');
+    }
+  }
+
+    InputDecoration _inputDecoration(String hint) => InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: Colors.green.withValues(alpha: 0.04),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(
+          color: Colors.green.withValues(alpha: 0.06),
+          width: 1.4,
+        ),
+      ),
+    );
+>>>>>>> Stashed changes
 
   @override
   Widget build(BuildContext context) {
@@ -119,16 +194,48 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                     decoration: _inputDecoration('Contrasenya'),
                   ),
                   const SizedBox(height: 16),
-                  TextField(
-                    controller: cityController,
+                  cities.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : DropdownButtonFormField<City>(
+                    value: selectedCity,
                     decoration: _inputDecoration('Ciutat'),
+                    items: cities.map((city) {
+                      return DropdownMenuItem<City>(
+                        value: city, // 🔥 guardas TODO el objeto
+                        child: Text(city.name), // 👁️ muestras el nombre
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCity = value;
+                      });
+                    },
                   ),
                   const SizedBox(height: 16),
-                  TextField(
-                    controller: languageController,
+                  DropdownButtonFormField<String>(
+                    initialValue: language,
                     decoration: _inputDecoration('Idioma'),
+                    items: ['Català', 'Castellano', 'English']
+                        .map((lang) => DropdownMenuItem(
+                              value: lang,
+                              child: Text(lang),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        language = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  //const SizedBox(height: 24),
+                  
+                  TextField(
+                    controller: nomjardiController,
+                     decoration: _inputDecoration('Nom del jardi'),
                   ),
                   const SizedBox(height: 24),
+                
                   FilledButton(
                     onPressed: _submit,
                     style: FilledButton.styleFrom(

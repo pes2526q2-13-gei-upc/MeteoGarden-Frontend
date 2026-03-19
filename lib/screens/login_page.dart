@@ -34,6 +34,11 @@ class _LoginPageState extends State<LoginPage> {
   void _login() async {
     final url = Uri.parse(
       "http://127.0.0.1:8000/api/login/",
+<<<<<<< Updated upstream
+=======
+      // en emulador es: http://10.0.2.2:8000/api/login/
+      // en local es es: http://127.0.0.1:8000/api/login/
+>>>>>>> Stashed changes
     ); // url del endpoint de login al backend
 
     final response = await http.post(
@@ -210,6 +215,44 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+<<<<<<< Updated upstream
+=======
+
+  Future<void> _fetchAndSaveProfile(String token) async {
+    final url = Uri.parse("http://127.0.0.1:8000/api/get_profile/");
+
+    final response = await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Token $token",
+      },
+    );
+
+    if (!mounted) return;
+
+    debugPrint("PROFILE STATUS: ${response.statusCode}");
+    debugPrint("PROFILE BODY: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      Provider.of<UserModel>(context, listen: false).setProfile(
+        newUsername: data['username'] ?? '',
+        newEmail: data['email'] ?? '',
+        newCity: data['city'] ?? '',
+        newLanguage: data['language'] ?? '',
+        newLastEntry: data['lastEntry'] ?? '',
+        newNumPlantsCollected: data['numPlantsCollected'] ?? 0,
+        newMonedes: data['coins'] ?? 0,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No s\'ha pogut carregar el perfil')),
+      );
+    }
+  }
+>>>>>>> Stashed changes
 }
 
 class _LoginHeader extends StatelessWidget {

@@ -4,8 +4,14 @@
 import '../models/weather_info.dart';
 
 class WeatherService {
+  
   // Android emulator: 10.0.2.2 apunta al teu PC
+<<<<<<< Updated upstream
   //static const String _baseUrl = 'http://10.0.2.2:8000';
+=======
+  // En local: 127.0.0.1:8000
+  static const String _baseUrl = 'http://127.0.0.1:8000';
+>>>>>>> Stashed changes
 
   static Future<WeatherInfo> fetchCurrent({required String city}) async {
     /*
