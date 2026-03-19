@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
-                            onPressed: _login,
+                            onPressed: _login, // _goToHome,//
                             icon: const Icon(Icons.login),
                             label: const Text("Iniciar sessió"),
                             style: FilledButton.styleFrom(
