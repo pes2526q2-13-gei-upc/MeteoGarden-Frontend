@@ -51,11 +51,8 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
   void _submit() async {
     final url = Uri.parse("http://127.0.0.1:8000/api/register/");
-<<<<<<< Updated upstream
-=======
     //en emulador es: 10.0.2.2:8000
     //en web es: 127.0.0.1:8000
->>>>>>> Stashed changes
 
     final response = await http.post(
       url,
@@ -99,26 +96,6 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     }
   }
 
-<<<<<<< Updated upstream
-  InputDecoration _inputDecoration(String hint) => InputDecoration(
-    hintText: hint,
-    filled: true,
-    fillColor: Colors.green.withOpacity(0.04),
-    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.green.withOpacity(0.6), width: 1.4),
-    ),
-  );
-=======
   @override
   void initState() {
     super.initState();
@@ -162,7 +139,6 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
         ),
       ),
     );
->>>>>>> Stashed changes
 
   @override
   Widget build(BuildContext context) {
