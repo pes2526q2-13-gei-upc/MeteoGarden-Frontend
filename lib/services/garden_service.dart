@@ -69,7 +69,6 @@ class GardenService {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((e) => GardenPot.fromJson(e)).toList();
     }
-
     throw Exception('Error carregant els tests: ${response.statusCode}');
   }
 
@@ -143,6 +142,33 @@ class GardenService {
     } else {
       throw Exception(
         data['message'] ?? data['error'] ?? 'Error plantant la llavor.',
+      );
+    }
+  }
+
+  Future<String> collectPlant({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+    required String scientificName,
+  }) async {
+    final url = Uri.parse(
+      '$baseUrl/api/users/$username/gardens/$gardenName/pots/$potNumber/collect/',
+    );
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'plant': scientificName}),
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return data['message'] ?? 'Planta recollida correctament.';
+    } else {
+      throw Exception(
+        data['message'] ?? data['error'] ?? 'Error recollint la planta.',
       );
     }
   }

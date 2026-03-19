@@ -92,19 +92,39 @@ class _GardenPageState extends State<GardenPage> {
             );
 
             if (!mounted) return;
-
             Navigator.pop(context);
-
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(missatge)));
-
             _refreshGarden();
           } catch (e) {
             if (!mounted) return;
-
             Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(e.toString().replaceFirst('Exception: ', '')),
+              ),
+            );
+          }
+        },
+        onCollect: () async {
+          try {
+            final missatge = await _gardenService.collectPlant(
+              username: widget.username,
+              gardenName: widget.gardenName,
+              potNumber: pot.potNumber,
+              scientificName: pot.plant!.scientificName,
+            );
 
+            if (!mounted) return;
+            Navigator.pop(context);
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(missatge)));
+            _refreshGarden();
+          } catch (e) {
+            if (!mounted) return;
+            Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(e.toString().replaceFirst('Exception: ', '')),
