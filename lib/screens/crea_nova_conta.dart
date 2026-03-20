@@ -3,7 +3,7 @@ import 'package:meteo_gareden/screens/home_shell.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'package:meteo_gareden/services/dades_usr.dart';
+import 'package:meteo_gareden/models/dades_usr.dart';
 
 class CreaNovaConta extends StatefulWidget {
   const CreaNovaConta({super.key});

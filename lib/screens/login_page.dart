@@ -3,7 +3,7 @@ import 'package:meteo_gareden/screens/home_shell.dart';
 import 'package:meteo_gareden/screens/crea_nova_conta.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:meteo_gareden/services/dades_usr.dart';
+import 'package:meteo_gareden/models/dades_usr.dart';
 import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
