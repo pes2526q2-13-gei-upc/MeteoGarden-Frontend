@@ -113,8 +113,6 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
             .map((e) => City.fromJson(e))
             .toList();
       });
-    } else {
-      print('Error carregant ciutats');
     }
   }
 
@@ -173,12 +171,12 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                   cities.isEmpty
                       ? const Center(child: CircularProgressIndicator())
                       : DropdownButtonFormField<City>(
-                          value: selectedCity,
+                          initialValue: selectedCity,
                           decoration: _inputDecoration('Ciutat'),
                           items: cities.map((city) {
                             return DropdownMenuItem<City>(
-                              value: city, // 🔥 guardas TODO el objeto
-                              child: Text(city.name), // 👁️ muestras el nombre
+                              value: city,
+                              child: Text(city.name),
                             );
                           }).toList(),
                           onChanged: (value) {
