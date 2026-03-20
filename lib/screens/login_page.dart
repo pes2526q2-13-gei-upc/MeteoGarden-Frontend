@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:meteo_gareden/screens/home_shell.dart';
-import 'package:meteo_gareden/screens/crea_nova_conta.dart';
+import 'package:meteo_garden/screens/home_shell.dart';
+import 'package:meteo_garden/screens/crea_nova_conta.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:meteo_gareden/models/dades_usr.dart';
+import 'package:meteo_garden/models/dades_usr.dart';
 import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
@@ -33,9 +33,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() async {
     final url = Uri.parse(
-      "http://127.0.0.1:8000/api/login/",
-      // en emulador es: http://10.0.2.2:8000/api/login/
-      // en local es es: http://127.0.0.1:8000/api/login/
+      "http://10.0.2.2:8000/api/login/",
     ); // url del endpoint de login al backend
 
     final response = await http.post(
@@ -67,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.green.withOpacity(0.12), Colors.white],
+            colors: [Colors.green.withValues(alpha: 0.12), Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -81,16 +79,18 @@ class _LoginPageState extends State<LoginPage> {
                 child: Material(
                   elevation: 0,
                   borderRadius: BorderRadius.circular(24),
-                  color: Colors.white.withOpacity(0.92),
+                  color: Colors.white.withValues(alpha: 0.92),
                   child: Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.black.withOpacity(0.06)),
+                      border: Border.all(
+                        color: Colors.black.withValues(alpha: 0.06),
+                      ),
                       boxShadow: [
                         BoxShadow(
                           blurRadius: 18,
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           offset: const Offset(0, 8),
                         ),
                       ],
@@ -100,7 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         const _LoginHeader(),
                         const SizedBox(height: 24),
-
                         _InputField(
                           controller: usernameController,
                           label: "Nom d'usuari",
@@ -108,7 +107,6 @@ class _LoginPageState extends State<LoginPage> {
                           icon: Icons.person_outline,
                         ),
                         const SizedBox(height: 16),
-
                         _InputField(
                           controller: passwordController,
                           label: "Contrasenya",
@@ -117,11 +115,10 @@ class _LoginPageState extends State<LoginPage> {
                           obscureText: true,
                         ),
                         const SizedBox(height: 22),
-
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
-                            onPressed: _login,
+                            onPressed: _login, // _goToHome,//
                             icon: const Icon(Icons.login),
                             label: const Text("Iniciar sessió"),
                             style: FilledButton.styleFrom(
@@ -136,7 +133,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 14),
 
                         // login with social providers and link to create account
@@ -214,9 +210,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _fetchAndSaveProfile(String token) async {
-    final url = Uri.parse("http://127.0.0.1:8000/api/get_profile/");
-    // en emulador es: http://10.0.2.2:8000/api/login/
-    // en local es es: http://127.0.0.1:8000/api/login/
+    final url = Uri.parse("http://10.0.2.2:8000/api/get_profile/");
+
     final response = await http.get(
       url,
       headers: {
@@ -315,23 +310,27 @@ class _InputField extends StatelessWidget {
             hintText: hint,
             prefixIcon: Icon(icon),
             filled: true,
-            fillColor: Colors.green.withOpacity(0.04),
+            fillColor: Colors.green.withValues(alpha: 0.04),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 14,
               vertical: 16,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
+              borderSide: BorderSide(
+                color: Colors.black.withValues(alpha: 0.08),
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
+              borderSide: BorderSide(
+                color: Colors.black.withValues(alpha: 0.08),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(
-                color: Colors.green.withOpacity(0.6),
+                color: Colors.green.withValues(alpha: 0.6),
                 width: 1.4,
               ),
             ),

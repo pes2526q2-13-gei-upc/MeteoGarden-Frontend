@@ -1,97 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/perfil_info.dart';
-import '../../services/perfil_service.dart';
+import '../models/dades_usr.dart';
 import 'perfil_edit_page.dart';
 
-class PerfilPage extends StatefulWidget {
+class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
 
   @override
-  State<PerfilPage> createState() => _PerfilPageState();
-}
-
-class _PerfilPageState extends State<PerfilPage> {
-  late Future<PerfilInfo> _profileFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _profileFuture = PerfilService.fetchMe();
-  }
-
-  void _refresh() {
-    setState(() {
-      _profileFuture = PerfilService.fetchMe();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final user = context.watch<UserModel>();
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.green.withOpacity(0.12), Colors.white],
+            colors: [Colors.green.withValues(alpha: 0.12), Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
-          child: FutureBuilder<PerfilInfo>(
-            future: _profileFuture,
-            builder: (context, snap) {
-              if (snap.connectionState == ConnectionState.waiting) {
-                return const _LoadingProfile();
-              }
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: _Header(
+                  username: user.username,
+                  city: user.city,
+                  onEdit: () async {
+                    final profile = PerfilInfo(
+                      username: user.username,
+                      email: user.email,
+                      city: user.city,
+                      coins: user.monedes,
+                      plantsDiscovered: user.numPlantsCollected,
+                    );
 
-              if (snap.hasError) {
-                return _ErrorProfile(
-                  message: "No s'ha pogut carregar el perfil.",
-                  onRetry: _refresh,
-                );
-              }
-
-              final p = snap.data!;
-              return CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: _Header(
-                      username: p.username,
-                      city: p.city,
-                      level: p.level,
-                      onEdit: () async {
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => PerfilEditPage(profile: p),
-                          ),
-                        );
-                        _refresh();
-                      },
-                      onRefresh: _refresh,
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => PerfilEditPage(profile: profile),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    _StatsRow(
+                      coins: user.monedes,
+                      plantsDiscovered: user.numPlantsCollected,
                     ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate([
-                        _StatsRow(
-                          coins: p.coins,
-                          plantsDiscovered: p.plantsDiscovered,
-                        ),
-                        const SizedBox(height: 12),
-
-                        // INFORMACIÓ (bonica)
-                        InfoCard(profile: p),
-
-                        const SizedBox(height: 12),
-
-                        const SizedBox(height: 20),
-                      ]),
+                    const SizedBox(height: 12),
+                    InfoCard(
+                      username: user.username,
+                      email: user.email,
+                      city: user.city,
                     ),
-                  ),
-                ],
-              );
-            },
+                    const SizedBox(height: 20),
+                  ]),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -102,16 +74,12 @@ class _PerfilPageState extends State<PerfilPage> {
 class _Header extends StatelessWidget {
   final String username;
   final String city;
-  final int level;
   final VoidCallback onEdit;
-  final VoidCallback onRefresh;
 
   const _Header({
     required this.username,
     required this.city,
-    required this.level,
     required this.onEdit,
-    required this.onRefresh,
   });
 
   @override
@@ -124,12 +92,12 @@ class _Header extends StatelessWidget {
       child: Material(
         elevation: 0,
         borderRadius: BorderRadius.circular(20),
-        color: Colors.white.withOpacity(0.85),
+        color: Colors.white.withValues(alpha: 0.85),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.black.withOpacity(0.06)),
+            border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,8 +109,10 @@ class _Header extends StatelessWidget {
                     width: 54,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.green.withOpacity(0.15),
-                      border: Border.all(color: Colors.green.withOpacity(0.25)),
+                      color: Colors.green.withValues(alpha: 0.15),
+                      border: Border.all(
+                        color: Colors.green.withValues(alpha: 0.25),
+                      ),
                     ),
                     child: const Icon(Icons.person, size: 30),
                   ),
@@ -162,25 +132,18 @@ class _Header extends StatelessWidget {
                         Text(
                           displayCity,
                           style: TextStyle(
-                            color: Colors.black.withOpacity(0.6),
+                            color: Colors.black.withValues(alpha: 0.6),
                             fontSize: 13,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  IconButton(
-                    tooltip: "Refrescar",
-                    onPressed: onRefresh,
-                    icon: const Icon(Icons.refresh),
-                  ),
                 ],
               ),
               const SizedBox(height: 12),
               Row(
                 children: [
-                  _Pill(icon: Icons.auto_awesome, text: "Nivell $level"),
-                  const SizedBox(width: 8),
                   _Pill(icon: Icons.local_florist, text: "MeteoGarden"),
                   const Spacer(),
                   FilledButton.icon(
@@ -210,8 +173,8 @@ class _Pill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        color: Colors.green.withOpacity(0.10),
-        border: Border.all(color: Colors.green.withOpacity(0.18)),
+        color: Colors.green.withValues(alpha: 0.10),
+        border: Border.all(color: Colors.green.withValues(alpha: 0.18)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -273,12 +236,12 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       borderRadius: BorderRadius.circular(18),
-      color: Colors.white.withOpacity(0.9),
+      color: Colors.white.withValues(alpha: 0.9),
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: Colors.black.withOpacity(0.06)),
+          border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
         ),
         child: Row(
           children: [
@@ -286,7 +249,7 @@ class _StatCard extends StatelessWidget {
               height: 38,
               width: 38,
               decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.12),
+                color: Colors.green.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon),
@@ -299,7 +262,7 @@ class _StatCard extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      color: Colors.black.withOpacity(0.65),
+                      color: Colors.black.withValues(alpha: 0.65),
                       fontSize: 12,
                     ),
                   ),
@@ -322,9 +285,16 @@ class _StatCard extends StatelessWidget {
 }
 
 class InfoCard extends StatelessWidget {
-  final PerfilInfo profile;
+  final String username;
+  final String email;
+  final String city;
 
-  const InfoCard({super.key, required this.profile});
+  const InfoCard({
+    super.key,
+    required this.username,
+    required this.email,
+    required this.city,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -336,7 +306,7 @@ class InfoCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             blurRadius: 12,
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             offset: const Offset(0, 6),
           ),
         ],
@@ -352,19 +322,19 @@ class InfoCard extends StatelessWidget {
           _InfoTile(
             icon: Icons.person,
             label: "Usuari",
-            value: profile.username,
+            value: username.isEmpty ? "—" : username,
           ),
           const Divider(),
           _InfoTile(
             icon: Icons.email,
             label: "Email",
-            value: profile.email.isEmpty ? "—" : profile.email,
+            value: email.isEmpty ? "—" : email,
           ),
           const Divider(),
           _InfoTile(
             icon: Icons.location_city,
             label: "Ciutat",
-            value: profile.city.isEmpty ? "—" : profile.city,
+            value: city.isEmpty ? "—" : city,
           ),
         ],
       ),
@@ -391,7 +361,7 @@ class _InfoTile extends StatelessWidget {
           height: 38,
           width: 38,
           decoration: BoxDecoration(
-            color: Colors.green.withOpacity(0.15),
+            color: Colors.green.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, size: 20),
@@ -417,49 +387,6 @@ class _InfoTile extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _LoadingProfile extends StatelessWidget {
-  const _LoadingProfile();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: CircularProgressIndicator());
-  }
-}
-
-class _ErrorProfile extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-
-  const _ErrorProfile({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.warning_amber_rounded, size: 42),
-            const SizedBox(height: 10),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 12),
-            FilledButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
-              label: const Text("Reintentar"),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

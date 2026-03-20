@@ -1,16 +1,4 @@
-import 'package:flutter/material.dart';
-
-class UserModel with ChangeNotifier {
-  String username = '';
-  String email = '';
-  String city = '';
-  String language = '';
-  String lastEntry = '';
-  int numPlantsCollected = 0;
-  int monedes = 0;
-  String token = '';
-
-  /*
+/*
 Per utilitzar les dades desde qualsevol screen s'ha de fer:
 
 final user = Provider.of<UserModel>(context);
@@ -30,26 +18,21 @@ s'ha de crear una funció que editi aquella dada i cridar desde la pantalla en l
  
  */
 
-  void setUser(
-    String name,
-    String mail,
-    String cityName,
-    String langaugenew,
-    String lastEntryNew,
-    int numPlantsCollectedNew,
-  ) {
-    username = name;
-    email = mail;
-    city = cityName;
-    language = langaugenew;
-    lastEntry = lastEntryNew;
-    numPlantsCollected = numPlantsCollectedNew;
-    notifyListeners(); // avisa a totes les pantalles
-  }
+import 'package:flutter/material.dart';
 
-  void setToken(String token) {
-    token = token;
-    notifyListeners(); // avisa a totes les pantalles
+class UserModel with ChangeNotifier {
+  String username = '';
+  String email = '';
+  String city = '';
+  String language = '';
+  String lastEntry = '';
+  int numPlantsCollected = 0;
+  int monedes = 0;
+  String token = '';
+
+  void setToken(String newToken) {
+    token = newToken;
+    notifyListeners();
   }
 
   void setProfile({
@@ -68,6 +51,18 @@ s'ha de crear una funció que editi aquella dada i cridar desde la pantalla en l
     lastEntry = newLastEntry;
     numPlantsCollected = newNumPlantsCollected;
     monedes = newMonedes;
+    notifyListeners();
+  }
+
+  void clearUser() {
+    username = '';
+    email = '';
+    city = '';
+    language = '';
+    lastEntry = '';
+    numPlantsCollected = 0;
+    monedes = 0;
+    token = '';
     notifyListeners();
   }
 }
