@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
-import 'app/meteo_garden_app.dart';
 import 'package:provider/provider.dart';
-import 'package:meteo_gareden/models/dades_usr.dart';
+import 'package:meteo_garden/screens/login_page.dart';
+import 'package:meteo_garden/models/dades_usr.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => UserModel(),
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => UserModel())],
       child: const MeteoGardenApp(),
     ),
   );
+}
+
+class MeteoGardenApp extends StatelessWidget {
+  const MeteoGardenApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'MeteoGarden',
+      theme: ThemeData(colorSchemeSeed: Colors.green, useMaterial3: true),
+      home: const LoginPage(),
+    );
+  }
 }
