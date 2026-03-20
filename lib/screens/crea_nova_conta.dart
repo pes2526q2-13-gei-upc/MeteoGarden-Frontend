@@ -19,10 +19,7 @@ class City {
   City({required this.code, required this.name});
 
   factory City.fromJson(Map<String, dynamic> json) {
-    return City(
-      code: json['code'],
-      name: json['name'],
-    );
+    return City(code: json['code'], name: json['name']);
   }
 }
 
@@ -106,39 +103,41 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     //consulta de la uri per obtenir les ciuats: // $_baseUrl/api/stations/
     // retorna el codi i el nom de la ciutat
     final response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/api/stations/')
+      Uri.parse('http://127.0.0.1:8000/api/stations/'),
     );
 
     if (response.statusCode == 200) {
       setState(() {
-        cities = (jsonDecode(response.body) as List).map((e) => City.fromJson(e)).toList();
+        cities = (jsonDecode(response.body) as List)
+            .map((e) => City.fromJson(e))
+            .toList();
       });
     } else {
       print('Error carregant ciutats');
     }
   }
 
-    InputDecoration _inputDecoration(String hint) => InputDecoration(
-      hintText: hint,
-      filled: true,
-      fillColor: Colors.green.withValues(alpha: 0.04),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
+  InputDecoration _inputDecoration(String hint) => InputDecoration(
+    hintText: hint,
+    filled: true,
+    fillColor: Colors.green.withValues(alpha: 0.04),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide(
+        color: Colors.green.withValues(alpha: 0.06),
+        width: 1.4,
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(
-          color: Colors.green.withValues(alpha: 0.06),
-          width: 1.4,
-        ),
-      ),
-    );
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -171,31 +170,31 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                   ),
                   const SizedBox(height: 16),
                   cities.isEmpty
-                  ? const Center(child: CircularProgressIndicator())
-                  : DropdownButtonFormField<City>(
-                    value: selectedCity,
-                    decoration: _inputDecoration('Ciutat'),
-                    items: cities.map((city) {
-                      return DropdownMenuItem<City>(
-                        value: city, // 🔥 guardas TODO el objeto
-                        child: Text(city.name), // 👁️ muestras el nombre
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCity = value;
-                      });
-                    },
-                  ),
+                      ? const Center(child: CircularProgressIndicator())
+                      : DropdownButtonFormField<City>(
+                          value: selectedCity,
+                          decoration: _inputDecoration('Ciutat'),
+                          items: cities.map((city) {
+                            return DropdownMenuItem<City>(
+                              value: city, // 🔥 guardas TODO el objeto
+                              child: Text(city.name), // 👁️ muestras el nombre
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCity = value;
+                            });
+                          },
+                        ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     initialValue: language,
                     decoration: _inputDecoration('Idioma'),
                     items: ['Català', 'Castellano', 'English']
-                        .map((lang) => DropdownMenuItem(
-                              value: lang,
-                              child: Text(lang),
-                            ))
+                        .map(
+                          (lang) =>
+                              DropdownMenuItem(value: lang, child: Text(lang)),
+                        )
                         .toList(),
                     onChanged: (value) {
                       setState(() {
@@ -204,14 +203,14 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                     },
                   ),
                   const SizedBox(height: 16),
+
                   //const SizedBox(height: 24),
-                  
                   TextField(
                     controller: nomjardiController,
-                     decoration: _inputDecoration('Nom del jardi'),
+                    decoration: _inputDecoration('Nom del jardi'),
                   ),
                   const SizedBox(height: 24),
-                
+
                   FilledButton(
                     onPressed: _submit,
                     style: FilledButton.styleFrom(

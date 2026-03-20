@@ -4,7 +4,6 @@
 import '../models/weather_info.dart';
 
 class WeatherService {
-  
   // Android emulator: 10.0.2.2 apunta al teu PC
   //static const String _baseUrl = 'http://10.0.2.2:8000';
 
