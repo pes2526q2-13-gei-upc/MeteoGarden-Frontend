@@ -12,20 +12,37 @@ class CreaNovaConta extends StatefulWidget {
   State<CreaNovaConta> createState() => _CreaNovaContaState();
 }
 
+class City {
+  final String code;
+  final String name;
+
+  City({required this.code, required this.name});
+
+  factory City.fromJson(Map<String, dynamic> json) {
+    return City(code: json['code'], name: json['name']);
+  }
+}
+
 class _CreaNovaContaState extends State<CreaNovaConta> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController languageController = TextEditingController();
+  //final TextEditingController cityController = TextEditingController();
+  String? city;
+  //final TextEditingController languageController = TextEditingController();
+  String? language;
+  final TextEditingController nomjardiController = TextEditingController();
+  List<dynamic> cities = [];
+  City? selectedCity;
 
   @override
   void dispose() {
     usernameController.dispose();
     passwordController.dispose();
     emailController.dispose();
-    cityController.dispose();
-    languageController.dispose();
+    //cityController.dispose();
+    //languageController.dispose();
+    nomjardiController.dispose();
     super.dispose();
   }
 
@@ -41,8 +58,12 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
         'username': usernameController.text,
         'password': passwordController.text,
         'email': emailController.text,
-        'city': cityController.text,
-        'language': languageController.text,
+        //'city': cityController.text,
+        'city': selectedCity?.name,
+        //'language': languageController.text,
+        'language': language,
+        'stationCode': selectedCity?.code,
+        'gardenName': nomjardiController.text,
       }),
     );
 
@@ -70,6 +91,28 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Error creant el compte')));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCities();
+  }
+
+  Future<void> fetchCities() async {
+    //consulta de la uri per obtenir les ciuats: // $_baseUrl/api/stations/
+    // retorna el codi i el nom de la ciutat
+    final response = await http.get(
+      Uri.parse('http://127.0.0.1:8000/api/stations/'),
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        cities = (jsonDecode(response.body) as List)
+            .map((e) => City.fromJson(e))
+            .toList();
+      });
     }
   }
 
@@ -125,16 +168,48 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                     decoration: _inputDecoration('Contrasenya'),
                   ),
                   const SizedBox(height: 16),
-                  TextField(
-                    controller: cityController,
-                    decoration: _inputDecoration('Ciutat'),
+                  cities.isEmpty
+                      ? const Center(child: CircularProgressIndicator())
+                      : DropdownButtonFormField<City>(
+                          initialValue: selectedCity,
+                          decoration: _inputDecoration('Ciutat'),
+                          items: cities.map((city) {
+                            return DropdownMenuItem<City>(
+                              value: city,
+                              child: Text(city.name),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCity = value;
+                            });
+                          },
+                        ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    initialValue: language,
+                    decoration: _inputDecoration('Idioma'),
+                    items: ['Català', 'Castellano', 'English']
+                        .map(
+                          (lang) =>
+                              DropdownMenuItem(value: lang, child: Text(lang)),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        language = value;
+                      });
+                    },
                   ),
                   const SizedBox(height: 16),
+
+                  //const SizedBox(height: 24),
                   TextField(
-                    controller: languageController,
-                    decoration: _inputDecoration('Idioma'),
+                    controller: nomjardiController,
+                    decoration: _inputDecoration('Nom del jardi'),
                   ),
                   const SizedBox(height: 24),
+
                   FilledButton(
                     onPressed: _submit,
                     style: FilledButton.styleFrom(

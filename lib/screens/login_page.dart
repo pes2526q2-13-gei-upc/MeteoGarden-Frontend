@@ -47,7 +47,6 @@ class _LoginPageState extends State<LoginPage> {
     if (!mounted) return;
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-
       Provider.of<UserModel>(context, listen: false).setToken(data['token']);
       await _fetchAndSaveProfile(data['token']);
       if (!mounted) return;
