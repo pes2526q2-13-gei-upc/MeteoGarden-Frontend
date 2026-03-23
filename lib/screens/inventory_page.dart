@@ -13,7 +13,7 @@ class InventoryApiService {
 
   Future<List<SeedOption>> fetchSeeds() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/api/users/laia/seeds/'), // canviar despres
+      Uri.parse('$baseUrl/api/users/$username/seeds/'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
