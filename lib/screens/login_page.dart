@@ -228,6 +228,11 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
+      // gardens és List, extreim només els noms
+      final List<String> gardenNames = (data['gardens'] as List<dynamic>)
+          .map((g) => g['gardenName'] as String)
+          .toList();
+
       Provider.of<UserModel>(context, listen: false).setProfile(
         newUsername: data['username'] ?? '',
         newEmail: data['email'] ?? '',
@@ -235,7 +240,8 @@ class _LoginPageState extends State<LoginPage> {
         newLanguage: data['language'] ?? '',
         newLastEntry: data['lastEntry'] ?? '',
         newNumPlantsCollected: data['numPlantsCollected'] ?? 0,
-        newMonedes: data['coins'] ?? 0,
+        newMonedes: data['numCoins'] ?? 0,
+        newGardens: gardenNames,
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

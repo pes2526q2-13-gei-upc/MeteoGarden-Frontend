@@ -29,11 +29,14 @@ class UserModel with ChangeNotifier {
   int numPlantsCollected = 0;
   int monedes = 0;
   String token = '';
-
+  List<String> gardens = [];
   void setToken(String newToken) {
     token = newToken;
     notifyListeners();
   }
+
+  // Helpers per agafar el primer valor dels jardins
+  String get gardenName => gardens.isNotEmpty ? gardens.first : '';
 
   void setProfile({
     required String newUsername,
@@ -43,6 +46,7 @@ class UserModel with ChangeNotifier {
     required String newLastEntry,
     required int newNumPlantsCollected,
     required int newMonedes,
+    required List<String> newGardens,
   }) {
     username = newUsername;
     email = newEmail;
@@ -51,6 +55,7 @@ class UserModel with ChangeNotifier {
     lastEntry = newLastEntry;
     numPlantsCollected = newNumPlantsCollected;
     monedes = newMonedes;
+    gardens = newGardens;
     notifyListeners();
   }
 
@@ -63,6 +68,7 @@ class UserModel with ChangeNotifier {
     numPlantsCollected = 0;
     monedes = 0;
     token = '';
+    gardens = [];
     notifyListeners();
   }
 }
