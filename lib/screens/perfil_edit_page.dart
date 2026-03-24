@@ -4,6 +4,7 @@ import 'dart:convert';
 import '../../models/perfil_info.dart';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
+import '../models/url.dart';
 
 class City {
   final String code;
@@ -67,7 +68,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
   Future<void> fetchCities() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/api/stations/'),
+        Uri.parse('${ApiConfig.baseUrl}/api/stations/'),
       );
 
       if (response.statusCode == 200) {
@@ -102,9 +103,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
   void _actualitzar() async {
  
     
-    final url = Uri.parse("http://127.0.0.1:8000/api/edit_profile/");
-    //en emulador es: 10.0.2.2:8000
-    //en web es: 127.0.0.1:8000
+    final url = Uri.parse("${ApiConfig.baseUrl}/api/edit_profile/");
 
     final response = await http.post(
       url,
