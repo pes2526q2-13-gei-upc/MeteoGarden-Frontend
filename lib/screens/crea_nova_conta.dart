@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
+import '../models/url.dart';
 
 class CreaNovaConta extends StatefulWidget {
   const CreaNovaConta({super.key});
@@ -47,7 +48,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   }
 
   void _submit() async {
-    final url = Uri.parse("http://10.0.2.2:8000/api/register/");
+    final url = Uri.parse("${ApiConfig.baseUrl}/api/register/");
     //en emulador es: 10.0.2.2:8000
     //en web es: 127.0.0.1:8000
 
@@ -104,7 +105,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     //consulta de la uri per obtenir les ciuats: // $_baseUrl/api/stations/
     // retorna el codi i el nom de la ciutat
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:8000/api/stations/'),
+      Uri.parse('${ApiConfig.baseUrl}/api/stations/'),
     );
 
     if (response.statusCode == 200) {

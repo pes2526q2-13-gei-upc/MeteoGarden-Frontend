@@ -2,18 +2,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../models/seed_option.dart';
+import '../models/url.dart';
 
 // ─── API Service ──────────────────────────────────────────────────────────────
 
 class InventoryApiService {
-  final String baseUrl;
   final String username;
 
-  InventoryApiService({required this.baseUrl, required this.username});
+  InventoryApiService({required this.username});
 
   Future<List<SeedOption>> fetchSeeds() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/api/users/$username/seeds/'),
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/seeds/'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -24,7 +24,9 @@ class InventoryApiService {
 
   Future<List<ProductItem>> fetchProducts() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/api/users/laia/products/'), // canviar despres
+      Uri.parse(
+        '${ApiConfig.baseUrl}/api/users/$username/products/',
+      ), // canviar despres
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -37,14 +39,9 @@ class InventoryApiService {
 // ─── Inventory Page ───────────────────────────────────────────────────────────
 
 class InventoryPage extends StatefulWidget {
-  final String baseUrl;
   final String username;
 
-  const InventoryPage({
-    super.key,
-    required this.baseUrl,
-    required this.username,
-  });
+  const InventoryPage({super.key, required this.username});
 
   @override
   State<InventoryPage> createState() => _InventoryPageState();
@@ -65,10 +62,7 @@ class _InventoryPageState extends State<InventoryPage>
   @override
   void initState() {
     super.initState();
-    _api = InventoryApiService(
-      baseUrl: widget.baseUrl,
-      username: widget.username,
-    );
+    _api = InventoryApiService(username: widget.username);
     _tabController = TabController(length: 2, vsync: this);
     _loadInventory();
   }
