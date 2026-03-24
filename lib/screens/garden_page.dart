@@ -12,7 +12,9 @@ import 'inventory_page.dart';
 import '../../widgets/pot_info_sheet.dart';
 import '../../widgets/seed_selection_sheet.dart';
 import '../../models/seed_option.dart';
-import '../../services/seed_service.dart';
+
+import 'package:provider/provider.dart';
+import '../models/dades_usr.dart';
 
 class GardenPage extends StatefulWidget {
   final String username;
@@ -29,28 +31,41 @@ class GardenPage extends StatefulWidget {
 }
 
 class _GardenPageState extends State<GardenPage> {
-  late Future<WeatherInfo> _weatherFuture;
+  late final GardenService _gardenService;
+  Future<WeatherInfo>? _weatherFuture;
   late Future<List<GardenPot>> _potsFuture;
 
   @override
   void initState() {
     super.initState();
-    _weatherFuture = WeatherService.fetchCurrent(city: "Òdena");
-    _potsFuture = GardenService.fetchGardenPlants(
+
+    _gardenService = GardenService();
+
+    _potsFuture = _gardenService.fetchGardenPlants(
       username: widget.username,
       gardenName: widget.gardenName,
     );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = Provider.of<UserModel>(context, listen: false);
+
+      setState(() {
+        _weatherFuture = WeatherService.fetchCurrent(city: user.city);
+      });
+    });
   }
 
   void _refreshWeather() {
+    final user = Provider.of<UserModel>(context, listen: false);
+    //print("CIUTAT: ${user.city}"); // continuar aqui
     setState(() {
-      _weatherFuture = WeatherService.fetchCurrent(city: "Òdena");
+      _weatherFuture = WeatherService.fetchCurrent(city: user.city);
     });
   }
 
   void _refreshGarden() {
     setState(() {
-      _potsFuture = GardenService.fetchGardenPlants(
+      _potsFuture = _gardenService.fetchGardenPlants(
         username: widget.username,
         gardenName: widget.gardenName,
       );
@@ -62,27 +77,60 @@ class _GardenPageState extends State<GardenPage> {
       _showSeedSelection(pot);
       return;
     }
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => PotInfoSheet(
         pot: pot,
         onWater: () async {
-          await GardenService.waterPlant(
-            username: widget.username,
-            gardenName: widget.gardenName,
-            potNumber: pot.potNumber,
-          );
+          try {
+            final missatge = await _gardenService.waterPlant(
+              username: widget.username,
+              gardenName: widget.gardenName,
+              potNumber: pot.potNumber,
+            );
 
-          if (!mounted) return;
+            if (!mounted) return;
+            Navigator.pop(context);
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(missatge)));
+            _refreshGarden();
+          } catch (e) {
+            if (!mounted) return;
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(e.toString().replaceFirst('Exception: ', '')),
+              ),
+            );
+          }
+        },
+        onCollect: () async {
+          try {
+            final missatge = await _gardenService.collectPlant(
+              username: widget.username,
+              gardenName: widget.gardenName,
+              potNumber: pot.potNumber,
+              scientificName: pot.plant!.scientificName,
+            );
 
-          Navigator.pop(context);
-
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text("Planta regada 🌧️")));
-
-          _refreshGarden();
+            if (!mounted) return;
+            Navigator.pop(context);
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(missatge)));
+            _refreshGarden();
+          } catch (e) {
+            if (!mounted) return;
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(e.toString().replaceFirst('Exception: ', '')),
+              ),
+            );
+          }
         },
       ),
     );
@@ -95,7 +143,7 @@ class _GardenPageState extends State<GardenPage> {
       isScrollControlled: true,
       builder: (_) {
         return FutureBuilder<List<SeedOption>>(
-          future: SeedService.fetchSeeds(username: widget.username),
+          future: _gardenService.fetchSeeds(widget.username),
           builder: (context, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
               return Container(
@@ -127,21 +175,10 @@ class _GardenPageState extends State<GardenPage> {
             return SeedSelectionSheet(
               pot: pot,
               seeds: seeds,
-              onSeedSelected: (seed) {
-                Navigator.pop(context);
-
-                ScaffoldMessenger.of(this.context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      "Has triat ${seed.scientificName} pel test ${pot.potNumber}",
-                    ),
-                  ),
-                );
-
-                // aquí després:
-                // crida API per plantar
-                // _refreshGarden();
-              },
+              username: widget.username,
+              gardenName: widget.gardenName,
+              gardenService: _gardenService,
+              onPlantingSuccess: _refreshGarden,
             );
           },
         );
@@ -151,6 +188,9 @@ class _GardenPageState extends State<GardenPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserModel>(context);
+    final username = user.username;
+    final monedes = user.monedes;
     final h = MediaQuery.of(context).size.height;
 
     return Stack(
@@ -163,68 +203,92 @@ class _GardenPageState extends State<GardenPage> {
         ),
 
         Positioned(
-          top: MediaQuery.of(context).padding.top + 12,
-          left: 12,
-          right: 12,
-          child: FutureBuilder<WeatherInfo>(
-            future: _weatherFuture,
-            builder: (context, snap) {
-              if (snap.connectionState == ConnectionState.waiting) {
-                return WeatherCard(
-                  nomEstacio: "",
-                  title: "Carregant meteo...",
-                  subtitle: "Espera un moment",
-                  trailing: const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+          top: MediaQuery.of(context).padding.top + 120,
+          right: 16,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.9),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/coin.png',
+                  width: 22,
+                  height: 22,
+                  errorBuilder: (_, _, _) => const Icon(
+                    Icons.monetization_on,
+                    color: Colors.amber,
+                    size: 22,
                   ),
-                  onRefresh: _refreshWeather,
-                );
-              }
-
-              if (snap.hasError) {
-                return WeatherCard(
-                  nomEstacio: "",
-                  title: "No s'ha pogut carregar la meteo",
-                  subtitle: " ",
-                  trailing: const Icon(Icons.warning_amber_rounded),
-                  onRefresh: _refreshWeather,
-                );
-              }
-
-              final w = snap.data!;
-              return WeatherCard(
-                nomEstacio: w.stationName,
-                title:
-                    "Temperatura: ${w.temp.toStringAsFixed(1)}°C · Precipitació: ${w.precipitation}",
-                subtitle: "Vent: ${w.wind.toStringAsFixed(1)} m/s",
-                trailing: const Icon(Icons.refresh),
-                onRefresh: _refreshWeather,
-              );
-            },
-          ),
-        ),
-
-        Positioned(
-          top: MediaQuery.of(context).padding.top + 90,
-          left: 16,
-          child: Text(
-            widget.gardenName,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  blurRadius: 4,
-                  color: Colors.black54,
-                  offset: Offset(1, 1),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '$monedes',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF5D4037),
+                  ),
                 ),
               ],
             ),
           ),
         ),
+
+        if (_weatherFuture != null)
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 12,
+            left: 12,
+            right: 12,
+            child: FutureBuilder<WeatherInfo>(
+              future: _weatherFuture,
+              builder: (context, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return WeatherCard(
+                    nomEstacio: "",
+                    title: "Carregant meteo...",
+                    subtitle: "Espera un moment",
+                    trailing: const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    onRefresh: _refreshWeather,
+                  );
+                }
+
+                if (snap.hasError) {
+                  return WeatherCard(
+                    nomEstacio: "",
+                    title: "No s'ha pogut carregar la meteo",
+                    subtitle: " ",
+                    trailing: const Icon(Icons.warning_amber_rounded),
+                    onRefresh: _refreshWeather,
+                  );
+                }
+
+                final w = snap.data!;
+                return WeatherCard(
+                  nomEstacio: w.stationName,
+                  title:
+                      "Temperatura: ${w.temp.toStringAsFixed(1)}°C · Precipitació: ${w.precipitation}",
+                  subtitle: "Vent: ${w.wind.toStringAsFixed(1)} m/s",
+                  trailing: const Icon(Icons.refresh),
+                  onRefresh: _refreshWeather,
+                );
+              },
+            ),
+          ),
 
         Positioned(
           left: 0,
@@ -299,9 +363,11 @@ class _GardenPageState extends State<GardenPage> {
           top: MediaQuery.of(context).size.height * 0.14,
           child: GestureDetector(
             onTap: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const InventoryPage()));
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => InventoryPage(username: username),
+                ),
+              );
             },
             child: Image.asset('assets/images/inventory_imagen.png', width: 80),
           ),

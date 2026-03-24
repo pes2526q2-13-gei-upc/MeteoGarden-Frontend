@@ -12,6 +12,7 @@ on:
 
 jobs:
   ci:
+    name: Analyze and Test Flutter App
     runs-on: ubuntu-latest
 
     steps:
@@ -32,5 +33,5 @@ jobs:
       - name: Static analysis
         run: flutter analyze
 
-      #- name: Run tests
-      #  run: flutter test
+      # - name: Run tests
+      #   run: flutter test
