@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import 'dart:convert';
+import '../models/url.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() async {
     final url = Uri.parse(
-      "http://127.0.0.1:8000/api/login/",
+      '${ApiConfig.baseUrl}/api/login/',
     ); // url del endpoint de login al backend
 
     final response = await http.post(
@@ -210,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _fetchAndSaveProfile(String token) async {
-    final url = Uri.parse("http://127.0.0.1:8000/api/get_profile/");
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
 
     final response = await http.get(
       url,

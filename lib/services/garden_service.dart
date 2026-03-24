@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/garden.dart';
 import '../models/seed_option.dart';
+import '../models/url.dart';
 
 class ProductItem {
   final String productName;
@@ -53,16 +54,16 @@ class PlantingResult {
 }
 
 class GardenService {
-  final String baseUrl;
-
-  GardenService({required this.baseUrl});
+  GardenService();
 
   Future<List<GardenPot>> fetchGardenPlants({
     required String username,
     required String gardenName,
   }) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/api/users/$username/gardens/$gardenName/plants/'),
+      Uri.parse(
+        '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/plants/',
+      ),
     );
 
     if (response.statusCode == 200) {
@@ -78,7 +79,7 @@ class GardenService {
     required int potNumber,
   }) async {
     final url = Uri.parse(
-      '$baseUrl/api/users/$username/gardens/$gardenName/pots/$potNumber/water/',
+      '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/water/',
     );
 
     final response = await http.patch(url);
@@ -95,7 +96,7 @@ class GardenService {
 
   Future<List<SeedOption>> fetchSeeds(String username) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/api/users/$username/seeds/'),
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/seeds/'),
     );
 
     if (response.statusCode == 200) {
@@ -108,7 +109,7 @@ class GardenService {
 
   Future<List<ProductItem>> fetchProducts(String username) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/api/users/$username/products/'),
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/products/'),
     );
 
     if (response.statusCode == 200) {
@@ -126,7 +127,7 @@ class GardenService {
     required String scientificName,
   }) async {
     final url = Uri.parse(
-      '$baseUrl/api/users/$username/gardens/$gardenName/pots/$potNumber/planting/',
+      '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/planting/',
     );
 
     final response = await http.post(
@@ -153,7 +154,7 @@ class GardenService {
     required String scientificName,
   }) async {
     final url = Uri.parse(
-      '$baseUrl/api/users/$username/gardens/$gardenName/pots/$potNumber/collect/',
+      '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/collect/',
     );
 
     final response = await http.post(
