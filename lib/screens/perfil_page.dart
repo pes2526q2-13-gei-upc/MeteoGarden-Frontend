@@ -343,7 +343,7 @@ class InfoCard extends StatelessWidget {
             label: "Ciutat",
             value: city.isEmpty ? "—" : city,
           ),
-          const Divider(), 
+          const Divider(),
           _InfoTile(
             icon: Icons.language,
             label: "Idioma",

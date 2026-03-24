@@ -38,10 +38,11 @@ class PerfilEditPage extends StatefulWidget {
 class _PerfilEditPageState extends State<PerfilEditPage> {
   late TextEditingController usernameController;
   final TextEditingController ciutatSearchController = TextEditingController();
-  
+
   List<City> cities = [];
   City? selectedCity;
-  bool isLoading = true; // Per mostrar l'indicador de càrrega mentre fem la crida
+  bool isLoading =
+      true; // Per mostrar l'indicador de càrrega mentre fem la crida
   String? language; // Per guardar l'idioma seleccionat
 
   @override
@@ -52,9 +53,9 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     if (validLanguages.contains(widget.profile.language)) {
       language = widget.profile.language;
     } else {
-      // Si és un string buit o un format diferent, el deixem a null 
+      // Si és un string buit o un format diferent, el deixem a null
       // perquè el Dropdown no falli.
-      language = null; 
+      language = null;
     }
     fetchCities();
   }
@@ -78,7 +79,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
 
         setState(() {
           cities = fetchedCities;
-          
+
           selectedCity = null; // Per defecte ho deixem buit
           for (var c in cities) {
             if (c.name == widget.profile.city) {
@@ -87,7 +88,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
               break; // Hem trobat la ciutat, parem de buscar
             }
           }
-          
+
           isLoading = false;
         });
       } else {
@@ -101,14 +102,15 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
   }
 
   void _actualitzar() async {
- 
-    
     final url = Uri.parse("${ApiConfig.baseUrl}/api/edit_profile/");
 
     final response = await http.post(
       url,
-      headers: {"Content-Type": "application/json",
-      "Authorization": "Token ${Provider.of<UserModel>(context, listen: false).token}"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization":
+            "Token ${Provider.of<UserModel>(context, listen: false).token}",
+      },
       body: jsonEncode({
         'username': usernameController.text,
         'city': selectedCity?.name,
@@ -127,16 +129,18 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
       ).showSnackBar(const SnackBar(content: Text('Perfil actualitzat')));
 
       Provider.of<UserModel>(context, listen: false).updateProfile(
-        newUsername: usernameController.text, newCity: selectedCity?.name,newLanguage: language);
+        newUsername: usernameController.text,
+        newCity: selectedCity?.name,
+        newLanguage: language,
+      );
 
       Navigator.pop(context);
-
     } else {
       debugPrint("Error: ${response.body}");
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Error actualitzant el perfil')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error actualitzant el perfil')),
+      );
     }
   }
 
@@ -146,15 +150,15 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     final defaultDecoration = InputDecoration(
       filled: true,
       fillColor: Colors.green.withValues(alpha: 0.04),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
     );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Modificar perfil')),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator()) // Mostrem un carregant
+          ? const Center(
+              child: CircularProgressIndicator(),
+            ) // Mostrem un carregant
           : Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -166,7 +170,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                     decoration: defaultDecoration.copyWith(labelText: 'Usuari'),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // CAMP 2: CIUTAT
                   DropdownMenu<City>(
                     initialSelection: selectedCity,
@@ -175,7 +179,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                     enableFilter: true,
                     expandedInsets: EdgeInsets.zero,
                     label: const Text('Ciutat'),
-                    // El DropdownMenu fa servir un Theme en comptes d'InputDecoration, 
+                    // El DropdownMenu fa servir un Theme en comptes d'InputDecoration,
                     // però hi posem els mateixos valors
                     inputDecorationTheme: InputDecorationTheme(
                       filled: true,
@@ -184,7 +188,9 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    dropdownMenuEntries: cities.map<DropdownMenuEntry<City>>((City city) {
+                    dropdownMenuEntries: cities.map<DropdownMenuEntry<City>>((
+                      City city,
+                    ) {
                       return DropdownMenuEntry<City>(
                         value: city,
                         label: city.name,
@@ -198,7 +204,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // CAMP 3: IDIOMA
                   DropdownButtonFormField<String>(
                     initialValue: language,
@@ -206,7 +212,8 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                     decoration: defaultDecoration.copyWith(labelText: 'Idioma'),
                     items: ['Català', 'Castellano', 'English']
                         .map(
-                          (lang) => DropdownMenuItem(value: lang, child: Text(lang)),
+                          (lang) =>
+                              DropdownMenuItem(value: lang, child: Text(lang)),
                         )
                         .toList(),
                     onChanged: (value) {
