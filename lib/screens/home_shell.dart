@@ -29,7 +29,7 @@ class _HomeShellState extends State<HomeShell> {
     final List<Widget> pages = [
       GardenPage(username: username, gardenName: gardenName),
       FriendsPage(),
-      PhotoPage(),
+      PlantCameraScreen(),
       MissionsPage(),
       PerfilPage(),
       InventoryPage(baseUrl: "http://10.0.2.2:8000", username: username),
