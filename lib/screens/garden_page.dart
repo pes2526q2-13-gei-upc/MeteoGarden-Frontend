@@ -39,7 +39,7 @@ class _GardenPageState extends State<GardenPage> {
   void initState() {
     super.initState();
 
-    _gardenService = GardenService(baseUrl: "http://10.0.2.2:8000");
+    _gardenService = GardenService();
 
     _potsFuture = _gardenService.fetchGardenPlants(
       username: widget.username,
@@ -365,10 +365,7 @@ class _GardenPageState extends State<GardenPage> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => InventoryPage(
-                    baseUrl: "http://10.0.2.2:8000",
-                    username: username,
-                  ),
+                  builder: (_) => InventoryPage(username: username),
                 ),
               );
             },
