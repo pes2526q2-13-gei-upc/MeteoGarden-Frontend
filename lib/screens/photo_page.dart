@@ -23,7 +23,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
 
     // Normalment la càmera posterior serà la que vols
     final backCamera = cameras.firstWhere(
-          (camera) => camera.lensDirection == CameraLensDirection.back,
+      (camera) => camera.lensDirection == CameraLensDirection.back,
       orElse: () => cameras.first,
     );
 
@@ -69,127 +69,133 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       body: controller == null || _initializeControllerFuture == null
           ? const Center(child: CircularProgressIndicator())
           : FutureBuilder(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
+              future: _initializeControllerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              CameraPreview(controller),
-
-              // Capa fosca lleugera per llegir millor el text
-              Container(
-                color: Colors.black.withValues(alpha: 0.15),
-              ),
-
-              SafeArea(
-                child: Column(
+                return Stack(
+                  fit: StackFit.expand,
                   children: [
-                    const SizedBox(height: 8),
+                    CameraPreview(controller),
 
-                    // Header
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
+                    // Capa fosca lleugera per llegir millor el text
+                    Container(color: Colors.black.withValues(alpha: 0.15)),
+
+                    SafeArea(
+                      child: Column(
                         children: [
-                          const Icon(Icons.arrow_back, color: Colors.white),
-                          const Spacer(),
-                          Text(
-                            'MeteoGarden',
-                            style: TextStyle(
-                              color: Colors.green.shade400,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Spacer(),
-                          const SizedBox(width: 24),
-                        ],
-                      ),
-                    ),
+                          const SizedBox(height: 8),
 
-                    const SizedBox(height: 12),
-
-                    const Text(
-                      'Fotografia la planta',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    // Marc central
-                    Container(
-                      width: 260,
-                      height: 260,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 3),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    const Text(
-                      'Centra la planta dins el marc',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    // Controls inferiors
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.photo, color: Colors.white, size: 30),
-                          ),
-                          GestureDetector(
-                            onTap: _takePicture,
-                            child: Container(
-                              width: 78,
-                              height: 78,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 4),
-                              ),
-                              child: Center(
-                                child: Container(
-                                  width: 58,
-                                  height: 58,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white30,
+                          // Header
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.arrow_back,
+                                  color: Colors.white,
+                                ),
+                                const Spacer(),
+                                Text(
+                                  'MeteoGarden',
+                                  style: TextStyle(
+                                    color: Colors.green.shade400,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ),
+                                const Spacer(),
+                                const SizedBox(width: 24),
+                              ],
                             ),
                           ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.cameraswitch, color: Colors.white, size: 30),
+
+                          const SizedBox(height: 12),
+
+                          const Text(
+                            'Fotografia la planta',
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+
+                          const Spacer(),
+
+                          // Marc central
+                          Container(
+                            width: 260,
+                            height: 260,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white, width: 3),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          const Text(
+                            'Centra la planta dins el marc',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+
+                          const Spacer(),
+
+                          // Controls inferiors
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.photo,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: _takePicture,
+                                  child: Container(
+                                    width: 78,
+                                    height: 78,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 4,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Container(
+                                        width: 58,
+                                        height: 58,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white30,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.cameraswitch,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ],
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                );
+              },
+            ),
     );
   }
 }
