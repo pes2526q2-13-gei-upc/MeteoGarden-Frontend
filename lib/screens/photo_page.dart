@@ -2,7 +2,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../service/plant_service.dart';
-import '../models/dades_usr.dart'
+import '../models/dades_usr.dart';
+import 'plant_result_page.dart';
 
 class PlantCameraScreen extends StatefulWidget {
   const PlantCameraScreen({super.key});
@@ -51,14 +52,15 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
           username: user.username,
           imagePath: image.path,
       );
-
       debugPrint("Resultat: $result");
 
-      await PhotoService.uploadImage(image.path);
-
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Planta: ${result["plant"]["commonName"]}')),
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PlantResultPage(result: result),
+        ),
       );
     } catch (e) {
       debugPrint('Error: $e');

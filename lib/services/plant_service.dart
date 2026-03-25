@@ -1,12 +1,11 @@
-*+import 'dart:convert';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../models/garden.dart';
-import '../models/seed_option.dart';
 import '../models/url.dart';
+import '../models/plant_identification.dart';
 
 class PlantService {
-  static Future<Map<String, dynamic>> identifyPlant({
+  static Future<PlantIdentification> identifyPlant({
     required String username,
     required String imagePath,
     String organ = 'leaf',
@@ -21,12 +20,12 @@ class PlantService {
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
 
-    final data = jsonDecode(response.body) as Map<String, dynamic>
+    final Map<String, dynamic> data = jsonDecode(response.body);
 
-    if (response.statusCode != 2021) {
-      throw Exception(data['detail'] ?? data['error'] ?? 'Error identificant planta.');
+    if (response.statusCode != 201) {
+      throw Exception('Error ${response.statusCode}: ${response.body}');
     }
 
-    return data;
+    return PlantIdentification.fromJson(data);
   }
 }
