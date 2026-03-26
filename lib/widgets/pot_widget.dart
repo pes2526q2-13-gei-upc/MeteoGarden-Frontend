@@ -23,12 +23,52 @@ class PotWidget extends StatelessWidget {
               top: 6,
               child: Column(
                 children: [
-                  const Icon(
-                    //AQUI POSEM LA FOTO DE
-                    Icons.local_florist,
-                    size: 30,
-                    color: Colors.green,
-                  ),
+                  if (pot.plant!.imageUrl != null && pot.plant!.imageUrl!.isNotEmpty)
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.green, width: 2),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(18),
+                        child: Image.network(
+                          pot.plant!.imageUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            // Si falla carregar, mostra icon per defecte
+                            return const Icon(
+                              Icons.local_florist,
+                              size: 30,
+                              color: Colors.red,
+                            );
+                          },
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                  else
+                    // Si no hi ha imageUrl, mostra icon de planta
+                    const Icon(
+                      Icons.local_florist,
+                      size: 30,
+                      color: Colors.yellow,
+                    ),
                   Text(
                     pot.plant!.commonName,
                     style: const TextStyle(

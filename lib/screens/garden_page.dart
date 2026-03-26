@@ -295,7 +295,7 @@ class _GardenPageState extends State<GardenPage> {
           right: 0,
           bottom: 0,
           child: SizedBox(
-            height: h * 0.50,
+            height: h * 0.45,
             child: FutureBuilder<List<GardenPot>>(
               future: _potsFuture,
               builder: (context, snap) {

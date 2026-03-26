@@ -68,6 +68,14 @@ class GardenService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
+
+      //DEBUG: Imprimeix el JSON sencer per  irar url
+      print("\n" + "="*60);
+      print("RESPONSE FROM BACKEND (garden_plants):");
+      print("="*60);
+      print(jsonEncode(data));
+      print("="*60 + "\n");
+
       return data.map((e) => GardenPot.fromJson(e)).toList();
     }
     throw Exception('Error carregant els tests: ${response.statusCode}');
