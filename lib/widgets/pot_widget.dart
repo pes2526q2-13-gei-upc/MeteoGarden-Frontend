@@ -23,7 +23,8 @@ class PotWidget extends StatelessWidget {
               top: 6,
               child: Column(
                 children: [
-                  if (pot.plant!.imageUrl != null && pot.plant!.imageUrl!.isNotEmpty)
+                  if (pot.plant!.imageUrl != null &&
+                      pot.plant!.imageUrl!.isNotEmpty)
                     Container(
                       width: 40,
                       height: 40,
@@ -51,9 +52,10 @@ class PotWidget extends StatelessWidget {
                                 width: 20,
                                 height: 20,
                                 child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes != null
+                                  value:
+                                      loadingProgress.expectedTotalBytes != null
                                       ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
+                                            loadingProgress.expectedTotalBytes!
                                       : null,
                                 ),
                               ),

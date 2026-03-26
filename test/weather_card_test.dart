@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:meteo_garden/widgets/weather_card.dart';
 
 void main() {
-
   //test per comprovar que es mostra la informació correcte al widget
   testWidgets('WeatherCard mostra la informació correctament', (
     WidgetTester tester,
@@ -29,7 +28,7 @@ void main() {
     expect(find.byIcon(Icons.wb_sunny), findsOneWidget);
   });
 
-//test per comprovar que es mostra la icona de pluja si  hi ha precipitació
+  //test per comprovar que es mostra la icona de pluja si  hi ha precipitació
   testWidgets('Mostra icona de pluja si hi ha precipitació', (
     WidgetTester tester,
   ) async {
@@ -50,10 +49,8 @@ void main() {
     expect(find.byIcon(Icons.grain), findsOneWidget);
   });
 
-//test per comprovar que es mostra la icona de vent si es registren valors de vent > 8
-  testWidgets('Mostra icona de vent si vent >= 8', (
-    WidgetTester tester,
-  ) async {
+  //test per comprovar que es mostra la icona de vent si es registren valors de vent > 8
+  testWidgets('Mostra icona de vent si vent >= 8', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(

@@ -20,10 +20,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PotInfoSheet(
-              pot: pot,
-              onWater: () async {},
-            ),
+            body: PotInfoSheet(pot: pot, onWater: () async {}),
           ),
         ),
       );
@@ -53,10 +50,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PotInfoSheet(
-              pot: pot,
-              onWater: () async {},
-            ),
+            body: PotInfoSheet(pot: pot, onWater: () async {}),
           ),
         ),
       );
@@ -82,10 +76,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PotInfoSheet(
-              pot: pot,
-              onWater: () async {},
-            ),
+            body: PotInfoSheet(pot: pot, onWater: () async {}),
           ),
         ),
       );
@@ -169,10 +160,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: PotInfoSheet(
-              pot: pot,
-              onWater: () async {},
-            ),
+            body: PotInfoSheet(pot: pot, onWater: () async {}),
           ),
         ),
       );

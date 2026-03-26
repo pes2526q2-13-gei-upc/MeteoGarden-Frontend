@@ -48,52 +48,52 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   }
 
   void _submit() async {
-  final url = Uri.parse("${ApiConfig.baseUrl}/api/register/");
+    final url = Uri.parse("${ApiConfig.baseUrl}/api/register/");
 
-  final response = await http.post(
-    url,
-    headers: {"Content-Type": "application/json"},
-    body: jsonEncode({
-      'username': usernameController.text,
-      'password': passwordController.text,
-      'email': emailController.text,
-      'city': selectedCity?.name,
-      'language': language,
-      'stationCode': selectedCity?.code,
-      'gardenName': nomjardiController.text,
-    }),
-  );
-
-  if (!mounted) return;
-
-  if (response.statusCode == 200) {
-    debugPrint("Cuenta creada");
-
-    final data = jsonDecode(response.body);
-    final token = data['token'];
-
-    Provider.of<UserModel>(context, listen: false).setToken(token);
-
-    await _fetchAndSaveProfile(token);
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'username': usernameController.text,
+        'password': passwordController.text,
+        'email': emailController.text,
+        'city': selectedCity?.name,
+        'language': language,
+        'stationCode': selectedCity?.code,
+        'gardenName': nomjardiController.text,
+      }),
+    );
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Compte creat')));
+    if (response.statusCode == 200) {
+      debugPrint("Cuenta creada");
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomeShell()),
-    );
-  } else {
-    debugPrint("Error: ${response.body}");
+      final data = jsonDecode(response.body);
+      final token = data['token'];
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Error creant el compte')));
+      Provider.of<UserModel>(context, listen: false).setToken(token);
+
+      await _fetchAndSaveProfile(token);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Compte creat')));
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeShell()),
+      );
+    } else {
+      debugPrint("Error: ${response.body}");
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Error creant el compte')));
+    }
   }
-}
 
   @override
   void initState() {
@@ -116,7 +116,8 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       });
     }
   }
-  //aixo es borrara despres 
+
+  //aixo es borrara despres
   Future<void> _fetchAndSaveProfile(String token) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
 
