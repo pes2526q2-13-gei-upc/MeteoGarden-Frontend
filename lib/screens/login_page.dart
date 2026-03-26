@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/screens/completar_nova_conta.dart';
 import 'package:meteo_garden/screens/home_shell.dart';
 import 'package:meteo_garden/screens/crea_nova_conta.dart';
 import 'package:http/http.dart' as http;
@@ -154,24 +155,15 @@ class _LoginPageState extends State<LoginPage> {
                                 children: [
                                   ElevatedButton.icon(
                                     onPressed: () {
-                                      // TODO: implementar login amb Google
+                                      // fer el login i enviar el token a back
+                                      // depenent si retorna q la conta ja esta o no anar
+                                      // a completar nova conta o a home
                                     },
                                     icon: const Icon(Icons.g_mobiledata),
                                     label: const Text('Google'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
                                       foregroundColor: Colors.black,
-                                    ),
-                                  ),
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      // TODO: implementar login amb Facebook
-                                    },
-                                    icon: const Icon(Icons.facebook),
-                                    label: const Text('Facebook'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF1877F2),
-                                      foregroundColor: Colors.white,
                                     ),
                                   ),
                                 ],
