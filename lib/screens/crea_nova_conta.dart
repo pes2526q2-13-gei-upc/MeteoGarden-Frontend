@@ -49,8 +49,6 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
   void _submit() async {
     final url = Uri.parse("${ApiConfig.baseUrl}/api/register/");
-    //en emulador es: 10.0.2.2:8000
-    //en web es: 127.0.0.1:8000
 
     final response = await http.post(
       url,
@@ -59,9 +57,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
         'username': usernameController.text,
         'password': passwordController.text,
         'email': emailController.text,
-        //'city': cityController.text,
         'city': selectedCity?.name,
-        //'language': languageController.text,
         'language': language,
         'stationCode': selectedCity?.code,
         'gardenName': nomjardiController.text,
@@ -73,14 +69,18 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     if (response.statusCode == 200) {
       debugPrint("Cuenta creada");
 
+      final data = jsonDecode(response.body);
+      final token = data['token'];
+
+      Provider.of<UserModel>(context, listen: false).setToken(token);
+
+      await _fetchAndSaveProfile(token);
+
+      if (!mounted) return;
+
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Compte creat')));
-
-      Provider.of<UserModel>(
-        context,
-        listen: false,
-      ).setToken(jsonDecode(response.body)['token']);
 
       Navigator.pushReplacement(
         context,
@@ -114,6 +114,48 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
             .map((e) => City.fromJson(e))
             .toList();
       });
+    }
+  }
+
+  //aixo es borrara despres
+  Future<void> _fetchAndSaveProfile(String token) async {
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
+
+    final response = await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Token $token",
+      },
+    );
+
+    if (!mounted) return;
+
+    debugPrint("PROFILE STATUS: ${response.statusCode}");
+    debugPrint("PROFILE BODY: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      // gardens és List, extreim només els noms
+      final List<String> gardenNames = (data['gardens'] as List<dynamic>)
+          .map((g) => g['gardenName'] as String)
+          .toList();
+
+      Provider.of<UserModel>(context, listen: false).setProfile(
+        newUsername: data['username'] ?? '',
+        newEmail: data['email'] ?? '',
+        newCity: data['city'] ?? '',
+        newLanguage: data['language'] ?? '',
+        newLastEntry: data['lastEntry'] ?? '',
+        newNumPlantsCollected: data['numPlantsCollected'] ?? 0,
+        newMonedes: data['numCoins'] ?? 0,
+        newGardens: gardenNames,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No s\'ha pogut carregar el perfil')),
+      );
     }
   }
 
