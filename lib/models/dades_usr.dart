@@ -7,7 +7,7 @@ Text('Benvingut, ${user.username}');
 i afegir aquests 2 imports:
 
 import 'package:provider/provider.dart';
-import 'package:meteo_gareden/services/dades_usr.dart';
+import 'package:meteo_garden/models/dades_usr.dart';
 
 Per guardar qualsevol dada nova, s'ha de fer (també son necessaris els imports):
 
