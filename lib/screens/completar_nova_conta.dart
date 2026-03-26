@@ -36,6 +36,7 @@ class CompleteGoogleProfilePage extends StatefulWidget {
 class _CompleteGoogleProfilePageState
     extends State<CompleteGoogleProfilePage> {
   final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController gardenController = TextEditingController();
   final TextEditingController citySearchController = TextEditingController();
 
@@ -80,6 +81,7 @@ class _CompleteGoogleProfilePageState
       },
       body: jsonEncode({
         'username': usernameController.text,
+        'password': passwordController.text,
         'city': selectedCity?.name,
         'language': language,
         'stationCode': selectedCity?.code,
@@ -122,6 +124,13 @@ class _CompleteGoogleProfilePageState
                     controller: usernameController,
                     decoration:
                         decoration.copyWith(labelText: 'Nom d\'usuari'),
+                  ),
+                  const SizedBox(height: 16),
+
+                  TextField(
+                    controller: passwordController,
+                    decoration:
+                        decoration.copyWith(labelText: 'Contrasenya'),
                   ),
                   const SizedBox(height: 16),
 

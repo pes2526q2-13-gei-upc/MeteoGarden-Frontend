@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import 'dart:convert';
 import '../models/url.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -58,6 +59,69 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Error de login')));
+    }
+  }
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  Future<void> loginWithGoogle(BuildContext context) async {
+    try {
+      // 1. Login con Google
+      final GoogleSignInAccount? googleUser =
+          await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // Usuario canceló
+        return;
+      }
+
+      // 2. Obtener tokens
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final idToken = googleAuth.idToken;
+
+      // 3. Enviar a backend
+      final response = await http.post(
+        Uri.parse("${ApiConfig.baseUrl}/api/google-login/"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "id_token": idToken,
+        }),
+      );
+
+      if (!context.mounted) return;
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        // 4. Guardar TU token (no el de Google)
+        Provider.of<UserModel>(context, listen: false)
+            .setToken(data["token"]);
+
+        // 5. Navegación
+        if (data["profile_completed"] == false) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const CompleteGoogleProfilePage(),
+            ),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const HomeShell(),
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Error login Google")),
+        );
+      }
+    } catch (e) {
+      debugPrint("Error Google Sign-In: $e");
     }
   }
 
@@ -155,9 +219,7 @@ class _LoginPageState extends State<LoginPage> {
                                 children: [
                                   ElevatedButton.icon(
                                     onPressed: () {
-                                      // fer el login i enviar el token a back
-                                      // depenent si retorna q la conta ja esta o no anar
-                                      // a completar nova conta o a home
+                                      loginWithGoogle(context);
                                     },
                                     icon: const Icon(Icons.g_mobiledata),
                                     label: const Text('Google'),
