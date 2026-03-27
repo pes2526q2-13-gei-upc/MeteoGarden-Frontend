@@ -10,7 +10,6 @@ class PerfilPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserModel>();
-
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/screens/login_page.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
+import 'package:meteo_garden/models/plantes_desbl.dart';
 
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => UserModel())],
+      providers: [ChangeNotifierProvider(create: (_) => UserModel()),
+                  ChangeNotifierProvider(create: (_) => PlantProvider())],
       child: const MeteoGardenApp(),
     ),
   );
