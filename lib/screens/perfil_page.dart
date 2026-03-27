@@ -27,11 +27,13 @@ class PerfilPage extends StatelessWidget {
                 child: _Header(
                   username: user.username,
                   city: user.city,
+                  language: user.language,
                   onEdit: () async {
                     final profile = PerfilInfo(
                       username: user.username,
                       email: user.email,
                       city: user.city,
+                      language: user.language,
                       coins: user.monedes,
                       plantsDiscovered: user.numPlantsCollected,
                     );
@@ -57,6 +59,7 @@ class PerfilPage extends StatelessWidget {
                       username: user.username,
                       email: user.email,
                       city: user.city,
+                      language: user.language,
                     ),
                     const SizedBox(height: 20),
                   ]),
@@ -73,11 +76,13 @@ class PerfilPage extends StatelessWidget {
 class _Header extends StatelessWidget {
   final String username;
   final String city;
+  final String language;
   final VoidCallback onEdit;
 
   const _Header({
     required this.username,
     required this.city,
+    required this.language,
     required this.onEdit,
   });
 
@@ -287,12 +292,14 @@ class InfoCard extends StatelessWidget {
   final String username;
   final String email;
   final String city;
+  final String language;
 
   const InfoCard({
     super.key,
     required this.username,
     required this.email,
     required this.city,
+    required this.language,
   });
 
   @override
@@ -334,6 +341,12 @@ class InfoCard extends StatelessWidget {
             icon: Icons.location_city,
             label: "Ciutat",
             value: city.isEmpty ? "—" : city,
+          ),
+          const Divider(),
+          _InfoTile(
+            icon: Icons.language,
+            label: "Idioma",
+            value: language.isEmpty ? "—" : language,
           ),
         ],
       ),

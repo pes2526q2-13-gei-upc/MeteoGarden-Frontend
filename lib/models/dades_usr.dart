@@ -71,4 +71,15 @@ class UserModel with ChangeNotifier {
     gardens = [];
     notifyListeners();
   }
+
+  void updateProfile({
+    String? newUsername,
+    String? newCity,
+    String? newLanguage,
+  }) {
+    if (newUsername != null) username = newUsername;
+    if (newCity != null) city = newCity;
+    if (newLanguage != null) language = newLanguage;
+    notifyListeners();
+  }
 }
