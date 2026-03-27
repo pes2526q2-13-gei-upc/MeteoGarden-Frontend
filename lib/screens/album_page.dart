@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/dades_usr.dart'; 
 import 'package:meteo_garden/models/plantes_desbl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../models/url.dart';
 
 class AlbumPage extends StatefulWidget {
   const AlbumPage({super.key});
@@ -25,11 +28,8 @@ class _AlbumPageState extends State<AlbumPage> {
 
   // --- FUNCIÓN QUE SIMULA LA LLAMADA AL BACKEND DE PYTHON ---
   Future<Map<String, dynamic>> _fetchDetallesPlanta(String scientificName) async {
-    // Simulamos un tiempo de carga de 1 segundo
+    // eliminar quan es puguin agafar noms cintifics del backend
     await Future.delayed(const Duration(seconds: 1));
-
-    // TODO: Aquí irá tu http.get() o http.post() al endpoint de Django.
-    // De momento, devolvemos un JSON (Map) mockeado con el formato que indicaste:
     return {
       "scientificName": scientificName,
       "commonName": "Lavanda", // Simulando commonName.capitalize()
@@ -39,6 +39,28 @@ class _AlbumPageState extends State<AlbumPage> {
       "maxTemperature": 30.0,
       "description": "Planta aromática muy popular, conocida por su característico color morado y su uso en perfumería e infusiones.",
     };
+
+/*  descomentar quan es puguin agafar noms cintifics del backend
+    final response = await http.get(
+      Uri.parse('${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName'),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return {
+        "scientificName": data['scientificName'],
+        "commonName": data['commonName'],
+        "family": data['family'],
+        "canFlower": data['canFlower'],
+        "minTemperature": data['minTemperature'],
+        "maxTemperature": data['maxTemperature'],
+        "description": data['description'],
+      };
+    } else {
+      throw Exception('Error carregant la informació de la planta');
+    }
+    */
+    
   }
 
   // --- FUNCIÓN PARA MOSTRAR EL POP-UP CON LOS DETALLES ---

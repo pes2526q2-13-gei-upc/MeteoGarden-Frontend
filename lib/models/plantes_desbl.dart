@@ -62,7 +62,7 @@ class PlantProvider extends ChangeNotifier {
 
   List<Plant> _mockPlants() {
     return [
-      Plant(name: "Monstera", image: "https://..."),
+      Plant(name: "Coronilla scorpioides", image: "https://..."),
       Plant(name: "Cactus", image: "https://..."),
       Plant(name: "Ficus", image: "https://..."),
       Plant(name: "Monstera", image: "https://..."),
