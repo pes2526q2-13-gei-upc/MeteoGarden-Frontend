@@ -74,9 +74,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
               ),
             ),
             Positioned.fill(
-              child: Container(
-                color: Colors.black.withValues(alpha: 0.65),
-              ),
+              child: Container(color: Colors.black.withValues(alpha: 0.65)),
             ),
             SafeArea(
               top: false,
@@ -107,9 +105,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
           decoration: BoxDecoration(
             color: Colors.green.withValues(alpha: 0.18),
             shape: BoxShape.circle,
-            border: Border.all(
-              color: Colors.green.withValues(alpha: 0.5),
-            ),
+            border: Border.all(color: Colors.green.withValues(alpha: 0.5)),
           ),
           child: const Icon(
             Icons.check_circle_rounded,
@@ -168,9 +164,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
               decoration: BoxDecoration(
                 color: Colors.green.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.green.withValues(alpha: 0.4),
-                ),
+                border: Border.all(color: Colors.green.withValues(alpha: 0.4)),
               ),
               child: const Icon(
                 Icons.eco_rounded,
@@ -194,10 +188,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                   const SizedBox(height: 4),
                   Text(
                     "Selecciona una llavor pel test ${widget.pot.potNumber}",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.white70,
-                    ),
+                    style: const TextStyle(fontSize: 14, color: Colors.white70),
                   ),
                 ],
               ),
@@ -332,9 +323,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
               decoration: BoxDecoration(
                 color: Colors.red.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: Colors.red.withValues(alpha: 0.35),
-                ),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.35)),
               ),
               child: Row(
                 children: [
@@ -347,10 +336,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                   Expanded(
                     child: Text(
                       _errorMessage!,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.white,
-                      ),
+                      style: const TextStyle(fontSize: 13, color: Colors.white),
                     ),
                   ),
                 ],
@@ -423,11 +409,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
       ),
       child: const Column(
         children: [
-          Icon(
-            Icons.inventory_2_outlined,
-            size: 42,
-            color: Colors.white70,
-          ),
+          Icon(Icons.inventory_2_outlined, size: 42, color: Colors.white70),
           SizedBox(height: 10),
           Text(
             "No tens llavors disponibles",

@@ -49,19 +49,13 @@ class WeatherCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.black.withValues(alpha: 0.28), // 👈 FONS ORIGINAL
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.14),
-            ),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               //  ICONA
-              Icon(
-                _weatherIcon(),
-                color: Colors.white,
-                size: 26,
-              ),
+              Icon(_weatherIcon(), color: Colors.white, size: 26),
 
               const SizedBox(width: 10),
 
@@ -111,10 +105,7 @@ class WeatherCard extends StatelessWidget {
               // 🔄 REFRESH CENTRAT
               Center(
                 child: IconTheme(
-                  data: const IconThemeData(
-                    color: Colors.white,
-                    size: 24,
-                  ),
+                  data: const IconThemeData(color: Colors.white, size: 24),
                   child: trailing,
                 ),
               ),

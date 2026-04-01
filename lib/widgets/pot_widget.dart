@@ -5,11 +5,7 @@ class PotWidget extends StatelessWidget {
   final GardenPot pot;
   final VoidCallback onTap;
 
-  const PotWidget({
-    super.key,
-    required this.pot,
-    required this.onTap,
-  });
+  const PotWidget({super.key, required this.pot, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -75,26 +71,26 @@ class PotWidget extends StatelessWidget {
                               },
                               loadingBuilder:
                                   (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Center(
-                                  child: SizedBox(
-                                    width: iconSize * 0.7,
-                                    height: iconSize * 0.7,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      value:
-                                          loadingProgress
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: SizedBox(
+                                        width: iconSize * 0.7,
+                                        height: iconSize * 0.7,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          value:
+                                              loadingProgress
                                                       .expectedTotalBytes !=
                                                   null
                                               ? loadingProgress
-                                                    .cumulativeBytesLoaded /
-                                                loadingProgress
-                                                    .expectedTotalBytes!
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
                                               : null,
-                                    ),
-                                  ),
-                                );
-                              },
+                                        ),
+                                      ),
+                                    );
+                                  },
                             ),
                           ),
                         )

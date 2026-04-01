@@ -135,10 +135,7 @@ class _GameHeader extends StatelessWidget {
           child: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFF3E6B48),
-                  Color(0xFF355F3F),
-                ],
+                colors: [Color(0xFF3E6B48), Color(0xFF355F3F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -369,10 +366,7 @@ class _MiniHeaderStat extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
-                  ),
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -396,10 +390,7 @@ class _SectionTitle extends StatelessWidget {
   final IconData icon;
   final String title;
 
-  const _SectionTitle({
-    required this.icon,
-    required this.title,
-  });
+  const _SectionTitle({required this.icon, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -424,10 +415,7 @@ class _StatsGrid extends StatelessWidget {
   final int coins;
   final int plantsDiscovered;
 
-  const _StatsGrid({
-    required this.coins,
-    required this.plantsDiscovered,
-  });
+  const _StatsGrid({required this.coins, required this.plantsDiscovered});
 
   @override
   Widget build(BuildContext context) {

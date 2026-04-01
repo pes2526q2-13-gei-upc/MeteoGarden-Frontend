@@ -143,39 +143,39 @@ class _GardenPageState extends State<GardenPage> {
     );
   }
 
-Future<void> _showSeedSelection(GardenPot pot) async {
-  try {
-    final seeds = await _gardenService.fetchSeeds(widget.username);
+  Future<void> _showSeedSelection(GardenPot pot) async {
+    try {
+      final seeds = await _gardenService.fetchSeeds(widget.username);
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (_) {
-        return SeedSelectionSheet(
-          pot: pot,
-          seeds: seeds,
-          username: widget.username,
-          gardenName: widget.gardenName,
-          gardenService: _gardenService,
-          onPlantingSuccess: _refreshGarden,
-        );
-      },
-    );
-  } catch (e) {
-    if (!mounted) return;
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (_) {
+          return SeedSelectionSheet(
+            pot: pot,
+            seeds: seeds,
+            username: widget.username,
+            gardenName: widget.gardenName,
+            gardenService: _gardenService,
+            onPlantingSuccess: _refreshGarden,
+          );
+        },
+      );
+    } catch (e) {
+      if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Error carregant llavors: ${e.toString().replaceFirst('Exception: ', '')}",
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Error carregant llavors: ${e.toString().replaceFirst('Exception: ', '')}",
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
-}
 
   double _horizontalPadding(double width) {
     if (width < 360) return 8;
@@ -321,9 +321,9 @@ Future<void> _showSeedSelection(GardenPot pot) async {
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const AlbumPage()),
-                  );
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (_) => const AlbumPage()));
                 },
                 child: SizedBox(
                   width: sideBoxSize,
@@ -402,13 +402,12 @@ Future<void> _showSeedSelection(GardenPot pot) async {
 
             final itemWidth =
                 (usableWidth - (spacing * (crossAxisCount - 1))) /
-                    crossAxisCount;
+                crossAxisCount;
 
             final itemHeight =
                 (usableHeight - (spacing * (rowCount - 1))) / rowCount;
 
-            final aspectRatio =
-                itemHeight > 0 ? itemWidth / itemHeight : 1.0;
+            final aspectRatio = itemHeight > 0 ? itemWidth / itemHeight : 1.0;
 
             return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -422,10 +421,7 @@ Future<void> _showSeedSelection(GardenPot pot) async {
               ),
               itemBuilder: (context, index) {
                 final pot = pots[index];
-                return PotWidget(
-                  pot: pot,
-                  onTap: () => onTapPot(pot),
-                );
+                return PotWidget(pot: pot, onTap: () => onTapPot(pot));
               },
             );
           },
@@ -485,10 +481,7 @@ Future<void> _showSeedSelection(GardenPot pot) async {
                         ),
                       ),
                       SizedBox(height: height * 0.02),
-                      Expanded(
-                        flex: 50,
-                        child: _buildPotsGrid(width),
-                      ),
+                      Expanded(flex: 50, child: _buildPotsGrid(width)),
                     ],
                   ),
                 ),
