@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/dades_usr.dart'; 
 import 'package:meteo_garden/models/plantes_desbl.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../models/url.dart';
+//import 'package:http/http.dart' as http;
+//import 'dart:convert';
+//import '../models/url.dart';
 
 class AlbumPage extends StatefulWidget {
   const AlbumPage({super.key});

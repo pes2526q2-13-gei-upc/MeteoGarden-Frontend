@@ -134,7 +134,7 @@ class _GameHeader extends StatelessWidget {
           borderRadius: BorderRadius.circular(28),
           child: Container(
             decoration: const BoxDecoration(
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 colors: [
                   Color(0xFF3E6B48),
                   Color(0xFF355F3F),

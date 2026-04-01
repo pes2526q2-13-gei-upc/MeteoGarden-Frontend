@@ -7,11 +7,11 @@ import '../../services/garden_service.dart';
 import '../../services/weather_service.dart';
 import '../../widgets/pot_widget.dart';
 import '../../widgets/weather_card.dart';
-import 'botiga_page.dart';
+//import 'botiga_page.dart';
 import 'inventory_page.dart';
 import '../../widgets/pot_info_sheet.dart';
 import '../../widgets/seed_selection_sheet.dart';
-import '../../models/seed_option.dart';
+//import '../../models/seed_option.dart';
 
 import 'package:provider/provider.dart';
 import '../models/dades_usr.dart';
