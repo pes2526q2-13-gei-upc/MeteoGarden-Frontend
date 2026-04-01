@@ -71,15 +71,23 @@ class _GardenPageState extends State<GardenPage> {
     });
   }
 
-  void onTapPot(GardenPot pot) {
+  Future<void> onTapPot(GardenPot pot) async {
     if (!pot.occupied || pot.plant == null) {
       _showSeedSelection(pot);
       return;
     }
 
+    await precacheImage(
+      const AssetImage('assets/images/foto_terra2.png'),
+      context,
+    );
+
+    if (!mounted) return;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
+      isScrollControlled: true,
       builder: (_) => PotInfoSheet(
         pot: pot,
         onWater: () async {
@@ -135,85 +143,51 @@ class _GardenPageState extends State<GardenPage> {
     );
   }
 
-  void _showSeedSelection(GardenPot pot) {
+Future<void> _showSeedSelection(GardenPot pot) async {
+  try {
+    final seeds = await _gardenService.fetchSeeds(widget.username);
+
+    if (!mounted) return;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) {
-        return FutureBuilder<List<SeedOption>>(
-          future: _gardenService.fetchSeeds(widget.username),
-          builder: (context, snap) {
-            if (snap.connectionState == ConnectionState.waiting) {
-              return Container(
-                padding: const EdgeInsets.fromLTRB(20, 30, 20, 40),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                ),
-                child: const Center(child: CircularProgressIndicator()),
-              );
-            }
-
-            if (snap.hasError) {
-              return Container(
-                padding: const EdgeInsets.fromLTRB(20, 30, 20, 40),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                ),
-                child: Text(
-                  "Error carregant llavors:\n${snap.error}",
-                  textAlign: TextAlign.center,
-                ),
-              );
-            }
-
-            final seeds = snap.data ?? [];
-
-            return SeedSelectionSheet(
-              pot: pot,
-              seeds: seeds,
-              username: widget.username,
-              gardenName: widget.gardenName,
-              gardenService: _gardenService,
-              onPlantingSuccess: _refreshGarden,
-            );
-          },
+        return SeedSelectionSheet(
+          pot: pot,
+          seeds: seeds,
+          username: widget.username,
+          gardenName: widget.gardenName,
+          gardenService: _gardenService,
+          onPlantingSuccess: _refreshGarden,
         );
       },
     );
-  }
+  } catch (e) {
+    if (!mounted) return;
 
-  int _gridColumns(double width) {
-    if (width < 420) return 4;
-    if (width < 900) return 4;
-    return 5;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Error carregant llavors: ${e.toString().replaceFirst('Exception: ', '')}",
+        ),
+      ),
+    );
   }
+}
 
   double _horizontalPadding(double width) {
     if (width < 360) return 8;
-    if (width < 700) return 10;
+    if (width < 700) return 12;
     return 16;
   }
 
   double _gridSpacing(double width) {
-    if (width < 360) return 8;
+    if (width < 360) return 6;
     if (width < 700) return 10;
     return 14;
   }
-
- double _sideIconWidth(double width) {
-  if (width < 360) return 64;
-  if (width < 700) return 78;
-  return 90;
-}
-
-double _shopWidth(double width) {
-  if (width < 360) return 130;
-  if (width < 700) return 155;
-  return 175;
-}
 
   Widget _buildWeatherSection() {
     return FutureBuilder<WeatherInfo>(
@@ -257,9 +231,15 @@ double _shopWidth(double width) {
     );
   }
 
-  Widget _buildCoinsChip(int monedes) {
+  Widget _buildCoinsChip(int monedes, double width, double height) {
+    final iconSize = width < 360 ? 18.0 : 22.0;
+    final textSize = width < 360 ? 14.0 : 16.0;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(
+        horizontal: width * 0.03,
+        vertical: height * 0.008,
+      ),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(22),
@@ -276,21 +256,21 @@ double _shopWidth(double width) {
         children: [
           Image.asset(
             'assets/images/coin.png',
-            width: 22,
-            height: 22,
-            errorBuilder: (_, _, _) => const Icon(
+            width: iconSize,
+            height: iconSize,
+            errorBuilder: (_, _, _) => Icon(
               Icons.monetization_on,
               color: Colors.amber,
-              size: 22,
+              size: iconSize,
             ),
           ),
-          const SizedBox(width: 6),
+          SizedBox(width: width * 0.015),
           Text(
             '$monedes',
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: textSize,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF5D4037),
+              color: const Color(0xFF5D4037),
             ),
           ),
         ],
@@ -299,25 +279,27 @@ double _shopWidth(double width) {
   }
 
   Widget _buildActionArea({
-  required double width,
-  required String username,
-}) {
-  final sideBoxSize = width < 360 ? 50.0 : 58.0;
-  final shopWidth = width < 360 ? 165.0 : 200.0;
-  final shopHeight = width < 360 ? 115.0 : 135.0;
+    required double width,
+    required double height,
+    required String username,
+  }) {
+    final sideBoxSize = width < 360 ? width * 0.16 : width * 0.14;
+    final shopWidth = width < 360 ? width * 0.42 : width * 0.38;
 
-  return SizedBox(
-     height: width < 360 ? 115 : 135,
-    child: Padding(
-      padding: const EdgeInsets.only(left: 12),
+    return Padding(
+      padding: EdgeInsets.only(
+        left: width * 0.01,
+        right: width * 0.01,
+        bottom: height * 0.005,
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.max,
             children: [
               GestureDetector(
-              
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   Navigator.of(context).push(
@@ -335,7 +317,7 @@ double _shopWidth(double width) {
                   ),
                 ),
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: height * 0.008),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
@@ -352,178 +334,169 @@ double _shopWidth(double width) {
                   ),
                 ),
               ),
+              const Spacer(),
             ],
           ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Transform.translate(
-                offset: const Offset(16, 0),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(20),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const BotigaPage(),
-                        ),
-                      );
-                    },
-                    child: SizedBox(
-                      width: shopWidth,
-                      height: shopHeight,
-                      child: Image.asset(
-                        'assets/images/botiga.png',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ),
+          const Spacer(),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: SizedBox(
+              width: shopWidth,
+              child: Image.asset(
+                'assets/images/botiga.png',
+                fit: BoxFit.contain,
+                alignment: Alignment.bottomCenter,
               ),
             ),
           ),
         ],
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildPotsGrid(double width) {
-  final padding = _horizontalPadding(width);
-  final spacing = _gridSpacing(width);
+    final padding = _horizontalPadding(width);
+    final spacing = _gridSpacing(width);
 
-  return FutureBuilder<List<GardenPot>>(
-    future: _potsFuture,
-    builder: (context, snap) {
-      if (snap.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      }
+    return FutureBuilder<List<GardenPot>>(
+      future: _potsFuture,
+      builder: (context, snap) {
+        if (snap.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-      if (snap.hasError) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              "Error carregant els tests:\n${snap.error}",
-              style: const TextStyle(color: Colors.white),
-              textAlign: TextAlign.center,
+        if (snap.hasError) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                "Error carregant els tests:\n${snap.error}",
+                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-        );
-      }
-
-      final pots = snap.data ?? [];
-
-      if (pots.isEmpty) {
-        return const Center(
-          child: Text(
-            "No hi ha tests disponibles",
-            style: TextStyle(color: Colors.white),
-          ),
-        );
-      }
-
-      const crossAxisCount = 4;
-      final rowCount = (pots.length / crossAxisCount).ceil();
-
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          final totalWidth = constraints.maxWidth;
-          final totalHeight = constraints.maxHeight;
-
-          final usableWidth = totalWidth - (padding * 2);
-          final usableHeight = totalHeight - 8;
-
-          final itemWidth =
-              (usableWidth - (spacing * (crossAxisCount - 1))) / crossAxisCount;
-
-          final itemHeight =
-              (usableHeight - (spacing * (rowCount - 1))) / rowCount;
-
-          final aspectRatio = itemWidth / itemHeight;
-
-          return GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(padding, 4, padding, 4),
-            itemCount: pots.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: spacing,
-              mainAxisSpacing: spacing,
-              childAspectRatio: aspectRatio,
-            ),
-            itemBuilder: (context, index) {
-              final pot = pots[index];
-              return PotWidget(
-                pot: pot,
-                onTap: () => onTapPot(pot),
-              );
-            },
           );
-        },
-      );
-    },
-  );
-}
+        }
 
-  @override
-Widget build(BuildContext context) {
-  final user = Provider.of<UserModel>(context);
-  final username = user.username;
-  final monedes = user.monedes;
+        final pots = snap.data ?? [];
 
-  return Scaffold(
-    body: LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-
-        return Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                'assets/images/imatge_fondo1.png',
-                fit: BoxFit.cover,
-              ),
+        if (pots.isEmpty) {
+          return const Center(
+            child: Text(
+              "No hi ha tests disponibles",
+              style: TextStyle(color: Colors.white),
             ),
-            SafeArea(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      _horizontalPadding(width),
-                      8,
-                      _horizontalPadding(width),
-                      4,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _buildWeatherSection(),
-                        const SizedBox(height: 6),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: _buildCoinsChip(monedes),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  _buildActionArea(
-                   width: width,
-                    username: username,
-                  ),
-                  const SizedBox(height: 25),
-                  Expanded(
-                    child: _buildPotsGrid(width),
-                  ),
-                ],
+          );
+        }
+
+        const crossAxisCount = 4;
+        final rowCount = (pots.length / crossAxisCount).ceil();
+
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final totalWidth = constraints.maxWidth;
+            final totalHeight = constraints.maxHeight;
+
+            final usableWidth = totalWidth - (padding * 2);
+            final usableHeight = totalHeight;
+
+            final itemWidth =
+                (usableWidth - (spacing * (crossAxisCount - 1))) /
+                    crossAxisCount;
+
+            final itemHeight =
+                (usableHeight - (spacing * (rowCount - 1))) / rowCount;
+
+            final aspectRatio =
+                itemHeight > 0 ? itemWidth / itemHeight : 1.0;
+
+            return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(padding, 0, padding, 0),
+              itemCount: pots.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: spacing,
+                mainAxisSpacing: spacing,
+                childAspectRatio: aspectRatio,
               ),
-            ),
-          ],
+              itemBuilder: (context, index) {
+                final pot = pots[index];
+                return PotWidget(
+                  pot: pot,
+                  onTap: () => onTapPot(pot),
+                );
+              },
+            );
+          },
         );
       },
-    ),
-  );
-}
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<UserModel>(context);
+    final username = user.username;
+    final monedes = user.monedes;
+
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
+          final height = constraints.maxHeight;
+
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/imatge_fondo1.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: _horizontalPadding(width),
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        flex: 35,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(height: height * 0.015),
+                            _buildWeatherSection(),
+                            SizedBox(height: height * 0.01),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: _buildCoinsChip(monedes, width, height),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 25,
+                        child: _buildActionArea(
+                          width: width,
+                          height: height,
+                          username: username,
+                        ),
+                      ),
+                      SizedBox(height: height * 0.02),
+                      Expanded(
+                        flex: 50,
+                        child: _buildPotsGrid(width),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 }

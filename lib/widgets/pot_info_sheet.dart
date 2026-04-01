@@ -20,151 +20,146 @@ class PotInfoSheet extends StatelessWidget {
     final waterValue = (pot.waterLevel ?? 0) / 100;
     final healthValue = (pot.healthLevel ?? 0) / 100;
 
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+    return ClipRRect(
+  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+  child: Material(
+    color: const Color(0xFF1F2937),
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 320),
+      child: Stack(
+        children: [
+          Positioned.fill(
             child: Image.asset(
               'assets/images/foto_terra2.png',
               fit: BoxFit.cover,
             ),
           ),
-        ),
-        // Overlay fosc per llegibilitat
-        Positioned.fill(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            child: Container(color: Colors.black.withValues(alpha: 0.65)),
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withValues(alpha: 0.65),
+            ),
           ),
-        ),
-        Container(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-            color: Colors.transparent,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          plant?.commonName ??
-                              plant?.scientificName ??
-                              "Planta",
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(blurRadius: 6, color: Colors.black54),
-                            ],
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            plant?.commonName ??
+                                plant?.scientificName ??
+                                "Planta",
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(blurRadius: 6, color: Colors.black54),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        _PhaseBadge(phase: pot.growthPhase ?? '-'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 22),
-
-              _StatBar(
-                label: "Nivell d'Aigua",
-                value: waterValue,
-                percent: pot.waterLevel?.toStringAsFixed(0) ?? '0',
-                color: const Color(0xFF38bdf8),
-                backgroundColor: Colors.white.withValues(alpha: 0.2),
-              ),
-
-              const SizedBox(height: 14),
-
-              _StatBar(
-                label: "Salut",
-                value: healthValue,
-                percent: pot.healthLevel?.toStringAsFixed(0) ?? '0',
-                color: const Color(0xFF4ade80),
-                backgroundColor: Colors.white.withValues(alpha: 0.2),
-              ),
-
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  const Icon(
-                    Icons.access_time,
-                    size: 14,
-                    color: Colors.white70,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    "Últim reg: ${pot.lastWateredAt ?? '-'}",
-                    style: const TextStyle(color: Colors.white70, fontSize: 12),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 22),
-
-              if ((pot.waterLevel ?? 0) < 100) ...[
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: onWater,
-                    icon: const Icon(Icons.water_drop),
-                    label: const Text("Regar planta"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0ea5e9),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                          const SizedBox(height: 4),
+                          _PhaseBadge(phase: pot.growthPhase ?? '-'),
+                        ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-
-              if (isMature && onCollect != null) ...[
+                const SizedBox(height: 22),
+                _StatBar(
+                  label: "Nivell d'Aigua",
+                  value: waterValue,
+                  percent: pot.waterLevel?.toStringAsFixed(0) ?? '0',
+                  color: const Color(0xFF38bdf8),
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
+                ),
+                const SizedBox(height: 14),
+                _StatBar(
+                  label: "Salut",
+                  value: healthValue,
+                  percent: pot.healthLevel?.toStringAsFixed(0) ?? '0',
+                  color: const Color(0xFF4ade80),
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
+                ),
                 const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: onCollect,
-                    icon: const Icon(Icons.agriculture),
-                    label: const Text("Recollir planta"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF16a34a),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.access_time,
+                      size: 14,
+                      color: Colors.white70,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      "Últim reg: ${pot.lastWateredAt ?? '-'}",
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12,
                       ),
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 22),
+                if ((pot.waterLevel ?? 0) < 100) ...[
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: onWater,
+                      icon: const Icon(Icons.water_drop),
+                      label: const Text("Regar planta"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0ea5e9),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        textStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
+                if (isMature && onCollect != null) ...[
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: onCollect,
+                      icon: const Icon(Icons.agriculture),
+                      label: const Text("Recollir planta"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF16a34a),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        textStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      ),
+    ),
+  ),
+);
   }
 }
 
