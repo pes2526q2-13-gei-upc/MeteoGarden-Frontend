@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/dades_usr.dart'; 
+import '../models/dades_usr.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../models/url.dart';
+//import 'package:http/http.dart' as http;
+//import 'dart:convert';
+//import '../models/url.dart';
 
 class AlbumPage extends StatefulWidget {
   const AlbumPage({super.key});
@@ -27,7 +27,9 @@ class _AlbumPageState extends State<AlbumPage> {
   }
 
   // --- FUNCIÓN QUE SIMULA LA LLAMADA AL BACKEND DE PYTHON ---
-  Future<Map<String, dynamic>> _fetchDetallesPlanta(String scientificName) async {
+  Future<Map<String, dynamic>> _fetchDetallesPlanta(
+    String scientificName,
+  ) async {
     // eliminar quan es puguin agafar noms cintifics del backend
     await Future.delayed(const Duration(seconds: 1));
     return {
@@ -37,10 +39,11 @@ class _AlbumPageState extends State<AlbumPage> {
       "canFlower": true,
       "minTemperature": -5.0,
       "maxTemperature": 30.0,
-      "description": "Planta aromática muy popular, conocida por su característico color morado y su uso en perfumería e infusiones.",
+      "description":
+          "Planta aromática muy popular, conocida por su característico color morado y su uso en perfumería e infusiones.",
     };
 
-/*  descomentar quan es puguin agafar noms cintifics del backend
+    /*  descomentar quan es puguin agafar noms cintifics del backend
     final response = await http.get(
       Uri.parse('${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName'),
     );
@@ -60,7 +63,6 @@ class _AlbumPageState extends State<AlbumPage> {
       throw Exception('Error carregant la informació de la planta');
     }
     */
-    
   }
 
   // --- FUNCIÓN PARA MOSTRAR EL POP-UP CON LOS DETALLES ---
@@ -69,7 +71,9 @@ class _AlbumPageState extends State<AlbumPage> {
       context: context,
       builder: (context) {
         return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: FutureBuilder<Map<String, dynamic>>(
             future: _fetchDetallesPlanta(scientificName),
             builder: (context, snapshot) {
@@ -99,7 +103,8 @@ class _AlbumPageState extends State<AlbumPage> {
               // 3. Si los datos llegan correctamente...
               final data = snapshot.data!;
               final commonName = data['commonName'] ?? 'Desconocido';
-              final desc = data['description'] ?? 'No hay descripción disponible.';
+              final desc =
+                  data['description'] ?? 'No hay descripción disponible.';
               final family = data['family'] ?? '-';
               final minTemp = data['minTemperature'];
               final maxTemp = data['maxTemperature'];
@@ -114,21 +119,31 @@ class _AlbumPageState extends State<AlbumPage> {
                     children: [
                       Text(
                         commonName,
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         '$scientificName • Familia: $family',
-                        style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic, color: Colors.grey[700]),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey[700],
+                        ),
                       ),
                       const Divider(height: 32),
-                      
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           if (minTemp != null && maxTemp != null)
                             Column(
                               children: [
-                                const Icon(Icons.thermostat, color: Colors.orange),
+                                const Icon(
+                                  Icons.thermostat,
+                                  color: Colors.orange,
+                                ),
                                 const SizedBox(height: 4),
                                 Text('$minTempº - $maxTempº'),
                               ],
@@ -136,8 +151,8 @@ class _AlbumPageState extends State<AlbumPage> {
                           Column(
                             children: [
                               Icon(
-                                canFlower ? Icons.local_florist : Icons.grass, 
-                                color: canFlower ? Colors.pink : Colors.green
+                                canFlower ? Icons.local_florist : Icons.grass,
+                                color: canFlower ? Colors.pink : Colors.green,
                               ),
                               const SizedBox(height: 4),
                               Text(canFlower ? 'Florece' : 'No florece'),
@@ -145,15 +160,18 @@ class _AlbumPageState extends State<AlbumPage> {
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 24),
                       const Text(
                         'Descripción',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Text(desc),
-                      
+
                       const SizedBox(height: 24),
                       Align(
                         alignment: Alignment.centerRight,
@@ -161,7 +179,7 @@ class _AlbumPageState extends State<AlbumPage> {
                           onPressed: () => Navigator.of(context).pop(),
                           child: const Text('Cerrar'),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -177,9 +195,7 @@ class _AlbumPageState extends State<AlbumPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mi Álbum de Plantas'),
-      ),
+      appBar: AppBar(title: const Text('Mi Álbum de Plantas')),
       body: Consumer<PlantProvider>(
         builder: (context, plantProvider, child) {
           // Si está cargando la lista inicial de plantas
@@ -210,7 +226,7 @@ class _AlbumPageState extends State<AlbumPage> {
             itemCount: plantProvider.plants.length,
             itemBuilder: (context, index) {
               final planta = plantProvider.plants[index];
-              
+
               // AHORA SÍ: Accedemos como atributos de objeto
               final imageUrl = planta.image;
               final nombreCientifico = planta.name;
