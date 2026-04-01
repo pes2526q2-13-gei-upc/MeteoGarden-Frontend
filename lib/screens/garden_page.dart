@@ -57,7 +57,6 @@ class _GardenPageState extends State<GardenPage> {
 
   void _refreshWeather() {
     final user = Provider.of<UserModel>(context, listen: false);
-    //print("CIUTAT: ${user.city}"); // continuar aqui
     setState(() {
       _weatherFuture = WeatherService.fetchCurrent(city: user.city);
     });
@@ -186,206 +185,345 @@ class _GardenPageState extends State<GardenPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final user = Provider.of<UserModel>(context);
-    final username = user.username;
-    final monedes = user.monedes;
-    final h = MediaQuery.of(context).size.height;
+  int _gridColumns(double width) {
+    if (width < 420) return 4;
+    if (width < 900) return 4;
+    return 5;
+  }
 
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Image.asset(
-            'assets/images/imatge_fondo1.png',
-            fit: BoxFit.cover,
-          ),
-        ),
+  double _horizontalPadding(double width) {
+    if (width < 360) return 8;
+    if (width < 700) return 10;
+    return 16;
+  }
 
-        Positioned(
-          top: MediaQuery.of(context).padding.top + 120,
-          right: 16,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.9),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+  double _gridSpacing(double width) {
+    if (width < 360) return 8;
+    if (width < 700) return 10;
+    return 14;
+  }
+
+ double _sideIconWidth(double width) {
+  if (width < 360) return 64;
+  if (width < 700) return 78;
+  return 90;
+}
+
+double _shopWidth(double width) {
+  if (width < 360) return 130;
+  if (width < 700) return 155;
+  return 175;
+}
+
+  Widget _buildWeatherSection() {
+    return FutureBuilder<WeatherInfo>(
+      future: _weatherFuture,
+      builder: (context, snap) {
+        if (_weatherFuture == null ||
+            snap.connectionState == ConnectionState.waiting) {
+          return WeatherCard(
+            nomEstacio: "",
+            title: "Carregant meteo...",
+            subtitle: "Espera un moment",
+            trailing: const SizedBox(
+              height: 18,
+              width: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/images/coin.png',
-                  width: 22,
-                  height: 22,
-                  errorBuilder: (_, _, _) => const Icon(
-                    Icons.monetization_on,
-                    color: Colors.amber,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  '$monedes',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF5D4037),
-                  ),
-                ),
-              ],
+            onRefresh: _refreshWeather,
+          );
+        }
+
+        if (snap.hasError) {
+          return WeatherCard(
+            nomEstacio: "",
+            title: "No s'ha pogut carregar la meteo",
+            subtitle: "Toca per tornar-ho a provar",
+            trailing: const Icon(Icons.warning_amber_rounded),
+            onRefresh: _refreshWeather,
+          );
+        }
+
+        final w = snap.data!;
+        return WeatherCard(
+          nomEstacio: w.stationName,
+          title:
+              "Temperatura: ${w.temp.toStringAsFixed(1)}°C | Precipitació: ${w.precipitation}",
+          subtitle: "Vent: ${w.wind.toStringAsFixed(1)} m/s",
+          trailing: const Icon(Icons.refresh),
+          onRefresh: _refreshWeather,
+        );
+      },
+    );
+  }
+
+  Widget _buildCoinsChip(int monedes) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.92),
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            'assets/images/coin.png',
+            width: 22,
+            height: 22,
+            errorBuilder: (_, _, _) => const Icon(
+              Icons.monetization_on,
+              color: Colors.amber,
+              size: 22,
             ),
           ),
-        ),
+          const SizedBox(width: 6),
+          Text(
+            '$monedes',
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF5D4037),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-        if (_weatherFuture != null)
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 12,
-            left: 12,
-            right: 12,
-            child: FutureBuilder<WeatherInfo>(
-              future: _weatherFuture,
-              builder: (context, snap) {
-                if (snap.connectionState == ConnectionState.waiting) {
-                  return WeatherCard(
-                    nomEstacio: "",
-                    title: "Carregant meteo...",
-                    subtitle: "Espera un moment",
-                    trailing: const SizedBox(
-                      height: 18,
-                      width: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+  Widget _buildActionArea({
+  required double width,
+  required String username,
+}) {
+  final sideBoxSize = width < 360 ? 50.0 : 58.0;
+  final shopWidth = width < 360 ? 165.0 : 200.0;
+  final shopHeight = width < 360 ? 115.0 : 135.0;
+
+  return SizedBox(
+     height: width < 360 ? 115 : 135,
+    child: Padding(
+      padding: const EdgeInsets.only(left: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+              
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => InventoryPage(username: username),
                     ),
-                    onRefresh: _refreshWeather,
                   );
-                }
-
-                if (snap.hasError) {
-                  return WeatherCard(
-                    nomEstacio: "",
-                    title: "No s'ha pogut carregar la meteo",
-                    subtitle: " ",
-                    trailing: const Icon(Icons.warning_amber_rounded),
-                    onRefresh: _refreshWeather,
+                },
+                child: SizedBox(
+                  width: sideBoxSize,
+                  height: sideBoxSize,
+                  child: Image.asset(
+                    'assets/images/inventory_imagen.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 2),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const AlbumPage()),
                   );
-                }
-
-                final w = snap.data!;
-                return WeatherCard(
-                  nomEstacio: w.stationName,
-                  title:
-                      "Temperatura: ${w.temp.toStringAsFixed(1)}°C · Precipitació: ${w.precipitation}",
-                  subtitle: "Vent: ${w.wind.toStringAsFixed(1)} m/s",
-                  trailing: const Icon(Icons.refresh),
-                  onRefresh: _refreshWeather,
-                );
-              },
-            ),
+                },
+                child: SizedBox(
+                  width: sideBoxSize,
+                  height: sideBoxSize,
+                  child: Image.asset(
+                    'assets/images/album_image.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ],
           ),
-
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: SizedBox(
-            height: h * 0.45,
-            child: FutureBuilder<List<GardenPot>>(
-              future: _potsFuture,
-              builder: (context, snap) {
-                if (snap.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (snap.hasError) {
-                  return Center(
-                    child: Text(
-                      "Error carregant els tests:\n${snap.error}",
-                      style: const TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
+          Expanded(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Transform.translate(
+                offset: const Offset(16, 0),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const BotigaPage(),
+                        ),
+                      );
+                    },
+                    child: SizedBox(
+                      width: shopWidth,
+                      height: shopHeight,
+                      child: Image.asset(
+                        'assets/images/botiga.png',
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  );
-                }
-
-                final pots = snap.data!;
-
-                return GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 8,
                   ),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    crossAxisSpacing: 32,
-                    mainAxisSpacing: 32,
-                    childAspectRatio: 1,
-                  ),
-                  itemCount: pots.length,
-                  itemBuilder: (context, index) {
-                    final pot = pots[index];
-                    return PotWidget(pot: pot, onTap: () => onTapPot(pot));
-                  },
-                );
-              },
-            ),
-          ),
-        ),
-
-        Positioned(
-          right: 0,
-          top: MediaQuery.of(context).size.height * 0.24,
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(20),
-              onTap: () {
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (_) => const BotigaPage()));
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: Image.asset('assets/images/botiga.png', width: 150),
+                ),
               ),
             ),
           ),
-        ),
+        ],
+      ),
+    ),
+  );
+}
 
-        Positioned(
-          left: 2,
-          top: MediaQuery.of(context).size.height * 0.14,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => InventoryPage(username: username),
-                ),
+  Widget _buildPotsGrid(double width) {
+  final padding = _horizontalPadding(width);
+  final spacing = _gridSpacing(width);
+
+  return FutureBuilder<List<GardenPot>>(
+    future: _potsFuture,
+    builder: (context, snap) {
+      if (snap.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (snap.hasError) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              "Error carregant els tests:\n${snap.error}",
+              style: const TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+
+      final pots = snap.data ?? [];
+
+      if (pots.isEmpty) {
+        return const Center(
+          child: Text(
+            "No hi ha tests disponibles",
+            style: TextStyle(color: Colors.white),
+          ),
+        );
+      }
+
+      const crossAxisCount = 4;
+      final rowCount = (pots.length / crossAxisCount).ceil();
+
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final totalWidth = constraints.maxWidth;
+          final totalHeight = constraints.maxHeight;
+
+          final usableWidth = totalWidth - (padding * 2);
+          final usableHeight = totalHeight - 8;
+
+          final itemWidth =
+              (usableWidth - (spacing * (crossAxisCount - 1))) / crossAxisCount;
+
+          final itemHeight =
+              (usableHeight - (spacing * (rowCount - 1))) / rowCount;
+
+          final aspectRatio = itemWidth / itemHeight;
+
+          return GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.fromLTRB(padding, 4, padding, 4),
+            itemCount: pots.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: spacing,
+              mainAxisSpacing: spacing,
+              childAspectRatio: aspectRatio,
+            ),
+            itemBuilder: (context, index) {
+              final pot = pots[index];
+              return PotWidget(
+                pot: pot,
+                onTap: () => onTapPot(pot),
               );
             },
-            child: Image.asset('assets/images/inventory_imagen.png', width: 80),
-          ),
-        ),
+          );
+        },
+      );
+    },
+  );
+}
 
-        Positioned(
-          left: 2,
-          top: MediaQuery.of(context).size.height * 0.225,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const AlbumPage()));
-            },
-            child: Image.asset('assets/images/album_image.png', width: 80),
-          ),
-        ),
-      ],
-    );
-  }
+  @override
+Widget build(BuildContext context) {
+  final user = Provider.of<UserModel>(context);
+  final username = user.username;
+  final monedes = user.monedes;
+
+  return Scaffold(
+    body: LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/imatge_fondo1.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+            SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      _horizontalPadding(width),
+                      8,
+                      _horizontalPadding(width),
+                      4,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildWeatherSection(),
+                        const SizedBox(height: 6),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: _buildCoinsChip(monedes),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  _buildActionArea(
+                   width: width,
+                    username: username,
+                  ),
+                  const SizedBox(height: 25),
+                  Expanded(
+                    child: _buildPotsGrid(width),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+}
 }
