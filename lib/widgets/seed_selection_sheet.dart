@@ -61,58 +61,73 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
-      decoration: const BoxDecoration(
-        color: Color(0xFFF8F6F1),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: _plantingResult != null
-            ? _buildSuccessView()
-            : _buildSelectionView(),
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      child: Material(
+        color: const Color(0xFF1F2937),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/foto_terra2.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withValues(alpha: 0.65),
+              ),
+            ),
+            SafeArea(
+              top: false,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
+                child: _plantingResult != null
+                    ? _buildSuccessView()
+                    : _buildSelectionView(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  // En cas que la planta s'hagi plantat correctament
-
   Widget _buildSuccessView() {
     final result = _plantingResult!;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         _buildHandle(),
         const SizedBox(height: 18),
-
-        // Icona d'èxit
         Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: Colors.green.shade100,
+            color: Colors.green.withValues(alpha: 0.18),
             shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.green.withValues(alpha: 0.5),
+            ),
           ),
-          child: Icon(
+          child: const Icon(
             Icons.check_circle_rounded,
-            color: Colors.green.shade700,
+            color: Colors.greenAccent,
             size: 42,
           ),
         ),
         const SizedBox(height: 14),
-
         Text(
-          result.message, //missatge que em retorna la api
+          result.message,
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF2D2D2D),
+            color: Colors.white,
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 20),
-
-        // Botó tancar
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
@@ -121,11 +136,11 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
               Navigator.of(context).pop();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green.shade600,
+              backgroundColor: const Color(0xFF16a34a),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
               ),
               elevation: 0,
             ),
@@ -139,8 +154,6 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
     );
   }
 
-  //Vista seleccio llavor a plantar
-
   Widget _buildSelectionView() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -148,18 +161,20 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
         _buildHandle(),
         const SizedBox(height: 18),
 
-        // Header
         Row(
           children: [
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.green.shade100,
+                color: Colors.green.withValues(alpha: 0.18),
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.green.withValues(alpha: 0.4),
+                ),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.eco_rounded,
-                color: Colors.green.shade700,
+                color: Colors.greenAccent,
                 size: 26,
               ),
             ),
@@ -173,13 +188,16 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                     style: TextStyle(
                       fontSize: 23,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF2D2D2D),
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     "Selecciona una llavor pel test ${widget.pot.potNumber}",
-                    style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white70,
+                    ),
                   ),
                 ],
               ),
@@ -207,21 +225,16 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                   onTap: () => setState(() => _selectedSeed = seed),
                   child: Ink(
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.green.shade50 : Colors.white,
+                      color: isSelected
+                          ? Colors.green.withValues(alpha: 0.18)
+                          : Colors.white.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: isSelected
-                            ? Colors.green.shade400
-                            : Colors.black12,
+                            ? Colors.greenAccent.withValues(alpha: 0.8)
+                            : Colors.white.withValues(alpha: 0.14),
                         width: isSelected ? 2 : 1,
                       ),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x0F000000),
-                          blurRadius: 8,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(14),
@@ -232,18 +245,17 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                             height: 52,
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? Colors.green.shade100
-                                  : Colors.green.shade50,
+                                  ? Colors.green.withValues(alpha: 0.24)
+                                  : Colors.white.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            child: Icon(
+                            child: const Icon(
                               Icons.spa_rounded,
-                              color: Colors.green.shade700,
+                              color: Colors.greenAccent,
                               size: 28,
                             ),
                           ),
                           const SizedBox(width: 14),
-
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,23 +265,21 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xFF2D2D2D),
+                                    color: Colors.white,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                Text(
+                                const Text(
                                   "Llavor disponible per plantar",
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: Colors.grey.shade600,
+                                    color: Colors.white70,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-
                           const SizedBox(width: 10),
-
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
@@ -279,14 +289,17 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.amber.shade100,
+                                  color: Colors.amber.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.amber.withValues(alpha: 0.35),
+                                  ),
                                 ),
                                 child: Text(
                                   "x${seed.amount}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.brown.shade800,
+                                    color: Color(0xFFFFE082),
                                   ),
                                 ),
                               ),
@@ -297,8 +310,8 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                                     : Icons.arrow_forward_ios_rounded,
                                 size: 14,
                                 color: isSelected
-                                    ? Colors.green.shade600
-                                    : Colors.grey.shade500,
+                                    ? Colors.greenAccent
+                                    : Colors.white54,
                               ),
                             ],
                           ),
@@ -311,31 +324,32 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
             ),
           ),
 
-          // Error message
           if (_errorMessage != null) ...[
             const SizedBox(height: 12),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.red.shade50,
+                color: Colors.red.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.red.shade200),
+                border: Border.all(
+                  color: Colors.red.withValues(alpha: 0.35),
+                ),
               ),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.error_outline_rounded,
-                    color: Colors.red.shade400,
+                    color: Colors.redAccent,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       _errorMessage!,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 13,
-                        color: Colors.red.shade700,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -346,7 +360,6 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
 
           const SizedBox(height: 16),
 
-          // Botó Plantar
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
@@ -371,13 +384,13 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green.shade600,
+                backgroundColor: const Color(0xFF16a34a),
                 foregroundColor: Colors.white,
-                disabledBackgroundColor: Colors.grey.shade300,
-                disabledForegroundColor: Colors.grey.shade500,
+                disabledBackgroundColor: Colors.white24,
+                disabledForegroundColor: Colors.white60,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 elevation: 0,
               ),
@@ -393,7 +406,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
       width: 48,
       height: 5,
       decoration: BoxDecoration(
-        color: Colors.black12,
+        color: Colors.white24,
         borderRadius: BorderRadius.circular(20),
       ),
     );
@@ -404,27 +417,31 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
       ),
-      child: Column(
+      child: const Column(
         children: [
           Icon(
             Icons.inventory_2_outlined,
             size: 42,
-            color: Colors.brown.shade300,
+            color: Colors.white70,
           ),
-          const SizedBox(height: 10),
-          const Text(
+          SizedBox(height: 10),
+          Text(
             "No tens llavors disponibles",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6),
           Text(
             "Quan n'aconsegueixis, les podràs plantar aquí.",
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+            style: TextStyle(fontSize: 13, color: Colors.white70),
           ),
         ],
       ),
