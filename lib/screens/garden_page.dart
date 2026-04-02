@@ -12,6 +12,7 @@ import 'inventory_page.dart';
 import '../../widgets/pot_info_sheet.dart';
 import '../../widgets/seed_selection_sheet.dart';
 //import '../../models/seed_option.dart';
+import '../../widgets/potion_selection_sheet.dart';
 
 import 'package:provider/provider.dart';
 import '../models/dades_usr.dart';
@@ -139,6 +140,29 @@ class _GardenPageState extends State<GardenPage> {
             );
           }
         },
+        onPotion: () async {
+            try {
+              Navigator.pop(context);  
+              if (!mounted) return;
+              showModalBottomSheet(
+                context: context,
+                backgroundColor: Colors.transparent,
+                isScrollControlled: true,
+                builder: (_) => PotionSelectionSheet(
+                  pot: pot,
+                  username: widget.username,
+                  gardenName: widget.gardenName,
+                  gardenService: _gardenService,
+                  onPotionSuccess: _refreshGarden,
+                ),
+              );
+            } catch (e) {
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
+              );
+            }
+          }
       ),
     );
   }
