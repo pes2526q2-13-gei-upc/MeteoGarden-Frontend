@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
 
       // 3. Enviar a backend
       final response = await http.post(
-        Uri.parse("${ApiConfig.baseUrl}/api/google-login/"),
+        Uri.parse("${ApiConfig.baseUrl}/api/auth/google/register"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "id_token": idToken,
@@ -184,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
-                            onPressed: _login, // _goToHome,//
+                            onPressed: _login,
                             icon: const Icon(Icons.login),
                             label: const Text("Iniciar sessió"),
                             style: FilledButton.styleFrom(
