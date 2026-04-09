@@ -302,81 +302,108 @@ class _GardenPageState extends State<GardenPage> {
     );
   }
 
-  Widget _buildActionArea({
-    required double width,
-    required double height,
-    required String username,
-  }) {
-    final sideBoxSize = width < 360 ? width * 0.16 : width * 0.14;
-    final shopWidth = width < 360 ? width * 0.42 : width * 0.38;
+Widget _buildActionArea({
+  required double width,
+  required double height,
+  required String username,
+  required int monedes,
+}) {
+  final sideBoxSize = width < 360 ? width * 0.16 : width * 0.14;
+  final shopWidth = width < 360 ? width * 0.40 : width * 0.36;
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: width * 0.01,
-        right: width * 0.01,
-        bottom: height * 0.005,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => InventoryPage(username: username),
-                    ),
-                  );
-                },
-                child: SizedBox(
-                  width: sideBoxSize,
-                  height: sideBoxSize,
-                  child: Image.asset(
-                    'assets/images/inventory_imagen.png',
-                    fit: BoxFit.contain,
+  return Padding(
+    padding: EdgeInsets.only(
+      left: width * 0.01,
+      right: width * 0.01,
+      bottom: height * 0.005,
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ESQUERRA: icones a dalt
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => InventoryPage(username: username),
                   ),
+                );
+              },
+              child: SizedBox(
+                width: sideBoxSize,
+                height: sideBoxSize,
+                child: Image.asset(
+                  'assets/images/inventory_imagen.png',
+                  fit: BoxFit.contain,
                 ),
-              ),
-              SizedBox(height: height * 0.008),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Navigator.of(
-                    context,
-                  ).push(MaterialPageRoute(builder: (_) => const AlbumPage()));
-                },
-                child: SizedBox(
-                  width: sideBoxSize,
-                  height: sideBoxSize,
-                  child: Image.asset(
-                    'assets/images/album_image.png',
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-              const Spacer(),
-            ],
-          ),
-          const Spacer(),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: SizedBox(
-              width: shopWidth,
-              child: Image.asset(
-                'assets/images/botiga.png',
-                fit: BoxFit.contain,
-                alignment: Alignment.bottomCenter,
               ),
             ),
+            SizedBox(height: height * 0.008),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AlbumPage(),
+                  ),
+                );
+              },
+              child: SizedBox(
+                width: sideBoxSize,
+                height: sideBoxSize,
+                child: Image.asset(
+                  'assets/images/album_image.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            SizedBox(height: height * 0.008),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                // TODO: Navegar a CalendarPage
+              },
+              child: SizedBox(
+                width: sideBoxSize,
+                height: sideBoxSize,
+                child: Image.asset(
+                  'assets/images/calendar_image.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const Spacer(),
+
+        // DRETA: monedes a dalt, botiga a baix
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              _buildCoinsChip(monedes, width, height),
+              const Spacer(),
+              SizedBox(
+                width: shopWidth,
+                child: Image.asset(
+                  'assets/images/botiga.png',
+                  fit: BoxFit.contain,
+                  alignment: Alignment.bottomCenter,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildPotsGrid(double width) {
     final padding = _horizontalPadding(width);
@@ -482,26 +509,22 @@ class _GardenPageState extends State<GardenPage> {
                   child: Column(
                     children: [
                       Expanded(
-                        flex: 35,
+                        flex: 23,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(height: height * 0.015),
                             _buildWeatherSection(),
-                            SizedBox(height: height * 0.01),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: _buildCoinsChip(monedes, width, height),
-                            ),
                           ],
                         ),
                       ),
                       Expanded(
-                        flex: 25,
+                        flex: 37,
                         child: _buildActionArea(
                           width: width,
                           height: height,
                           username: username,
+                          monedes: monedes,
                         ),
                       ),
                       SizedBox(height: height * 0.02),
