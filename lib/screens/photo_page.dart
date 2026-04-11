@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../service/plant_service.dart';
+import '../services/plant_service.dart';
 import '../models/dades_usr.dart';
 import 'plant_result_page.dart';
 

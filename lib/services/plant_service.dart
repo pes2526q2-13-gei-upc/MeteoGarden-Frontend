@@ -20,12 +20,11 @@ class PlantService {
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
 
-    final Map<String, dynamic> data = jsonDecode(response.body);
-
     if (response.statusCode != 201) {
       throw Exception('Error ${response.statusCode}: ${response.body}');
     }
 
+    final Map<String, dynamic> data = jsonDecode(response.body);
     return PlantIdentification.fromJson(data);
   }
 }
