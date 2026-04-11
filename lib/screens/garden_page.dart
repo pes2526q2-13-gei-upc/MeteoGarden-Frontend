@@ -13,6 +13,7 @@ import '../../widgets/pot_info_sheet.dart';
 import '../../widgets/seed_selection_sheet.dart';
 //import '../../models/seed_option.dart';
 import '../../widgets/potion_selection_sheet.dart';
+import 'calendar_page.dart';
 
 import 'package:provider/provider.dart';
 import '../models/dades_usr.dart';
@@ -307,6 +308,7 @@ Widget _buildActionArea({
   required double height,
   required String username,
   required int monedes,
+  required String city
 }) {
   final sideBoxSize = width < 360 ? width * 0.16 : width * 0.14;
   final shopWidth = width < 360 ? width * 0.40 : width * 0.36;
@@ -366,7 +368,11 @@ Widget _buildActionArea({
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
-                // TODO: Navegar a CalendarPage
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => CalendarPage(city: city),
+                  ),
+                );
               },
               child: SizedBox(
                 width: sideBoxSize,
@@ -525,6 +531,7 @@ Widget _buildActionArea({
                           height: height,
                           username: username,
                           monedes: monedes,
+                          city: user.city
                         ),
                       ),
                       SizedBox(height: height * 0.02),
