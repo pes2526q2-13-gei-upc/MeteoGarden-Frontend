@@ -8,6 +8,7 @@ import 'package:meteo_garden/models/dades_usr.dart';
 import 'dart:convert';
 import '../models/url.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -62,11 +63,24 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = kIsWeb
+      ? GoogleSignIn(
+          // CONFIGURACIÓN PARA WEB
+          clientId: "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+          scopes: ['email', 'profile', 'openid'],
+        )
+      : GoogleSignIn(
+          // CONFIGURACIÓN PARA ANDROID/iOS
+          // Aquí NO se usa clientId. Se usa serverClientId con el ID de la WEB.
+          serverClientId: "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+          scopes: ['email', 'profile', 'openid'],
+        );
 
   Future<void> loginWithGoogle(BuildContext context) async {
     try {
       // 1. Login con Google
+      // per que funcioni amb web s'ha de forçar el port 62057
+      // flutter run -d chrome --web-port=62057
       final GoogleSignInAccount? googleUser =
           await _googleSignIn.signIn();
 
@@ -79,14 +93,24 @@ class _LoginPageState extends State<LoginPage> {
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
-      final idToken = googleAuth.idToken;
+      final String? idToken = googleAuth.idToken;
+      final String? accessToken = googleAuth.accessToken;
+
+      final String tokenToSend = idToken ?? accessToken ?? "";
+
+      if (tokenToSend.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Error obteniendo token de Google")),
+        );
+        return;
+    }
 
       // 3. Enviar a backend
       final response = await http.post(
-        Uri.parse("${ApiConfig.baseUrl}/api/auth/google/register"),
+        Uri.parse("${ApiConfig.baseUrl}/api/auth/google/verify"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          "id_token": idToken,
+          "id_token": tokenToSend,
         }),
       );
 
@@ -95,25 +119,23 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        // 4. Guardar TU token (no el de Google)
-        Provider.of<UserModel>(context, listen: false)
-            .setToken(data["token"]);
-
         // 5. Navegación
-        if (data["profile_completed"] == false) {
+        if (data["exists"] == false) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => const CompleteGoogleProfilePage(),
+              builder: (_) => CompleteGoogleProfilePage(
+                googleToken: tokenToSend,       // <-- Pasamos el token de Google
+                email: data["email"] ?? "",     // <-- Pasamos el email
+              ),
             ),
           );
         } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const HomeShell(),
-            ),
-          );
+          Provider.of<UserModel>(context, listen: false)
+            .setToken(data["token"]);
+
+          await _fetchAndSaveProfile(data['token']);
+          _goToHome();
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

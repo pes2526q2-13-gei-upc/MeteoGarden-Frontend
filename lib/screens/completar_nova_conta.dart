@@ -26,7 +26,14 @@ class City {
 }
 
 class CompleteGoogleProfilePage extends StatefulWidget {
-  const CompleteGoogleProfilePage({super.key});
+  final String googleToken;
+  final String email;
+
+  const CompleteGoogleProfilePage({
+    super.key, 
+    required this.googleToken,
+    required this.email,
+  });
 
   @override
   State<CompleteGoogleProfilePage> createState() =>
@@ -39,6 +46,7 @@ class _CompleteGoogleProfilePageState
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController gardenController = TextEditingController();
   final TextEditingController citySearchController = TextEditingController();
+  
 
   List<City> cities = [];
   City? selectedCity;
@@ -70,18 +78,18 @@ class _CompleteGoogleProfilePageState
   }
 
   void _submit() async {
-    final url = Uri.parse("${ApiConfig.baseUrl}/api/complete-profile/");
+    final url = Uri.parse("${ApiConfig.baseUrl}/api/auth/google/register");
 
     final response = await http.post(
       url,
       headers: {
         "Content-Type": "application/json",
-        "Authorization":
-            "Token ${Provider.of<UserModel>(context, listen: false).token}",
       },
       body: jsonEncode({
+        'id_token': widget.googleToken,
         'username': usernameController.text,
         'password': passwordController.text,
+        'email': widget.email,
         'city': selectedCity?.name,
         'language': language,
         'stationCode': selectedCity?.code,
@@ -92,6 +100,8 @@ class _CompleteGoogleProfilePageState
     if (!mounted) return;
 
     if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      await _fetchAndSaveProfile(data['token']);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeShell()),
@@ -99,6 +109,47 @@ class _CompleteGoogleProfilePageState
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error completant perfil')),
+      );
+    }
+  }
+
+  Future<void> _fetchAndSaveProfile(String token) async {
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
+
+    final response = await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Token $token",
+      },
+    );
+
+    if (!mounted) return;
+
+    debugPrint("PROFILE STATUS: ${response.statusCode}");
+    debugPrint("PROFILE BODY: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      // gardens és List, extreim només els noms
+      final List<String> gardenNames = (data['gardens'] as List<dynamic>)
+          .map((g) => g['gardenName'] as String)
+          .toList();
+
+      Provider.of<UserModel>(context, listen: false).setProfile(
+        newUsername: data['username'] ?? '',
+        newEmail: data['email'] ?? '',
+        newCity: data['city'] ?? '',
+        newLanguage: data['language'] ?? '',
+        newLastEntry: data['lastEntry'] ?? '',
+        newNumPlantsCollected: data['numPlantsCollected'] ?? 0,
+        newMonedes: data['numCoins'] ?? 0,
+        newGardens: gardenNames,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No s\'ha pogut carregar el perfil')),
       );
     }
   }
