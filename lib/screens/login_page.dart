@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/screens/completar_nova_conta.dart';
 import 'package:meteo_garden/screens/home_shell.dart';
 import 'package:meteo_garden/screens/crea_nova_conta.dart';
 import 'package:http/http.dart' as http;
@@ -6,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import 'dart:convert';
 import '../models/url.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -57,6 +60,92 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Error de login')));
+    }
+  }
+
+  final GoogleSignIn _googleSignIn = kIsWeb
+      ? GoogleSignIn(
+          // CONFIGURACIÓN PARA WEB
+          clientId:
+              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+          scopes: ['email', 'profile', 'openid'],
+        )
+      : GoogleSignIn(
+          // CONFIGURACIÓN PARA ANDROID/iOS
+          // Aquí NO se usa clientId. Se usa serverClientId con el ID de la WEB.
+          serverClientId:
+              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+          scopes: ['email', 'profile', 'openid'],
+        );
+
+  Future<void> loginWithGoogle(BuildContext context) async {
+    try {
+      // 1. Login con Google
+      // per que funcioni amb web s'ha de forçar el port 62057
+      // flutter run -d chrome --web-port=62057
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // Usuario canceló
+        return;
+      }
+
+      // 2. Obtener tokens
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final String? idToken = googleAuth.idToken;
+      final String? accessToken = googleAuth.accessToken;
+
+      final String tokenToSend = idToken ?? accessToken ?? "";
+
+      if (tokenToSend.isEmpty) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Error obteniendo token de Google")),
+        );
+        return;
+      }
+
+      // 3. Enviar a backend
+      final response = await http.post(
+        Uri.parse("${ApiConfig.baseUrl}/api/auth/google/verify"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"id_token": tokenToSend}),
+      );
+
+      if (!context.mounted) return;
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        // 5. Navegación
+        if (data["exists"] == false) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => CompleteGoogleProfilePage(
+                googleToken: tokenToSend, // <-- Pasamos el token de Google
+                email: data["email"] ?? "", // <-- Pasamos el email
+              ),
+            ),
+          );
+        } else {
+          Provider.of<UserModel>(
+            context,
+            listen: false,
+          ).setToken(data["token"]);
+
+          await _fetchAndSaveProfile(data['token']);
+          _goToHome();
+        }
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Error login Google")));
+      }
+    } catch (e) {
+      debugPrint("Error Google Sign-In: $e");
     }
   }
 
@@ -119,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
-                            onPressed: _login, // _goToHome,//
+                            onPressed: _login,
                             icon: const Icon(Icons.login),
                             label: const Text("Iniciar sessió"),
                             style: FilledButton.styleFrom(
@@ -154,24 +243,13 @@ class _LoginPageState extends State<LoginPage> {
                                 children: [
                                   ElevatedButton.icon(
                                     onPressed: () {
-                                      // TODO: implementar login amb Google
+                                      loginWithGoogle(context);
                                     },
                                     icon: const Icon(Icons.g_mobiledata),
                                     label: const Text('Google'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
                                       foregroundColor: Colors.black,
-                                    ),
-                                  ),
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      // TODO: implementar login amb Facebook
-                                    },
-                                    icon: const Icon(Icons.facebook),
-                                    label: const Text('Facebook'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF1877F2),
-                                      foregroundColor: Colors.white,
                                     ),
                                   ),
                                 ],
