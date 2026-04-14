@@ -66,13 +66,15 @@ class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn _googleSignIn = kIsWeb
       ? GoogleSignIn(
           // CONFIGURACIÓN PARA WEB
-          clientId: "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+          clientId:
+              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
           scopes: ['email', 'profile', 'openid'],
         )
       : GoogleSignIn(
           // CONFIGURACIÓN PARA ANDROID/iOS
           // Aquí NO se usa clientId. Se usa serverClientId con el ID de la WEB.
-          serverClientId: "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+          serverClientId:
+              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
           scopes: ['email', 'profile', 'openid'],
         );
 
@@ -81,8 +83,7 @@ class _LoginPageState extends State<LoginPage> {
       // 1. Login con Google
       // per que funcioni amb web s'ha de forçar el port 62057
       // flutter run -d chrome --web-port=62057
-      final GoogleSignInAccount? googleUser =
-          await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
         // Usuario canceló
@@ -103,15 +104,13 @@ class _LoginPageState extends State<LoginPage> {
           const SnackBar(content: Text("Error obteniendo token de Google")),
         );
         return;
-    }
+      }
 
       // 3. Enviar a backend
       final response = await http.post(
         Uri.parse("${ApiConfig.baseUrl}/api/auth/google/verify"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "id_token": tokenToSend,
-        }),
+        body: jsonEncode({"id_token": tokenToSend}),
       );
 
       if (!context.mounted) return;
@@ -125,22 +124,24 @@ class _LoginPageState extends State<LoginPage> {
             context,
             MaterialPageRoute(
               builder: (_) => CompleteGoogleProfilePage(
-                googleToken: tokenToSend,       // <-- Pasamos el token de Google
-                email: data["email"] ?? "",     // <-- Pasamos el email
+                googleToken: tokenToSend, // <-- Pasamos el token de Google
+                email: data["email"] ?? "", // <-- Pasamos el email
               ),
             ),
           );
         } else {
-          Provider.of<UserModel>(context, listen: false)
-            .setToken(data["token"]);
+          Provider.of<UserModel>(
+            context,
+            listen: false,
+          ).setToken(data["token"]);
 
           await _fetchAndSaveProfile(data['token']);
           _goToHome();
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Error login Google")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Error login Google")));
       }
     } catch (e) {
       debugPrint("Error Google Sign-In: $e");

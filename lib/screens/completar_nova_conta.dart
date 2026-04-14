@@ -30,7 +30,7 @@ class CompleteGoogleProfilePage extends StatefulWidget {
   final String email;
 
   const CompleteGoogleProfilePage({
-    super.key, 
+    super.key,
     required this.googleToken,
     required this.email,
   });
@@ -40,13 +40,11 @@ class CompleteGoogleProfilePage extends StatefulWidget {
       _CompleteGoogleProfilePageState();
 }
 
-class _CompleteGoogleProfilePageState
-    extends State<CompleteGoogleProfilePage> {
+class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController gardenController = TextEditingController();
   final TextEditingController citySearchController = TextEditingController();
-  
 
   List<City> cities = [];
   City? selectedCity;
@@ -62,7 +60,9 @@ class _CompleteGoogleProfilePageState
 
   Future<void> fetchCities() async {
     final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/stations/'), // potser s'ha de canviar la ruta
+      Uri.parse(
+        '${ApiConfig.baseUrl}/api/stations/',
+      ), // potser s'ha de canviar la ruta
     );
 
     if (response.statusCode == 200) {
@@ -82,9 +82,7 @@ class _CompleteGoogleProfilePageState
 
     final response = await http.post(
       url,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         'id_token': widget.googleToken,
         'username': usernameController.text,
@@ -107,9 +105,9 @@ class _CompleteGoogleProfilePageState
         MaterialPageRoute(builder: (_) => const HomeShell()),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error completant perfil')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Error completant perfil')));
     }
   }
 
@@ -173,15 +171,13 @@ class _CompleteGoogleProfilePageState
                   // USERNAME
                   TextField(
                     controller: usernameController,
-                    decoration:
-                        decoration.copyWith(labelText: 'Nom d\'usuari'),
+                    decoration: decoration.copyWith(labelText: 'Nom d\'usuari'),
                   ),
                   const SizedBox(height: 16),
 
                   TextField(
                     controller: passwordController,
-                    decoration:
-                        decoration.copyWith(labelText: 'Contrasenya'),
+                    decoration: decoration.copyWith(labelText: 'Contrasenya'),
                   ),
                   const SizedBox(height: 16),
 
@@ -217,8 +213,10 @@ class _CompleteGoogleProfilePageState
                     value: language,
                     decoration: decoration.copyWith(labelText: 'Idioma'),
                     items: ['Català', 'Castellano', 'English']
-                        .map((lang) =>
-                            DropdownMenuItem(value: lang, child: Text(lang)))
+                        .map(
+                          (lang) =>
+                              DropdownMenuItem(value: lang, child: Text(lang)),
+                        )
                         .toList(),
                     onChanged: (value) {
                       setState(() {
@@ -231,8 +229,7 @@ class _CompleteGoogleProfilePageState
                   // JARDÍN
                   TextField(
                     controller: gardenController,
-                    decoration:
-                        decoration.copyWith(labelText: 'Nom del jardí'),
+                    decoration: decoration.copyWith(labelText: 'Nom del jardí'),
                   ),
 
                   const Spacer(),
