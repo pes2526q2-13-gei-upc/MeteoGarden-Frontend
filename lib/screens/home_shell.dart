@@ -8,6 +8,9 @@ import 'photo_page.dart';
 import 'inventory_page.dart';
 import 'friends_page.dart';
 
+import 'package:provider/provider.dart';
+import '../models/dades_usr.dart';
+
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
 
@@ -18,38 +21,167 @@ class HomeShell extends StatefulWidget {
 class _HomeShellState extends State<HomeShell> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    GardenPage(username: "laia", gardenName: "jardin1"),
-    FriendsPage(),
-    PhotoPage(),
-    MissionsPage(),
-    PerfilPage(),
-    InventoryPage(),
-    AlbumPage(),
-  ];
+  @override
+  Widget build(BuildContext context) {
+    final username = Provider.of<UserModel>(context).username;
+    final gardenName = Provider.of<UserModel>(context).gardenName;
+
+    final List<Widget> pages = [
+      GardenPage(username: username, gardenName: gardenName),
+      FriendsPage(),
+      PlantCameraScreen(),
+      MissionsPage(),
+      PerfilPage(),
+      InventoryPage(username: username),
+      AlbumPage(),
+    ];
+
+    return Scaffold(
+      body: pages[_currentIndex],
+      bottomNavigationBar: _GameNavBar(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
+      ),
+    );
+  }
+}
+
+// ── Dades de cada tab ──────────────────────────────────────────────────────────
+class _NavItem {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  const _NavItem({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+  });
+}
+
+const _navItems = [
+  _NavItem(
+    icon: Icons.local_florist_outlined,
+    activeIcon: Icons.local_florist,
+    label: 'Jardí',
+  ),
+  _NavItem(
+    icon: Icons.people_outline,
+    activeIcon: Icons.people,
+    label: 'Amics',
+  ),
+  _NavItem(
+    icon: Icons.camera_alt_outlined,
+    activeIcon: Icons.camera_alt,
+    label: 'Càmera',
+  ),
+  _NavItem(
+    icon: Icons.flag_outlined,
+    activeIcon: Icons.flag,
+    label: 'Missions',
+  ),
+  _NavItem(
+    icon: Icons.person_outline,
+    activeIcon: Icons.person,
+    label: 'Perfil',
+  ),
+];
+
+// ── Barra principal ────────────────────────────────────────────────────────────
+class _GameNavBar extends StatelessWidget {
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+
+  const _GameNavBar({required this.currentIndex, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_florist),
-            label: 'Jardí',
+    return Container(
+      decoration: const BoxDecoration(
+        color: Color(0xFF7FB77E), // verd base suau
+        border: Border(
+          top: BorderSide(color: Color(0xFF3E6B48), width: 3),
+          bottom: BorderSide(color: Color(0xFF3E6B48), width: 3),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: IntrinsicHeight(
+          child: Row(
+            children: List.generate(_navItems.length, (i) {
+              final isLast = i == _navItems.length - 1;
+              return Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _GameNavTile(
+                        item: _navItems[i],
+                        isSelected: i == currentIndex,
+                        onTap: () => onTap(i),
+                      ),
+                    ),
+                    if (!isLast)
+                      Container(
+                        width: 2,
+                        color: const Color(0xFF3E6B48), // separador
+                      ),
+                  ],
+                ),
+              );
+            }),
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Amics'),
-          BottomNavigationBarItem(icon: Icon(Icons.camera), label: 'Camera'),
-          BottomNavigationBarItem(icon: Icon(Icons.flag), label: 'Missions'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_2), label: 'Perfil'),
-        ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Tile individual ────────────────────────────────────────────────────────────
+class _GameNavTile extends StatelessWidget {
+  final _NavItem item;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _GameNavTile({
+    required this.item,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color(0xFFCFE8CF) // verd molt clar
+              : const Color(0xFF9ED2A0), // verd mig suau
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isSelected ? item.activeIcon : item.icon,
+              size: 20,
+              color: const Color(0xFF1E3D2B),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              item.label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF1E3D2B),
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
