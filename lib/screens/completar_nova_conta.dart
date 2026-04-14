@@ -100,6 +100,7 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       await _fetchAndSaveProfile(data['token']);
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeShell()),
@@ -210,7 +211,7 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
 
                   // IDIOMA
                   DropdownButtonFormField<String>(
-                    value: language,
+                    initialValue: language,
                     decoration: decoration.copyWith(labelText: 'Idioma'),
                     items: ['Català', 'Castellano', 'English']
                         .map(

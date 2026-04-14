@@ -100,6 +100,7 @@ class _LoginPageState extends State<LoginPage> {
       final String tokenToSend = idToken ?? accessToken ?? "";
 
       if (tokenToSend.isEmpty) {
+        if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Error obteniendo token de Google")),
         );
