@@ -47,6 +47,8 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
     try {
       await _initializeControllerFuture!;
       final image = await _controller!.takePicture();
+
+      if (!mounted) return;
       final user = Provider.of<UserModel>(context, listen: false);
       final result = await PlantService.identifyPlant(
           username: user.username,
