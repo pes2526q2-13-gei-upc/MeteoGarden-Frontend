@@ -67,8 +67,6 @@ class PlantNetData {
   PlantNetData({required this.score});
 
   factory PlantNetData.fromJson(Map<String, dynamic> json) {
-    return PlantNetData(
-      score: (json['score'] as num?)?.toDouble(),
-    );
+    return PlantNetData(score: (json['score'] as num?)?.toDouble());
   }
 }

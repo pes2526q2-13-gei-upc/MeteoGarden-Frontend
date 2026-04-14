@@ -4,10 +4,7 @@ import '../models/plant_identification.dart';
 class PlantResultPage extends StatelessWidget {
   final PlantIdentification result;
 
-  const PlantResultPage({
-    super.key,
-    required this.result,
-  });
+  const PlantResultPage({super.key, required this.result});
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +74,7 @@ class PlantResultPage extends StatelessWidget {
                           shape: BoxShape.circle,
                           color: Colors.green.withValues(alpha: 0.12),
                         ),
-                        child: const Icon(
-                          Icons.local_florist,
-                          size: 42,
-                        ),
+                        child: const Icon(Icons.local_florist, size: 42),
                       ),
                       const SizedBox(height: 16),
                       Text(

@@ -51,8 +51,8 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       if (!mounted) return;
       final user = Provider.of<UserModel>(context, listen: false);
       final result = await PlantService.identifyPlant(
-          username: user.username,
-          imagePath: image.path,
+        username: user.username,
+        imagePath: image.path,
       );
       debugPrint("Resultat: $result");
 
@@ -60,17 +60,15 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => PlantResultPage(result: result),
-        ),
+        MaterialPageRoute(builder: (_) => PlantResultPage(result: result)),
       );
     } catch (e) {
       debugPrint('Error: $e');
 
-      if(!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
