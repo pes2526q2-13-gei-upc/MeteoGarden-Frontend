@@ -29,11 +29,17 @@ class WeatherCard extends StatelessWidget {
           .trim();
       final wind = double.tryParse(windText) ?? 0.0;
 
-      if (precipitation > 0) return Icons.water_drop_rounded;
-      if (wind >= 8) return Icons.air_rounded;
-      return Icons.wb_sunny_rounded;
+      if (precipitation > 0) {
+        return Icons.grain;
+      }
+
+      if (wind >= 8) {
+        return Icons.air;
+      }
+
+      return Icons.wb_sunny;
     } catch (_) {
-      return Icons.cloud_rounded;
+      return Icons.cloud;
     }
   }
 
@@ -45,69 +51,52 @@ class WeatherCard extends StatelessWidget {
         onTap: onRefresh,
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.28), // 👈 FONS ORIGINAL
+            color: Colors.black.withValues(alpha: 0.35),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              //  ICONA
-              Icon(_weatherIcon(), color: Colors.white, size: 26),
-
+              Icon(_weatherIcon(), color: Colors.white, size: 28),
               const SizedBox(width: 10),
-
-              //  TEXTOS
               Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       nomEstacio,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 15,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Text(
                       title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 12,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 3),
+                    const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.90),
+                        color: Colors.white.withValues(alpha: 0.85),
                         fontSize: 13,
                       ),
                     ),
                   ],
                 ),
               ),
-
-              const SizedBox(width: 8),
-
-              // 🔄 REFRESH CENTRAT
-              Center(
-                child: IconTheme(
-                  data: const IconThemeData(color: Colors.white, size: 24),
-                  child: trailing,
-                ),
+              const SizedBox(width: 10),
+              IconTheme(
+                data: const IconThemeData(color: Colors.white),
+                child: trailing,
               ),
             ],
           ),

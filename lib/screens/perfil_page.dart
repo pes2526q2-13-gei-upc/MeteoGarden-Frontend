@@ -1,289 +1,194 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../models/perfil_info.dart';
-import '../models/dades_usr.dart';
+import '../../services/perfil_service.dart';
 import 'perfil_edit_page.dart';
 
-class PerfilPage extends StatelessWidget {
+class PerfilPage extends StatefulWidget {
   const PerfilPage({super.key});
 
   @override
+  State<PerfilPage> createState() => _PerfilPageState();
+}
+
+class _PerfilPageState extends State<PerfilPage> {
+  late Future<PerfilInfo> _profileFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileFuture = PerfilService.fetchMe();
+  }
+
+  void _refresh() {
+    setState(() {
+      _profileFuture = PerfilService.fetchMe();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final user = context.watch<UserModel>();
-
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/imatge_fondo1.png',
-              fit: BoxFit.cover,
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green.withValues(alpha: 0.12), Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.black.withValues(alpha: 0.18),
-                    Colors.green.withValues(alpha: 0.10),
-                    Colors.white.withValues(alpha: 0.92),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-            ),
-          ),
-          SafeArea(
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: _GameHeader(
-                    username: user.username,
-                    email: user.email,
-                    city: user.city,
-                    language: user.language,
-                    coins: user.monedes,
-                    plantsDiscovered: user.numPlantsCollected,
-                    onEdit: () async {
-                      final profile = PerfilInfo(
-                        username: user.username,
-                        email: user.email,
-                        city: user.city,
-                        language: user.language,
-                        coins: user.monedes,
-                        plantsDiscovered: user.numPlantsCollected,
-                      );
+        ),
+        child: SafeArea(
+          child: FutureBuilder<PerfilInfo>(
+            future: _profileFuture,
+            builder: (context, snap) {
+              if (snap.connectionState == ConnectionState.waiting) {
+                return const _LoadingProfile();
+              }
 
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => PerfilEditPage(profile: profile),
+              if (snap.hasError) {
+                return _ErrorProfile(
+                  message: "No s'ha pogut carregar el perfil.",
+                  onRetry: _refresh,
+                );
+              }
+
+              final p = snap.data!;
+              return CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: _Header(
+                      username: p.username,
+                      city: p.city,
+                      level: p.level,
+                      onEdit: () async {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => PerfilEditPage(profile: p),
+                          ),
+                        );
+                        _refresh();
+                      },
+                      onRefresh: _refresh,
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        _StatsRow(
+                          coins: p.coins,
+                          plantsDiscovered: p.plantsDiscovered,
                         ),
-                      );
-                    },
+                        const SizedBox(height: 12),
+                        InfoCard(profile: p),
+                        const SizedBox(height: 12),
+                        const SizedBox(height: 20),
+                      ]),
+                    ),
                   ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      _SectionTitle(
-                        icon: Icons.bar_chart_rounded,
-                        title: "Estadístiques",
-                      ),
-                      const SizedBox(height: 12),
-                      _StatsGrid(
-                        coins: user.monedes,
-                        plantsDiscovered: user.numPlantsCollected,
-                      ),
-                      const SizedBox(height: 20),
-                    ]),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              );
+            },
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _GameHeader extends StatelessWidget {
+class _Header extends StatelessWidget {
   final String username;
-  final String email;
   final String city;
-  final String language;
-  final int coins;
-  final int plantsDiscovered;
+  final int level;
   final VoidCallback onEdit;
+  final VoidCallback onRefresh;
 
-  const _GameHeader({
+  const _Header({
     required this.username,
-    required this.email,
     required this.city,
-    required this.language,
-    required this.coins,
-    required this.plantsDiscovered,
+    required this.level,
     required this.onEdit,
+    required this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
     final displayName = username.isEmpty ? "Usuari" : username;
     final displayCity = city.isEmpty ? "Ciutat no definida" : city;
-    final displayEmail = email.isEmpty ? "—" : email;
-    final displayLanguage = language.isEmpty ? "—" : language;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(28),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 18,
-              offset: const Offset(0, 10),
-              color: Colors.black.withValues(alpha: 0.16),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(28),
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF3E6B48), Color(0xFF355F3F)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      child: Material(
+        elevation: 0,
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white.withValues(alpha: 0.85),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: 74,
-                        width: 74,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withValues(alpha: 0.12),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.28),
-                            width: 2,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.person_rounded,
-                          size: 40,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              displayName,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.location_on_rounded,
-                                  size: 16,
-                                  color: Colors.white70,
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: Text(
-                                    displayCity,
-                                    style: const TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 13,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 18),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _MiniHeaderStat(
-                          icon: Icons.monetization_on,
-                          label: "Monedes",
-                          value: coins.toString(),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _MiniHeaderStat(
-                          icon: Icons.eco_rounded,
-                          label: "Descobertes",
-                          value: plantsDiscovered.toString(),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
                   Container(
-                    padding: const EdgeInsets.all(14),
+                    height: 54,
+                    width: 54,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.10),
-                      borderRadius: BorderRadius.circular(18),
+                      shape: BoxShape.circle,
+                      color: Colors.green.withValues(alpha: 0.15),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.14),
+                        color: Colors.green.withValues(alpha: 0.25),
                       ),
                     ),
+                    child: const Icon(Icons.person, size: 30),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _HeaderInfoRow(
-                          icon: Icons.person_rounded,
-                          label: "Usuari",
-                          value: displayName,
+                        Text(
+                          displayName,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
-                        const SizedBox(height: 12),
-                        _HeaderInfoRow(
-                          icon: Icons.email_rounded,
-                          label: "Email",
-                          value: displayEmail,
-                        ),
-                        const SizedBox(height: 12),
-                        _HeaderInfoRow(
-                          icon: Icons.location_city_rounded,
-                          label: "Ciutat",
-                          value: displayCity,
-                        ),
-                        const SizedBox(height: 12),
-                        _HeaderInfoRow(
-                          icon: Icons.language_rounded,
-                          label: "Idioma",
-                          value: displayLanguage,
+                        const SizedBox(height: 2),
+                        Text(
+                          displayCity,
+                          style: TextStyle(
+                            color: Colors.black.withValues(alpha: 0.6),
+                            fontSize: 13,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: onEdit,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: const Color(0xFF166534),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      icon: const Icon(Icons.edit_rounded),
-                      label: const Text(
-                        "Modificar perfil",
-                        style: TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                    ),
+                  IconButton(
+                    tooltip: "Refrescar",
+                    onPressed: onRefresh,
+                    icon: const Icon(Icons.refresh),
                   ),
                 ],
               ),
-            ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  _Pill(icon: Icons.auto_awesome, text: "Nivell $level"),
+                  const SizedBox(width: 8),
+                  _Pill(icon: Icons.local_florist, text: "MeteoGarden"),
+                  const Spacer(),
+                  FilledButton.icon(
+                    onPressed: onEdit,
+                    icon: const Icon(Icons.edit),
+                    label: const Text("Modificar"),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -291,94 +196,29 @@ class _GameHeader extends StatelessWidget {
   }
 }
 
-class _HeaderInfoRow extends StatelessWidget {
+class _Pill extends StatelessWidget {
   final IconData icon;
-  final String label;
-  final String value;
+  final String text;
 
-  const _HeaderInfoRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, color: Colors.white, size: 18),
-        const SizedBox(width: 10),
-        SizedBox(
-          width: 58,
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _MiniHeaderStat extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-
-  const _MiniHeaderStat({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
+  const _Pill({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+        borderRadius: BorderRadius.circular(999),
+        color: Colors.green.withValues(alpha: 0.10),
+        border: Border.all(color: Colors.green.withValues(alpha: 0.18)),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: Colors.white, size: 22),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
-            ),
+          Icon(icon, size: 16),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
           ),
         ],
       ),
@@ -386,56 +226,29 @@ class _MiniHeaderStat extends StatelessWidget {
   }
 }
 
-class _SectionTitle extends StatelessWidget {
-  final IconData icon;
-  final String title;
-
-  const _SectionTitle({required this.icon, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 22, color: const Color(0xFF166534)),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF1f2937),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StatsGrid extends StatelessWidget {
+class _StatsRow extends StatelessWidget {
   final int coins;
   final int plantsDiscovered;
 
-  const _StatsGrid({required this.coins, required this.plantsDiscovered});
+  const _StatsRow({required this.coins, required this.plantsDiscovered});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          child: _GameStatCard(
-            icon: Icons.monetization_on_rounded,
+          child: _StatCard(
+            icon: Icons.monetization_on,
             title: "Monedes",
             value: coins.toString(),
-            accent: const Color(0xFFF59E0B),
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _GameStatCard(
-            icon: Icons.photo_camera_rounded,
-            title: "Plantes",
+          child: _StatCard(
+            icon: Icons.photo_camera,
+            title: "Plantes descobertes",
             value: plantsDiscovered.toString(),
-            accent: const Color(0xFF22C55E),
           ),
         ),
       ],
@@ -443,65 +256,207 @@ class _StatsGrid extends StatelessWidget {
   }
 }
 
-class _GameStatCard extends StatelessWidget {
+class _StatCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String value;
-  final Color accent;
 
-  const _GameStatCard({
+  const _StatCard({
     required this.icon,
     required this.title,
     required this.value,
-    required this.accent,
   });
 
   @override
   Widget build(BuildContext context) {
+    return Material(
+      borderRadius: BorderRadius.circular(18),
+      color: Colors.white.withValues(alpha: 0.9),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 38,
+              width: 38,
+              decoration: BoxDecoration(
+                color: Colors.green.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.black.withValues(alpha: 0.65),
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    value,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class InfoCard extends StatelessWidget {
+  final PerfilInfo profile;
+
+  const InfoCard({super.key, required this.profile});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.92),
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: Colors.black.withValues(alpha: 0.05)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             blurRadius: 12,
+            color: Colors.black.withValues(alpha: 0.06),
             offset: const Offset(0, 6),
-            color: Colors.black.withValues(alpha: 0.07),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 44,
-            width: 44,
-            decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(icon, color: accent),
+          const Text(
+            "Informació personal",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 14),
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.black.withValues(alpha: 0.62),
-              fontSize: 13,
-            ),
+          const SizedBox(height: 18),
+          _InfoTile(
+            icon: Icons.person,
+            label: "Usuari",
+            value: profile.username,
           ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF111827),
-            ),
+          const Divider(),
+          _InfoTile(
+            icon: Icons.email,
+            label: "Email",
+            value: profile.email.isEmpty ? "—" : profile.email,
+          ),
+          const Divider(),
+          _InfoTile(
+            icon: Icons.location_city,
+            label: "Ciutat",
+            value: profile.city.isEmpty ? "—" : profile.city,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _InfoTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _InfoTile({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          height: 38,
+          width: 38,
+          decoration: BoxDecoration(
+            color: Colors.green.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, size: 20),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LoadingProfile extends StatelessWidget {
+  const _LoadingProfile();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: CircularProgressIndicator());
+  }
+}
+
+class _ErrorProfile extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorProfile({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.warning_amber_rounded, size: 42),
+            const SizedBox(height: 10),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh),
+              label: const Text("Reintentar"),
+            ),
+          ],
+        ),
       ),
     );
   }

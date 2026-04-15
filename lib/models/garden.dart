@@ -48,7 +48,6 @@ class PlantData {
   final bool canFlower;
   final double minTemperature;
   final double maxTemperature;
-  final String? imageUrl;
 
   PlantData({
     required this.scientificName,
@@ -57,7 +56,6 @@ class PlantData {
     required this.canFlower,
     required this.minTemperature,
     required this.maxTemperature,
-    this.imageUrl, //de moment ho posem opcional
   });
 
   factory PlantData.fromJson(Map<String, dynamic> json) {
@@ -68,7 +66,6 @@ class PlantData {
       canFlower: json['can_flower'],
       minTemperature: (json['min_temperature'] as num).toDouble(),
       maxTemperature: (json['max_temperature'] as num).toDouble(),
-      imageUrl: json['image_url'] as String?, //llegeix del json
     );
   }
 }
