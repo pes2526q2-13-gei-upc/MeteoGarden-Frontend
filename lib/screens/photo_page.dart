@@ -1,5 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/plant_service.dart';
+import '../models/dades_usr.dart';
+import 'plant_result_page.dart';
 
 class PlantCameraScreen extends StatefulWidget {
   const PlantCameraScreen({super.key});
@@ -38,19 +42,33 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   }
 
   Future<void> _takePicture() async {
-    if (_controller == null) return;
+    if (_controller == null || _initializeControllerFuture == null) return;
 
     try {
-      await _initializeControllerFuture;
+      await _initializeControllerFuture!;
       final image = await _controller!.takePicture();
 
-      debugPrint('Foto guardada a: ${image.path}');
-      // Més endavant aquí podràs:
-      // - mostrar preview de la foto
-      // - enviar-la al backend/API
-      // - navegar a pantalla de resultats
+      if (!mounted) return;
+      final user = Provider.of<UserModel>(context, listen: false);
+      final result = await PlantService.identifyPlant(
+        username: user.username,
+        imagePath: image.path,
+      );
+      debugPrint("Resultat: $result");
+
+      if (!mounted) return;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => PlantResultPage(result: result)),
+      );
     } catch (e) {
-      debugPrint('Error fent la foto: $e');
+      debugPrint('Error: $e');
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
