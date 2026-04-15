@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/eventsApi_service.dart';
+import '../services/events_api_service.dart';
 
 // ─── Filter State ─────────────────────────────────────────────────────────────
 
@@ -1037,7 +1037,7 @@ class _FiltersSheetState extends State<_FiltersSheet> {
             Switch(
               value: enabled,
               onChanged: onToggle,
-              activeColor: const Color(0xFF4CAF50),
+              activeThumbColor: const Color(0xFF4CAF50),
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ],
