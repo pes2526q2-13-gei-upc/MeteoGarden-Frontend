@@ -142,28 +142,30 @@ class _GardenPageState extends State<GardenPage> {
           }
         },
         onPotion: () async {
-            try {
-              Navigator.pop(context);  
-              if (!mounted) return;
-              showModalBottomSheet(
-                context: context,
-                backgroundColor: Colors.transparent,
-                isScrollControlled: true,
-                builder: (_) => PotionSelectionSheet(
-                  pot: pot,
-                  username: widget.username,
-                  gardenName: widget.gardenName,
-                  gardenService: _gardenService,
-                  onPotionSuccess: _refreshGarden,
-                ),
-              );
-            } catch (e) {
-              if (!mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(e.toString().replaceFirst('Exception: ', ''))),
-              );
-            }
+          try {
+            Navigator.pop(context);
+            if (!mounted) return;
+            showModalBottomSheet(
+              context: context,
+              backgroundColor: Colors.transparent,
+              isScrollControlled: true,
+              builder: (_) => PotionSelectionSheet(
+                pot: pot,
+                username: widget.username,
+                gardenName: widget.gardenName,
+                gardenService: _gardenService,
+                onPotionSuccess: _refreshGarden,
+              ),
+            );
+          } catch (e) {
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(e.toString().replaceFirst('Exception: ', '')),
+              ),
+            );
           }
+        },
       ),
     );
   }
@@ -303,113 +305,109 @@ class _GardenPageState extends State<GardenPage> {
     );
   }
 
-Widget _buildActionArea({
-  required double width,
-  required double height,
-  required String username,
-  required int monedes,
-  required String city
-}) {
-  final sideBoxSize = width < 360 ? width * 0.16 : width * 0.14;
-  final shopWidth = width < 360 ? width * 0.40 : width * 0.36;
+  Widget _buildActionArea({
+    required double width,
+    required double height,
+    required String username,
+    required int monedes,
+    required String city,
+  }) {
+    final sideBoxSize = width < 360 ? width * 0.16 : width * 0.14;
+    final shopWidth = width < 360 ? width * 0.40 : width * 0.36;
 
-  return Padding(
-    padding: EdgeInsets.only(
-      left: width * 0.01,
-      right: width * 0.01,
-      bottom: height * 0.005,
-    ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // ESQUERRA: icones a dalt
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => InventoryPage(username: username),
-                  ),
-                );
-              },
-              child: SizedBox(
-                width: sideBoxSize,
-                height: sideBoxSize,
-                child: Image.asset(
-                  'assets/images/inventory_imagen.png',
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-            SizedBox(height: height * 0.008),
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const AlbumPage(),
-                  ),
-                );
-              },
-              child: SizedBox(
-                width: sideBoxSize,
-                height: sideBoxSize,
-                child: Image.asset(
-                  'assets/images/album_image.png',
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-            SizedBox(height: height * 0.008),
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => CalendarPage(city: city),
-                  ),
-                );
-              },
-              child: SizedBox(
-                width: sideBoxSize,
-                height: sideBoxSize,
-                child: Image.asset(
-                  'assets/images/calendar_image.png',
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        const Spacer(),
-
-        // DRETA: monedes a dalt, botiga a baix
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+    return Padding(
+      padding: EdgeInsets.only(
+        left: width * 0.01,
+        right: width * 0.01,
+        bottom: height * 0.005,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ESQUERRA: icones a dalt
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildCoinsChip(monedes, width, height),
-              const Spacer(),
-              SizedBox(
-                width: shopWidth,
-                child: Image.asset(
-                  'assets/images/botiga.png',
-                  fit: BoxFit.contain,
-                  alignment: Alignment.bottomCenter,
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => InventoryPage(username: username),
+                    ),
+                  );
+                },
+                child: SizedBox(
+                  width: sideBoxSize,
+                  height: sideBoxSize,
+                  child: Image.asset(
+                    'assets/images/inventory_imagen.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              SizedBox(height: height * 0.008),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (_) => const AlbumPage()));
+                },
+                child: SizedBox(
+                  width: sideBoxSize,
+                  height: sideBoxSize,
+                  child: Image.asset(
+                    'assets/images/album_image.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              SizedBox(height: height * 0.008),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => CalendarPage(city: city)),
+                  );
+                },
+                child: SizedBox(
+                  width: sideBoxSize,
+                  height: sideBoxSize,
+                  child: Image.asset(
+                    'assets/images/calendar_image.png',
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
             ],
           ),
-        ),
-      ],
-    ),
-  );
-}
+
+          const Spacer(),
+
+          // DRETA: monedes a dalt, botiga a baix
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _buildCoinsChip(monedes, width, height),
+                const Spacer(),
+                SizedBox(
+                  width: shopWidth,
+                  child: Image.asset(
+                    'assets/images/botiga.png',
+                    fit: BoxFit.contain,
+                    alignment: Alignment.bottomCenter,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildPotsGrid(double width) {
     final padding = _horizontalPadding(width);
@@ -531,7 +529,7 @@ Widget _buildActionArea({
                           height: height,
                           username: username,
                           monedes: monedes,
-                          city: user.city
+                          city: user.city,
                         ),
                       ),
                       SizedBox(height: height * 0.02),

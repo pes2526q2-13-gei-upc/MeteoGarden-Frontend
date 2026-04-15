@@ -203,15 +203,16 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
           future: _productsFuture,
           builder: (context, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (snap.hasError) {
               return Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 28,
+                  horizontal: 16,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.red.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
@@ -248,7 +249,8 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: potions.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 10),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final potion = potions[index];
                   final isSelected =
@@ -326,7 +328,9 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                                     color: potionYellow.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: potionYellow.withValues(alpha: 0.5),
+                                      color: potionYellow.withValues(
+                                        alpha: 0.5,
+                                      ),
                                     ),
                                   ),
                                   child: Text(
@@ -406,10 +410,7 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                 : const Icon(Icons.local_drink),
             label: Text(
               _isApplying ? 'Aplicant...' : 'Aplicar poció',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: potionYellow,

@@ -156,7 +156,7 @@ class PotInfoSheet extends StatelessWidget {
                       ),
                     ],
                     if (onPotion != null) ...[
-                    const SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(

@@ -29,16 +29,14 @@ class EventFilters {
     double? maxPrice,
     bool clearPrice = false,
     String? q,
-  }) =>
-      EventFilters(
-        city: city ?? this.city,
-        county: county ?? this.county,
-        category: category ?? this.category,
-        maxDistanceKm:
-            clearDistance ? null : (maxDistanceKm ?? this.maxDistanceKm),
-        maxPrice: clearPrice ? null : (maxPrice ?? this.maxPrice),
-        q: q ?? this.q,
-      );
+  }) => EventFilters(
+    city: city ?? this.city,
+    county: county ?? this.county,
+    category: category ?? this.category,
+    maxDistanceKm: clearDistance ? null : (maxDistanceKm ?? this.maxDistanceKm),
+    maxPrice: clearPrice ? null : (maxPrice ?? this.maxPrice),
+    q: q ?? this.q,
+  );
 
   int get activeCount {
     int count = 0;
@@ -108,9 +106,9 @@ class _CalendarPageState extends State<CalendarPage> {
 
       final filtered = events.where((e) {
         if (_filters.category.isNotEmpty &&
-            !e.category
-                .toLowerCase()
-                .contains(_filters.category.toLowerCase())) {
+            !e.category.toLowerCase().contains(
+              _filters.category.toLowerCase(),
+            )) {
           return false;
         }
 
@@ -233,8 +231,8 @@ class _CalendarPageState extends State<CalendarPage> {
                       ),
                     )
                   : _error != null
-                      ? _buildError()
-                      : _buildContent(),
+                  ? _buildError()
+                  : _buildContent(),
             ),
           ],
         ),
@@ -422,10 +420,7 @@ class _CalendarPageState extends State<CalendarPage> {
               ],
             ),
           ),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: _buildEmptyDay(),
-          ),
+          SliverFillRemaining(hasScrollBody: false, child: _buildEmptyDay()),
         ],
       );
     }
@@ -462,23 +457,18 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
           ),
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, i) {
-                final preview = _events.take(5).toList();
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                  child: _EventCard(
-                    event: preview[i],
-                    onTap: () => _openEventDetail(preview[i]),
-                  ),
-                );
-              },
-              childCount: _events.take(5).length,
-            ),
+            delegate: SliverChildBuilderDelegate((context, i) {
+              final preview = _events.take(5).toList();
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                child: _EventCard(
+                  event: preview[i],
+                  onTap: () => _openEventDetail(preview[i]),
+                ),
+              );
+            }, childCount: _events.take(5).length),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 16),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
         ],
       ],
     );
@@ -855,10 +845,7 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                     onPressed: _clear,
                     child: const Text(
                       'Netejar tot',
-                      style: TextStyle(
-                        color: Color(0xFF9E9E9E),
-                        fontSize: 13,
-                      ),
+                      style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 13),
                     ),
                   ),
                 ],
@@ -919,8 +906,9 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                       min: 0,
                       max: _maxPriceSlider,
                       divisions: 100,
-                      displayValue:
-                          _maxPrice == 0 ? 'Gratis' : '${_maxPrice.toInt()} €',
+                      displayValue: _maxPrice == 0
+                          ? 'Gratis'
+                          : '${_maxPrice.toInt()} €',
                       onToggle: (v) => setState(() => _priceEnabled = v),
                       onChanged: (v) => setState(() => _maxPrice = v),
                       icon: Icons.euro_outlined,
@@ -947,10 +935,7 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                   ),
                   child: const Text(
                     'Aplicar filtres',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -985,11 +970,7 @@ class _FiltersSheetState extends State<_FiltersSheet> {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 13),
-            prefixIcon: Icon(
-              icon,
-              color: const Color(0xFF9E9E9E),
-              size: 18,
-            ),
+            prefixIcon: Icon(icon, color: const Color(0xFF9E9E9E), size: 18),
             filled: true,
             fillColor: Colors.white,
             contentPadding: const EdgeInsets.symmetric(
@@ -1052,8 +1033,9 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                     activeTrackColor: const Color(0xFF4CAF50),
                     inactiveTrackColor: const Color(0xFFC8E6C9),
                     thumbColor: const Color(0xFF2E7D32),
-                    overlayColor:
-                        const Color(0xFF4CAF50).withValues(alpha: 0.12),
+                    overlayColor: const Color(
+                      0xFF4CAF50,
+                    ).withValues(alpha: 0.12),
                   ),
                   child: Slider(
                     value: value,
@@ -1065,8 +1047,10 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFE8F5E9),
                   borderRadius: BorderRadius.circular(20),
@@ -1110,8 +1094,9 @@ class _DayCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color bg = Colors.transparent;
-    Color textColor =
-        isWeekend ? const Color(0xFF9E9E9E) : const Color(0xFF424242);
+    Color textColor = isWeekend
+        ? const Color(0xFF9E9E9E)
+        : const Color(0xFF424242);
     Color borderColor = Colors.transparent;
 
     if (isSelected) {
@@ -1139,8 +1124,9 @@ class _DayCell extends StatelessWidget {
               '$day',
               style: TextStyle(
                 fontSize: 14,
-                fontWeight:
-                    isToday || isSelected ? FontWeight.w700 : FontWeight.w400,
+                fontWeight: isToday || isSelected
+                    ? FontWeight.w700
+                    : FontWeight.w400,
                 color: textColor,
               ),
             ),
@@ -1175,10 +1161,7 @@ class _EventCard extends StatelessWidget {
   final PlantEvent event;
   final VoidCallback onTap;
 
-  const _EventCard({
-    required this.event,
-    required this.onTap,
-  });
+  const _EventCard({required this.event, required this.onTap});
 
   String get _timeLabel {
     final h = event.startDate.hour.toString().padLeft(2, '0');
@@ -1351,9 +1334,7 @@ class _EventCard extends StatelessWidget {
 class _EventDetailDialog extends StatelessWidget {
   final PlantEvent event;
 
-  const _EventDetailDialog({
-    required this.event,
-  });
+  const _EventDetailDialog({required this.event});
 
   String get _dateRange {
     final start = _formatDate(event.startDate);
@@ -1557,10 +1538,7 @@ class _EventDetailDialog extends StatelessWidget {
                       ],
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
-                        child: Divider(
-                          color: Color(0xFFDCEFDC),
-                          thickness: 1,
-                        ),
+                        child: Divider(color: Color(0xFFDCEFDC), thickness: 1),
                       ),
                       if (event.description.isNotEmpty)
                         Text(
