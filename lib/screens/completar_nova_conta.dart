@@ -69,7 +69,7 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
 
   Future<void> fetchCities() async {
     final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/stations/'), 
+      Uri.parse('${ApiConfig.baseUrl}/api/stations/'),
     );
 
     if (response.statusCode == 200) {
@@ -108,7 +108,7 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
       final data = jsonDecode(response.body);
       await _fetchAndSaveProfile(data['token']);
       if (!mounted) return;
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Compte completat correctament!')),
       );
@@ -118,9 +118,9 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
         MaterialPageRoute(builder: (_) => const HomeShell()),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error completant perfil')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Error completant perfil')));
     }
   }
 
@@ -235,7 +235,10 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
                   ? const CircularProgressIndicator(color: Color(0xFF166534))
                   : SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 450),
                         child: Container(
@@ -279,7 +282,9 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
                                 controller: usernameController,
                                 decoration: defaultDecoration.copyWith(
                                   labelText: 'Nom d\'usuari',
-                                  prefixIcon: const Icon(Icons.person_outline_rounded),
+                                  prefixIcon: const Icon(
+                                    Icons.person_outline_rounded,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 16),
@@ -293,11 +298,18 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
                                 expandedInsets: EdgeInsets.zero,
                                 menuHeight: 250,
                                 label: const Text('Ciutat'),
-                                leadingIcon: const Icon(Icons.location_city_rounded),
+                                leadingIcon: const Icon(
+                                  Icons.location_city_rounded,
+                                ),
                                 inputDecorationTheme: InputDecorationTheme(
                                   filled: true,
-                                  fillColor: Colors.grey.withValues(alpha: 0.08),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                  fillColor: Colors.grey.withValues(
+                                    alpha: 0.08,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 16,
+                                  ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(16),
                                     borderSide: BorderSide.none,
@@ -323,7 +335,9 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
                                 obscureText: true,
                                 decoration: defaultDecoration.copyWith(
                                   labelText: 'Contrasenya (Opcional)',
-                                  prefixIcon: const Icon(Icons.lock_outline_rounded),
+                                  prefixIcon: const Icon(
+                                    Icons.lock_outline_rounded,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 16),
@@ -333,11 +347,18 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
                                 value: language,
                                 decoration: defaultDecoration.copyWith(
                                   labelText: 'Idioma',
-                                  prefixIcon: const Icon(Icons.language_rounded),
+                                  prefixIcon: const Icon(
+                                    Icons.language_rounded,
+                                  ),
                                 ),
                                 icon: const Icon(Icons.arrow_drop_down_rounded),
                                 items: ['Català', 'Castellano', 'English']
-                                    .map((lang) => DropdownMenuItem(value: lang, child: Text(lang)))
+                                    .map(
+                                      (lang) => DropdownMenuItem(
+                                        value: lang,
+                                        child: Text(lang),
+                                      ),
+                                    )
                                     .toList(),
                                 onChanged: (value) {
                                   setState(() {
@@ -352,7 +373,9 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
                                 controller: gardenController,
                                 decoration: defaultDecoration.copyWith(
                                   labelText: 'Nom del teu jardí',
-                                  prefixIcon: const Icon(Icons.local_florist_outlined),
+                                  prefixIcon: const Icon(
+                                    Icons.local_florist_outlined,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 32),
@@ -360,7 +383,9 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
                               // BOTÓ CONTINUAR
                               FilledButton.icon(
                                 onPressed: _submit,
-                                icon: const Icon(Icons.check_circle_outline_rounded),
+                                icon: const Icon(
+                                  Icons.check_circle_outline_rounded,
+                                ),
                                 label: const Text(
                                   'Continuar',
                                   style: TextStyle(
@@ -371,7 +396,9 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
                                 style: FilledButton.styleFrom(
                                   backgroundColor: const Color(0xFF166534),
                                   foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),

@@ -182,7 +182,10 @@ class _LoginPageState extends State<LoginPage> {
             child: Center(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 450),
                   child: Container(
@@ -203,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         const _LoginHeader(),
                         const SizedBox(height: 32),
-                        
+
                         _InputField(
                           controller: usernameController,
                           label: "Nom d'usuari",
@@ -211,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
                           icon: Icons.person_outline_rounded,
                         ),
                         const SizedBox(height: 16),
-                        
+
                         _InputField(
                           controller: passwordController,
                           label: "Contrasenya",
@@ -220,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                           obscureText: true,
                         ),
                         const SizedBox(height: 28),
-                        
+
                         // BOTÓ INICIAR SESSIÓ
                         FilledButton.icon(
                           onPressed: _login,
@@ -233,7 +236,9 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xFF166534), // Verd fosc unificat
+                            backgroundColor: const Color(
+                              0xFF166534,
+                            ), // Verd fosc unificat
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
@@ -247,9 +252,13 @@ class _LoginPageState extends State<LoginPage> {
                         // DIVISOR
                         Row(
                           children: [
-                            Expanded(child: Divider(color: Colors.grey.shade300)),
+                            Expanded(
+                              child: Divider(color: Colors.grey.shade300),
+                            ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                              ),
                               child: Text(
                                 'o continuar amb',
                                 style: TextStyle(
@@ -258,7 +267,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            Expanded(child: Divider(color: Colors.grey.shade300)),
+                            Expanded(
+                              child: Divider(color: Colors.grey.shade300),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 24),
@@ -266,7 +277,11 @@ class _LoginPageState extends State<LoginPage> {
                         // BOTÓ GOOGLE
                         OutlinedButton.icon(
                           onPressed: () => loginWithGoogle(context),
-                          icon: const Icon(Icons.g_mobiledata, size: 28, color: Colors.black87),
+                          icon: const Icon(
+                            Icons.g_mobiledata,
+                            size: 28,
+                            color: Colors.black87,
+                          ),
                           label: const Text(
                             'Google',
                             style: TextStyle(
@@ -383,7 +398,7 @@ class _LoginHeader extends StatelessWidget {
           "Benvinguda a MeteoGarden",
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 22, 
+            fontSize: 22,
             fontWeight: FontWeight.w800,
             color: Color(0xFF166534), // Toc de color al títol
           ),
@@ -392,10 +407,7 @@ class _LoginHeader extends StatelessWidget {
         Text(
           "Inicia sessió per continuar cuidant el teu jardí.",
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey.shade600,
-          ),
+          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
         ),
       ],
     );
@@ -425,7 +437,7 @@ class _InputField extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 13, 
+            fontSize: 13,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade700,
           ),
@@ -440,18 +452,26 @@ class _InputField extends StatelessWidget {
             prefixIcon: Icon(icon, color: Colors.grey.shade500),
             filled: true,
             fillColor: Colors.grey.withValues(alpha: 0.08),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.05)),
+              borderSide: BorderSide(
+                color: Colors.black.withValues(alpha: 0.05),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: Color(0xFF166534), width: 1.5),
+              borderSide: const BorderSide(
+                color: Color(0xFF166534),
+                width: 1.5,
+              ),
             ),
           ),
         ),

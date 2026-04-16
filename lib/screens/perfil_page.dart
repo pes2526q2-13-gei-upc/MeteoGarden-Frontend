@@ -552,7 +552,7 @@ class _ActionButtons extends StatelessWidget {
             onPressed: () async {
               final user = Provider.of<UserModel>(context, listen: false);
               final token = user.token;
-              Navigator.of(ctx).pop(); 
+              Navigator.of(ctx).pop();
 
               final response = await http.delete(
                 Uri.parse('${ApiConfig.baseUrl}/api/delete_profile/'),
@@ -568,13 +568,11 @@ class _ActionButtons extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (_) => const LoginPage()),
                 );
-              }
-              else {
+              } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Error eliminant el compte')),
                 );
               }
-
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red.shade50,

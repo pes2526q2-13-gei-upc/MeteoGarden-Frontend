@@ -38,7 +38,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nomjardiController = TextEditingController();
-  
+
   // Afegim aquest controlador pel buscador del DropdownMenu
   final TextEditingController ciutatSearchController = TextEditingController();
 
@@ -126,9 +126,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       );
     } else {
       debugPrint("Error: ${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error creant el compte')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Error creant el compte')));
     }
   }
 
@@ -237,7 +237,10 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
             child: Center(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 450),
                   child: Container(
@@ -281,7 +284,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                           controller: usernameController,
                           decoration: defaultDecoration.copyWith(
                             labelText: 'Nom d\'usuari',
-                            prefixIcon: const Icon(Icons.person_outline_rounded),
+                            prefixIcon: const Icon(
+                              Icons.person_outline_rounded,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -310,24 +315,34 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                                 requestFocusOnTap: true,
                                 enableFilter: true,
                                 expandedInsets: EdgeInsets.zero,
-                                menuHeight: 250, // <-- Això evita que ocupi tota la pantalla
+                                menuHeight:
+                                    250, // <-- Això evita que ocupi tota la pantalla
                                 label: const Text('Ciutat'),
-                                leadingIcon: const Icon(Icons.location_city_rounded),
+                                leadingIcon: const Icon(
+                                  Icons.location_city_rounded,
+                                ),
                                 inputDecorationTheme: InputDecorationTheme(
                                   filled: true,
-                                  fillColor: Colors.grey.withValues(alpha: 0.08),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                  fillColor: Colors.grey.withValues(
+                                    alpha: 0.08,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 16,
+                                  ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(16),
                                     borderSide: BorderSide.none,
                                   ),
                                 ),
-                                dropdownMenuEntries: cities.map<DropdownMenuEntry<City>>((City city) {
-                                  return DropdownMenuEntry<City>(
-                                    value: city,
-                                    label: city.name,
-                                  );
-                                }).toList(),
+                                dropdownMenuEntries: cities
+                                    .map<DropdownMenuEntry<City>>((City city) {
+                                      return DropdownMenuEntry<City>(
+                                        value: city,
+                                        label: city.name,
+                                      );
+                                    })
+                                    .toList(),
                                 onSelected: (City? city) {
                                   setState(() {
                                     selectedCity = city;
@@ -356,7 +371,12 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                           ),
                           icon: const Icon(Icons.arrow_drop_down_rounded),
                           items: ['Català', 'Castellano', 'English']
-                              .map((lang) => DropdownMenuItem(value: lang, child: Text(lang)))
+                              .map(
+                                (lang) => DropdownMenuItem(
+                                  value: lang,
+                                  child: Text(lang),
+                                ),
+                              )
                               .toList(),
                           onChanged: (value) {
                             setState(() {
@@ -371,7 +391,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                           controller: nomjardiController,
                           decoration: defaultDecoration.copyWith(
                             labelText: 'Nom del teu jardí',
-                            prefixIcon: const Icon(Icons.local_florist_outlined),
+                            prefixIcon: const Icon(
+                              Icons.local_florist_outlined,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 32),
@@ -388,7 +410,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                             ),
                           ),
                           style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xFF166534), // Verd fosc
+                            backgroundColor: const Color(
+                              0xFF166534,
+                            ), // Verd fosc
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(

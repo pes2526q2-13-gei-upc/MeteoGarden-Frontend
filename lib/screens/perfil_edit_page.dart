@@ -118,9 +118,9 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     if (response.statusCode == 200) {
       debugPrint("perfil actualitzat");
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Perfil actualitzat')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Perfil actualitzat')));
 
       Provider.of<UserModel>(context, listen: false).updateProfile(
         newUsername: usernameController.text,
@@ -191,7 +191,9 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.black.withValues(alpha: 0.50), // Més fosc a dalt per llegir el títol
+                    Colors.black.withValues(
+                      alpha: 0.50,
+                    ), // Més fosc a dalt per llegir el títol
                     Colors.green.withValues(alpha: 0.10),
                     Colors.white.withValues(alpha: 0.95),
                   ],
@@ -228,7 +230,11 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.edit_note_rounded, color: Color(0xFF166534), size: 28),
+                              const Icon(
+                                Icons.edit_note_rounded,
+                                color: Color(0xFF166534),
+                                size: 28,
+                              ),
                               const SizedBox(width: 8),
                               Text(
                                 "Dades d'usuari",
@@ -247,7 +253,9 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                             controller: usernameController,
                             decoration: defaultDecoration.copyWith(
                               labelText: 'Nom d\'usuari',
-                              prefixIcon: const Icon(Icons.person_outline_rounded),
+                              prefixIcon: const Icon(
+                                Icons.person_outline_rounded,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -258,25 +266,33 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                             controller: ciutatSearchController,
                             requestFocusOnTap: true,
                             enableFilter: true,
-                            expandedInsets: EdgeInsets.zero, // Ocupa tot l'ample
+                            expandedInsets:
+                                EdgeInsets.zero, // Ocupa tot l'ample
                             menuHeight: 250,
                             label: const Text('Ciutat'),
-                            leadingIcon: const Icon(Icons.location_city_rounded),
+                            leadingIcon: const Icon(
+                              Icons.location_city_rounded,
+                            ),
                             inputDecorationTheme: InputDecorationTheme(
                               filled: true,
                               fillColor: Colors.grey.withValues(alpha: 0.08),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
                                 borderSide: BorderSide.none,
                               ),
                             ),
-                            dropdownMenuEntries: cities.map<DropdownMenuEntry<City>>((City city) {
-                              return DropdownMenuEntry<City>(
-                                value: city,
-                                label: city.name,
-                              );
-                            }).toList(),
+                            dropdownMenuEntries: cities
+                                .map<DropdownMenuEntry<City>>((City city) {
+                                  return DropdownMenuEntry<City>(
+                                    value: city,
+                                    label: city.name,
+                                  );
+                                })
+                                .toList(),
                             onSelected: (City? city) {
                               setState(() {
                                 selectedCity = city;
@@ -294,7 +310,12 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                             ),
                             icon: const Icon(Icons.arrow_drop_down_rounded),
                             items: ['Català', 'Castellano', 'English']
-                                .map((lang) => DropdownMenuItem(value: lang, child: Text(lang)))
+                                .map(
+                                  (lang) => DropdownMenuItem(
+                                    value: lang,
+                                    child: Text(lang),
+                                  ),
+                                )
                                 .toList(),
                             onChanged: (value) {
                               setState(() {
@@ -302,7 +323,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                               });
                             },
                           ),
-                          
+
                           const SizedBox(height: 40),
 
                           // BOTÓ GUARDAR
@@ -319,9 +340,13 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                                 ),
                               ),
                               style: FilledButton.styleFrom(
-                                backgroundColor: const Color(0xFF166534), // Verd fosc
+                                backgroundColor: const Color(
+                                  0xFF166534,
+                                ), // Verd fosc
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
