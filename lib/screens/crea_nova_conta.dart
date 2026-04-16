@@ -22,29 +22,67 @@ class City {
   factory City.fromJson(Map<String, dynamic> json) {
     return City(code: json['code'], name: json['name']);
   }
+
+  // MOLT IMPORTANT: Perquè el Dropdown sàpiga comparar les ciutats
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is City && runtimeType == other.runtimeType && code == other.code;
+
+  @override
+  int get hashCode => code.hashCode;
 }
 
 class _CreaNovaContaState extends State<CreaNovaConta> {
   final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  //final TextEditingController cityController = TextEditingController();
-  String? city;
-  //final TextEditingController languageController = TextEditingController();
-  String? language;
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController nomjardiController = TextEditingController();
-  List<dynamic> cities = [];
+  
+  // Afegim aquest controlador pel buscador del DropdownMenu
+  final TextEditingController ciutatSearchController = TextEditingController();
+
+  String? language;
+  List<City> cities = [];
   City? selectedCity;
+  bool isLoadingCities = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCities();
+  }
 
   @override
   void dispose() {
     usernameController.dispose();
-    passwordController.dispose();
     emailController.dispose();
-    //cityController.dispose();
-    //languageController.dispose();
+    passwordController.dispose();
     nomjardiController.dispose();
+    ciutatSearchController.dispose();
     super.dispose();
+  }
+
+  Future<void> fetchCities() async {
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiConfig.baseUrl}/api/stations/'),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          cities = (jsonDecode(response.body) as List)
+              .map((e) => City.fromJson(e))
+              .toList();
+          isLoadingCities = false;
+        });
+      } else {
+        setState(() => isLoadingCities = false);
+      }
+    } catch (e) {
+      setState(() => isLoadingCities = false);
+      debugPrint("Error carregant ciutats: $e");
+    }
   }
 
   void _submit() async {
@@ -78,9 +116,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Compte creat')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Compte creat correctament!')),
+      );
 
       Navigator.pushReplacement(
         context,
@@ -88,36 +126,12 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       );
     } else {
       debugPrint("Error: ${response.body}");
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Error creant el compte')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error creant el compte')),
+      );
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    fetchCities();
-  }
-
-  Future<void> fetchCities() async {
-    //consulta de la uri per obtenir les ciuats: // $_baseUrl/api/stations/
-    // retorna el codi i el nom de la ciutat
-    final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/stations/'),
-    );
-
-    if (response.statusCode == 200) {
-      setState(() {
-        cities = (jsonDecode(response.body) as List)
-            .map((e) => City.fromJson(e))
-            .toList();
-      });
-    }
-  }
-
-  //aixo es borrara despres
   Future<void> _fetchAndSaveProfile(String token) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
 
@@ -131,13 +145,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
     if (!mounted) return;
 
-    debugPrint("PROFILE STATUS: ${response.statusCode}");
-    debugPrint("PROFILE BODY: ${response.body}");
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      // gardens és List, extreim només els noms
       final List<String> gardenNames = (data['gardens'] as List<dynamic>)
           .map((g) => g['gardenName'] as String)
           .toList();
@@ -159,120 +169,242 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     }
   }
 
-  InputDecoration _inputDecoration(String hint) => InputDecoration(
-    hintText: hint,
-    filled: true,
-    fillColor: Colors.green.withValues(alpha: 0.04),
-    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.08)),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(
-        color: Colors.green.withValues(alpha: 0.06),
-        width: 1.4,
-      ),
-    ),
-  );
-
   @override
   Widget build(BuildContext context) {
+    // Estil refinat per als camps de text (Mateix que PerfilEditPage)
+    final defaultDecoration = InputDecoration(
+      filled: true,
+      fillColor: Colors.grey.withValues(alpha: 0.08),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.05)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFF166534), width: 1.5),
+      ),
+      labelStyle: TextStyle(color: Colors.black.withValues(alpha: 0.6)),
+    );
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Crear compte')),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 430),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextField(
-                    controller: usernameController,
-                    decoration: _inputDecoration('Nom d\'usuari'),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: _inputDecoration('Email'),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: _inputDecoration('Contrasenya'),
-                  ),
-                  const SizedBox(height: 16),
-                  cities.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
-                      : DropdownButtonFormField<City>(
-                          initialValue: selectedCity,
-                          decoration: _inputDecoration('Ciutat'),
-                          items: cities.map((city) {
-                            return DropdownMenuItem<City>(
-                              value: city,
-                              child: Text(city.name),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedCity = value;
-                            });
-                          },
-                        ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    initialValue: language,
-                    decoration: _inputDecoration('Idioma'),
-                    items: ['Català', 'Castellano', 'English']
-                        .map(
-                          (lang) =>
-                              DropdownMenuItem(value: lang, child: Text(lang)),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        language = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-
-                  //const SizedBox(height: 24),
-                  TextField(
-                    controller: nomjardiController,
-                    decoration: _inputDecoration('Nom del jardi'),
-                  ),
-                  const SizedBox(height: 24),
-
-                  FilledButton(
-                    onPressed: _submit,
-                    style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 14.0),
-                      child: Text(
-                        'Crear compte',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
-                ],
+      extendBodyBehindAppBar: true, // El fons puja fins a dalt
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          'Crear compte',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
+            fontSize: 22,
+          ),
+        ),
+      ),
+      body: Stack(
+        children: [
+          // 1. Fons d'imatge
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/imatge_fondo1.png', // Assegura't de tenir aquesta imatge
+              fit: BoxFit.cover,
+            ),
+          ),
+          // 2. Degradat fosc a dalt, clar a baix
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.black.withValues(alpha: 0.60),
+                    Colors.green.withValues(alpha: 0.10),
+                    Colors.white.withValues(alpha: 0.95),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
               ),
             ),
           ),
-        ),
+          // 3. Contingut principal
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 450),
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                          color: Colors.black.withValues(alpha: 0.08),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Text(
+                          "Benvingut a Meteo Garden",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF166534),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Omple les teves dades per començar",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+
+                        // CAMP 1: USUARI
+                        TextField(
+                          controller: usernameController,
+                          decoration: defaultDecoration.copyWith(
+                            labelText: 'Nom d\'usuari',
+                            prefixIcon: const Icon(Icons.person_outline_rounded),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // CAMP 2: EMAIL
+                        TextField(
+                          controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: defaultDecoration.copyWith(
+                            labelText: 'Correu electrònic',
+                            prefixIcon: const Icon(Icons.email_outlined),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // CAMP 3: CIUTAT (Ara amb DropdownMenu i menuHeight controlat)
+                        isLoadingCities
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: Color(0xFF166534),
+                                ),
+                              )
+                            : DropdownMenu<City>(
+                                initialSelection: selectedCity,
+                                controller: ciutatSearchController,
+                                requestFocusOnTap: true,
+                                enableFilter: true,
+                                expandedInsets: EdgeInsets.zero,
+                                menuHeight: 250, // <-- Això evita que ocupi tota la pantalla
+                                label: const Text('Ciutat'),
+                                leadingIcon: const Icon(Icons.location_city_rounded),
+                                inputDecorationTheme: InputDecorationTheme(
+                                  filled: true,
+                                  fillColor: Colors.grey.withValues(alpha: 0.08),
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                dropdownMenuEntries: cities.map<DropdownMenuEntry<City>>((City city) {
+                                  return DropdownMenuEntry<City>(
+                                    value: city,
+                                    label: city.name,
+                                  );
+                                }).toList(),
+                                onSelected: (City? city) {
+                                  setState(() {
+                                    selectedCity = city;
+                                  });
+                                },
+                              ),
+                        const SizedBox(height: 16),
+
+                        // CAMP 4: CONTRASENYA
+                        TextField(
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: defaultDecoration.copyWith(
+                            labelText: 'Contrasenya',
+                            prefixIcon: const Icon(Icons.lock_outline_rounded),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // CAMP 5: IDIOMA
+                        DropdownButtonFormField<String>(
+                          value: language,
+                          decoration: defaultDecoration.copyWith(
+                            labelText: 'Idioma',
+                            prefixIcon: const Icon(Icons.language_rounded),
+                          ),
+                          icon: const Icon(Icons.arrow_drop_down_rounded),
+                          items: ['Català', 'Castellano', 'English']
+                              .map((lang) => DropdownMenuItem(value: lang, child: Text(lang)))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              language = value;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 16),
+
+                        // CAMP 6: NOM DEL JARDÍ
+                        TextField(
+                          controller: nomjardiController,
+                          decoration: defaultDecoration.copyWith(
+                            labelText: 'Nom del teu jardí',
+                            prefixIcon: const Icon(Icons.local_florist_outlined),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+
+                        // BOTÓ CREAR COMPTE
+                        FilledButton.icon(
+                          onPressed: _submit,
+                          icon: const Icon(Icons.check_circle_outline_rounded),
+                          label: const Text(
+                            'Crear compte',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF166534), // Verd fosc
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

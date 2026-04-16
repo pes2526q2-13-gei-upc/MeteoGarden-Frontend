@@ -152,129 +152,165 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.green.withValues(alpha: 0.12), Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      body: Stack(
+        children: [
+          // 1. Fons d'imatge
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/imatge_fondo1.png', // Assegura't de tenir aquesta imatge
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 430),
-                child: Material(
-                  elevation: 0,
-                  borderRadius: BorderRadius.circular(24),
-                  color: Colors.white.withValues(alpha: 0.92),
+          // 2. Degradat fosc a dalt, clar a baix
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.black.withValues(alpha: 0.60),
+                    Colors.green.withValues(alpha: 0.10),
+                    Colors.white.withValues(alpha: 0.95),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+          ),
+          // 3. Contingut principal
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 450),
                   child: Container(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(28),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: Colors.black.withValues(alpha: 0.06),
-                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
-                          blurRadius: 18,
-                          color: Colors.black.withValues(alpha: 0.05),
-                          offset: const Offset(0, 8),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                          color: Colors.black.withValues(alpha: 0.08),
                         ),
                       ],
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const _LoginHeader(),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 32),
+                        
                         _InputField(
                           controller: usernameController,
                           label: "Nom d'usuari",
                           hint: "Introdueix el teu nom d'usuari",
-                          icon: Icons.person_outline,
+                          icon: Icons.person_outline_rounded,
                         ),
                         const SizedBox(height: 16),
+                        
                         _InputField(
                           controller: passwordController,
                           label: "Contrasenya",
                           hint: "Introdueix la teva contrasenya",
-                          icon: Icons.lock_outline,
+                          icon: Icons.lock_outline_rounded,
                           obscureText: true,
                         ),
-                        const SizedBox(height: 22),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton.icon(
-                            onPressed: _login,
-                            icon: const Icon(Icons.login),
-                            label: const Text("Iniciar sessió"),
-                            style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              textStyle: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
+                        const SizedBox(height: 28),
+                        
+                        // BOTÓ INICIAR SESSIÓ
+                        FilledButton.icon(
+                          onPressed: _login,
+                          icon: const Icon(Icons.login_rounded),
+                          label: const Text(
+                            "Iniciar sessió",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF166534), // Verd fosc unificat
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
+                          ),
                         ),
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 24),
 
-                        // login with social providers and link to create account
-                        Center(
-                          child: Column(
-                            children: [
-                              const Text(
+                        // DIVISOR
+                        Row(
+                          children: [
+                            Expanded(child: Divider(color: Colors.grey.shade300)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(
                                 'o continuar amb',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.black54,
+                                  color: Colors.grey.shade600,
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      loginWithGoogle(context);
-                                    },
-                                    icon: const Icon(Icons.g_mobiledata),
-                                    label: const Text('Google'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const CreaNovaConta(),
-                                    ),
-                                  );
-                                },
-                                child: const Text('Crear compte'),
-                              ),
-                            ],
+                            ),
+                            Expanded(child: Divider(color: Colors.grey.shade300)),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+
+                        // BOTÓ GOOGLE
+                        OutlinedButton.icon(
+                          onPressed: () => loginWithGoogle(context),
+                          icon: const Icon(Icons.g_mobiledata, size: 28, color: Colors.black87),
+                          label: const Text(
+                            'Google',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            side: BorderSide(color: Colors.grey.shade300),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                           ),
                         ),
+                        const SizedBox(height: 24),
 
-                        Center(
-                          child: TextButton(
-                            onPressed: () {},
-                            child: const Text("Has oblidat la contrasenya?"),
-                          ),
+                        // ENLLAÇ CREAR COMPTE
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "No tens compte?",
+                              style: TextStyle(color: Colors.grey.shade600),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const CreaNovaConta(),
+                                  ),
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                foregroundColor: const Color(0xFF166534),
+                              ),
+                              child: const Text(
+                                'Crear compte',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -283,7 +319,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -340,19 +376,25 @@ class _LoginHeader extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(5),
-          child: Image.asset('assets/images/logo.png', width: 150),
+          child: Image.asset('assets/images/logo.png', width: 120),
         ),
         const SizedBox(height: 18),
         const Text(
           "Benvinguda a MeteoGarden",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 22, 
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF166534), // Toc de color al títol
+          ),
         ),
         const SizedBox(height: 8),
         Text(
           "Inicia sessió per continuar cuidant el teu jardí.",
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 14,
-            color: Colors.black.withValues(alpha: 0.65),
+            color: Colors.grey.shade600,
           ),
         ),
       ],
@@ -366,7 +408,6 @@ class _InputField extends StatelessWidget {
   final String hint;
   final IconData icon;
   final bool obscureText;
-  //final TextInputType? keyboardType;
 
   const _InputField({
     required this.controller,
@@ -374,7 +415,6 @@ class _InputField extends StatelessWidget {
     required this.hint,
     required this.icon,
     this.obscureText = false,
-    //this.keyboardType,
   });
 
   @override
@@ -384,40 +424,34 @@ class _InputField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: 13, 
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade700,
+          ),
         ),
         const SizedBox(height: 8),
         TextField(
           controller: controller,
           obscureText: obscureText,
-          //keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: Icon(icon),
+            hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+            prefixIcon: Icon(icon, color: Colors.grey.shade500),
             filled: true,
-            fillColor: Colors.green.withValues(alpha: 0.04),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 16,
-            ),
+            fillColor: Colors.grey.withValues(alpha: 0.08),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: Colors.black.withValues(alpha: 0.08),
-              ),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: Colors.black.withValues(alpha: 0.08),
-              ),
+              borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.05)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: Colors.green.withValues(alpha: 0.6),
-                width: 1.4,
-              ),
+              borderSide: const BorderSide(color: Color(0xFF166534), width: 1.5),
             ),
           ),
         ),

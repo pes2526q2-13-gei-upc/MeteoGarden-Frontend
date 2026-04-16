@@ -259,6 +259,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                             requestFocusOnTap: true,
                             enableFilter: true,
                             expandedInsets: EdgeInsets.zero, // Ocupa tot l'ample
+                            menuHeight: 250,
                             label: const Text('Ciutat'),
                             leadingIcon: const Icon(Icons.location_city_rounded),
                             inputDecorationTheme: InputDecorationTheme(
