@@ -16,6 +16,11 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   CameraController? _controller;
   Future<void>? _initializeControllerFuture;
 
+  bool _isProcessing = false;
+  String? _errorMessage;
+
+  String _selectedPlantType = 'leaf';
+
   @override
   void initState() {
     super.initState();
@@ -23,52 +28,94 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   }
 
   Future<void> _initCamera() async {
-    final cameras = await availableCameras();
+    try {
+      final cameras = await availableCameras();
 
-    // Normalment la càmera posterior serà la que vols
-    final backCamera = cameras.firstWhere(
-      (camera) => camera.lensDirection == CameraLensDirection.back,
-      orElse: () => cameras.first,
-    );
+      if (cameras.isEmpty) {
+        setState(() {
+          _errorMessage = 'No s’ha trobat cap càmera disponible.';
+        });
+        return;
+      }
 
-    _controller = CameraController(
-      backCamera,
-      ResolutionPreset.high,
-      enableAudio: false,
-    );
+      final backCamera = cameras.firstWhere(
+            (camera) => camera.lensDirection == CameraLensDirection.back,
+        orElse: () => cameras.first,
+      );
 
-    _initializeControllerFuture = _controller!.initialize();
-    setState(() {});
+      _controller = CameraController(
+        backCamera,
+        ResolutionPreset.high,
+        enableAudio: false,
+      );
+
+      _initializeControllerFuture = _controller!.initialize();
+      setState(() {});
+    } catch (_) {
+      setState(() {
+        _errorMessage = 'No s’ha pogut inicialitzar la càmera.';
+      });
+    }
   }
 
   Future<void> _takePicture() async {
     if (_controller == null || _initializeControllerFuture == null) return;
+
+    if (_isProcessing) return;
+
+    setState(() {
+      _isProcessing = true;
+      _errorMessage = null;
+    });
 
     try {
       await _initializeControllerFuture!;
       final image = await _controller!.takePicture();
 
       if (!mounted) return;
+
       final user = Provider.of<UserModel>(context, listen: false);
+
       final result = await PlantService.identifyPlant(
         username: user.username,
         imagePath: image.path,
+        organ: _selectedPlantType,
       );
-      debugPrint("Resultat: $result");
 
       if (!mounted) return;
 
-      Navigator.push(
+      await Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => PlantResultPage(result: result)),
+        MaterialPageRoute(
+          builder: (_) => PlantResultPage(result: result),
+        ),
+      );
+    } on PlantIdentificationException catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _errorMessage = e.message;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message)),
       );
     } catch (e) {
-      debugPrint('Error: $e');
-
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+
+      setState(() {
+        _errorMessage = 'S’ha produït un error inesperat.';
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('S’ha produït un error inesperat.')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
     }
   }
 
@@ -76,6 +123,50 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   void dispose() {
     _controller?.dispose();
     super.dispose();
+  }
+
+  Widget _buildTypeButton({
+    required String label,
+    required String value,
+    required IconData icon,
+  }) {
+    final isSelected = _selectedPlantType == value;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedPlantType = value;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.green.shade600 : Colors.white24,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? Colors.white : Colors.white54,
+              width: 1.5,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: Colors.white),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -98,7 +189,6 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                   children: [
                     CameraPreview(controller),
 
-                    // Capa fosca lleugera per llegir millor el text
                     Container(color: Colors.black.withValues(alpha: 0.15)),
 
                     SafeArea(
@@ -110,13 +200,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.white,
-                                ),
-                                const Spacer(),
-                                Text(
+                              children: Text(
                                   'MeteoGarden',
                                   style: TextStyle(
                                     color: Colors.green.shade400,
@@ -124,9 +208,6 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const Spacer(),
-                                const SizedBox(width: 24),
-                              ],
                             ),
                           ),
 
@@ -136,6 +217,67 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                             'Fotografia la planta',
                             style: TextStyle(color: Colors.white, fontSize: 20),
                           ),
+                          const SizedBox(height: 16),
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: Row(
+                              children: [
+                                _buildTypeButton(
+                                  label: 'Arbre',
+                                  value: 'leaf',
+                                  icon: Icons.park,
+                                ),
+                                const SizedBox(width: 12),
+                                _buildTypeButton(
+                                  label: 'Flor',
+                                  value: 'flower',
+                                  icon: Icons.local_florist,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+                          Text(
+                            _selectedPlantType == 'leaf'
+                                ? 'Mode arbre seleccionat'
+                                : 'Mode flor seleccionat',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          if (_isProcessing)
+                            const Padding(
+                              padding: EdgeInsets.only(top: 12),
+                              child: Text(
+                                'Identificant planta...',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+
+                          if (_errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.redAccent),
+                                ),
+                                child: Text(
+                                  _errorMessage!,
+                                  style: const TextStyle(color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
 
                           const Spacer(),
 
@@ -173,7 +315,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                                   ),
                                 ),
                                 GestureDetector(
-                                  onTap: _takePicture,
+                                  onTap: _isProcessing ? null : _takePicture,
                                   child: Container(
                                     width: 78,
                                     height: 78,
@@ -188,10 +330,19 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                                       child: Container(
                                         width: 58,
                                         height: 58,
-                                        decoration: const BoxDecoration(
+                                        decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Colors.white30,
+                                          color: _isProcessing ? Colors.white30 : Colors.white,
                                         ),
+                                        child: _isProcessing
+                                            ? const Padding(
+                                          padding: EdgeInsets.all(14),
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 3,
+                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                                          ),
+                                        )
+                                            : null,
                                       ),
                                     ),
                                   ),
