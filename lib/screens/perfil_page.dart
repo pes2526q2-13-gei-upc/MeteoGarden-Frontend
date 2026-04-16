@@ -3,6 +3,10 @@ import 'package:provider/provider.dart';
 import '../../models/perfil_info.dart';
 import '../models/dades_usr.dart';
 import 'perfil_edit_page.dart';
+import 'login_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../models/url.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
@@ -78,6 +82,8 @@ class PerfilPage extends StatelessWidget {
                         coins: user.monedes,
                         plantsDiscovered: user.numPlantsCollected,
                       ),
+                      const SizedBox(height: 24),
+                      const _ActionButtons(), // Nuestros nuevos botones
                       const SizedBox(height: 20),
                     ]),
                   ),
@@ -503,6 +509,125 @@ class _GameStatCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ActionButtons extends StatelessWidget {
+  const _ActionButtons();
+
+  void _logout(BuildContext context) {
+    Provider.of<UserModel>(context, listen: false).logout();
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginPage()),
+    );
+  }
+
+  void _confirmDeleteAccount(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.red),
+            SizedBox(width: 10),
+            Text("Eliminar compte"),
+          ],
+        ),
+        content: const Text(
+          "Estàs segur que vols eliminar el teu compte? Aquesta acció es permanent i es perdran totes les teves monedes i plantes descobertes.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text(
+              "Cancel·lar",
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final user = Provider.of<UserModel>(context, listen: false);
+              final token = user.token;
+              Navigator.of(ctx).pop(); 
+
+              final response = await http.delete(
+                Uri.parse('${ApiConfig.baseUrl}/api/delete_profile/'),
+                headers: {"Authorization": "Token $token"},
+              );
+
+              if (!context.mounted) return;
+
+              if (response.statusCode == 200) {
+                Provider.of<UserModel>(context, listen: false).logout();
+
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginPage()),
+                );
+              }
+              else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Error eliminant el compte')),
+                );
+              }
+
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade50,
+              foregroundColor: Colors.red,
+              elevation: 0,
+            ),
+            child: const Text("Sí, eliminar"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () => _logout(context),
+          icon: const Icon(Icons.logout, size: 20),
+          label: const Text(
+            "Tancar sessió",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black87,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: Colors.black.withValues(alpha: 0.1)),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        TextButton.icon(
+          onPressed: () => _confirmDeleteAccount(context),
+          icon: const Icon(Icons.delete_forever, size: 20),
+          label: const Text(
+            "Eliminar compte",
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          ),
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.red.shade400,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
