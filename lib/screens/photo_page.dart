@@ -199,15 +199,15 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                           // Header
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              children: Text(
-                                  'MeteoGarden',
-                                  style: TextStyle(
-                                    color: Colors.green.shade400,
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            child: Center(
+                              child: Text(
+                                'MeteoGarden',
+                                style: TextStyle(
+                                  color: Colors.green.shade400,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
                                 ),
+                              ),
                             ),
                           ),
 
