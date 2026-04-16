@@ -344,7 +344,7 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
 
                               // IDIOMA
                               DropdownButtonFormField<String>(
-                                value: language,
+                                initialValue: language,
                                 decoration: defaultDecoration.copyWith(
                                   labelText: 'Idioma',
                                   prefixIcon: const Icon(

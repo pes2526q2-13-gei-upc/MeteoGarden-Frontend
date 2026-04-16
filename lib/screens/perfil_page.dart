@@ -5,7 +5,6 @@ import '../models/dades_usr.dart';
 import 'perfil_edit_page.dart';
 import 'login_page.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../models/url.dart';
 
 class PerfilPage extends StatelessWidget {

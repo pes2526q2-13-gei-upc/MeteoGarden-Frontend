@@ -364,7 +364,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
                         // CAMP 5: IDIOMA
                         DropdownButtonFormField<String>(
-                          value: language,
+                          initialValue: language,
                           decoration: defaultDecoration.copyWith(
                             labelText: 'Idioma',
                             prefixIcon: const Icon(Icons.language_rounded),
