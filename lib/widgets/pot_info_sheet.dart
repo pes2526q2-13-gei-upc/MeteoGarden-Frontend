@@ -5,12 +5,14 @@ class PotInfoSheet extends StatelessWidget {
   final GardenPot pot;
   final Future<void> Function() onWater;
   final Future<void> Function()? onCollect;
+  final Function()? onPotion;
 
   const PotInfoSheet({
     super.key,
     required this.pot,
     required this.onWater,
     this.onCollect,
+    this.onPotion,
   });
 
   @override
@@ -140,6 +142,29 @@ class PotInfoSheet extends StatelessWidget {
                           label: const Text("Recollir planta"),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF16a34a),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (onPotion != null) ...[
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: onPotion,
+                          icon: const Icon(Icons.flash_on),
+                          label: const Text("Aplicar poció"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFCD34D),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(

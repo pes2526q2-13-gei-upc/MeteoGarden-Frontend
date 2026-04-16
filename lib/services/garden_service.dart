@@ -121,6 +121,38 @@ class GardenService {
     throw Exception('Error carregant pocions: ${response.statusCode}');
   }
 
+  Future<String> applyPotion({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+    required String productName,
+  }) async {
+    /*
+    final url = Uri.parse(
+      '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/potion/',
+    );
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'productName': productName}),
+    );
+
+    print('STATUS: ${response.statusCode}');
+    print('BODY: ${response.body}');
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return data['message'] ?? 'Poció aplicada correctament.';
+    } else {
+      throw Exception(
+        data['message'] ?? data['error'] ?? 'Error aplicant la poció.',
+      );
+    }*/
+    return 'Encara falta implementar aplicar poció.';
+  }
+
   Future<PlantingResult> plantSeed({
     required String username,
     required String gardenName,
