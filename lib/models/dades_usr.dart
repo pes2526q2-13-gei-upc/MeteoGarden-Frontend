@@ -41,6 +41,19 @@ class UserModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void logout() {
+    token = '';
+    username = '';
+    email = '';
+    city = '';
+    language = '';
+    lastEntry = '';
+    numPlantsCollected = 0;
+    monedes = 0;
+    gardens = [];
+    notifyListeners();
+  }
+
   // Helpers per agafar el primer valor dels jardins
   String get gardenName => gardens.isNotEmpty ? gardens.first : '';
 

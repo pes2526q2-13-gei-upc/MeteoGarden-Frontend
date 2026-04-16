@@ -16,7 +16,6 @@ class City {
     return City(code: json['code'], name: json['name']);
   }
 
-  // MOLT IMPORTANT: Afegim això perquè el Dropdown sàpiga comparar les ciutats
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -41,9 +40,8 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
 
   List<City> cities = [];
   City? selectedCity;
-  bool isLoading =
-      true; // Per mostrar l'indicador de càrrega mentre fem la crida
-  String? language; // Per guardar l'idioma seleccionat
+  bool isLoading = true;
+  String? language;
 
   @override
   void initState() {
@@ -53,8 +51,6 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     if (validLanguages.contains(widget.profile.language)) {
       language = widget.profile.language;
     } else {
-      // Si és un string buit o un format diferent, el deixem a null
-      // perquè el Dropdown no falli.
       language = null;
     }
     fetchCities();
@@ -79,16 +75,14 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
 
         setState(() {
           cities = fetchedCities;
-
-          selectedCity = null; // Per defecte ho deixem buit
+          selectedCity = null;
           for (var c in cities) {
             if (c.name == widget.profile.city) {
               selectedCity = c;
               ciutatSearchController.text = c.name;
-              break; // Hem trobat la ciutat, parem de buscar
+              break;
             }
           }
-
           isLoading = false;
         });
       } else {
@@ -146,93 +140,227 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Creem l'estil base perquè tots els camps siguin iguals
+    // Estil refinat per als camps de text
     final defaultDecoration = InputDecoration(
       filled: true,
-      fillColor: Colors.green.withValues(alpha: 0.04),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+      fillColor: Colors.grey.withValues(alpha: 0.08),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: Colors.black.withValues(alpha: 0.05)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0xFF166534), width: 1.5),
+      ),
+      labelStyle: TextStyle(color: Colors.black.withValues(alpha: 0.6)),
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Modificar perfil')),
-      body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            ) // Mostrem un carregant
-          : Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  // CAMP 1: USUARI
-                  TextField(
-                    controller: usernameController,
-                    // Apliquem l'estil i li afegim el text
-                    decoration: defaultDecoration.copyWith(labelText: 'Usuari'),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // CAMP 2: CIUTAT
-                  DropdownMenu<City>(
-                    initialSelection: selectedCity,
-                    controller: ciutatSearchController,
-                    requestFocusOnTap: true,
-                    enableFilter: true,
-                    expandedInsets: EdgeInsets.zero,
-                    label: const Text('Ciutat'),
-                    // El DropdownMenu fa servir un Theme en comptes d'InputDecoration,
-                    // però hi posem els mateixos valors
-                    inputDecorationTheme: InputDecorationTheme(
-                      filled: true,
-                      fillColor: Colors.green.withValues(alpha: 0.04),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    dropdownMenuEntries: cities.map<DropdownMenuEntry<City>>((
-                      City city,
-                    ) {
-                      return DropdownMenuEntry<City>(
-                        value: city,
-                        label: city.name,
-                      );
-                    }).toList(),
-                    onSelected: (City? city) {
-                      setState(() {
-                        selectedCity = city;
-                      });
-                      // HEM ELIMINAT L'UNFOCUS D'AQUÍ PER EVITAR L'ERROR
-                    },
-                  ),
-                  const SizedBox(height: 16),
-
-                  // CAMP 3: IDIOMA
-                  DropdownButtonFormField<String>(
-                    initialValue: language,
-                    // Apliquem exactament el mateix estil
-                    decoration: defaultDecoration.copyWith(labelText: 'Idioma'),
-                    items: ['Català', 'Castellano', 'English']
-                        .map(
-                          (lang) =>
-                              DropdownMenuItem(value: lang, child: Text(lang)),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        language = value;
-                      });
-                    },
-                  ),
-
-                  const Spacer(),
-                  FilledButton(
-                    onPressed: () {
-                      _actualitzar();
-                    },
-                    child: const Text('Guardar canvis'),
-                  ),
-                ],
+      extendBodyBehindAppBar: true, // Permet que el fons pugi fins a dalt
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          'Modificar perfil',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
+            fontSize: 22,
+          ),
+        ),
+      ),
+      body: Stack(
+        children: [
+          // 1. Fons d'imatge (MATEIX QUE A PERFIL)
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/imatge_fondo1.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          // 2. Degradat (MATEIX QUE A PERFIL)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.black.withValues(
+                      alpha: 0.50,
+                    ), // Més fosc a dalt per llegir el títol
+                    Colors.green.withValues(alpha: 0.10),
+                    Colors.white.withValues(alpha: 0.95),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
               ),
             ),
+          ),
+          // 3. Contingut principal
+          SafeArea(
+            child: isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(color: Color(0xFF166534)),
+                  )
+                : SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(28),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                            color: Colors.black.withValues(alpha: 0.08),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.edit_note_rounded,
+                                color: Color(0xFF166534),
+                                size: 28,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Dades d'usuari",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.grey.shade800,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+
+                          // CAMP 1: USUARI
+                          TextField(
+                            controller: usernameController,
+                            decoration: defaultDecoration.copyWith(
+                              labelText: 'Nom d\'usuari',
+                              prefixIcon: const Icon(
+                                Icons.person_outline_rounded,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // CAMP 2: CIUTAT
+                          DropdownMenu<City>(
+                            initialSelection: selectedCity,
+                            controller: ciutatSearchController,
+                            requestFocusOnTap: true,
+                            enableFilter: true,
+                            expandedInsets:
+                                EdgeInsets.zero, // Ocupa tot l'ample
+                            menuHeight: 250,
+                            label: const Text('Ciutat'),
+                            leadingIcon: const Icon(
+                              Icons.location_city_rounded,
+                            ),
+                            inputDecorationTheme: InputDecorationTheme(
+                              filled: true,
+                              fillColor: Colors.grey.withValues(alpha: 0.08),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                            dropdownMenuEntries: cities
+                                .map<DropdownMenuEntry<City>>((City city) {
+                                  return DropdownMenuEntry<City>(
+                                    value: city,
+                                    label: city.name,
+                                  );
+                                })
+                                .toList(),
+                            onSelected: (City? city) {
+                              setState(() {
+                                selectedCity = city;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 20),
+
+                          // CAMP 3: IDIOMA
+                          DropdownButtonFormField<String>(
+                            initialValue: language,
+                            decoration: defaultDecoration.copyWith(
+                              labelText: 'Idioma',
+                              prefixIcon: const Icon(Icons.language_rounded),
+                            ),
+                            icon: const Icon(Icons.arrow_drop_down_rounded),
+                            items: ['Català', 'Castellano', 'English']
+                                .map(
+                                  (lang) => DropdownMenuItem(
+                                    value: lang,
+                                    child: Text(lang),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                language = value;
+                              });
+                            },
+                          ),
+
+                          const SizedBox(height: 40),
+
+                          // BOTÓ GUARDAR
+                          SizedBox(
+                            width: double.infinity,
+                            child: FilledButton.icon(
+                              onPressed: _actualitzar,
+                              icon: const Icon(Icons.save_rounded),
+                              label: const Text(
+                                'Guardar canvis',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: const Color(
+                                  0xFF166534,
+                                ), // Verd fosc
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                elevation: 0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
