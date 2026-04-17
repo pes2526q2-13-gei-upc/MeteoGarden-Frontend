@@ -12,6 +12,8 @@ import 'inventory_page.dart';
 import '../../widgets/pot_info_sheet.dart';
 import '../../widgets/seed_selection_sheet.dart';
 //import '../../models/seed_option.dart';
+import '../../widgets/potion_selection_sheet.dart';
+import 'calendar_page.dart';
 
 import 'package:provider/provider.dart';
 import '../models/dades_usr.dart';
@@ -132,6 +134,31 @@ class _GardenPageState extends State<GardenPage> {
           } catch (e) {
             if (!mounted) return;
             Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(e.toString().replaceFirst('Exception: ', '')),
+              ),
+            );
+          }
+        },
+        onPotion: () async {
+          try {
+            Navigator.pop(context);
+            if (!mounted) return;
+            showModalBottomSheet(
+              context: context,
+              backgroundColor: Colors.transparent,
+              isScrollControlled: true,
+              builder: (_) => PotionSelectionSheet(
+                pot: pot,
+                username: widget.username,
+                gardenName: widget.gardenName,
+                gardenService: _gardenService,
+                onPotionSuccess: _refreshGarden,
+              ),
+            );
+          } catch (e) {
+            if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(e.toString().replaceFirst('Exception: ', '')),
@@ -282,9 +309,11 @@ class _GardenPageState extends State<GardenPage> {
     required double width,
     required double height,
     required String username,
+    required int monedes,
+    required String city,
   }) {
     final sideBoxSize = width < 360 ? width * 0.16 : width * 0.14;
-    final shopWidth = width < 360 ? width * 0.42 : width * 0.38;
+    final shopWidth = width < 360 ? width * 0.40 : width * 0.36;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -293,11 +322,12 @@ class _GardenPageState extends State<GardenPage> {
         bottom: height * 0.005,
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ESQUERRA: icones a dalt
           Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
@@ -334,19 +364,44 @@ class _GardenPageState extends State<GardenPage> {
                   ),
                 ),
               ),
-              const Spacer(),
+              SizedBox(height: height * 0.008),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => CalendarPage(city: city)),
+                  );
+                },
+                child: SizedBox(
+                  width: sideBoxSize,
+                  height: sideBoxSize,
+                  child: Image.asset(
+                    'assets/images/calendar_image.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
             ],
           ),
+
           const Spacer(),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: SizedBox(
-              width: shopWidth,
-              child: Image.asset(
-                'assets/images/botiga.png',
-                fit: BoxFit.contain,
-                alignment: Alignment.bottomCenter,
-              ),
+
+          // DRETA: monedes a dalt, botiga a baix
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _buildCoinsChip(monedes, width, height),
+                const Spacer(),
+                SizedBox(
+                  width: shopWidth,
+                  child: Image.asset(
+                    'assets/images/botiga.png',
+                    fit: BoxFit.contain,
+                    alignment: Alignment.bottomCenter,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -458,26 +513,23 @@ class _GardenPageState extends State<GardenPage> {
                   child: Column(
                     children: [
                       Expanded(
-                        flex: 35,
+                        flex: 23,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(height: height * 0.015),
                             _buildWeatherSection(),
-                            SizedBox(height: height * 0.01),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: _buildCoinsChip(monedes, width, height),
-                            ),
                           ],
                         ),
                       ),
                       Expanded(
-                        flex: 25,
+                        flex: 37,
                         child: _buildActionArea(
                           width: width,
                           height: height,
                           username: username,
+                          monedes: monedes,
+                          city: user.city,
                         ),
                       ),
                       SizedBox(height: height * 0.02),

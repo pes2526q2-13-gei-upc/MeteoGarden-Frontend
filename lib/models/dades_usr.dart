@@ -30,8 +30,27 @@ class UserModel with ChangeNotifier {
   int monedes = 0;
   String token = '';
   List<String> gardens = [];
+
   void setToken(String newToken) {
     token = newToken;
+    notifyListeners();
+  }
+
+  void setEmail(String newEmail) {
+    email = newEmail;
+    notifyListeners();
+  }
+
+  void logout() {
+    token = '';
+    username = '';
+    email = '';
+    city = '';
+    language = '';
+    lastEntry = '';
+    numPlantsCollected = 0;
+    monedes = 0;
+    gardens = [];
     notifyListeners();
   }
 
