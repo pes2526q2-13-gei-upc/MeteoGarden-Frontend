@@ -16,6 +16,19 @@ class AlbumPage extends StatefulWidget {
 }
 
 class _AlbumPageState extends State<AlbumPage> {
+  String mapLanguage(String language) {
+    switch (language) {
+      case 'Català':
+        return 'ca';
+      case 'Español':
+        return 'es';
+      case 'English':
+        return 'en';
+      default:
+        return 'en';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -30,10 +43,11 @@ class _AlbumPageState extends State<AlbumPage> {
 
   Future<Map<String, dynamic>> _fetchDetallesPlanta(
       String scientificName,
+      String lang,
       ) async {
     final response = await http.get(
       Uri.parse(
-        '${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName',
+        '${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName&lang=$lang',
       ),
     );
 
@@ -54,6 +68,9 @@ class _AlbumPageState extends State<AlbumPage> {
   }
 
   void _mostrarPopupDetalles(BuildContext context, String scientificName) {
+    final user = Provider.of<UserModel>(context, listen:false);
+    final lang = mapLanguage(user.language);
+
     showDialog(
       context: context,
       builder: (context) {
@@ -62,7 +79,7 @@ class _AlbumPageState extends State<AlbumPage> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: FutureBuilder<Map<String, dynamic>>(
-            future: _fetchDetallesPlanta(scientificName),
+            future: _fetchDetallesPlanta(scientificName, lang),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Padding(
