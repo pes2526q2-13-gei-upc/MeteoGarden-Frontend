@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../services/plant_service.dart';
 import '../models/dades_usr.dart';
 import 'plant_result_page.dart';
+import 'package:meteo_garden/models/plantes_desbl.dart';
 
 class PlantCameraScreen extends StatefulWidget {
   const PlantCameraScreen({super.key});
@@ -81,6 +82,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
         imagePath: image.path,
         organ: _selectedPlantType,
       );
+      debugPrint('IMAGE URL RESULT: ${result.image.url}');
 
       if (!mounted) return;
 
@@ -90,6 +92,11 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
           builder: (_) => PlantResultPage(result: result),
         ),
       );
+
+      if (!mounted) return;
+
+      await context.read<PlantProvider>().loadPlants(user);
+
     } on PlantIdentificationException catch (e) {
       if (!mounted) return;
 
