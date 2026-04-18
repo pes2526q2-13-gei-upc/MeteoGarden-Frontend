@@ -325,7 +325,7 @@ class _GardenPageState extends State<GardenPage> {
       ),
       child: Row(
         // 1. CAMBIAR A STRETCH: Fuerza a la fila a tener un límite de altura exacto
-        crossAxisAlignment: CrossAxisAlignment.stretch, 
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // ESQUERRA: icones a dalt
           Column(
@@ -388,26 +388,22 @@ class _GardenPageState extends State<GardenPage> {
           ),
 
           const Spacer(), // Este Spacer horizontal está bien, separa izquierda de derecha.
-
           // DRETA: monedes a dalt, botiga a baix
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               // 2. AÑADIR SPACE BETWEEN: Empuja las monedas arriba y la tienda abajo automáticamente
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildCoinsChip(monedes, width, height),
-                
+
                 // ¡BORRAMOS EL const Spacer() QUE HABÍA AQUÍ!
-                
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const ShopPage(),
-                      ),
-                    );
+                    Navigator.of(
+                      context,
+                    ).push(MaterialPageRoute(builder: (_) => const ShopPage()));
                   },
                   child: SizedBox(
                     width: shopWidth,
@@ -425,7 +421,7 @@ class _GardenPageState extends State<GardenPage> {
       ),
     );
   }
-  
+
   Widget _buildPotsGrid(double width) {
     final padding = _horizontalPadding(width);
     final spacing = _gridSpacing(width);

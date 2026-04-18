@@ -12,10 +12,11 @@ class ShopPage extends StatefulWidget {
   State<ShopPage> createState() => _ShopPageState();
 }
 
-class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin {
+class _ShopPageState extends State<ShopPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool isLoading = true;
-  
+
   List<dynamic> seeds = [];
   List<dynamic> products = [];
 
@@ -48,7 +49,7 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        
+
         if (mounted) {
           setState(() {
             seeds = data['seeds'] ?? [];
@@ -69,25 +70,27 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
   // 2. COMPRAR UN ARTICLE
   Future<void> buyItem(bool isSeed, Map<String, dynamic> item) async {
     Navigator.pop(context); // Tanquem el BottomSheet primer
-    
+
     // Mostrem un indicador de càrrega
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator(color: Color(0xFF166534))),
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(color: Color(0xFF166534)),
+      ),
     );
 
     final token = Provider.of<UserModel>(context, listen: false).token;
 
     final username = Provider.of<UserModel>(context, listen: false).username;
-    
-    final url = Uri.parse('${ApiConfig.baseUrl}/api/users/$username/buy/'); 
+
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/users/$username/buy/');
 
     // Preparem el payload depenent de si és llavor o producte
     final body = jsonEncode({
       "type": isSeed ? "seed" : "product",
       "name": isSeed ? item['scientificName'] : item['name'],
-      "price": item['price']
+      "price": item['price'],
     });
 
     try {
@@ -104,7 +107,10 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
       Navigator.pop(context); // Amaguem l'indicador de càrrega
 
       if (response.statusCode == 200) {
-        Provider.of<UserModel>(context, listen: false).setCoins(jsonDecode(response.body)['coins_remaining']);
+        Provider.of<UserModel>(
+          context,
+          listen: false,
+        ).setCoins(jsonDecode(response.body)['coins_remaining']);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -113,7 +119,9 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
           ),
         );
       } else {
-        _showError(jsonDecode(response.body)['error'] ?? "Error al processar la compra.");
+        _showError(
+          jsonDecode(response.body)['error'] ?? "Error al processar la compra.",
+        );
       }
     } catch (e) {
       if (!mounted) return;
@@ -123,15 +131,23 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   // 3. BOTTOM SHEET DE DETALLS I CONFIRMACIÓ
-  void _showItemDetails(BuildContext context, bool isSeed, Map<String, dynamic> item) {
-    final String name = isSeed ? (item['commonName'] ?? item['scientificName']) : item['name'];
+  void _showItemDetails(
+    BuildContext context,
+    bool isSeed,
+    Map<String, dynamic> item,
+  ) {
+    final String name = isSeed
+        ? (item['commonName'] ?? item['scientificName'])
+        : item['name'];
     final String? description = isSeed ? item['description'] : null;
     final int price = item['price'] ?? 0;
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -176,12 +192,19 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
                       children: [
                         Text(
                           name,
-                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         if (isSeed && item['family'] != null)
                           Text(
                             item['family'],
-                            style: TextStyle(fontSize: 14, color: Colors.grey.shade600, fontStyle: FontStyle.italic),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
                       ],
                     ),
@@ -192,12 +215,20 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
               if (description != null) ...[
                 Text(
                   "Descripció",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey.shade800),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade800,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   description,
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade700, height: 1.4),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade700,
+                    height: 1.4,
+                  ),
                 ),
                 const SizedBox(height: 24),
               ],
@@ -212,10 +243,18 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
                     children: [
                       Text(
                         "$price",
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: Color(0xFF166534)),
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF166534),
+                        ),
                       ),
                       const SizedBox(width: 6),
-                      const Icon(Icons.monetization_on_rounded, color: Colors.amber, size: 28),
+                      const Icon(
+                        Icons.monetization_on_rounded,
+                        color: Colors.amber,
+                        size: 28,
+                      ),
                     ],
                   ),
                 ],
@@ -228,10 +267,15 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         side: BorderSide(color: Colors.grey.shade300),
                       ),
-                      child: const Text("Tornar", style: TextStyle(color: Colors.black87, fontSize: 16)),
+                      child: const Text(
+                        "Tornar",
+                        style: TextStyle(color: Colors.black87, fontSize: 16),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -241,9 +285,17 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF166534),
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
-                      child: const Text("Comprar", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: const Text(
+                        "Comprar",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -272,7 +324,9 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        final name = isSeed ? (item['commonName'] ?? item['scientificName']) : item['name'];
+        final name = isSeed
+            ? (item['commonName'] ?? item['scientificName'])
+            : item['name'];
         final price = item['price'] ?? 0;
 
         return Container(
@@ -289,7 +343,10 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
             ],
           ),
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 12,
+            ),
             leading: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -306,17 +363,28 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             subtitle: isSeed && item['family'] != null
-                ? Text(item['family'], style: TextStyle(fontSize: 12, color: Colors.grey.shade600))
+                ? Text(
+                    item['family'],
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  )
                 : null,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   "$price",
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Color(0xFF166534)),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF166534),
+                  ),
                 ),
                 const SizedBox(width: 4),
-                const Icon(Icons.monetization_on_rounded, color: Colors.amber, size: 20),
+                const Icon(
+                  Icons.monetization_on_rounded,
+                  color: Colors.amber,
+                  size: 20,
+                ),
               ],
             ),
             onTap: () => _showItemDetails(context, isSeed, item),
@@ -337,7 +405,11 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Botiga',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 24),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
+            fontSize: 24,
+          ),
         ),
       ),
       body: Stack(
@@ -371,7 +443,10 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
               children: [
                 // Pestanyes
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(25),
@@ -392,7 +467,10 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
                     ),
                     labelColor: const Color(0xFF166534),
                     unselectedLabelColor: Colors.white,
-                    labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                     tabs: const [
                       Tab(text: "Llavors 🌱"),
                       Tab(text: "Altres 🛒"),
@@ -402,7 +480,9 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
                 // Llistes de productes
                 Expanded(
                   child: isLoading
-                      ? const Center(child: CircularProgressIndicator(color: Colors.white))
+                      ? const Center(
+                          child: CircularProgressIndicator(color: Colors.white),
+                        )
                       : TabBarView(
                           controller: _tabController,
                           children: [
