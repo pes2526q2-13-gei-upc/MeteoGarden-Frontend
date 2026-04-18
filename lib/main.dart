@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:meteo_garden/screens/login_page.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:meteo_garden/l10n/app_localizations.dart';
 
 void main() {
   runApp(
@@ -23,8 +25,19 @@ class MeteoGardenApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'MeteoGarden',
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       theme: ThemeData(colorSchemeSeed: Colors.green, useMaterial3: true),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ca'),
+        Locale('es'),
+        Locale('en'),
+      ],
       home: const LoginPage(),
     );
   }

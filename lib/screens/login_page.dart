@@ -9,6 +9,7 @@ import 'dart:convert';
 import '../models/url.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:meteo_garden/l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -59,7 +60,11 @@ class _LoginPageState extends State<LoginPage> {
       debugPrint("Error: ${response.body}");
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Error de login')));
+      ).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.loginError),
+          ),
+      );
     }
   }
 
@@ -80,77 +85,89 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> loginWithGoogle(BuildContext context) async {
     try {
-      // 1. Login con Google
-      // per que funcioni amb web s'ha de forçar el port 62057
-      // flutter run -d chrome --web-port=62057
+      debugPrint("GOOGLE 1: inici login");
+
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      debugPrint("GOOGLE 2: googleUser = $googleUser");
 
       if (googleUser == null) {
-        // Usuario canceló
+        debugPrint("GOOGLE 3: usuari ha cancel·lat");
         return;
       }
 
-      // 2. Obtener tokens
       final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      await googleUser.authentication;
+
+      debugPrint("GOOGLE 4: idToken = ${googleAuth.idToken}");
+      debugPrint("GOOGLE 5: accessToken = ${googleAuth.accessToken}");
 
       final String? idToken = googleAuth.idToken;
       final String? accessToken = googleAuth.accessToken;
-
       final String tokenToSend = idToken ?? accessToken ?? "";
+
+      debugPrint("GOOGLE 6: tokenToSend buit? ${tokenToSend.isEmpty}");
 
       if (tokenToSend.isEmpty) {
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Error obteniendo token de Google")),
+          const SnackBar(content: Text("Error obtenint token de Google")),
         );
         return;
       }
 
-      // 3. Enviar a backend
+      final uri = Uri.parse("${ApiConfig.baseUrl}/api/auth/google/verify/");
+      debugPrint("GOOGLE 7: POST a $uri");
+
       final response = await http.post(
-        Uri.parse("${ApiConfig.baseUrl}/api/auth/google/verify"),
+        uri,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"id_token": tokenToSend}),
       );
+
+      debugPrint("GOOGLE 8: status = ${response.statusCode}");
+      debugPrint("GOOGLE 9: body = ${response.body}");
 
       if (!context.mounted) return;
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        // 5. Navegación
         if (data["exists"] == false) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (_) => CompleteGoogleProfilePage(
-                googleToken: tokenToSend, // <-- Pasamos el token de Google
-                email: data["email"] ?? "", // <-- Pasamos el email
+                googleToken: tokenToSend,
+                email: data["email"] ?? "",
               ),
             ),
           );
         } else {
-          Provider.of<UserModel>(
-            context,
-            listen: false,
-          ).setToken(data["token"]);
-
+          Provider.of<UserModel>(context, listen: false).setToken(data["token"]);
           await _fetchAndSaveProfile(data['token']);
           _goToHome();
         }
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Error login Google")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login Google error: ${response.body}")),
+        );
       }
-    } catch (e) {
-      debugPrint("Error Google Sign-In: $e");
+    } catch (e, st) {
+      debugPrint("ERROR GOOGLE SIGN-IN: $e");
+      debugPrint("$st");
+
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Excepció Google Sign-In: $e")),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    if (t == null) return const SizedBox();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -209,16 +226,16 @@ class _LoginPageState extends State<LoginPage> {
 
                         _InputField(
                           controller: usernameController,
-                          label: "Nom d'usuari",
-                          hint: "Introdueix el teu nom d'usuari",
+                          label: t.loginUsernameLabel,
+                          hint: t.loginUsernameHint,
                           icon: Icons.person_outline_rounded,
                         ),
                         const SizedBox(height: 16),
 
                         _InputField(
                           controller: passwordController,
-                          label: "Contrasenya",
-                          hint: "Introdueix la teva contrasenya",
+                          label: t.loginPasswordLabel,
+                          hint: t.loginPasswordHint,
                           icon: Icons.lock_outline_rounded,
                           obscureText: true,
                         ),
@@ -228,8 +245,8 @@ class _LoginPageState extends State<LoginPage> {
                         FilledButton.icon(
                           onPressed: _login,
                           icon: const Icon(Icons.login_rounded),
-                          label: const Text(
-                            "Iniciar sessió",
+                          label: Text(
+                            t.loginButton,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
@@ -260,7 +277,7 @@ class _LoginPageState extends State<LoginPage> {
                                 horizontal: 12,
                               ),
                               child: Text(
-                                'o continuar amb',
+                                t.loginContinueWith,
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey.shade600,
@@ -305,7 +322,7 @@ class _LoginPageState extends State<LoginPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "No tens compte?",
+                              t.loginNoAccount,
                               style: TextStyle(color: Colors.grey.shade600),
                             ),
                             TextButton(
@@ -320,8 +337,8 @@ class _LoginPageState extends State<LoginPage> {
                               style: TextButton.styleFrom(
                                 foregroundColor: const Color(0xFF166534),
                               ),
-                              child: const Text(
-                                'Crear compte',
+                              child: Text(
+                                t.loginCreateAccount,
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -375,7 +392,9 @@ class _LoginPageState extends State<LoginPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No s\'ha pogut carregar el perfil')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.profileLoadError),
+        ),
       );
     }
   }
@@ -386,6 +405,9 @@ class _LoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    if (t == null) return const SizedBox();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -394,8 +416,8 @@ class _LoginHeader extends StatelessWidget {
           child: Image.asset('assets/images/logo.png', width: 120),
         ),
         const SizedBox(height: 18),
-        const Text(
-          "Benvinguda a MeteoGarden",
+        Text(
+          t.loginWelcomeTitle,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 22,
@@ -405,7 +427,7 @@ class _LoginHeader extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          "Inicia sessió per continuar cuidant el teu jardí.",
+          t.loginWelcomeSubtitle,
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
         ),

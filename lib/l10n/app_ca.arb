@@ -1,0 +1,32 @@
+{
+  "appTitle": "MeteoGarden",
+
+  "loginWelcomeTitle": "Benvinguda a MeteoGarden",
+  "loginWelcomeSubtitle": "Inicia sessió per continuar cuidant el teu jardí.",
+
+  "loginUsernameLabel": "Nom d'usuari",
+  "loginUsernameHint": "Introdueix el teu nom d'usuari",
+
+  "loginPasswordLabel": "Contrasenya",
+  "loginPasswordHint": "Introdueix la teva contrasenya",
+
+  "loginButton": "Iniciar sessió",
+  "loginContinueWith": "o continuar amb",
+
+  "loginNoAccount": "No tens compte?",
+  "loginCreateAccount": "Crear compte",
+
+  "loginError": "Error de login",
+  "loginGoogleError": "Error login Google",
+  "profileLoadError": "No s'ha pogut carregar el perfil",
+
+  "navGarden": "Jardí",
+  "navFriends": "Amics",
+  "navCamera": "Càmera",
+  "navMissions": "Missions",
+  "navProfile": "Perfil",
+
+  "commonLanguage": "Idioma",
+  "commonCity": "Ciutat",
+  "commonContinue": "Continuar"
+}
