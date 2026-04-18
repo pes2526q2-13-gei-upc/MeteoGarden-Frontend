@@ -42,7 +42,6 @@ class PlantProvider extends ChangeNotifier {
     try {
       plants = await fetchPlants(user);
     } catch (e) {
-      print(e);
       plants = [];
     }
 
