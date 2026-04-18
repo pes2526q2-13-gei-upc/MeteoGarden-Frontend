@@ -24,8 +24,7 @@ class PlantProvider extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final List items =
-          data is List ? data : (data['results'] as List? ?? []);
+      final List items = data is List ? data : (data['results'] as List? ?? []);
 
       return items.map((e) => Plant.fromJson(e)).toList();
     } else {
@@ -50,5 +49,4 @@ class PlantProvider extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
-
 }

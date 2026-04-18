@@ -40,7 +40,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       }
 
       final backCamera = cameras.firstWhere(
-            (camera) => camera.lensDirection == CameraLensDirection.back,
+        (camera) => camera.lensDirection == CameraLensDirection.back,
         orElse: () => cameras.first,
       );
 
@@ -88,15 +88,12 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
 
       await Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => PlantResultPage(result: result),
-        ),
+        MaterialPageRoute(builder: (_) => PlantResultPage(result: result)),
       );
 
       if (!mounted) return;
 
       await context.read<PlantProvider>().loadPlants(user);
-
     } on PlantIdentificationException catch (e) {
       if (!mounted) return;
 
@@ -104,9 +101,9 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
         _errorMessage = e.message;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } catch (e) {
       if (!mounted) return;
 
@@ -269,7 +266,10 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
 
                           if (_errorMessage != null)
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
                               child: Container(
                                 width: double.infinity,
                                 padding: const EdgeInsets.all(12),
@@ -339,16 +339,21 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                                         height: 58,
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: _isProcessing ? Colors.white30 : Colors.white,
+                                          color: _isProcessing
+                                              ? Colors.white30
+                                              : Colors.white,
                                         ),
                                         child: _isProcessing
                                             ? const Padding(
-                                          padding: EdgeInsets.all(14),
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 3,
-                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                                          ),
-                                        )
+                                                padding: EdgeInsets.all(14),
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 3,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                        Color
+                                                      >(Colors.black),
+                                                ),
+                                              )
                                             : null,
                                       ),
                                     ),

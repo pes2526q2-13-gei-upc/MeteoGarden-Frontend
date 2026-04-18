@@ -42,9 +42,9 @@ class _AlbumPageState extends State<AlbumPage> {
   }
 
   Future<Map<String, dynamic>> _fetchDetallesPlanta(
-      String scientificName,
-      String lang,
-      ) async {
+    String scientificName,
+    String lang,
+  ) async {
     final response = await http.get(
       Uri.parse(
         '${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName&lang=$lang',
@@ -68,7 +68,7 @@ class _AlbumPageState extends State<AlbumPage> {
   }
 
   void _mostrarPopupDetalles(BuildContext context, String scientificName) {
-    final user = Provider.of<UserModel>(context, listen:false);
+    final user = Provider.of<UserModel>(context, listen: false);
     final lang = mapLanguage(user.language);
 
     showDialog(
@@ -198,9 +198,7 @@ class _AlbumPageState extends State<AlbumPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('El meu àlbum de plantes'),
-      ),
+      appBar: AppBar(title: const Text('El meu àlbum de plantes')),
       body: Consumer<PlantProvider>(
         builder: (context, plantProvider, child) {
           if (plantProvider.isLoading) {
@@ -261,27 +259,29 @@ class _AlbumPageState extends State<AlbumPage> {
                         Expanded(
                           child: imageUrl.isNotEmpty
                               ? Image.network(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.green.withValues(alpha: 0.1),
-                                child: const Icon(
-                                  Icons.local_florist,
-                                  size: 50,
-                                  color: Colors.green,
-                                ),
-                              );
-                            },
-                          )
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.green.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      child: const Icon(
+                                        Icons.local_florist,
+                                        size: 50,
+                                        color: Colors.green,
+                                      ),
+                                    );
+                                  },
+                                )
                               : Container(
-                            color: Colors.green.withValues(alpha: 0.1),
-                            child: const Icon(
-                              Icons.local_florist,
-                              size: 50,
-                              color: Colors.green,
-                            ),
-                          ),
+                                  color: Colors.green.withValues(alpha: 0.1),
+                                  child: const Icon(
+                                    Icons.local_florist,
+                                    size: 50,
+                                    color: Colors.green,
+                                  ),
+                                ),
                         ),
                         Container(
                           color: Colors.white,
