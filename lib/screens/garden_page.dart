@@ -18,6 +18,8 @@ import 'calendar_page.dart';
 import 'package:provider/provider.dart';
 import '../models/dades_usr.dart';
 
+import '../screens/botiga_page.dart';
+
 class GardenPage extends StatefulWidget {
   final String username;
   final String gardenName;
@@ -322,7 +324,8 @@ class _GardenPageState extends State<GardenPage> {
         bottom: height * 0.005,
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // 1. CAMBIAR A STRETCH: Fuerza a la fila a tener un límite de altura exacto
+        crossAxisAlignment: CrossAxisAlignment.stretch, 
         children: [
           // ESQUERRA: icones a dalt
           Column(
@@ -384,21 +387,35 @@ class _GardenPageState extends State<GardenPage> {
             ],
           ),
 
-          const Spacer(),
+          const Spacer(), // Este Spacer horizontal está bien, separa izquierda de derecha.
 
           // DRETA: monedes a dalt, botiga a baix
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
+              // 2. AÑADIR SPACE BETWEEN: Empuja las monedas arriba y la tienda abajo automáticamente
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
               children: [
                 _buildCoinsChip(monedes, width, height),
-                const Spacer(),
-                SizedBox(
-                  width: shopWidth,
-                  child: Image.asset(
-                    'assets/images/botiga.png',
-                    fit: BoxFit.contain,
-                    alignment: Alignment.bottomCenter,
+                
+                // ¡BORRAMOS EL const Spacer() QUE HABÍA AQUÍ!
+                
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const ShopPage(),
+                      ),
+                    );
+                  },
+                  child: SizedBox(
+                    width: shopWidth,
+                    child: Image.asset(
+                      'assets/images/botiga.png',
+                      fit: BoxFit.contain,
+                      alignment: Alignment.bottomCenter,
+                    ),
                   ),
                 ),
               ],
@@ -408,7 +425,7 @@ class _GardenPageState extends State<GardenPage> {
       ),
     );
   }
-
+  
   Widget _buildPotsGrid(double width) {
     final padding = _horizontalPadding(width);
     final spacing = _gridSpacing(width);
