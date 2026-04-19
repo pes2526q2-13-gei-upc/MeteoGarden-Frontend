@@ -234,16 +234,31 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                           Container(
                             width: 52,
                             height: 52,
+                            padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? Colors.green.withValues(alpha: 0.24)
                                   : Colors.white.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            child: const Icon(
-                              Icons.spa_rounded,
-                              color: Colors.greenAccent,
-                              size: 28,
+                            child: Image.network(
+                              seed.imageUrl,
+                              fit: BoxFit.contain,
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return const Center(
+                                  child: SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  ),
+                                );
+                              },
+                              errorBuilder: (_, _, _) => const Icon(
+                                Icons.spa_rounded,
+                                color: Colors.greenAccent,
+                                size: 28,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 14),
