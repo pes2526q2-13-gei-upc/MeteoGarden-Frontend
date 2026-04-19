@@ -54,6 +54,11 @@ class UserModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setCoins(int newCoins) {
+    monedes = newCoins;
+    notifyListeners();
+  }
+
   // Helpers per agafar el primer valor dels jardins
   String get gardenName => gardens.isNotEmpty ? gardens.first : '';
 
