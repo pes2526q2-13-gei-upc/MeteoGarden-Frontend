@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+
 import '../models/dades_usr.dart';
-import 'package:meteo_garden/models/plantes_desbl.dart';
-//import 'package:http/http.dart' as http;
-//import 'dart:convert';
-//import '../models/url.dart';
+import '../models/plantes_desbl.dart';
+import '../models/url.dart';
 
 class AlbumPage extends StatefulWidget {
   const AlbumPage({super.key});
@@ -14,6 +16,19 @@ class AlbumPage extends StatefulWidget {
 }
 
 class _AlbumPageState extends State<AlbumPage> {
+  String mapLanguage(String language) {
+    switch (language) {
+      case 'Català':
+        return 'ca';
+      case 'Español':
+        return 'es';
+      case 'English':
+        return 'en';
+      default:
+        return 'en';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -26,26 +41,14 @@ class _AlbumPageState extends State<AlbumPage> {
     });
   }
 
-  // --- FUNCIÓN QUE SIMULA LA LLAMADA AL BACKEND DE PYTHON ---
   Future<Map<String, dynamic>> _fetchDetallesPlanta(
     String scientificName,
+    String lang,
   ) async {
-    // eliminar quan es puguin agafar noms cintifics del backend
-    await Future.delayed(const Duration(seconds: 1));
-    return {
-      "scientificName": scientificName,
-      "commonName": "Lavanda", // Simulando commonName.capitalize()
-      "family": "Lamiaceae",
-      "canFlower": true,
-      "minTemperature": -5.0,
-      "maxTemperature": 30.0,
-      "description":
-          "Planta aromática muy popular, conocida por su característico color morado y su uso en perfumería e infusiones.",
-    };
-
-    /*  descomentar quan es puguin agafar noms cintifics del backend
     final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName'),
+      Uri.parse(
+        '${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName&lang=$lang',
+      ),
     );
 
     if (response.statusCode == 200) {
@@ -62,11 +65,12 @@ class _AlbumPageState extends State<AlbumPage> {
     } else {
       throw Exception('Error carregant la informació de la planta');
     }
-    */
   }
 
-  // --- FUNCIÓN PARA MOSTRAR EL POP-UP CON LOS DETALLES ---
   void _mostrarPopupDetalles(BuildContext context, String scientificName) {
+    final user = Provider.of<UserModel>(context, listen: false);
+    final lang = mapLanguage(user.language);
+
     showDialog(
       context: context,
       builder: (context) {
@@ -75,9 +79,8 @@ class _AlbumPageState extends State<AlbumPage> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: FutureBuilder<Map<String, dynamic>>(
-            future: _fetchDetallesPlanta(scientificName),
+            future: _fetchDetallesPlanta(scientificName, lang),
             builder: (context, snapshot) {
-              // 1. Mientras carga...
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Padding(
                   padding: EdgeInsets.all(40.0),
@@ -86,25 +89,23 @@ class _AlbumPageState extends State<AlbumPage> {
                     children: [
                       CircularProgressIndicator(),
                       SizedBox(height: 16),
-                      Text('Consultando enciclopedia...'),
+                      Text('Consultant enciclopèdia...'),
                     ],
                   ),
                 );
               }
 
-              // 2. Si hay un error...
               if (snapshot.hasError) {
                 return Padding(
                   padding: const EdgeInsets.all(24.0),
-                  child: Text('Error al cargar detalles: ${snapshot.error}'),
+                  child: Text('Error carregant detalls: ${snapshot.error}'),
                 );
               }
 
-              // 3. Si los datos llegan correctamente...
               final data = snapshot.data!;
-              final commonName = data['commonName'] ?? 'Desconocido';
+              final commonName = data['commonName'] ?? 'Desconeguda';
               final desc =
-                  data['description'] ?? 'No hay descripción disponible.';
+                  data['description'] ?? 'No hi ha descripció disponible.';
               final family = data['family'] ?? '-';
               final minTemp = data['minTemperature'];
               final maxTemp = data['maxTemperature'];
@@ -125,7 +126,7 @@ class _AlbumPageState extends State<AlbumPage> {
                         ),
                       ),
                       Text(
-                        '$scientificName • Familia: $family',
+                        '$scientificName • Família: $family',
                         style: TextStyle(
                           fontSize: 14,
                           fontStyle: FontStyle.italic,
@@ -133,7 +134,6 @@ class _AlbumPageState extends State<AlbumPage> {
                         ),
                       ),
                       const Divider(height: 32),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -155,15 +155,14 @@ class _AlbumPageState extends State<AlbumPage> {
                                 color: canFlower ? Colors.pink : Colors.green,
                               ),
                               const SizedBox(height: 4),
-                              Text(canFlower ? 'Florece' : 'No florece'),
+                              Text(canFlower ? 'Floreix' : 'No floreix'),
                             ],
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 24),
                       const Text(
-                        'Descripción',
+                        'Descripció',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -171,13 +170,12 @@ class _AlbumPageState extends State<AlbumPage> {
                       ),
                       const SizedBox(height: 8),
                       Text(desc),
-
                       const SizedBox(height: 24),
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Cerrar'),
+                          child: const Text('Tancar'),
                         ),
                       ),
                     ],
@@ -191,96 +189,120 @@ class _AlbumPageState extends State<AlbumPage> {
     );
   }
 
-  // --- CONSTRUCCIÓN DE LA PANTALLA PRINCIPAL ---
+  Future<void> _reloadPlants() async {
+    await context.read<PlantProvider>().loadPlants(
+      Provider.of<UserModel>(context, listen: false),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mi Álbum de Plantas')),
+      appBar: AppBar(title: const Text('El meu àlbum de plantes')),
       body: Consumer<PlantProvider>(
         builder: (context, plantProvider, child) {
-          // Si está cargando la lista inicial de plantas
           if (plantProvider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // Si la lista está vacía (como se ve en la captura de pantalla que pasaste)
           if (plantProvider.plants.isEmpty) {
-            return const Center(
-              child: Text(
-                'Aún no has descubierto ninguna planta.\n¡Sigue explorando!',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+            return RefreshIndicator(
+              onRefresh: _reloadPlants,
+              child: ListView(
+                children: const [
+                  SizedBox(height: 180),
+                  Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        'Encara no has descobert cap planta 🌱\nContinua explorant!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             );
           }
 
-          // Cuadrícula de plantas
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: plantProvider.plants.length,
-            itemBuilder: (context, index) {
-              final planta = plantProvider.plants[index];
+          return RefreshIndicator(
+            onRefresh: _reloadPlants,
+            child: GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 0.8,
+              ),
+              itemCount: plantProvider.plants.length,
+              itemBuilder: (context, index) {
+                final planta = plantProvider.plants[index];
+                final imageUrl = planta.image;
+                final nombreCientifico = planta.name;
 
-              // AHORA SÍ: Accedemos como atributos de objeto
-              final imageUrl = planta.image;
-              final nombreCientifico = planta.name;
-
-              return InkWell(
-                borderRadius: BorderRadius.circular(16),
-                onTap: () {
-                  // Abrimos el popup con el nombre científico de ESTA planta
-                  _mostrarPopupDetalles(context, nombreCientifico);
-                },
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: Image.network(
-                          imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.green.withValues(alpha: 0.1),
-                              child: const Icon(
-                                Icons.local_florist,
-                                size: 50,
-                                color: Colors.green,
-                              ),
-                            );
-                          },
+                return InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    _mostrarPopupDetalles(context, nombreCientifico);
+                  },
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: imageUrl.isNotEmpty
+                              ? Image.network(
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.green.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      child: const Icon(
+                                        Icons.local_florist,
+                                        size: 50,
+                                        color: Colors.green,
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Container(
+                                  color: Colors.green.withValues(alpha: 0.1),
+                                  child: const Icon(
+                                    Icons.local_florist,
+                                    size: 50,
+                                    color: Colors.green,
+                                  ),
+                                ),
                         ),
-                      ),
-                      Container(
-                        color: Colors.white,
-                        padding: const EdgeInsets.all(12),
-                        child: Text(
-                          nombreCientifico,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
+                        Container(
+                          color: Colors.white,
+                          padding: const EdgeInsets.all(12),
+                          child: Text(
+                            nombreCientifico,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         },
       ),

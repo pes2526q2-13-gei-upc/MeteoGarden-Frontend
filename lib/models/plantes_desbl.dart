@@ -24,7 +24,9 @@ class PlantProvider extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      return (data as List).map((e) => Plant.fromJson(e)).toList();
+      final List items = data is List ? data : (data['results'] as List? ?? []);
+
+      return items.map((e) => Plant.fromJson(e)).toList();
     } else {
       throw Exception('Error carregant plantes');
     }
@@ -36,28 +38,14 @@ class PlantProvider extends ChangeNotifier {
   Future<void> loadPlants(UserModel user) async {
     isLoading = true;
     notifyListeners();
-    /*crida a l'endpoint de les plantes del album
+
     try {
       plants = await fetchPlants(user);
     } catch (e) {
-      print(e);
+      plants = [];
     }
-    */
-
-    plants = _mockPlants();
 
     isLoading = false;
     notifyListeners();
-  }
-
-  List<Plant> _mockPlants() {
-    return [
-      Plant(name: "Coronilla scorpioides", image: "https://..."),
-      Plant(name: "Cactus", image: "https://..."),
-      Plant(name: "Ficus", image: "https://..."),
-      Plant(name: "Monstera", image: "https://..."),
-      Plant(name: "Cactus", image: "https://..."),
-      Plant(name: "Ficus", image: "https://..."),
-    ];
   }
 }
