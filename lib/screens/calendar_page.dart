@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/l10n/app_localizations.dart';
 import '../services/events_api_service.dart';
 
 // ─── Filter State ─────────────────────────────────────────────────────────────
@@ -198,19 +199,20 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   String get _monthLabel {
-    const months = [
-      'Gener',
-      'Febrer',
-      'Març',
-      'Abril',
-      'Maig',
-      'Juny',
-      'Juliol',
-      'Agost',
-      'Setembre',
-      'Octubre',
-      'Novembre',
-      'Desembre',
+    final l10n = AppLocalizations.of(context)!;
+    final months = [
+      l10n.monthJanuary,
+      l10n.monthFebruary,
+      l10n.monthMarch,
+      l10n.monthApril,
+      l10n.monthMay,
+      l10n.monthJune,
+      l10n.monthJuly,
+      l10n.monthAugust,
+      l10n.monthSeptember,
+      l10n.monthOctober,
+      l10n.monthNovember,
+      l10n.monthDecember,
     ];
     return '${months[_currentMonth.month - 1]} ${_currentMonth.year}';
   }
@@ -226,10 +228,10 @@ class _CalendarPageState extends State<CalendarPage> {
             Expanded(
               child: _loading
                   ? const Center(
-                      child: CircularProgressIndicator(
-                        color: Color(0xFF4CAF50),
-                      ),
-                    )
+                child: CircularProgressIndicator(
+                  color: Color(0xFF4CAF50),
+                ),
+              )
                   : _error != null
                   ? _buildError()
                   : _buildContent(),
@@ -241,6 +243,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
     final filterCount = _filters.activeCount;
 
     return Padding(
@@ -279,7 +282,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     const SizedBox(height: 4),
                     if (!_loading && _error == null)
                       Text(
-                        '${_events.length} esdeveniments',
+                        l10n.calendarEventsCount(_events.length),
                         style: const TextStyle(
                           fontSize: 13,
                           color: Color(0xFF757575),
@@ -341,6 +344,8 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildError() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -352,7 +357,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ElevatedButton.icon(
             onPressed: _loadEvents,
             icon: const Icon(Icons.refresh),
-            label: const Text('Reintentar'),
+            label: Text(l10n.calendarRetry),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4CAF50),
               foregroundColor: Colors.white,
@@ -364,6 +369,8 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildContent() {
+    final l10n = AppLocalizations.of(context)!;
+
     if (_selectedDay != null && _selectedDayEvents.isNotEmpty) {
       return CustomScrollView(
         slivers: [
@@ -381,7 +388,14 @@ class _CalendarPageState extends State<CalendarPage> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 6),
               child: Text(
-                '$_selectedDay $_monthLabel · ${_selectedDayEvents.length} ${_selectedDayEvents.length == 1 ? 'esdeveniment' : 'esdeveniments'}',
+                l10n.calendarSelectedDaySummary(
+                  _selectedDay!,
+                  _monthLabel,
+                  _selectedDayEvents.length,
+                  _selectedDayEvents.length == 1
+                      ? l10n.calendarEventSingular
+                      : l10n.calendarEventPlural,
+                ),
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
@@ -392,7 +406,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              (context, i) => Padding(
+                  (context, i) => Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 child: _EventCard(
                   event: _selectedDayEvents[i],
@@ -443,12 +457,12 @@ class _CalendarPageState extends State<CalendarPage> {
             child: _buildEmptyMonthSummary(),
           )
         else ...[
-          const SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(20, 14, 20, 6),
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 6),
               child: Text(
-                'Propers esdeveniments',
-                style: TextStyle(
+                l10n.calendarUpcomingEvents,
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFF1B5E20),
@@ -475,6 +489,8 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildEmptyMonthSummary() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -482,7 +498,7 @@ class _CalendarPageState extends State<CalendarPage> {
           Icon(Icons.inbox_outlined, size: 56, color: Colors.grey.shade300),
           const SizedBox(height: 12),
           Text(
-            'No hi ha esdeveniments aquest mes',
+            l10n.calendarNoEventsThisMonth,
             style: TextStyle(color: Colors.grey.shade500, fontSize: 15),
           ),
           if (!_filters.isEmpty) ...[
@@ -494,9 +510,9 @@ class _CalendarPageState extends State<CalendarPage> {
                 });
                 _loadEvents();
               },
-              child: const Text(
-                'Eliminar filtres',
-                style: TextStyle(color: Color(0xFF4CAF50)),
+              child: Text(
+                l10n.calendarClearFilters,
+                style: const TextStyle(color: Color(0xFF4CAF50)),
               ),
             ),
           ],
@@ -506,6 +522,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildActiveFilterChips() {
+    final l10n = AppLocalizations.of(context)!;
     final chips = <Widget>[];
 
     void addChip(String label, VoidCallback onRemove) {
@@ -566,21 +583,21 @@ class _CalendarPageState extends State<CalendarPage> {
     }
 
     if (_filters.maxDistanceKm != null) {
-      addChip('≤${_filters.maxDistanceKm!.toInt()} km', () {
+      addChip(l10n.calendarMaxDistanceChip(_filters.maxDistanceKm!.toInt()), () {
         setState(() => _filters = _filters.copyWith(clearDistance: true));
         _loadEvents();
       });
     }
 
     if (_filters.maxPrice != null) {
-      addChip('≤${_filters.maxPrice!.toInt()}€', () {
+      addChip(l10n.calendarMaxPriceChip(_filters.maxPrice!.toInt()), () {
         setState(() => _filters = _filters.copyWith(clearPrice: true));
         _loadEvents();
       });
     }
 
     if (_filters.q.isNotEmpty) {
-      addChip('"${_filters.q}"', () {
+      addChip(l10n.calendarSearchChip(_filters.q), () {
         setState(() => _filters = _filters.copyWith(q: ''));
         _loadEvents();
       });
@@ -646,7 +663,16 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildWeekdayLabels() {
-    const days = ['Dl', 'Dt', 'Dc', 'Dj', 'Dv', 'Ds', 'Dg'];
+    final l10n = AppLocalizations.of(context)!;
+    final days = [
+      l10n.weekdayMon,
+      l10n.weekdayTue,
+      l10n.weekdayWed,
+      l10n.weekdayThu,
+      l10n.weekdayFri,
+      l10n.weekdaySat,
+      l10n.weekdaySun,
+    ];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
@@ -654,20 +680,20 @@ class _CalendarPageState extends State<CalendarPage> {
         children: days
             .map(
               (d) => Expanded(
-                child: Center(
-                  child: Text(
-                    d,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: d == 'Ds' || d == 'Dg'
-                          ? const Color(0xFF9E9E9E)
-                          : const Color(0xFF4CAF50),
-                    ),
-                  ),
+            child: Center(
+              child: Text(
+                d,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: d == l10n.weekdaySat || d == l10n.weekdaySun
+                      ? const Color(0xFF9E9E9E)
+                      : const Color(0xFF4CAF50),
                 ),
               ),
-            )
+            ),
+          ),
+        )
             .toList(),
       ),
     );
@@ -712,6 +738,8 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildEmptyDay() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -723,7 +751,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           const SizedBox(height: 10),
           Text(
-            'Sense esdeveniments aquest dia',
+            l10n.calendarNoEventsThisDay,
             style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
           ),
         ],
@@ -807,6 +835,8 @@ class _FiltersSheetState extends State<_FiltersSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       decoration: const BoxDecoration(
         color: Color(0xFFF5F9F0),
@@ -832,9 +862,9 @@ class _FiltersSheetState extends State<_FiltersSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
                 children: [
-                  const Text(
-                    'Filtres',
-                    style: TextStyle(
+                  Text(
+                    l10n.calendarFiltersTitle,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF1B5E20),
@@ -843,9 +873,12 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                   const Spacer(),
                   TextButton(
                     onPressed: _clear,
-                    child: const Text(
-                      'Netejar tot',
-                      style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 13),
+                    child: Text(
+                      l10n.calendarClearAll,
+                      style: const TextStyle(
+                        color: Color(0xFF9E9E9E),
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 ],
@@ -860,55 +893,55 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                   children: [
                     _buildTextField(
                       controller: _qCtrl,
-                      label: 'Cerca per text',
-                      hint: 'Nom, descripció...',
+                      label: l10n.calendarSearchTextLabel,
+                      hint: l10n.calendarSearchTextHint,
                       icon: Icons.search,
                     ),
                     const SizedBox(height: 14),
                     _buildTextField(
                       controller: _cityCtrl,
-                      label: 'Ciutat',
-                      hint: 'Barcelona, Girona...',
+                      label: l10n.calendarCityLabel,
+                      hint: l10n.calendarCityHint,
                       icon: Icons.location_city_outlined,
                     ),
                     const SizedBox(height: 14),
                     _buildTextField(
                       controller: _countyCtrl,
-                      label: 'Comarca',
-                      hint: 'Osona, Maresme...',
+                      label: l10n.calendarCountyLabel,
+                      hint: l10n.calendarCountyHint,
                       icon: Icons.map_outlined,
                     ),
                     const SizedBox(height: 14),
                     _buildTextField(
                       controller: _categoryCtrl,
-                      label: 'Categoria',
-                      hint: 'Mercat, Concert, Ruta...',
+                      label: l10n.calendarCategoryLabel,
+                      hint: l10n.calendarCategoryHint,
                       icon: Icons.category_outlined,
                     ),
                     const SizedBox(height: 18),
                     _buildSliderField(
-                      label: 'Distància màxima',
+                      label: l10n.calendarMaxDistanceLabel,
                       enabled: _distanceEnabled,
                       value: _distanceKm,
                       min: 1,
                       max: _maxDistanceSlider,
                       divisions: 199,
-                      displayValue: '${_distanceKm.toInt()} km',
+                      displayValue: l10n.calendarDistanceKm(_distanceKm.toInt()),
                       onToggle: (v) => setState(() => _distanceEnabled = v),
                       onChanged: (v) => setState(() => _distanceKm = v),
                       icon: Icons.social_distance_outlined,
                     ),
                     const SizedBox(height: 14),
                     _buildSliderField(
-                      label: 'Preu màxim',
+                      label: l10n.calendarMaxPriceLabel,
                       enabled: _priceEnabled,
                       value: _maxPrice,
                       min: 0,
                       max: _maxPriceSlider,
                       divisions: 100,
                       displayValue: _maxPrice == 0
-                          ? 'Gratis'
-                          : '${_maxPrice.toInt()} €',
+                          ? l10n.calendarFree
+                          : l10n.calendarPriceEuros(_maxPrice.toInt()),
                       onToggle: (v) => setState(() => _priceEnabled = v),
                       onChanged: (v) => setState(() => _maxPrice = v),
                       icon: Icons.euro_outlined,
@@ -933,9 +966,9 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    'Aplicar filtres',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                  child: Text(
+                    l10n.calendarApplyFilters,
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -1135,7 +1168,7 @@ class _DayCell extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                   eventCount.clamp(0, 3),
-                  (_) => Container(
+                      (_) => Container(
                     width: 5,
                     height: 5,
                     margin: const EdgeInsets.only(right: 2),
@@ -1180,6 +1213,8 @@ class _EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -1312,7 +1347,9 @@ class _EventCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 12),
               child: Text(
-                event.isFree ? 'Gratis' : '${event.price.toStringAsFixed(0)}€',
+                event.isFree
+                    ? l10n.calendarFree
+                    : l10n.calendarPriceCompact(event.price.toStringAsFixed(0)),
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
@@ -1343,7 +1380,7 @@ class _EventDetailDialog extends StatelessWidget {
   }
 
   String _formatDate(DateTime dt) {
-    const months = [
+    final months = [
       'gen',
       'feb',
       'març',
@@ -1379,6 +1416,8 @@ class _EventDetailDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
@@ -1487,8 +1526,10 @@ class _EventDetailDialog extends StatelessWidget {
                           _MetaPill(
                             icon: Icons.euro,
                             label: event.isFree
-                                ? 'Gratuït'
-                                : '${event.price.toStringAsFixed(0)} €',
+                                ? l10n.calendarFreeAccent
+                                : l10n.calendarPriceEuros(
+                              event.price.toStringAsFixed(0),
+                            ),
                             highlight: event.isFree,
                           ),
                         ],
@@ -1557,24 +1598,24 @@ class _EventDetailDialog extends StatelessWidget {
                           children: event.tags
                               .map(
                                 (tag) => Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFE8F5E9),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    '#$tag',
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: Color(0xFF388E3C),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE8F5E9),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '#$tag',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Color(0xFF388E3C),
+                                  fontWeight: FontWeight.w500,
                                 ),
-                              )
+                              ),
+                            ),
+                          )
                               .toList(),
                         ),
                       ],
@@ -1585,7 +1626,7 @@ class _EventDetailDialog extends StatelessWidget {
                           child: ElevatedButton.icon(
                             onPressed: () {},
                             icon: const Icon(Icons.open_in_new, size: 16),
-                            label: const Text('Comprar entrades'),
+                            label: Text(l10n.calendarBuyTickets),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF4CAF50),
                               foregroundColor: Colors.white,

@@ -231,6 +231,533 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Continuar'**
   String get commonContinue;
+
+  /// No description provided for @albumTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'El meu àlbum de plantes'**
+  String get albumTitle;
+
+  /// No description provided for @albumLoadingEncyclopedia.
+  ///
+  /// In ca, this message translates to:
+  /// **'Consultant enciclopèdia...'**
+  String get albumLoadingEncyclopedia;
+
+  /// No description provided for @albumDetailsLoadError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant detalls: {error}'**
+  String albumDetailsLoadError(String error);
+
+  /// No description provided for @albumUnknownPlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Desconeguda'**
+  String get albumUnknownPlant;
+
+  /// No description provided for @albumNoDescription.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha descripció disponible.'**
+  String get albumNoDescription;
+
+  /// No description provided for @albumFamilyLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Família'**
+  String get albumFamilyLabel;
+
+  /// No description provided for @albumBlooms.
+  ///
+  /// In ca, this message translates to:
+  /// **'Floreix'**
+  String get albumBlooms;
+
+  /// No description provided for @albumDoesNotBloom.
+  ///
+  /// In ca, this message translates to:
+  /// **'No floreix'**
+  String get albumDoesNotBloom;
+
+  /// No description provided for @albumDescriptionTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Descripció'**
+  String get albumDescriptionTitle;
+
+  /// No description provided for @commonClose.
+  ///
+  /// In ca, this message translates to:
+  /// **'Tancar'**
+  String get commonClose;
+
+  /// No description provided for @albumEmptyState.
+  ///
+  /// In ca, this message translates to:
+  /// **'Encara no has descobert cap planta 🌱\nContinua explorant!'**
+  String get albumEmptyState;
+
+  /// No description provided for @albumPlantInfoLoadError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant la informació de la planta'**
+  String get albumPlantInfoLoadError;
+
+  /// No description provided for @commonBack.
+  ///
+  /// In ca, this message translates to:
+  /// **'Tornar'**
+  String get commonBack;
+
+  /// No description provided for @shopTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Botiga'**
+  String get shopTitle;
+
+  /// No description provided for @shopSeedsTab.
+  ///
+  /// In ca, this message translates to:
+  /// **'Llavors 🌱'**
+  String get shopSeedsTab;
+
+  /// No description provided for @shopOtherTab.
+  ///
+  /// In ca, this message translates to:
+  /// **'Altres 🛒'**
+  String get shopOtherTab;
+
+  /// No description provided for @shopLoadError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'han pogut carregar els productes.'**
+  String get shopLoadError;
+
+  /// No description provided for @shopConnectionError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error de connexió o processant les dades.'**
+  String get shopConnectionError;
+
+  /// No description provided for @shopPurchaseProcessingError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error en processar la compra.'**
+  String get shopPurchaseProcessingError;
+
+  /// No description provided for @shopPurchaseSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Compra realitzada amb èxit! 🌱'**
+  String get shopPurchaseSuccess;
+
+  /// No description provided for @shopDescriptionTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Descripció'**
+  String get shopDescriptionTitle;
+
+  /// No description provided for @shopTotalPrice.
+  ///
+  /// In ca, this message translates to:
+  /// **'Preu total:'**
+  String get shopTotalPrice;
+
+  /// No description provided for @shopBuyButton.
+  ///
+  /// In ca, this message translates to:
+  /// **'Comprar'**
+  String get shopBuyButton;
+
+  /// No description provided for @shopNoItemsAvailable.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha articles disponibles ara mateix.'**
+  String get shopNoItemsAvailable;
+
+  /// No description provided for @calendarRetry.
+  ///
+  /// In ca, this message translates to:
+  /// **'Reintentar'**
+  String get calendarRetry;
+
+  /// No description provided for @calendarUpcomingEvents.
+  ///
+  /// In ca, this message translates to:
+  /// **'Propers esdeveniments'**
+  String get calendarUpcomingEvents;
+
+  /// No description provided for @calendarNoEventsThisMonth.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha esdeveniments aquest mes'**
+  String get calendarNoEventsThisMonth;
+
+  /// No description provided for @calendarClearFilters.
+  ///
+  /// In ca, this message translates to:
+  /// **'Eliminar filtres'**
+  String get calendarClearFilters;
+
+  /// No description provided for @calendarNoEventsThisDay.
+  ///
+  /// In ca, this message translates to:
+  /// **'Sense esdeveniments aquest dia'**
+  String get calendarNoEventsThisDay;
+
+  /// No description provided for @calendarFiltersTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Filtres'**
+  String get calendarFiltersTitle;
+
+  /// No description provided for @calendarClearAll.
+  ///
+  /// In ca, this message translates to:
+  /// **'Netejar tot'**
+  String get calendarClearAll;
+
+  /// No description provided for @calendarSearchTextLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Cerca per text'**
+  String get calendarSearchTextLabel;
+
+  /// No description provided for @calendarSearchTextHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nom, descripció...'**
+  String get calendarSearchTextHint;
+
+  /// No description provided for @calendarCityLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ciutat'**
+  String get calendarCityLabel;
+
+  /// No description provided for @calendarCityHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Barcelona, Girona...'**
+  String get calendarCityHint;
+
+  /// No description provided for @calendarCountyLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Comarca'**
+  String get calendarCountyLabel;
+
+  /// No description provided for @calendarCountyHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Osona, Maresme...'**
+  String get calendarCountyHint;
+
+  /// No description provided for @calendarCategoryLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Categoria'**
+  String get calendarCategoryLabel;
+
+  /// No description provided for @calendarCategoryHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Mercat, Concert, Ruta...'**
+  String get calendarCategoryHint;
+
+  /// No description provided for @calendarMaxDistanceLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Distància màxima'**
+  String get calendarMaxDistanceLabel;
+
+  /// No description provided for @calendarMaxPriceLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Preu màxim'**
+  String get calendarMaxPriceLabel;
+
+  /// No description provided for @calendarApplyFilters.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aplicar filtres'**
+  String get calendarApplyFilters;
+
+  /// No description provided for @calendarFree.
+  ///
+  /// In ca, this message translates to:
+  /// **'Gratis'**
+  String get calendarFree;
+
+  /// No description provided for @calendarFreeAccent.
+  ///
+  /// In ca, this message translates to:
+  /// **'Gratuït'**
+  String get calendarFreeAccent;
+
+  /// No description provided for @calendarBuyTickets.
+  ///
+  /// In ca, this message translates to:
+  /// **'Comprar entrades'**
+  String get calendarBuyTickets;
+
+  /// No description provided for @calendarEventSingular.
+  ///
+  /// In ca, this message translates to:
+  /// **'esdeveniment'**
+  String get calendarEventSingular;
+
+  /// No description provided for @calendarEventPlural.
+  ///
+  /// In ca, this message translates to:
+  /// **'esdeveniments'**
+  String get calendarEventPlural;
+
+  /// No description provided for @calendarEventsCount.
+  ///
+  /// In ca, this message translates to:
+  /// **'{count} esdeveniments'**
+  String calendarEventsCount(Object count);
+
+  /// No description provided for @calendarSelectedDaySummary.
+  ///
+  /// In ca, this message translates to:
+  /// **'{day} {monthLabel} · {count} {eventWord}'**
+  String calendarSelectedDaySummary(
+    Object day,
+    Object monthLabel,
+    Object count,
+    Object eventWord,
+  );
+
+  /// No description provided for @calendarMaxDistanceChip.
+  ///
+  /// In ca, this message translates to:
+  /// **'≤{km} km'**
+  String calendarMaxDistanceChip(Object km);
+
+  /// No description provided for @calendarMaxPriceChip.
+  ///
+  /// In ca, this message translates to:
+  /// **'≤{price}€'**
+  String calendarMaxPriceChip(Object price);
+
+  /// No description provided for @calendarSearchChip.
+  ///
+  /// In ca, this message translates to:
+  /// **'\"{query}\"'**
+  String calendarSearchChip(Object query);
+
+  /// No description provided for @calendarDistanceKm.
+  ///
+  /// In ca, this message translates to:
+  /// **'{km} km'**
+  String calendarDistanceKm(Object km);
+
+  /// No description provided for @calendarPriceEuros.
+  ///
+  /// In ca, this message translates to:
+  /// **'{price} €'**
+  String calendarPriceEuros(Object price);
+
+  /// No description provided for @calendarPriceCompact.
+  ///
+  /// In ca, this message translates to:
+  /// **'{price}€'**
+  String calendarPriceCompact(Object price);
+
+  /// No description provided for @calendarPriceSpaced.
+  ///
+  /// In ca, this message translates to:
+  /// **'{price} €'**
+  String calendarPriceSpaced(Object price);
+
+  /// No description provided for @weekdayMon.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dl'**
+  String get weekdayMon;
+
+  /// No description provided for @weekdayTue.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dt'**
+  String get weekdayTue;
+
+  /// No description provided for @weekdayWed.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dc'**
+  String get weekdayWed;
+
+  /// No description provided for @weekdayThu.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dj'**
+  String get weekdayThu;
+
+  /// No description provided for @weekdayFri.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dv'**
+  String get weekdayFri;
+
+  /// No description provided for @weekdaySat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ds'**
+  String get weekdaySat;
+
+  /// No description provided for @weekdaySun.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dg'**
+  String get weekdaySun;
+
+  /// No description provided for @monthJanuary.
+  ///
+  /// In ca, this message translates to:
+  /// **'Gener'**
+  String get monthJanuary;
+
+  /// No description provided for @monthFebruary.
+  ///
+  /// In ca, this message translates to:
+  /// **'Febrer'**
+  String get monthFebruary;
+
+  /// No description provided for @monthMarch.
+  ///
+  /// In ca, this message translates to:
+  /// **'Març'**
+  String get monthMarch;
+
+  /// No description provided for @monthApril.
+  ///
+  /// In ca, this message translates to:
+  /// **'Abril'**
+  String get monthApril;
+
+  /// No description provided for @monthMay.
+  ///
+  /// In ca, this message translates to:
+  /// **'Maig'**
+  String get monthMay;
+
+  /// No description provided for @monthJune.
+  ///
+  /// In ca, this message translates to:
+  /// **'Juny'**
+  String get monthJune;
+
+  /// No description provided for @monthJuly.
+  ///
+  /// In ca, this message translates to:
+  /// **'Juliol'**
+  String get monthJuly;
+
+  /// No description provided for @monthAugust.
+  ///
+  /// In ca, this message translates to:
+  /// **'Agost'**
+  String get monthAugust;
+
+  /// No description provided for @monthSeptember.
+  ///
+  /// In ca, this message translates to:
+  /// **'Setembre'**
+  String get monthSeptember;
+
+  /// No description provided for @monthOctober.
+  ///
+  /// In ca, this message translates to:
+  /// **'Octubre'**
+  String get monthOctober;
+
+  /// No description provided for @monthNovember.
+  ///
+  /// In ca, this message translates to:
+  /// **'Novembre'**
+  String get monthNovember;
+
+  /// No description provided for @monthDecember.
+  ///
+  /// In ca, this message translates to:
+  /// **'Desembre'**
+  String get monthDecember;
+
+  /// No description provided for @monthShortJanuary.
+  ///
+  /// In ca, this message translates to:
+  /// **'gen'**
+  String get monthShortJanuary;
+
+  /// No description provided for @monthShortFebruary.
+  ///
+  /// In ca, this message translates to:
+  /// **'feb'**
+  String get monthShortFebruary;
+
+  /// No description provided for @monthShortMarch.
+  ///
+  /// In ca, this message translates to:
+  /// **'març'**
+  String get monthShortMarch;
+
+  /// No description provided for @monthShortApril.
+  ///
+  /// In ca, this message translates to:
+  /// **'abr'**
+  String get monthShortApril;
+
+  /// No description provided for @monthShortMay.
+  ///
+  /// In ca, this message translates to:
+  /// **'maig'**
+  String get monthShortMay;
+
+  /// No description provided for @monthShortJune.
+  ///
+  /// In ca, this message translates to:
+  /// **'juny'**
+  String get monthShortJune;
+
+  /// No description provided for @monthShortJuly.
+  ///
+  /// In ca, this message translates to:
+  /// **'jul'**
+  String get monthShortJuly;
+
+  /// No description provided for @monthShortAugust.
+  ///
+  /// In ca, this message translates to:
+  /// **'ago'**
+  String get monthShortAugust;
+
+  /// No description provided for @monthShortSeptember.
+  ///
+  /// In ca, this message translates to:
+  /// **'set'**
+  String get monthShortSeptember;
+
+  /// No description provided for @monthShortOctober.
+  ///
+  /// In ca, this message translates to:
+  /// **'oct'**
+  String get monthShortOctober;
+
+  /// No description provided for @monthShortNovember.
+  ///
+  /// In ca, this message translates to:
+  /// **'nov'**
+  String get monthShortNovember;
+
+  /// No description provided for @monthShortDecember.
+  ///
+  /// In ca, this message translates to:
+  /// **'des'**
+  String get monthShortDecember;
 }
 
 class _AppLocalizationsDelegate

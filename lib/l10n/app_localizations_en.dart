@@ -74,4 +74,293 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonContinue => 'Continuar';
+
+  @override
+  String get albumTitle => 'El meu àlbum de plantes';
+
+  @override
+  String get albumLoadingEncyclopedia => 'Consultant enciclopèdia...';
+
+  @override
+  String albumDetailsLoadError(String error) {
+    return 'Error carregant detalls: $error';
+  }
+
+  @override
+  String get albumUnknownPlant => 'Desconeguda';
+
+  @override
+  String get albumNoDescription => 'No hi ha descripció disponible.';
+
+  @override
+  String get albumFamilyLabel => 'Família';
+
+  @override
+  String get albumBlooms => 'Floreix';
+
+  @override
+  String get albumDoesNotBloom => 'No floreix';
+
+  @override
+  String get albumDescriptionTitle => 'Descripció';
+
+  @override
+  String get commonClose => 'Tancar';
+
+  @override
+  String get albumEmptyState =>
+      'Encara no has descobert cap planta 🌱\nContinua explorant!';
+
+  @override
+  String get albumPlantInfoLoadError =>
+      'Error carregant la informació de la planta';
+
+  @override
+  String get commonBack => 'Tornar';
+
+  @override
+  String get shopTitle => 'Botiga';
+
+  @override
+  String get shopSeedsTab => 'Llavors 🌱';
+
+  @override
+  String get shopOtherTab => 'Altres 🛒';
+
+  @override
+  String get shopLoadError => 'No s\'han pogut carregar els productes.';
+
+  @override
+  String get shopConnectionError => 'Error de connexió o processant les dades.';
+
+  @override
+  String get shopPurchaseProcessingError => 'Error en processar la compra.';
+
+  @override
+  String get shopPurchaseSuccess => 'Compra realitzada amb èxit! 🌱';
+
+  @override
+  String get shopDescriptionTitle => 'Descripció';
+
+  @override
+  String get shopTotalPrice => 'Preu total:';
+
+  @override
+  String get shopBuyButton => 'Comprar';
+
+  @override
+  String get shopNoItemsAvailable =>
+      'No hi ha articles disponibles ara mateix.';
+
+  @override
+  String get calendarRetry => 'Reintentar';
+
+  @override
+  String get calendarUpcomingEvents => 'Propers esdeveniments';
+
+  @override
+  String get calendarNoEventsThisMonth => 'No hi ha esdeveniments aquest mes';
+
+  @override
+  String get calendarClearFilters => 'Eliminar filtres';
+
+  @override
+  String get calendarNoEventsThisDay => 'Sense esdeveniments aquest dia';
+
+  @override
+  String get calendarFiltersTitle => 'Filtres';
+
+  @override
+  String get calendarClearAll => 'Netejar tot';
+
+  @override
+  String get calendarSearchTextLabel => 'Cerca per text';
+
+  @override
+  String get calendarSearchTextHint => 'Nom, descripció...';
+
+  @override
+  String get calendarCityLabel => 'Ciutat';
+
+  @override
+  String get calendarCityHint => 'Barcelona, Girona...';
+
+  @override
+  String get calendarCountyLabel => 'Comarca';
+
+  @override
+  String get calendarCountyHint => 'Osona, Maresme...';
+
+  @override
+  String get calendarCategoryLabel => 'Categoria';
+
+  @override
+  String get calendarCategoryHint => 'Mercat, Concert, Ruta...';
+
+  @override
+  String get calendarMaxDistanceLabel => 'Distància màxima';
+
+  @override
+  String get calendarMaxPriceLabel => 'Preu màxim';
+
+  @override
+  String get calendarApplyFilters => 'Aplicar filtres';
+
+  @override
+  String get calendarFree => 'Gratis';
+
+  @override
+  String get calendarFreeAccent => 'Gratuït';
+
+  @override
+  String get calendarBuyTickets => 'Comprar entrades';
+
+  @override
+  String get calendarEventSingular => 'esdeveniment';
+
+  @override
+  String get calendarEventPlural => 'esdeveniments';
+
+  @override
+  String calendarEventsCount(Object count) {
+    return '$count esdeveniments';
+  }
+
+  @override
+  String calendarSelectedDaySummary(
+    Object day,
+    Object monthLabel,
+    Object count,
+    Object eventWord,
+  ) {
+    return '$day $monthLabel · $count $eventWord';
+  }
+
+  @override
+  String calendarMaxDistanceChip(Object km) {
+    return '≤$km km';
+  }
+
+  @override
+  String calendarMaxPriceChip(Object price) {
+    return '≤$price€';
+  }
+
+  @override
+  String calendarSearchChip(Object query) {
+    return '\"$query\"';
+  }
+
+  @override
+  String calendarDistanceKm(Object km) {
+    return '$km km';
+  }
+
+  @override
+  String calendarPriceEuros(Object price) {
+    return '$price €';
+  }
+
+  @override
+  String calendarPriceCompact(Object price) {
+    return '$price€';
+  }
+
+  @override
+  String calendarPriceSpaced(Object price) {
+    return '$price €';
+  }
+
+  @override
+  String get weekdayMon => 'Dl';
+
+  @override
+  String get weekdayTue => 'Dt';
+
+  @override
+  String get weekdayWed => 'Dc';
+
+  @override
+  String get weekdayThu => 'Dj';
+
+  @override
+  String get weekdayFri => 'Dv';
+
+  @override
+  String get weekdaySat => 'Ds';
+
+  @override
+  String get weekdaySun => 'Dg';
+
+  @override
+  String get monthJanuary => 'Gener';
+
+  @override
+  String get monthFebruary => 'Febrer';
+
+  @override
+  String get monthMarch => 'Març';
+
+  @override
+  String get monthApril => 'Abril';
+
+  @override
+  String get monthMay => 'Maig';
+
+  @override
+  String get monthJune => 'Juny';
+
+  @override
+  String get monthJuly => 'Juliol';
+
+  @override
+  String get monthAugust => 'Agost';
+
+  @override
+  String get monthSeptember => 'Setembre';
+
+  @override
+  String get monthOctober => 'Octubre';
+
+  @override
+  String get monthNovember => 'Novembre';
+
+  @override
+  String get monthDecember => 'Desembre';
+
+  @override
+  String get monthShortJanuary => 'gen';
+
+  @override
+  String get monthShortFebruary => 'feb';
+
+  @override
+  String get monthShortMarch => 'març';
+
+  @override
+  String get monthShortApril => 'abr';
+
+  @override
+  String get monthShortMay => 'maig';
+
+  @override
+  String get monthShortJune => 'juny';
+
+  @override
+  String get monthShortJuly => 'jul';
+
+  @override
+  String get monthShortAugust => 'ago';
+
+  @override
+  String get monthShortSeptember => 'set';
+
+  @override
+  String get monthShortOctober => 'oct';
+
+  @override
+  String get monthShortNovember => 'nov';
+
+  @override
+  String get monthShortDecember => 'des';
 }

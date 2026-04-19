@@ -28,5 +28,143 @@
 
   "commonLanguage": "Idioma",
   "commonCity": "Ciutat",
-  "commonContinue": "Continuar"
+  "commonContinue": "Continuar",
+
+  "albumTitle": "El meu àlbum de plantes",
+  "albumLoadingEncyclopedia": "Consultant enciclopèdia...",
+  "albumDetailsLoadError": "Error carregant detalls: {error}",
+  "@albumDetailsLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "albumUnknownPlant": "Desconeguda",
+  "albumNoDescription": "No hi ha descripció disponible.",
+  "albumFamilyLabel": "Família",
+  "albumBlooms": "Floreix",
+  "albumDoesNotBloom": "No floreix",
+  "albumDescriptionTitle": "Descripció",
+  "commonClose": "Tancar",
+  "albumEmptyState": "Encara no has descobert cap planta 🌱\nContinua explorant!",
+  "albumPlantInfoLoadError": "Error carregant la informació de la planta",
+
+"commonBack": "Tornar",
+
+"shopTitle": "Botiga",
+"shopSeedsTab": "Llavors 🌱",
+"shopOtherTab": "Altres 🛒",
+"shopLoadError": "No s'han pogut carregar els productes.",
+"shopConnectionError": "Error de connexió o processant les dades.",
+"shopPurchaseProcessingError": "Error en processar la compra.",
+"shopPurchaseSuccess": "Compra realitzada amb èxit! 🌱",
+"shopDescriptionTitle": "Descripció",
+"shopTotalPrice": "Preu total:",
+"shopBuyButton": "Comprar",
+"shopNoItemsAvailable": "No hi ha articles disponibles ara mateix.",
+
+"calendarRetry": "Reintentar",
+"calendarUpcomingEvents": "Propers esdeveniments",
+"calendarNoEventsThisMonth": "No hi ha esdeveniments aquest mes",
+"calendarClearFilters": "Eliminar filtres",
+"calendarNoEventsThisDay": "Sense esdeveniments aquest dia",
+"calendarFiltersTitle": "Filtres",
+"calendarClearAll": "Netejar tot",
+"calendarSearchTextLabel": "Cerca per text",
+"calendarSearchTextHint": "Nom, descripció...",
+"calendarCityLabel": "Ciutat",
+"calendarCityHint": "Barcelona, Girona...",
+"calendarCountyLabel": "Comarca",
+"calendarCountyHint": "Osona, Maresme...",
+"calendarCategoryLabel": "Categoria",
+"calendarCategoryHint": "Mercat, Concert, Ruta...",
+"calendarMaxDistanceLabel": "Distància màxima",
+"calendarMaxPriceLabel": "Preu màxim",
+"calendarApplyFilters": "Aplicar filtres",
+"calendarFree": "Gratis",
+"calendarFreeAccent": "Gratuït",
+"calendarBuyTickets": "Comprar entrades",
+"calendarEventSingular": "esdeveniment",
+"calendarEventPlural": "esdeveniments",
+
+"calendarEventsCount": "{count} esdeveniments",
+"@calendarEventsCount": {
+  "placeholders": {
+    "count": {}
+  }
+},
+
+"calendarSelectedDaySummary": "{day} {month} · {count} {eventWord}",
+"@calendarSelectedDaySummary": {
+  "placeholders": {
+    "day": {},
+    "month": {},
+    "count": {},
+    "eventWord": {}
+  }
+},
+
+"calendarMaxDistanceChip": "≤{km} km",
+"@calendarMaxDistanceChip": {
+  "placeholders": {
+    "km": {}
+  }
+},
+
+"calendarMaxPriceChip": "≤{price}€",
+"@calendarMaxPriceChip": {
+  "placeholders": {
+    "price": {}
+  }
+},
+
+"calendarSearchChip": "\"{query}\"",
+"@calendarSearchChip": {
+  "placeholders": {
+    "query": {}
+  }
+},
+
+"calendarDistanceKm": "{km} km",
+"@calendarDistanceKm": {
+  "placeholders": {
+    "km": {}
+  }
+},
+
+"calendarPriceEuros": "{price} €",
+"@calendarPriceEuros": {
+  "placeholders": {
+    "price": {}
+  }
+},
+
+"calendarPriceCompact": "{price}€",
+"@calendarPriceCompact": {
+  "placeholders": {
+    "price": {}
+  }
+},
+
+"weekdayMon": "Dl",
+"weekdayTue": "Dt",
+"weekdayWed": "Dc",
+"weekdayThu": "Dj",
+"weekdayFri": "Dv",
+"weekdaySat": "Ds",
+"weekdaySun": "Dg",
+
+"monthJanuary": "Gener",
+"monthFebruary": "Febrer",
+"monthMarch": "Març",
+"monthApril": "Abril",
+"monthMay": "Maig",
+"monthJune": "Juny",
+"monthJuly": "Juliol",
+"monthAugust": "Agost",
+"monthSeptember": "Setembre",
+"monthOctober": "Octubre",
+"monthNovember": "Novembre",
+"monthDecember": "Desembre"
 }

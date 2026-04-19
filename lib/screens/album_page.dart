@@ -8,6 +8,8 @@ import '../models/dades_usr.dart';
 import '../models/plantes_desbl.dart';
 import '../models/url.dart';
 
+import 'package:meteo_garden/l10n/app_localizations.dart';
+
 class AlbumPage extends StatefulWidget {
   const AlbumPage({super.key});
 
@@ -63,13 +65,14 @@ class _AlbumPageState extends State<AlbumPage> {
         "description": data['description'],
       };
     } else {
-      throw Exception('Error carregant la informació de la planta');
+      throw Exception('plant_info_load_error');
     }
   }
 
   void _mostrarPopupDetalles(BuildContext context, String scientificName) {
     final user = Provider.of<UserModel>(context, listen: false);
     final lang = mapLanguage(user.language);
+    final t = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
@@ -82,14 +85,14 @@ class _AlbumPageState extends State<AlbumPage> {
             future: _fetchDetallesPlanta(scientificName, lang),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Padding(
-                  padding: EdgeInsets.all(40.0),
+                return Padding(
+                  padding: const EdgeInsets.all(40.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 16),
-                      Text('Consultant enciclopèdia...'),
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 16),
+                      Text(t.albumLoadingEncyclopedia),
                     ],
                   ),
                 );
@@ -98,14 +101,15 @@ class _AlbumPageState extends State<AlbumPage> {
               if (snapshot.hasError) {
                 return Padding(
                   padding: const EdgeInsets.all(24.0),
-                  child: Text('Error carregant detalls: ${snapshot.error}'),
+                  child: Text(
+                    t.albumDetailsLoadError(snapshot.error.toString()),
+                  ),
                 );
               }
 
               final data = snapshot.data!;
-              final commonName = data['commonName'] ?? 'Desconeguda';
-              final desc =
-                  data['description'] ?? 'No hi ha descripció disponible.';
+              final commonName = data['commonName'] ?? t.albumUnknownPlant;
+              final desc = data['description'] ?? t.albumNoDescription;
               final family = data['family'] ?? '-';
               final minTemp = data['minTemperature'];
               final maxTemp = data['maxTemperature'];
@@ -126,7 +130,7 @@ class _AlbumPageState extends State<AlbumPage> {
                         ),
                       ),
                       Text(
-                        '$scientificName • Família: $family',
+                        '$scientificName • ${t.albumFamilyLabel}: $family',
                         style: TextStyle(
                           fontSize: 14,
                           fontStyle: FontStyle.italic,
@@ -155,15 +159,19 @@ class _AlbumPageState extends State<AlbumPage> {
                                 color: canFlower ? Colors.pink : Colors.green,
                               ),
                               const SizedBox(height: 4),
-                              Text(canFlower ? 'Floreix' : 'No floreix'),
+                              Text(
+                                canFlower
+                                    ? t.albumBlooms
+                                    : t.albumDoesNotBloom,
+                              ),
                             ],
                           ),
                         ],
                       ),
                       const SizedBox(height: 24),
-                      const Text(
-                        'Descripció',
-                        style: TextStyle(
+                      Text(
+                        t.albumDescriptionTitle,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -175,7 +183,7 @@ class _AlbumPageState extends State<AlbumPage> {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Tancar'),
+                          child: Text(t.commonClose),
                         ),
                       ),
                     ],
@@ -197,8 +205,10 @@ class _AlbumPageState extends State<AlbumPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('El meu àlbum de plantes')),
+      appBar: AppBar(title: Text(t.albumTitle)),
       body: Consumer<PlantProvider>(
         builder: (context, plantProvider, child) {
           if (plantProvider.isLoading) {
@@ -209,15 +219,18 @@ class _AlbumPageState extends State<AlbumPage> {
             return RefreshIndicator(
               onRefresh: _reloadPlants,
               child: ListView(
-                children: const [
-                  SizedBox(height: 180),
+                children: [
+                  const SizedBox(height: 180),
                   Center(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Text(
-                        'Encara no has descobert cap planta 🌱\nContinua explorant!',
+                        t.albumEmptyState,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),
@@ -259,29 +272,27 @@ class _AlbumPageState extends State<AlbumPage> {
                         Expanded(
                           child: imageUrl.isNotEmpty
                               ? Image.network(
-                                  imageUrl,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      color: Colors.green.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                      child: const Icon(
-                                        Icons.local_florist,
-                                        size: 50,
-                                        color: Colors.green,
-                                      ),
-                                    );
-                                  },
-                                )
-                              : Container(
-                                  color: Colors.green.withValues(alpha: 0.1),
-                                  child: const Icon(
-                                    Icons.local_florist,
-                                    size: 50,
-                                    color: Colors.green,
-                                  ),
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.green.withValues(alpha: 0.1),
+                                child: const Icon(
+                                  Icons.local_florist,
+                                  size: 50,
+                                  color: Colors.green,
                                 ),
+                              );
+                            },
+                          )
+                              : Container(
+                            color: Colors.green.withValues(alpha: 0.1),
+                            child: const Icon(
+                              Icons.local_florist,
+                              size: 50,
+                              color: Colors.green,
+                            ),
+                          ),
                         ),
                         Container(
                           color: Colors.white,

@@ -85,81 +85,72 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> loginWithGoogle(BuildContext context) async {
     try {
-      debugPrint("GOOGLE 1: inici login");
-
+      // 1. Login con Google
+      // per que funcioni amb web s'ha de forçar el port 62057
+      // flutter run -d chrome --web-port=62057
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      debugPrint("GOOGLE 2: googleUser = $googleUser");
 
       if (googleUser == null) {
-        debugPrint("GOOGLE 3: usuari ha cancel·lat");
+        // Usuario canceló
         return;
       }
 
+      // 2. Obtener tokens
       final GoogleSignInAuthentication googleAuth =
       await googleUser.authentication;
 
-      debugPrint("GOOGLE 4: idToken = ${googleAuth.idToken}");
-      debugPrint("GOOGLE 5: accessToken = ${googleAuth.accessToken}");
-
       final String? idToken = googleAuth.idToken;
       final String? accessToken = googleAuth.accessToken;
-      final String tokenToSend = idToken ?? accessToken ?? "";
 
-      debugPrint("GOOGLE 6: tokenToSend buit? ${tokenToSend.isEmpty}");
+      final String tokenToSend = idToken ?? accessToken ?? "";
 
       if (tokenToSend.isEmpty) {
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Error obtenint token de Google")),
+          const SnackBar(content: Text("Error obteniendo token de Google")),
         );
         return;
       }
 
-      final uri = Uri.parse("${ApiConfig.baseUrl}/api/auth/google/verify/");
-      debugPrint("GOOGLE 7: POST a $uri");
-
+      // 3. Enviar a backend
       final response = await http.post(
-        uri,
+        Uri.parse("${ApiConfig.baseUrl}/api/auth/google/verify"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"id_token": tokenToSend}),
       );
-
-      debugPrint("GOOGLE 8: status = ${response.statusCode}");
-      debugPrint("GOOGLE 9: body = ${response.body}");
 
       if (!context.mounted) return;
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
+        // 5. Navegación
         if (data["exists"] == false) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (_) => CompleteGoogleProfilePage(
-                googleToken: tokenToSend,
-                email: data["email"] ?? "",
+                googleToken: tokenToSend, // <-- Pasamos el token de Google
+                email: data["email"] ?? "", // <-- Pasamos el email
               ),
             ),
           );
         } else {
-          Provider.of<UserModel>(context, listen: false).setToken(data["token"]);
+          Provider.of<UserModel>(
+            context,
+            listen: false,
+          ).setToken(data["token"]);
+
           await _fetchAndSaveProfile(data['token']);
           _goToHome();
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login Google error: ${response.body}")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Error login Google")));
       }
-    } catch (e, st) {
-      debugPrint("ERROR GOOGLE SIGN-IN: $e");
-      debugPrint("$st");
-
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Excepció Google Sign-In: $e")),
-      );
+    } catch (e) {
+      debugPrint("Error Google Sign-In: $e");
     }
   }
 
