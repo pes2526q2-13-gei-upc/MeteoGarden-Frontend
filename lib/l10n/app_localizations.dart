@@ -523,10 +523,10 @@ abstract class AppLocalizations {
   /// No description provided for @calendarSelectedDaySummary.
   ///
   /// In ca, this message translates to:
-  /// **'{day} {monthLabel} · {count} {eventWord}'**
+  /// **'{day} {month} · {count} {eventWord}'**
   String calendarSelectedDaySummary(
     Object day,
-    Object monthLabel,
+    Object month,
     Object count,
     Object eventWord,
   );
@@ -566,12 +566,6 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'{price}€'**
   String calendarPriceCompact(Object price);
-
-  /// No description provided for @calendarPriceSpaced.
-  ///
-  /// In ca, this message translates to:
-  /// **'{price} €'**
-  String calendarPriceSpaced(Object price);
 
   /// No description provided for @weekdayMon.
   ///
@@ -686,78 +680,6 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Desembre'**
   String get monthDecember;
-
-  /// No description provided for @monthShortJanuary.
-  ///
-  /// In ca, this message translates to:
-  /// **'gen'**
-  String get monthShortJanuary;
-
-  /// No description provided for @monthShortFebruary.
-  ///
-  /// In ca, this message translates to:
-  /// **'feb'**
-  String get monthShortFebruary;
-
-  /// No description provided for @monthShortMarch.
-  ///
-  /// In ca, this message translates to:
-  /// **'març'**
-  String get monthShortMarch;
-
-  /// No description provided for @monthShortApril.
-  ///
-  /// In ca, this message translates to:
-  /// **'abr'**
-  String get monthShortApril;
-
-  /// No description provided for @monthShortMay.
-  ///
-  /// In ca, this message translates to:
-  /// **'maig'**
-  String get monthShortMay;
-
-  /// No description provided for @monthShortJune.
-  ///
-  /// In ca, this message translates to:
-  /// **'juny'**
-  String get monthShortJune;
-
-  /// No description provided for @monthShortJuly.
-  ///
-  /// In ca, this message translates to:
-  /// **'jul'**
-  String get monthShortJuly;
-
-  /// No description provided for @monthShortAugust.
-  ///
-  /// In ca, this message translates to:
-  /// **'ago'**
-  String get monthShortAugust;
-
-  /// No description provided for @monthShortSeptember.
-  ///
-  /// In ca, this message translates to:
-  /// **'set'**
-  String get monthShortSeptember;
-
-  /// No description provided for @monthShortOctober.
-  ///
-  /// In ca, this message translates to:
-  /// **'oct'**
-  String get monthShortOctober;
-
-  /// No description provided for @monthShortNovember.
-  ///
-  /// In ca, this message translates to:
-  /// **'nov'**
-  String get monthShortNovember;
-
-  /// No description provided for @monthShortDecember.
-  ///
-  /// In ca, this message translates to:
-  /// **'des'**
-  String get monthShortDecember;
 }
 
 class _AppLocalizationsDelegate
