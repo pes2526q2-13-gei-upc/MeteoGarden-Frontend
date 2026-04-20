@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_garden/l10n/app_localizations.dart';
 import '../services/events_api_service.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../models/dades_usr.dart';
+import '../models/url.dart';
 
 // ─── Filter State ─────────────────────────────────────────────────────────────
 
@@ -53,6 +58,35 @@ class EventFilters {
   bool get isEmpty => activeCount == 0;
 }
 
+// ─── Localized Event ──────────────────────────────────────────────────────────
+
+class LocalizedPlantEvent {
+  final PlantEvent original;
+  final String title;
+  final String subtitle;
+  final String description;
+  final String category;
+  final List<String> tags;
+
+  const LocalizedPlantEvent({
+    required this.original,
+    required this.title,
+    required this.subtitle,
+    required this.description,
+    required this.category,
+    required this.tags,
+  });
+
+  DateTime get startDate => original.startDate;
+  DateTime get endDate => original.endDate;
+  double get price => original.price;
+  bool get isFree => original.isFree;
+  String get imageUrl => original.imageUrl;
+  String get phone => original.phone;
+  String get ticketUrl => original.ticketUrl;
+  dynamic get location => original.location;
+}
+
 // ─── Calendar Page ────────────────────────────────────────────────────────────
 
 class CalendarPage extends StatefulWidget {
@@ -70,13 +104,15 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _currentMonth;
   late EventFilters _filters;
 
-  List<PlantEvent> _events = [];
-  Map<int, List<PlantEvent>> _eventsByDay = {};
+  List<LocalizedPlantEvent> _events = [];
+  Map<int, List<LocalizedPlantEvent>> _eventsByDay = {};
+  final Map<String, String> _translationCache = {};
+
   bool _loading = true;
   String? _error;
 
   int? _selectedDay;
-  List<PlantEvent> _selectedDayEvents = [];
+  List<LocalizedPlantEvent> _selectedDayEvents = [];
 
   @override
   void initState() {
@@ -85,6 +121,83 @@ class _CalendarPageState extends State<CalendarPage> {
     _currentMonth = DateTime(now.year, now.month, 1);
     _filters = EventFilters(city: widget.city);
     _loadEvents();
+  }
+
+  String _mapLanguage(String language) {
+    switch (language) {
+      case 'Català':
+        return 'ca';
+      case 'Castellano':
+        return 'es';
+      case 'English':
+        return 'en';
+      default:
+        return 'en';
+    }
+  }
+
+  Future<String> _translateText(String text, String lang) async {
+    if (text.trim().isEmpty || text.trim().length < 2) return text;
+
+    final cacheKey = '$lang|$text';
+    if (_translationCache.containsKey(cacheKey)) {
+      return _translationCache[cacheKey]!;
+    }
+
+    try {
+      final uri = Uri.parse('${ApiConfig.baseUrl}/api/translate/').replace(
+        queryParameters: {
+          'text': text,
+          'lang': lang,
+        },
+      );
+
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final decoded = utf8.decode(response.bodyBytes).replaceAll('"', '').trim();
+        _translationCache[cacheKey] = decoded;
+        return decoded;
+      }
+    } catch (e) {
+      debugPrint('Error traduint');
+    }
+
+    _translationCache[cacheKey] = text;
+    return text;
+  }
+
+  Future<LocalizedPlantEvent> _translateEvent(PlantEvent event, String lang) async {
+    final translatedFields = await Future.wait([
+      _translateText(event.title, lang),
+      _translateText(event.subtitle, lang),
+      _translateText(event.description, lang),
+      _translateText(event.category, lang),
+      ...event.tags.map((tag) => _translateText(tag, lang)),
+    ]);
+
+    return LocalizedPlantEvent(
+      original: event,
+      title: translatedFields[0],
+      subtitle: translatedFields[1],
+      description: translatedFields[2],
+      category: translatedFields[3],
+      tags: translatedFields.sublist(4),
+    );
+  }
+
+  Map<int, List<LocalizedPlantEvent>> _groupLocalizedEventsByDay(
+    List<LocalizedPlantEvent> events,
+  ) {
+    final Map<int, List<LocalizedPlantEvent>> grouped = {};
+
+    for (final event in events) {
+      final day = event.startDate.day;
+      grouped.putIfAbsent(day, () => []);
+      grouped[day]!.add(event);
+    }
+
+    return grouped;
   }
 
   Future<void> _loadEvents() async {
@@ -107,9 +220,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
       final filtered = events.where((e) {
         if (_filters.category.isNotEmpty &&
-            !e.category.toLowerCase().contains(
-              _filters.category.toLowerCase(),
-            )) {
+            !e.category.toLowerCase().contains(_filters.category.toLowerCase())) {
           return false;
         }
 
@@ -128,9 +239,16 @@ class _CalendarPageState extends State<CalendarPage> {
         return true;
       }).toList();
 
+      final user = Provider.of<UserModel>(context, listen: false);
+      final langCode = _mapLanguage(user.language);
+
+      final localizedEvents = await Future.wait(
+        filtered.map((e) => _translateEvent(e, langCode)),
+      );
+
       setState(() {
-        _events = filtered;
-        _eventsByDay = _api.groupEventsByDay(filtered);
+        _events = localizedEvents;
+        _eventsByDay = _groupLocalizedEventsByDay(localizedEvents);
         _loading = false;
       });
     } catch (e) {
@@ -168,7 +286,7 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
-  void _openEventDetail(PlantEvent event) {
+  void _openEventDetail(LocalizedPlantEvent event) {
     showDialog(
       context: context,
       barrierColor: Colors.black.withValues(alpha: 0.55),
@@ -228,13 +346,13 @@ class _CalendarPageState extends State<CalendarPage> {
             Expanded(
               child: _loading
                   ? const Center(
-                child: CircularProgressIndicator(
-                  color: Color(0xFF4CAF50),
-                ),
-              )
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF4CAF50),
+                      ),
+                    )
                   : _error != null
-                  ? _buildError()
-                  : _buildContent(),
+                      ? _buildError()
+                      : _buildContent(),
             ),
           ],
         ),
@@ -406,7 +524,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (context, i) => Padding(
+              (context, i) => Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 child: _EventCard(
                   event: _selectedDayEvents[i],
@@ -680,20 +798,20 @@ class _CalendarPageState extends State<CalendarPage> {
         children: days
             .map(
               (d) => Expanded(
-            child: Center(
-              child: Text(
-                d,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: d == l10n.weekdaySat || d == l10n.weekdaySun
-                      ? const Color(0xFF9E9E9E)
-                      : const Color(0xFF4CAF50),
+                child: Center(
+                  child: Text(
+                    d,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: d == l10n.weekdaySat || d == l10n.weekdaySun
+                          ? const Color(0xFF9E9E9E)
+                          : const Color(0xFF4CAF50),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        )
+            )
             .toList(),
       ),
     );
@@ -1066,9 +1184,7 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                     activeTrackColor: const Color(0xFF4CAF50),
                     inactiveTrackColor: const Color(0xFFC8E6C9),
                     thumbColor: const Color(0xFF2E7D32),
-                    overlayColor: const Color(
-                      0xFF4CAF50,
-                    ).withValues(alpha: 0.12),
+                    overlayColor: const Color(0xFF4CAF50).withValues(alpha: 0.12),
                   ),
                   child: Slider(
                     value: value,
@@ -1168,7 +1284,7 @@ class _DayCell extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                   eventCount.clamp(0, 3),
-                      (_) => Container(
+                  (_) => Container(
                     width: 5,
                     height: 5,
                     margin: const EdgeInsets.only(right: 2),
@@ -1191,7 +1307,7 @@ class _DayCell extends StatelessWidget {
 // ─── Event Card ───────────────────────────────────────────────────────────────
 
 class _EventCard extends StatelessWidget {
-  final PlantEvent event;
+  final LocalizedPlantEvent event;
   final VoidCallback onTap;
 
   const _EventCard({required this.event, required this.onTap});
@@ -1369,15 +1485,9 @@ class _EventCard extends StatelessWidget {
 // ─── Event Detail Dialog ──────────────────────────────────────────────────────
 
 class _EventDetailDialog extends StatelessWidget {
-  final PlantEvent event;
+  final LocalizedPlantEvent event;
 
-  const _EventDetailDialog({required this.event});
-
-  String get _dateRange {
-    final start = _formatDate(event.startDate);
-    final end = _formatDate(event.endDate);
-    return start == end ? start : '$start – $end';
-  }
+  const _EventDetailDialog({super.key, required this.event});
 
   String _formatDate(DateTime dt) {
     final months = [
@@ -1395,6 +1505,12 @@ class _EventDetailDialog extends StatelessWidget {
       'des',
     ];
     return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
+  }
+
+  String get _dateRange {
+    final start = _formatDate(event.startDate);
+    final end = _formatDate(event.endDate);
+    return start == end ? start : '$start – $end';
   }
 
   String get _timeLabel {
@@ -1436,10 +1552,10 @@ class _EventDetailDialog extends StatelessWidget {
                       width: double.infinity,
                       height: 200,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => _imageError(),
+                      errorBuilder: (_, __, ___) => _imagePlaceholder(),
                     )
                   else
-                    _imageError(),
+                    _imagePlaceholder(),
                   Positioned(
                     top: 10,
                     right: 10,
@@ -1451,11 +1567,7 @@ class _EventDetailDialog extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         padding: const EdgeInsets.all(6),
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                        child: const Icon(Icons.close, color: Colors.white, size: 20),
                       ),
                     ),
                   ),
@@ -1463,10 +1575,7 @@ class _EventDetailDialog extends StatelessWidget {
                     bottom: 12,
                     left: 14,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: const Color(0xFF4CAF50),
                         borderRadius: BorderRadius.circular(20),
@@ -1528,103 +1637,47 @@ class _EventDetailDialog extends StatelessWidget {
                             label: event.isFree
                                 ? l10n.calendarFreeAccent
                                 : l10n.calendarPriceEuros(
-                              event.price.toStringAsFixed(0),
-                            ),
+                                    event.price.toStringAsFixed(0),
+                                  ),
                             highlight: event.isFree,
                           ),
                         ],
                       ),
-                      if (_locationLabel.isNotEmpty) ...[
-                        const SizedBox(height: 10),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.location_on_outlined,
-                              size: 16,
-                              color: Color(0xFF4CAF50),
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                _locationLabel,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Color(0xFF424242),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                      if (event.phone.isNotEmpty && event.phone != '0') ...[
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.phone_outlined,
-                              size: 16,
-                              color: Color(0xFF4CAF50),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              event.phone,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF424242),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      const SizedBox(height: 14),
+                      if (_locationLabel.isNotEmpty)
+                        _buildInfoRow(Icons.location_on_outlined, _locationLabel),
+                      if (event.phone.isNotEmpty && event.phone != '0')
+                        _buildInfoRow(Icons.phone_outlined, event.phone),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
                         child: Divider(color: Color(0xFFDCEFDC), thickness: 1),
                       ),
-                      if (event.description.isNotEmpty)
-                        Text(
-                          event.description,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Color(0xFF424242),
-                            height: 1.6,
-                          ),
+                      Text(
+                        event.description,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Color(0xFF424242),
+                          height: 1.6,
                         ),
+                      ),
                       if (event.tags.isNotEmpty) ...[
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 16),
                         Wrap(
                           spacing: 6,
                           runSpacing: 6,
                           children: event.tags
-                              .map(
-                                (tag) => Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFE8F5E9),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                '#$tag',
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: Color(0xFF388E3C),
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          )
+                              .map((tag) => _buildTag(tag))
                               .toList(),
                         ),
                       ],
                       if (event.ticketUrl.isNotEmpty) ...[
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              /* Obrir URL */
+                            },
                             icon: const Icon(Icons.open_in_new, size: 16),
                             label: Text(l10n.calendarBuyTickets),
                             style: ElevatedButton.styleFrom(
@@ -1649,11 +1702,51 @@ class _EventDetailDialog extends StatelessWidget {
     );
   }
 
-  Widget _imageError() {
+  Widget _imagePlaceholder() => Container(
+        width: double.infinity,
+        height: 200,
+        color: const Color(0xFFE8F5E9),
+        child: const Icon(
+          Icons.image_not_supported_outlined,
+          color: Colors.green,
+          size: 40,
+        ),
+      );
+
+  Widget _buildInfoRow(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 16, color: const Color(0xFF4CAF50)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 13, color: Color(0xFF424242)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTag(String tag) {
     return Container(
-      width: double.infinity,
-      height: 200,
-      color: const Color(0xFFE8F5E9),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE8F5E9),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        '#$tag',
+        style: const TextStyle(
+          fontSize: 11,
+          color: Color(0xFF388E3C),
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 }
