@@ -229,11 +229,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String calendarSelectedDaySummary(
     Object day,
-    Object monthLabel,
+    Object month,
     Object count,
     Object eventWord,
   ) {
-    return '$day $monthLabel · $count $eventWord';
+    return '$day $month · $count $eventWord';
   }
 
   @override
@@ -264,11 +264,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String calendarPriceCompact(Object price) {
     return '$price€';
-  }
-
-  @override
-  String calendarPriceSpaced(Object price) {
-    return '$price €';
   }
 
   @override
@@ -327,40 +322,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get monthDecember => 'Desembre';
-
-  @override
-  String get monthShortJanuary => 'gen';
-
-  @override
-  String get monthShortFebruary => 'feb';
-
-  @override
-  String get monthShortMarch => 'març';
-
-  @override
-  String get monthShortApril => 'abr';
-
-  @override
-  String get monthShortMay => 'maig';
-
-  @override
-  String get monthShortJune => 'juny';
-
-  @override
-  String get monthShortJuly => 'jul';
-
-  @override
-  String get monthShortAugust => 'ago';
-
-  @override
-  String get monthShortSeptember => 'set';
-
-  @override
-  String get monthShortOctober => 'oct';
-
-  @override
-  String get monthShortNovember => 'nov';
-
-  @override
-  String get monthShortDecember => 'des';
 }

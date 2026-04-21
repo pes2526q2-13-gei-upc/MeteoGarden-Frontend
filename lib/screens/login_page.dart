@@ -10,6 +10,7 @@ import '../models/url.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,6 +22,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final storage = const FlutterSecureStorage();
 
   @override
   void dispose() {
@@ -53,17 +55,14 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       Provider.of<UserModel>(context, listen: false).setToken(data['token']);
+      await storage.write(key: 'auth_token', value: data['token']);
       await _fetchAndSaveProfile(data['token']);
       if (!mounted) return;
       _goToHome();
     } else {
       debugPrint("Error: ${response.body}");
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.loginError),
-          ),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.loginError)),
       );
     }
   }
@@ -97,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
 
       // 2. Obtener tokens
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
 
       final String? idToken = googleAuth.idToken;
       final String? accessToken = googleAuth.accessToken;
@@ -383,9 +382,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.profileLoadError),
-        ),
+        SnackBar(content: Text(AppLocalizations.of(context)!.profileLoadError)),
       );
     }
   }

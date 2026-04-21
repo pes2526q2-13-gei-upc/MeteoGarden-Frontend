@@ -160,9 +160,7 @@ class _AlbumPageState extends State<AlbumPage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                canFlower
-                                    ? t.albumBlooms
-                                    : t.albumDoesNotBloom,
+                                canFlower ? t.albumBlooms : t.albumDoesNotBloom,
                               ),
                             ],
                           ),
@@ -272,27 +270,29 @@ class _AlbumPageState extends State<AlbumPage> {
                         Expanded(
                           child: imageUrl.isNotEmpty
                               ? Image.network(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.green.withValues(alpha: 0.1),
-                                child: const Icon(
-                                  Icons.local_florist,
-                                  size: 50,
-                                  color: Colors.green,
-                                ),
-                              );
-                            },
-                          )
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.green.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      child: const Icon(
+                                        Icons.local_florist,
+                                        size: 50,
+                                        color: Colors.green,
+                                      ),
+                                    );
+                                  },
+                                )
                               : Container(
-                            color: Colors.green.withValues(alpha: 0.1),
-                            child: const Icon(
-                              Icons.local_florist,
-                              size: 50,
-                              color: Colors.green,
-                            ),
-                          ),
+                                  color: Colors.green.withValues(alpha: 0.1),
+                                  child: const Icon(
+                                    Icons.local_florist,
+                                    size: 50,
+                                    color: Colors.green,
+                                  ),
+                                ),
                         ),
                         Container(
                           color: Colors.white,
