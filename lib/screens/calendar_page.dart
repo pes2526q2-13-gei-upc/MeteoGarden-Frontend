@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import '../services/events_api_service.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -480,7 +480,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ElevatedButton.icon(
             onPressed: _loadEvents,
             icon: const Icon(Icons.refresh),
-            label: Text(l10n.calendarRetry),
+            label: Text(l10n.commonRetry),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4CAF50),
               foregroundColor: Colors.white,
@@ -706,10 +706,13 @@ class _CalendarPageState extends State<CalendarPage> {
     }
 
     if (_filters.maxDistanceKm != null) {
-      addChip(l10n.calendarMaxDistanceChip(_filters.maxDistanceKm!.toInt()), () {
-        setState(() => _filters = _filters.copyWith(clearDistance: true));
-        _loadEvents();
-      });
+      addChip(
+        l10n.calendarMaxDistanceChip(_filters.maxDistanceKm!.toInt()),
+        () {
+          setState(() => _filters = _filters.copyWith(clearDistance: true));
+          _loadEvents();
+        },
+      );
     }
 
     if (_filters.maxPrice != null) {
@@ -1049,7 +1052,9 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                       min: 1,
                       max: _maxDistanceSlider,
                       divisions: 199,
-                      displayValue: l10n.calendarDistanceKm(_distanceKm.toInt()),
+                      displayValue: l10n.calendarDistanceKm(
+                        _distanceKm.toInt(),
+                      ),
                       onToggle: (v) => setState(() => _distanceEnabled = v),
                       onChanged: (v) => setState(() => _distanceKm = v),
                       icon: Icons.social_distance_outlined,
@@ -1091,7 +1096,10 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                   ),
                   child: Text(
                     l10n.calendarApplyFilters,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
@@ -1505,6 +1513,10 @@ class _EventDetailDialog extends StatefulWidget {
   State<_EventDetailDialog> createState() => _EventDetailDialogState();
 }
 
+  String _dateRange(BuildContext context) {
+    final start = _formatDate(context, event.startDate);
+    final end = _formatDate(context, event.endDate);
+    return start == end ? start : '$start – $end';
 class _EventDetailDialogState extends State<_EventDetailDialog> {
   String? _translatedDescription;
   bool _loadingDescription = true;
@@ -1529,20 +1541,21 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
     });
   }
 
-  String _formatDate(DateTime dt) {
+  String _formatDate(BuildContext context, DateTime dt) {
+    final l10n = AppLocalizations.of(context)!;
     final months = [
-      'gen',
-      'feb',
-      'març',
-      'abr',
-      'maig',
-      'juny',
-      'jul',
-      'ago',
-      'set',
-      'oct',
-      'nov',
-      'des',
+      l10n.monthShortJanuary,
+      l10n.monthShortFebruary,
+      l10n.monthShortMarch,
+      l10n.monthShortApril,
+      l10n.monthShortMay,
+      l10n.monthShortJune,
+      l10n.monthShortJuly,
+      l10n.monthShortAugust,
+      l10n.monthShortSeptember,
+      l10n.monthShortOctober,
+      l10n.monthShortNovember,
+      l10n.monthShortDecember,
     ];
     return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
   }
@@ -1670,7 +1683,7 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                         children: [
                           _MetaPill(
                             icon: Icons.calendar_today_outlined,
-                            label: _dateRange,
+                            label: _dateRange(context),
                           ),
                           if (_timeLabel.isNotEmpty)
                             _MetaPill(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:meteo_garden/generated/app_localizations.dart';
 import '../models/seed_option.dart';
 import '../models/url.dart';
 
@@ -24,9 +25,7 @@ class InventoryApiService {
 
   Future<List<ProductItem>> fetchProducts() async {
     final response = await http.get(
-      Uri.parse(
-        '${ApiConfig.baseUrl}/api/users/$username/products/',
-      ), // canviar despres
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/products/'),
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -129,6 +128,8 @@ class _InventoryPageState extends State<InventoryPage>
   }
 
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
       child: Stack(
@@ -163,9 +164,9 @@ class _InventoryPageState extends State<InventoryPage>
                       ],
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'El teu Inventari',
-                      style: TextStyle(
+                    Text(
+                      l10n.inventoryTitle,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF1B5E20),
@@ -173,7 +174,7 @@ class _InventoryPageState extends State<InventoryPage>
                     ),
                     if (!_loading && _error == null)
                       Text(
-                        '$_totalItems elements disponibles',
+                        l10n.inventoryAvailableItems(_totalItems),
                         style: const TextStyle(
                           fontSize: 13,
                           color: Color(0xFF757575),
@@ -204,12 +205,14 @@ class _InventoryPageState extends State<InventoryPage>
   }
 
   Widget _buildSearchBar() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: TextField(
         onChanged: (v) => setState(() => _searchQuery = v),
         decoration: InputDecoration(
-          hintText: 'Cerca una llavor o poció...',
+          hintText: l10n.inventorySearchHint,
           hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
           prefixIcon: const Icon(
             Icons.search,
@@ -232,6 +235,8 @@ class _InventoryPageState extends State<InventoryPage>
   }
 
   Widget _buildTabBar() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       child: Container(
@@ -260,15 +265,15 @@ class _InventoryPageState extends State<InventoryPage>
             fontSize: 14,
           ),
           dividerColor: Colors.transparent,
-          tabs: const [
+          tabs: [
             Tab(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.grass, size: 16),
-                  SizedBox(width: 6),
-                  Text('Llavors'),
+                  const Icon(Icons.grass, size: 16),
+                  const SizedBox(width: 6),
+                  Text(l10n.inventorySeedsTab),
                 ],
               ),
             ),
@@ -277,9 +282,9 @@ class _InventoryPageState extends State<InventoryPage>
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.science, size: 16),
-                  SizedBox(width: 6),
-                  Text('Pocions'),
+                  const Icon(Icons.science, size: 16),
+                  const SizedBox(width: 6),
+                  Text(l10n.inventoryPotionsTab),
                 ],
               ),
             ),
@@ -290,6 +295,8 @@ class _InventoryPageState extends State<InventoryPage>
   }
 
   Widget _buildBody() {
+    final l10n = AppLocalizations.of(context)!;
+
     if (_loading) {
       return const Center(
         child: CircularProgressIndicator(color: Color(0xFF4CAF50)),
@@ -307,7 +314,7 @@ class _InventoryPageState extends State<InventoryPage>
             ElevatedButton.icon(
               onPressed: _loadInventory,
               icon: const Icon(Icons.refresh),
-              label: const Text('Reintentar'),
+              label: Text(l10n.commonRetry),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF4CAF50),
                 foregroundColor: Colors.white,
@@ -325,9 +332,10 @@ class _InventoryPageState extends State<InventoryPage>
   }
 
   Widget _buildSeedsGrid() {
+    final l10n = AppLocalizations.of(context)!;
     final items = _filteredSeeds;
     if (items.isEmpty) {
-      return _buildEmptyState('No hi ha llavors disponibles');
+      return _buildEmptyState(l10n.inventoryNoSeeds);
     }
     return RefreshIndicator(
       onRefresh: _loadInventory,
@@ -349,9 +357,10 @@ class _InventoryPageState extends State<InventoryPage>
   }
 
   Widget _buildProductsGrid() {
+    final l10n = AppLocalizations.of(context)!;
     final items = _filteredProducts;
     if (items.isEmpty) {
-      return _buildEmptyState('No hi ha pocions disponibles');
+      return _buildEmptyState(l10n.inventoryNoPotions);
     }
     return RefreshIndicator(
       onRefresh: _loadInventory,
@@ -389,8 +398,6 @@ class _InventoryPageState extends State<InventoryPage>
   }
 }
 
-// ─── Seed Card ────────────────────────────────────────────────────────────────
-
 class _SeedCard extends StatelessWidget {
   final SeedOption seed;
 
@@ -398,6 +405,8 @@ class _SeedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -449,7 +458,7 @@ class _SeedCard extends StatelessWidget {
               ),
             ),
             Text(
-              'Quantitat: ${seed.amount}',
+              l10n.inventoryQuantity(seed.amount),
               style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
             ),
           ],
@@ -459,8 +468,6 @@ class _SeedCard extends StatelessWidget {
   }
 }
 
-// ─── Product Card ─────────────────────────────────────────────────────────────
-
 class _ProductCard extends StatelessWidget {
   final ProductItem product;
 
@@ -468,6 +475,8 @@ class _ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -509,7 +518,7 @@ class _ProductCard extends StatelessWidget {
               ),
             ),
             Text(
-              'Quantitat: ${product.amount}',
+              l10n.inventoryQuantity(product.amount),
               style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
             ),
           ],

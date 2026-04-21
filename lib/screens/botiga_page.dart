@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
 
@@ -123,7 +123,8 @@ class _ShopPageState extends State<ShopPage>
         );
       } else {
         _showError(
-          jsonDecode(response.body)['error'] ?? l10n.shopPurchaseProcessingError,
+          jsonDecode(response.body)['error'] ??
+              l10n.shopPurchaseProcessingError,
         );
       }
     } catch (e) {
@@ -141,10 +142,10 @@ class _ShopPageState extends State<ShopPage>
 
   // 3. BOTTOM SHEET DE DETALLS I CONFIRMACIÓ
   void _showItemDetails(
-      BuildContext context,
-      bool isSeed,
-      Map<String, dynamic> item,
-      ) {
+    BuildContext context,
+    bool isSeed,
+    Map<String, dynamic> item,
+  ) {
     final l10n = AppLocalizations.of(context)!;
 
     final String name = isSeed
@@ -219,7 +220,7 @@ class _ShopPageState extends State<ShopPage>
               const SizedBox(height: 20),
               if (description != null) ...[
                 Text(
-                  l10n.shopDescriptionTitle,
+                  l10n.commonDescription,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -377,9 +378,9 @@ class _ShopPageState extends State<ShopPage>
             ),
             subtitle: isSeed && item['family'] != null
                 ? Text(
-              item['family'],
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-            )
+                    item['family'],
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  )
                 : null,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -491,15 +492,15 @@ class _ShopPageState extends State<ShopPage>
                 Expanded(
                   child: isLoading
                       ? const Center(
-                    child: CircularProgressIndicator(color: Colors.white),
-                  )
+                          child: CircularProgressIndicator(color: Colors.white),
+                        )
                       : TabBarView(
-                    controller: _tabController,
-                    children: [
-                      _buildItemList(seeds, true),
-                      _buildItemList(products, false),
-                    ],
-                  ),
+                          controller: _tabController,
+                          children: [
+                            _buildItemList(seeds, true),
+                            _buildItemList(products, false),
+                          ],
+                        ),
                 ),
               ],
             ),

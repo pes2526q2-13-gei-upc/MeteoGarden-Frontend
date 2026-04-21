@@ -1,6 +1,17 @@
 {
   "appTitle": "MeteoGarden",
 
+    "commonBack": "Tornar",
+    "commonCancel": "Cancel·lar",
+    "commonCity": "Ciutat",
+    "commonClose": "Tancar",
+    "commonContinue": "Continuar",
+    "commonDescription": "Descripció",
+    "commonLanguage": "Idioma",
+    "commonRetry": "Reintentar",
+    "commonSave": "Guardar",
+    "commonSearch": "Cerca",
+
   "loginWelcomeTitle": "Benvinguda a MeteoGarden",
   "loginWelcomeSubtitle": "Inicia sessió per continuar cuidant el teu jardí.",
 
@@ -26,10 +37,6 @@
   "navMissions": "Missions",
   "navProfile": "Perfil",
 
-  "commonLanguage": "Idioma",
-  "commonCity": "Ciutat",
-  "commonContinue": "Continuar",
-
   "albumTitle": "El meu àlbum de plantes",
   "albumDiscoveredPlants": "Plantes descobertes",
   "albumLoadingEncyclopedia": "Consultant enciclopèdia...",
@@ -47,11 +54,8 @@
   "albumBlooms": "Floreix",
   "albumDoesNotBloom": "No floreix",
   "albumDescriptionTitle": "Descripció",
-  "commonClose": "Tancar",
   "albumEmptyState": "Encara no has descobert cap planta 🌱\nContinua explorant!",
   "albumPlantInfoLoadError": "Error carregant la informació de la planta",
-
-"commonBack": "Tornar",
 
 "shopTitle": "Botiga",
 "shopSeedsTab": "Llavors 🌱",
@@ -60,12 +64,10 @@
 "shopConnectionError": "Error de connexió o processant les dades.",
 "shopPurchaseProcessingError": "Error en processar la compra.",
 "shopPurchaseSuccess": "Compra realitzada amb èxit! 🌱",
-"shopDescriptionTitle": "Descripció",
 "shopTotalPrice": "Preu total:",
 "shopBuyButton": "Comprar",
 "shopNoItemsAvailable": "No hi ha articles disponibles ara mateix.",
 
-"calendarRetry": "Reintentar",
 "calendarUpcomingEvents": "Propers esdeveniments",
 "calendarNoEventsThisMonth": "No hi ha esdeveniments aquest mes",
 "calendarClearFilters": "Eliminar filtres",
@@ -167,5 +169,116 @@
 "monthSeptember": "Setembre",
 "monthOctober": "Octubre",
 "monthNovember": "Novembre",
-"monthDecember": "Desembre"
+"monthDecember": "Desembre",
+
+"monthShortJanuary": "gen",
+"monthShortFebruary": "feb",
+"monthShortMarch": "març",
+"monthShortApril": "abr",
+"monthShortMay": "maig",
+"monthShortJune": "juny",
+"monthShortJuly": "jul",
+"monthShortAugust": "ago",
+"monthShortSeptember": "set",
+"monthShortOctober": "oct",
+"monthShortNovember": "nov",
+"monthShortDecember": "des",
+
+"photoNoCameraAvailable": "No s’ha trobat cap càmera disponible.",
+"photoCameraInitError": "No s’ha pogut inicialitzar la càmera.",
+"photoUnexpectedError": "S’ha produït un error inesperat.",
+"photoTakePlantPicture": "Fotografia la planta",
+"photoTreeMode": "Arbre",
+"photoFlowerMode": "Flor",
+"photoTreeModeSelected": "Mode arbre seleccionat",
+"photoFlowerModeSelected": "Mode flor seleccionat",
+"photoIdentifyingPlant": "Identificant planta...",
+"photoCenterPlantInFrame": "Centra la planta dins el marc",
+
+"plantResultTitle": "Planta identificada",
+"plantResultScientificName": "Nom científic",
+"plantResultFamily": "Família",
+"plantResultConfidence": "Confiança",
+"plantResultTakeAnotherPhoto": "Fer una altra foto",
+
+"profileStatsTitle": "Estadístiques",
+"profileDefaultUser": "Usuari",
+"profileCityNotDefined": "Ciutat no definida",
+"profileCoins": "Monedes",
+"profileDiscovered": "Descobertes",
+"profileUserLabel": "Usuari",
+"profileEmailLabel": "Email",
+"profileCityLabel": "Ciutat",
+"profileLanguageLabel": "Idioma",
+"profileEditButton": "Modificar perfil",
+"profilePlants": "Plantes",
+"profileLogout": "Tancar sessió",
+"profileDeleteAccountTitle": "Eliminar compte",
+"profileDeleteAccountMessage": "Estàs segur que vols eliminar el teu compte? Aquesta acció és permanent i es perdran totes les teves monedes i plantes descobertes.",
+"profileDeleteAccountError": "Error eliminant el compte",
+"profileDeleteAccountConfirm": "Sí, eliminar",
+
+"createAccountTitle": "Crear compte",
+"createAccountWelcome": "Benvingut a Meteo Garden",
+"createAccountSubtitle": "Omple les teves dades per començar",
+"createAccountEmailLabel": "Correu electrònic",
+"createAccountGardenNameLabel": "Nom del teu jardí",
+"createAccountSuccess": "Compte creat correctament!",
+"createAccountError": "Error creant el compte",
+
+"completeProfileTitle": "Completar perfil",
+"completeProfileHeading": "Ja quasi ho tenim!",
+"completeProfileSubtitle": "Completa aquestes dades per finalitzar el registre amb Google",
+"completeProfilePasswordOptional": "Contrasenya (Opcional)",
+"completeProfileSuccess": "Compte completat correctament!",
+"completeProfileError": "Error completant perfil",
+
+"profileEditTitle": "Modificar perfil",
+"profileEditUserDataTitle": "Dades d'usuari",
+"profileEditUpdated": "Perfil actualitzat",
+"profileEditUpdateError": "Error actualitzant el perfil",
+
+"languageCatalan": "Català",
+"languageSpanish": "Castellà",
+"languageEnglish": "English",
+
+"inventoryTitle": "El teu inventari",
+"inventorySearchHint": "Cerca una llavor o poció...",
+"inventorySeedsTab": "Llavors",
+"inventoryPotionsTab": "Pocions",
+"inventoryNoSeeds": "No hi ha llavors disponibles",
+"inventoryNoPotions": "No hi ha pocions disponibles",
+"inventoryAvailableItems": "{count} elements disponibles",
+"@inventoryAvailableItems": {
+  "placeholders": {
+    "count": {}
+  }
+},
+"inventoryQuantity": "Quantitat: {amount}",
+"@inventoryQuantity": {
+  "placeholders": {
+    "amount": {}
+  }
+},
+
+"gardenLoadingSeedsError": "Error carregant llavors",
+"gardenLoadingWeather": "Carregant meteo...",
+"gardenWaitMoment": "Espera un moment",
+"gardenWeatherLoadError": "No s'ha pogut carregar la meteo",
+"gardenTapToRetry": "Toca per tornar-ho a provar",
+"gardenLoadingPotsError": "Error carregant els tests:",
+"gardenNoPotsAvailable": "No hi ha tests disponibles",
+"gardenWeatherSummary": "Temperatura: {temp}°C | Precipitació: {precipitation}",
+"@gardenWeatherSummary": {
+  "placeholders": {
+    "temp": {},
+    "precipitation": {}
+  }
+},
+"gardenWindSummary": "Vent: {wind} m/s",
+"@gardenWindSummary": {
+  "placeholders": {
+    "wind": {}
+  }
+}
 }

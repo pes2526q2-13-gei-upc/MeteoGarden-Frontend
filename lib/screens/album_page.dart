@@ -8,7 +8,7 @@ import '../models/dades_usr.dart';
 import '../models/plantes_desbl.dart';
 import '../models/url.dart';
 
-import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:meteo_garden/widgets/app_header.dart';
 
 class AlbumPage extends StatefulWidget {
@@ -23,7 +23,7 @@ class _AlbumPageState extends State<AlbumPage> {
     switch (language) {
       case 'Català':
         return 'ca';
-      case 'Español':
+      case 'Castellà':
         return 'es';
       case 'English':
         return 'en';
@@ -161,9 +161,7 @@ class _AlbumPageState extends State<AlbumPage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                canFlower
-                                    ? t.albumBlooms
-                                    : t.albumDoesNotBloom,
+                                canFlower ? t.albumBlooms : t.albumDoesNotBloom,
                               ),
                             ],
                           ),
