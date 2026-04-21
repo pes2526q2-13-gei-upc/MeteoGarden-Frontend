@@ -3,7 +3,11 @@ class SeedOption {
   final int amount;
   final String imageUrl;
 
-  const SeedOption({required this.scientificName, required this.amount, required this.imageUrl});
+  const SeedOption({
+    required this.scientificName,
+    required this.amount,
+    required this.imageUrl,
+  });
 
   factory SeedOption.fromJson(Map<String, dynamic> json) {
     return SeedOption(
@@ -19,8 +23,15 @@ class ProductItem {
   final int amount;
   final String imageUrl;
 
-  ProductItem({required this.productName, required this.amount, required this.imageUrl});
+  ProductItem({
+    required this.productName,
+    required this.amount,
+    required this.imageUrl,
+  });
 
-  factory ProductItem.fromJson(Map<String, dynamic> json) =>
-      ProductItem(productName: json['productName'], amount: json['amount'], imageUrl: json['image_url'],);
+  factory ProductItem.fromJson(Map<String, dynamic> json) => ProductItem(
+    productName: json['productName'],
+    amount: json['amount'],
+    imageUrl: json['image_url'],
+  );
 }

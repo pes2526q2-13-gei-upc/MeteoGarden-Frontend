@@ -25,7 +25,11 @@ class SeedService {
     */
     return [
       SeedOption(scientificName: "Rosa canina", amount: 3, imageUrl: ""),
-      SeedOption(scientificName: "Lavandula angustifolia", amount: 5, imageUrl: ""),
+      SeedOption(
+        scientificName: "Lavandula angustifolia",
+        amount: 5,
+        imageUrl: "",
+      ),
       SeedOption(scientificName: "Helianthus annuus", amount: 2, imageUrl: ""),
     ];
   }

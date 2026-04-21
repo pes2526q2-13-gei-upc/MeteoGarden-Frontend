@@ -217,7 +217,7 @@ class _AlbumPageState extends State<AlbumPage> {
                 children: [
                   AppHeader(
                     title: t.albumTitle,
-                    subtitle: " sub",//t.albumDiscoveredPlants,
+                    subtitle: " sub", //t.albumDiscoveredPlants,
                     extraInfo: '0',
                   ),
                   const Expanded(
@@ -235,8 +235,8 @@ class _AlbumPageState extends State<AlbumPage> {
                   children: [
                     AppHeader(
                       title: t.albumTitle,
-                      subtitle: "subtilte",//t.albumDiscoveredPlants,
-                      extraInfo: "extrainfo",//'0 ${t.albumPlantsAvailable}',
+                      subtitle: "subtilte", //t.albumDiscoveredPlants,
+                      extraInfo: "extrainfo", //'0 ${t.albumPlantsAvailable}',
                     ),
                     const SizedBox(height: 140),
                     Center(
@@ -247,7 +247,7 @@ class _AlbumPageState extends State<AlbumPage> {
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 16,
-                            color:  Color(0xFFF5F9F0),
+                            color: Color(0xFFF5F9F0),
                           ),
                         ),
                       ),
@@ -262,7 +262,8 @@ class _AlbumPageState extends State<AlbumPage> {
                 AppHeader(
                   title: t.albumTitle,
                   subtitle: "subtitle", //t.albumDiscoveredPlants,
-                  extraInfo: "info extra"//'$totalPlantes ${t.albumPlantsAvailable}',
+                  extraInfo:
+                      "info extra", //'$totalPlantes ${t.albumPlantsAvailable}',
                 ),
                 Expanded(
                   child: RefreshIndicator(
@@ -272,11 +273,11 @@ class _AlbumPageState extends State<AlbumPage> {
                       physics: const AlwaysScrollableScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 0.8,
-                      ),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 0.8,
+                          ),
                       itemCount: plantProvider.plants.length,
                       itemBuilder: (context, index) {
                         final planta = plantProvider.plants[index];
@@ -304,17 +305,16 @@ class _AlbumPageState extends State<AlbumPage> {
                                           fit: BoxFit.cover,
                                           errorBuilder:
                                               (context, error, stackTrace) {
-                                            return Container(
-                                              color: Colors.green.withValues(
-                                                alpha: 0.1,
-                                              ),
-                                              child: const Icon(
-                                                Icons.local_florist,
-                                                size: 50,
-                                                color: Colors.green,
-                                              ),
-                                            );
-                                          },
+                                                return Container(
+                                                  color: Colors.green
+                                                      .withValues(alpha: 0.1),
+                                                  child: const Icon(
+                                                    Icons.local_florist,
+                                                    size: 50,
+                                                    color: Colors.green,
+                                                  ),
+                                                );
+                                              },
                                         )
                                       : Container(
                                           color: Colors.green.withValues(

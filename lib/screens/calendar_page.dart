@@ -35,16 +35,14 @@ class EventFilters {
     double? maxPrice,
     bool clearPrice = false,
     String? q,
-  }) =>
-      EventFilters(
-        city: city ?? this.city,
-        county: county ?? this.county,
-        category: category ?? this.category,
-        maxDistanceKm:
-            clearDistance ? null : (maxDistanceKm ?? this.maxDistanceKm),
-        maxPrice: clearPrice ? null : (maxPrice ?? this.maxPrice),
-        q: q ?? this.q,
-      );
+  }) => EventFilters(
+    city: city ?? this.city,
+    county: county ?? this.county,
+    category: category ?? this.category,
+    maxDistanceKm: clearDistance ? null : (maxDistanceKm ?? this.maxDistanceKm),
+    maxPrice: clearPrice ? null : (maxPrice ?? this.maxPrice),
+    q: q ?? this.q,
+  );
 
   int get activeCount {
     int count = 0;
@@ -147,18 +145,17 @@ class _CalendarPageState extends State<CalendarPage> {
     }
 
     try {
-      final uri = Uri.parse('${ApiConfig.baseUrl}/api/translate/').replace(
-        queryParameters: {
-          'text': text,
-          'lang': lang,
-        },
-      );
+      final uri = Uri.parse(
+        '${ApiConfig.baseUrl}/api/translate/',
+      ).replace(queryParameters: {'text': text, 'lang': lang});
 
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
-        final decoded =
-            utf8.decode(response.bodyBytes).replaceAll('"', '').trim();
+        final decoded = utf8
+            .decode(response.bodyBytes)
+            .replaceAll('"', '')
+            .trim();
         _translationCache[cacheKey] = decoded;
         return decoded;
       }
@@ -228,8 +225,8 @@ class _CalendarPageState extends State<CalendarPage> {
       final filtered = events.where((e) {
         if (_filters.category.isNotEmpty &&
             !e.category.toLowerCase().contains(
-                  _filters.category.toLowerCase(),
-                )) {
+              _filters.category.toLowerCase(),
+            )) {
           return false;
         }
 
@@ -370,8 +367,8 @@ class _CalendarPageState extends State<CalendarPage> {
                       ),
                     )
                   : _error != null
-                      ? _buildError()
-                      : _buildContent(),
+                  ? _buildError()
+                  : _buildContent(),
             ),
           ],
         ),
@@ -399,16 +396,12 @@ class _CalendarPageState extends State<CalendarPage> {
                         Image.asset(
                           'assets/images/logo.png',
                           height: 28,
-                          errorBuilder: (
-                            context,
-                            error,
-                            stackTrace,
-                          ) =>
+                          errorBuilder: (context, error, stackTrace) =>
                               const Icon(
-                            Icons.eco,
-                            color: Color(0xFF4CAF50),
-                            size: 28,
-                          ),
+                                Icons.eco,
+                                color: Color(0xFF4CAF50),
+                                size: 28,
+                              ),
                         ),
                         const SizedBox(width: 6),
                         const Text(
@@ -1216,8 +1209,9 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                     activeTrackColor: const Color(0xFF4CAF50),
                     inactiveTrackColor: const Color(0xFFC8E6C9),
                     thumbColor: const Color(0xFF2E7D32),
-                    overlayColor:
-                        const Color(0xFF4CAF50).withValues(alpha: 0.12),
+                    overlayColor: const Color(
+                      0xFF4CAF50,
+                    ).withValues(alpha: 0.12),
                   ),
                   child: Slider(
                     value: value,
@@ -1276,8 +1270,9 @@ class _DayCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color bg = Colors.transparent;
-    Color textColor =
-        isWeekend ? const Color(0xFF9E9E9E) : const Color(0xFF424242);
+    Color textColor = isWeekend
+        ? const Color(0xFF9E9E9E)
+        : const Color(0xFF424242);
     Color borderColor = Colors.transparent;
 
     if (isSelected) {
@@ -1305,8 +1300,9 @@ class _DayCell extends StatelessWidget {
               '$day',
               style: TextStyle(
                 fontSize: 14,
-                fontWeight:
-                    isToday || isSelected ? FontWeight.w700 : FontWeight.w400,
+                fontWeight: isToday || isSelected
+                    ? FontWeight.w700
+                    : FontWeight.w400,
                 color: textColor,
               ),
             ),
@@ -1389,11 +1385,7 @@ class _EventCard extends StatelessWidget {
                   width: 80,
                   height: 88,
                   fit: BoxFit.cover,
-                  errorBuilder: (
-                    context,
-                    error,
-                    stackTrace,
-                  ) =>
+                  errorBuilder: (context, error, stackTrace) =>
                       const SizedBox(width: 0),
                 ),
               ),
@@ -1737,10 +1729,7 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                         _buildInfoRow(Icons.phone_outlined, event.phone),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
-                        child: Divider(
-                          color: Color(0xFFDCEFDC),
-                          thickness: 1,
-                        ),
+                        child: Divider(color: Color(0xFFDCEFDC), thickness: 1),
                       ),
                       if (_loadingDescription)
                         const Center(
@@ -1803,15 +1792,15 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
   }
 
   Widget _imagePlaceholder() => Container(
-        width: double.infinity,
-        height: 200,
-        color: const Color(0xFFE8F5E9),
-        child: const Icon(
-          Icons.image_not_supported_outlined,
-          color: Colors.green,
-          size: 40,
-        ),
-      );
+    width: double.infinity,
+    height: 200,
+    color: const Color(0xFFE8F5E9),
+    child: const Icon(
+      Icons.image_not_supported_outlined,
+      color: Colors.green,
+      size: 40,
+    ),
+  );
 
   Widget _buildInfoRow(IconData icon, String text) {
     return Padding(
