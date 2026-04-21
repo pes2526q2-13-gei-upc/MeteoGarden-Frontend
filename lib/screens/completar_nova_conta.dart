@@ -348,15 +348,15 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
                           icon: const Icon(Icons.arrow_drop_down_rounded),
                           items: [
                             DropdownMenuItem(
-                              value: 'Català',
+                              value: 'ca',
                               child: Text(l10n.languageCatalan),
                             ),
                             DropdownMenuItem(
-                              value: 'Castellano',
+                              value: 'es',
                               child: Text(l10n.languageSpanish),
                             ),
                             DropdownMenuItem(
-                              value: 'English',
+                              value: 'en',
                               child: Text(l10n.languageEnglish),
                             ),
                           ],
