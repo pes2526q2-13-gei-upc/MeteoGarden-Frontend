@@ -1,0 +1,283 @@
+{
+  "appTitle": "MeteoGarden",
+
+  "commonBack": "Back",
+  "commonCancel": "Cancel",
+  "commonCity": "City",
+  "commonClose": "Close",
+  "commonContinue": "Continue",
+  "commonDescription": "Description",
+  "commonLanguage": "Language",
+  "commonRetry": "Retry",
+  "commonSave": "Save",
+  "commonSearch": "Search",
+
+  "loginWelcomeTitle": "Welcome to MeteoGarden",
+  "loginWelcomeSubtitle": "Log in to continue taking care of your garden.",
+
+  "loginUsernameLabel": "Username",
+  "loginUsernameHint": "Enter your username",
+
+  "loginPasswordLabel": "Password",
+  "loginPasswordHint": "Enter your password",
+
+  "loginButton": "Log in",
+  "loginContinueWith": "or continue with",
+
+  "loginNoAccount": "Don't have an account?",
+  "loginCreateAccount": "Create account",
+
+  "loginError": "Login error",
+  "loginGoogleError": "Google login error",
+  "profileLoadError": "Could not load profile",
+
+  "navGarden": "Garden",
+  "navFriends": "Friends",
+  "navCamera": "Camera",
+  "navMissions": "Missions",
+  "navProfile": "Profile",
+
+  "albumTitle": "My plant album",
+  "albumLoadingEncyclopedia": "Consulting encyclopedia...",
+  "albumDetailsLoadError": "Error loading details: {error}",
+  "@albumDetailsLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "albumUnknownPlant": "Unknown",
+  "albumNoDescription": "No description available.",
+  "albumFamilyLabel": "Family",
+  "albumBlooms": "Blooms",
+  "albumDoesNotBloom": "Does not bloom",
+  "albumDescriptionTitle": "Description",
+  "albumEmptyState": "You haven't discovered any plants yet 🌱\nKeep exploring!",
+  "albumPlantInfoLoadError": "Error loading plant information",
+
+  "shopTitle": "Shop",
+  "shopSeedsTab": "Seeds 🌱",
+  "shopOtherTab": "Other 🛒",
+  "shopLoadError": "Could not load products.",
+  "shopConnectionError": "Connection error or error processing data.",
+  "shopPurchaseProcessingError": "Error processing purchase.",
+  "shopPurchaseSuccess": "Purchase completed successfully! 🌱",
+  "shopTotalPrice": "Total price:",
+  "shopBuyButton": "Buy",
+  "shopNoItemsAvailable": "No items available right now.",
+
+  "calendarUpcomingEvents": "Upcoming events",
+  "calendarNoEventsThisMonth": "There are no events this month",
+  "calendarClearFilters": "Clear filters",
+  "calendarNoEventsThisDay": "No events on this day",
+  "calendarFiltersTitle": "Filters",
+  "calendarClearAll": "Clear all",
+  "calendarSearchTextLabel": "Search by text",
+  "calendarSearchTextHint": "Name, description...",
+  "calendarCityLabel": "City",
+  "calendarCityHint": "Barcelona, Girona...",
+  "calendarCountyLabel": "County",
+  "calendarCountyHint": "Osona, Maresme...",
+  "calendarCategoryLabel": "Category",
+  "calendarCategoryHint": "Market, Concert, Route...",
+  "calendarMaxDistanceLabel": "Maximum distance",
+  "calendarMaxPriceLabel": "Maximum price",
+  "calendarApplyFilters": "Apply filters",
+  "calendarFree": "Free",
+  "calendarFreeAccent": "Free",
+  "calendarBuyTickets": "Buy tickets",
+  "calendarEventSingular": "event",
+  "calendarEventPlural": "events",
+
+  "calendarEventsCount": "{count} events",
+  "@calendarEventsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "calendarSelectedDaySummary": "{day} {month} · {count} {eventWord}",
+  "@calendarSelectedDaySummary": {
+    "placeholders": {
+      "day": {},
+      "month": {},
+      "count": {},
+      "eventWord": {}
+    }
+  },
+
+  "calendarMaxDistanceChip": "≤{km} km",
+  "@calendarMaxDistanceChip": {
+    "placeholders": {
+      "km": {}
+    }
+  },
+
+  "calendarMaxPriceChip": "≤{price}€",
+  "@calendarMaxPriceChip": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+
+  "calendarSearchChip": "\"{query}\"",
+  "@calendarSearchChip": {
+    "placeholders": {
+      "query": {}
+    }
+  },
+
+  "calendarDistanceKm": "{km} km",
+  "@calendarDistanceKm": {
+    "placeholders": {
+      "km": {}
+    }
+  },
+
+  "calendarPriceEuros": "{price} €",
+  "@calendarPriceEuros": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+
+  "calendarPriceCompact": "{price}€",
+  "@calendarPriceCompact": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+
+  "weekdayMon": "Mon",
+  "weekdayTue": "Tue",
+  "weekdayWed": "Wed",
+  "weekdayThu": "Thu",
+  "weekdayFri": "Fri",
+  "weekdaySat": "Sat",
+  "weekdaySun": "Sun",
+
+  "monthJanuary": "January",
+  "monthFebruary": "February",
+  "monthMarch": "March",
+  "monthApril": "April",
+  "monthMay": "May",
+  "monthJune": "June",
+  "monthJuly": "July",
+  "monthAugust": "August",
+  "monthSeptember": "September",
+  "monthOctober": "October",
+  "monthNovember": "November",
+  "monthDecember": "December",
+
+  "monthShortJanuary": "Jan",
+  "monthShortFebruary": "Feb",
+  "monthShortMarch": "Mar",
+  "monthShortApril": "Apr",
+  "monthShortMay": "May",
+  "monthShortJune": "Jun",
+  "monthShortJuly": "Jul",
+  "monthShortAugust": "Aug",
+  "monthShortSeptember": "Sep",
+  "monthShortOctober": "Oct",
+  "monthShortNovember": "Nov",
+  "monthShortDecember": "Dec",
+
+  "photoNoCameraAvailable": "No camera available.",
+  "photoCameraInitError": "Could not initialize camera.",
+  "photoUnexpectedError": "An unexpected error occurred.",
+  "photoTakePlantPicture": "Take a picture of the plant",
+  "photoTreeMode": "Tree",
+  "photoFlowerMode": "Flower",
+  "photoTreeModeSelected": "Tree mode selected",
+  "photoFlowerModeSelected": "Flower mode selected",
+  "photoIdentifyingPlant": "Identifying plant...",
+  "photoCenterPlantInFrame": "Center the plant within the frame",
+
+  "plantResultTitle": "Identified plant",
+  "plantResultScientificName": "Scientific name",
+  "plantResultFamily": "Family",
+  "plantResultConfidence": "Confidence",
+  "plantResultTakeAnotherPhoto": "Take another photo",
+
+  "profileStatsTitle": "Statistics",
+  "profileDefaultUser": "User",
+  "profileCityNotDefined": "City not defined",
+  "profileCoins": "Coins",
+  "profileDiscovered": "Discovered",
+  "profileUserLabel": "User",
+  "profileEmailLabel": "Email",
+  "profileCityLabel": "City",
+  "profileLanguageLabel": "Language",
+  "profileEditButton": "Edit profile",
+  "profilePlants": "Plants",
+  "profileLogout": "Log out",
+  "profileDeleteAccountTitle": "Delete account",
+  "profileDeleteAccountMessage": "Are you sure you want to delete your account? This action is permanent and all your coins and discovered plants will be lost.",
+  "profileDeleteAccountError": "Error deleting account",
+  "profileDeleteAccountConfirm": "Yes, delete",
+
+  "createAccountTitle": "Create account",
+  "createAccountWelcome": "Welcome to Meteo Garden",
+  "createAccountSubtitle": "Fill in your details to get started",
+  "createAccountEmailLabel": "Email",
+  "createAccountGardenNameLabel": "Your garden's name",
+  "createAccountSuccess": "Account created successfully!",
+  "createAccountError": "Error creating account",
+
+  "completeProfileTitle": "Complete profile",
+  "completeProfileHeading": "We're almost there!",
+  "completeProfileSubtitle": "Complete this information to finish registering with Google",
+  "completeProfilePasswordOptional": "Password (Optional)",
+  "completeProfileSuccess": "Account completed successfully!",
+  "completeProfileError": "Error completing profile",
+
+  "profileEditTitle": "Edit profile",
+  "profileEditUserDataTitle": "User data",
+  "profileEditUpdated": "Profile updated",
+  "profileEditUpdateError": "Error updating profile",
+
+  "languageCatalan": "Catalan",
+  "languageSpanish": "Spanish",
+  "languageEnglish": "English",
+
+  "inventoryTitle": "Your inventory",
+  "inventorySearchHint": "Search for a seed or potion...",
+  "inventorySeedsTab": "Seeds",
+  "inventoryPotionsTab": "Potions",
+  "inventoryNoSeeds": "No seeds available",
+  "inventoryNoPotions": "No potions available",
+  "inventoryAvailableItems": "{count} items available",
+  "@inventoryAvailableItems": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "inventoryQuantity": "Quantity: {amount}",
+  "@inventoryQuantity": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+
+  "gardenLoadingSeedsError": "Error loading seeds",
+  "gardenLoadingWeather": "Loading weather...",
+  "gardenWaitMoment": "Wait a moment",
+  "gardenWeatherLoadError": "Could not load weather",
+  "gardenTapToRetry": "Tap to try again",
+  "gardenLoadingPotsError": "Error loading pots:",
+  "gardenNoPotsAvailable": "No pots available",
+  "gardenWeatherSummary": "Temperature: {temp}°C | Precipitation: {precipitation}",
+  "@gardenWeatherSummary": {
+    "placeholders": {
+      "temp": {},
+      "precipitation": {}
+    }
+  },
+  "gardenWindSummary": "Wind: {wind} m/s",
+  "@gardenWindSummary": {
+    "placeholders": {
+      "wind": {}
+    }
+  }
+}

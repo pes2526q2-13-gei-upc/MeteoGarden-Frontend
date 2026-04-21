@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
 
@@ -220,7 +220,7 @@ class _ShopPageState extends State<ShopPage>
               const SizedBox(height: 20),
               if (description != null) ...[
                 Text(
-                  l10n.shopDescriptionTitle,
+                  l10n.commonDescription,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

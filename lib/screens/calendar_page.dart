@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import '../services/events_api_service.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../models/dades_usr.dart';
+import '../models/url.dart';
 
 // ─── Filter State ─────────────────────────────────────────────────────────────
 
@@ -53,6 +58,35 @@ class EventFilters {
   bool get isEmpty => activeCount == 0;
 }
 
+// ─── Localized Event ──────────────────────────────────────────────────────────
+
+class LocalizedPlantEvent {
+  final PlantEvent original;
+  final String title;
+  final String subtitle;
+  final String description;
+  final String category;
+  final List<String> tags;
+
+  const LocalizedPlantEvent({
+    required this.original,
+    required this.title,
+    required this.subtitle,
+    required this.description,
+    required this.category,
+    required this.tags,
+  });
+
+  DateTime get startDate => original.startDate;
+  DateTime get endDate => original.endDate;
+  double get price => original.price;
+  bool get isFree => original.isFree;
+  String get imageUrl => original.imageUrl;
+  String get phone => original.phone;
+  String get ticketUrl => original.ticketUrl;
+  dynamic get location => original.location;
+}
+
 // ─── Calendar Page ────────────────────────────────────────────────────────────
 
 class CalendarPage extends StatefulWidget {
@@ -70,13 +104,15 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _currentMonth;
   late EventFilters _filters;
 
-  List<PlantEvent> _events = [];
-  Map<int, List<PlantEvent>> _eventsByDay = {};
+  List<LocalizedPlantEvent> _events = [];
+  Map<int, List<LocalizedPlantEvent>> _eventsByDay = {};
+  final Map<String, String> _translationCache = {};
+
   bool _loading = true;
   String? _error;
 
   int? _selectedDay;
-  List<PlantEvent> _selectedDayEvents = [];
+  List<LocalizedPlantEvent> _selectedDayEvents = [];
 
   @override
   void initState() {
@@ -87,6 +123,85 @@ class _CalendarPageState extends State<CalendarPage> {
     _loadEvents();
   }
 
+  String _mapLanguage(String language) {
+    switch (language) {
+      case 'Català':
+        return 'ca';
+      case 'Castellano':
+        return 'es';
+      case 'English':
+        return 'en';
+      default:
+        return 'en';
+    }
+  }
+
+  Future<String> _translateText(String text, String lang) async {
+    if (text.trim().isEmpty || text.trim().length < 2) return text;
+
+    final cacheKey = '$lang|$text';
+    if (_translationCache.containsKey(cacheKey)) {
+      return _translationCache[cacheKey]!;
+    }
+
+    try {
+      final uri = Uri.parse(
+        '${ApiConfig.baseUrl}/api/translate/',
+      ).replace(queryParameters: {'text': text, 'lang': lang});
+
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final decoded = utf8
+            .decode(response.bodyBytes)
+            .replaceAll('"', '')
+            .trim();
+        _translationCache[cacheKey] = decoded;
+        return decoded;
+      }
+    } catch (e) {
+      debugPrint('Error traduint');
+    }
+
+    _translationCache[cacheKey] = text;
+    return text;
+  }
+
+  Future<LocalizedPlantEvent> _translateEvent(
+    PlantEvent event,
+    String lang,
+  ) async {
+    final translatedFields = await Future.wait([
+      _translateText(event.title, lang),
+      _translateText(event.subtitle, lang),
+      _translateText(event.category, lang),
+      ...event.tags.map((tag) => _translateText(tag, lang)),
+    ]);
+
+    return LocalizedPlantEvent(
+      original: event,
+      title: translatedFields[0],
+      subtitle: translatedFields[1],
+      description: event.description,
+      category: translatedFields[2],
+      tags: translatedFields.sublist(3),
+    );
+  }
+
+  Map<int, List<LocalizedPlantEvent>> _groupLocalizedEventsByDay(
+    List<LocalizedPlantEvent> events,
+  ) {
+    final Map<int, List<LocalizedPlantEvent>> grouped = {};
+
+    for (final event in events) {
+      final day = event.startDate.day;
+      grouped.putIfAbsent(day, () => []);
+      grouped[day]!.add(event);
+    }
+
+    return grouped;
+  }
+
   Future<void> _loadEvents() async {
     setState(() {
       _loading = true;
@@ -95,13 +210,15 @@ class _CalendarPageState extends State<CalendarPage> {
       _selectedDayEvents = [];
     });
 
+    final user = Provider.of<UserModel>(context, listen: false);
+    final langCode = _mapLanguage(user.language);
+
     try {
       final events = await _api.fetchEventsForMonth(
         year: _currentMonth.year,
         month: _currentMonth.month,
         city: _filters.city.isNotEmpty ? _filters.city : null,
         county: _filters.county.isNotEmpty ? _filters.county : null,
-        // De moment no enviem distància perquè sense lat/lng pot fallar.
         distanceKm: null,
       );
 
@@ -128,12 +245,20 @@ class _CalendarPageState extends State<CalendarPage> {
         return true;
       }).toList();
 
+      final localizedEvents = await Future.wait(
+        filtered.map((e) => _translateEvent(e, langCode)),
+      );
+
+      if (!mounted) return;
+
       setState(() {
-        _events = filtered;
-        _eventsByDay = _api.groupEventsByDay(filtered);
+        _events = localizedEvents;
+        _eventsByDay = _groupLocalizedEventsByDay(localizedEvents);
         _loading = false;
       });
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         _error = e.toString();
         _loading = false;
@@ -168,11 +293,18 @@ class _CalendarPageState extends State<CalendarPage> {
     });
   }
 
-  void _openEventDetail(PlantEvent event) {
+  void _openEventDetail(LocalizedPlantEvent event) {
+    final user = Provider.of<UserModel>(context, listen: false);
+    final langCode = _mapLanguage(user.language);
+
     showDialog(
       context: context,
       barrierColor: Colors.black.withValues(alpha: 0.55),
-      builder: (_) => _EventDetailDialog(event: event),
+      builder: (_) => _EventDetailDialog(
+        event: event,
+        langCode: langCode,
+        translateText: _translateText,
+      ),
     );
   }
 
@@ -183,6 +315,8 @@ class _CalendarPageState extends State<CalendarPage> {
       backgroundColor: Colors.transparent,
       builder: (_) => _FiltersSheet(current: _filters),
     );
+
+    if (!mounted) return;
 
     if (result != null) {
       setState(() => _filters = result);
@@ -195,7 +329,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   int get _firstWeekdayOfMonth {
     final wd = DateTime(_currentMonth.year, _currentMonth.month, 1).weekday;
-    return wd - 1; // Monday = 0
+    return wd - 1;
   }
 
   String get _monthLabel {
@@ -262,11 +396,12 @@ class _CalendarPageState extends State<CalendarPage> {
                         Image.asset(
                           'assets/images/logo.png',
                           height: 28,
-                          errorBuilder: (_, _, _) => const Icon(
-                            Icons.eco,
-                            color: Color(0xFF4CAF50),
-                            size: 28,
-                          ),
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(
+                                Icons.eco,
+                                color: Color(0xFF4CAF50),
+                                size: 28,
+                              ),
                         ),
                         const SizedBox(width: 6),
                         const Text(
@@ -357,7 +492,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ElevatedButton.icon(
             onPressed: _loadEvents,
             icon: const Icon(Icons.refresh),
-            label: Text(l10n.calendarRetry),
+            label: Text(l10n.commonRetry),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4CAF50),
               foregroundColor: Colors.white,
@@ -1199,7 +1334,7 @@ class _DayCell extends StatelessWidget {
 // ─── Event Card ───────────────────────────────────────────────────────────────
 
 class _EventCard extends StatelessWidget {
-  final PlantEvent event;
+  final LocalizedPlantEvent event;
   final VoidCallback onTap;
 
   const _EventCard({required this.event, required this.onTap});
@@ -1250,7 +1385,8 @@ class _EventCard extends StatelessWidget {
                   width: 80,
                   height: 88,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => const SizedBox(width: 0),
+                  errorBuilder: (context, error, stackTrace) =>
+                      const SizedBox(width: 0),
                 ),
               ),
             Expanded(
@@ -1376,48 +1512,87 @@ class _EventCard extends StatelessWidget {
 
 // ─── Event Detail Dialog ──────────────────────────────────────────────────────
 
-class _EventDetailDialog extends StatelessWidget {
-  final PlantEvent event;
+class _EventDetailDialog extends StatefulWidget {
+  final LocalizedPlantEvent event;
+  final String langCode;
+  final Future<String> Function(String text, String lang) translateText;
 
-  const _EventDetailDialog({required this.event});
+  const _EventDetailDialog({
+    required this.event,
+    required this.langCode,
+    required this.translateText,
+  });
 
-  String get _dateRange {
-    final start = _formatDate(event.startDate);
-    final end = _formatDate(event.endDate);
-    return start == end ? start : '$start – $end';
+  @override
+  State<_EventDetailDialog> createState() => _EventDetailDialogState();
+}
+
+class _EventDetailDialogState extends State<_EventDetailDialog> {
+  String? _translatedDescription;
+  bool _loadingDescription = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTranslatedDescription();
   }
 
-  String _formatDate(DateTime dt) {
+  Future<void> _loadTranslatedDescription() async {
+    final translated = await widget.translateText(
+      widget.event.description,
+      widget.langCode,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _translatedDescription = translated;
+      _loadingDescription = false;
+    });
+  }
+
+  String _formatDate(BuildContext context, DateTime dt) {
+    final l10n = AppLocalizations.of(context)!;
     final months = [
-      'gen',
-      'feb',
-      'març',
-      'abr',
-      'maig',
-      'juny',
-      'jul',
-      'ago',
-      'set',
-      'oct',
-      'nov',
-      'des',
+      l10n.monthShortJanuary,
+      l10n.monthShortFebruary,
+      l10n.monthShortMarch,
+      l10n.monthShortApril,
+      l10n.monthShortMay,
+      l10n.monthShortJune,
+      l10n.monthShortJuly,
+      l10n.monthShortAugust,
+      l10n.monthShortSeptember,
+      l10n.monthShortOctober,
+      l10n.monthShortNovember,
+      l10n.monthShortDecember,
     ];
     return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
   }
 
+  String _dateRange(BuildContext context) {
+    final start = _formatDate(context, widget.event.startDate);
+    final end = _formatDate(context, widget.event.endDate);
+    return start == end ? start : '$start – $end';
+  }
+
   String get _timeLabel {
-    final h = event.startDate.hour.toString().padLeft(2, '0');
-    final m = event.startDate.minute.toString().padLeft(2, '0');
+    final h = widget.event.startDate.hour.toString().padLeft(2, '0');
+    final m = widget.event.startDate.minute.toString().padLeft(2, '0');
     if (h == '00' && m == '00') return '';
     return '$h:$m h';
   }
 
   String get _locationLabel {
     final parts = <String>[];
-    if (event.location.street.isNotEmpty) parts.add(event.location.street);
-    if (event.location.county.isNotEmpty) parts.add(event.location.county);
-    if (event.location.postalCode != 0) {
-      parts.add(event.location.postalCode.toString());
+    if (widget.event.location.street.isNotEmpty) {
+      parts.add(widget.event.location.street);
+    }
+    if (widget.event.location.county.isNotEmpty) {
+      parts.add(widget.event.location.county);
+    }
+    if (widget.event.location.postalCode != 0) {
+      parts.add(widget.event.location.postalCode.toString());
     }
     return parts.join(', ');
   }
@@ -1425,6 +1600,7 @@ class _EventDetailDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final event = widget.event;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -1444,10 +1620,11 @@ class _EventDetailDialog extends StatelessWidget {
                       width: double.infinity,
                       height: 200,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => _imageError(),
+                      errorBuilder: (context, error, stackTrace) =>
+                          _imagePlaceholder(),
                     )
                   else
-                    _imageError(),
+                    _imagePlaceholder(),
                   Positioned(
                     top: 10,
                     right: 10,
@@ -1524,7 +1701,7 @@ class _EventDetailDialog extends StatelessWidget {
                         children: [
                           _MetaPill(
                             icon: Icons.calendar_today_outlined,
-                            label: _dateRange,
+                            label: _dateRange(context),
                           ),
                           if (_timeLabel.isNotEmpty)
                             _MetaPill(
@@ -1542,56 +1719,30 @@ class _EventDetailDialog extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (_locationLabel.isNotEmpty) ...[
-                        const SizedBox(height: 10),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.location_on_outlined,
-                              size: 16,
-                              color: Color(0xFF4CAF50),
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                _locationLabel,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Color(0xFF424242),
-                                ),
-                              ),
-                            ),
-                          ],
+                      const SizedBox(height: 14),
+                      if (_locationLabel.isNotEmpty)
+                        _buildInfoRow(
+                          Icons.location_on_outlined,
+                          _locationLabel,
                         ),
-                      ],
-                      if (event.phone.isNotEmpty && event.phone != '0') ...[
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.phone_outlined,
-                              size: 16,
-                              color: Color(0xFF4CAF50),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              event.phone,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF424242),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      if (event.phone.isNotEmpty && event.phone != '0')
+                        _buildInfoRow(Icons.phone_outlined, event.phone),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
                         child: Divider(color: Color(0xFFDCEFDC), thickness: 1),
                       ),
-                      if (event.description.isNotEmpty)
+                      if (_loadingDescription)
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: CircularProgressIndicator(
+                              color: Color(0xFF4CAF50),
+                            ),
+                          ),
+                        )
+                      else
                         Text(
-                          event.description,
+                          _translatedDescription ?? event.description,
                           style: const TextStyle(
                             fontSize: 13,
                             color: Color(0xFF424242),
@@ -1599,40 +1750,23 @@ class _EventDetailDialog extends StatelessWidget {
                           ),
                         ),
                       if (event.tags.isNotEmpty) ...[
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 16),
                         Wrap(
                           spacing: 6,
                           runSpacing: 6,
                           children: event.tags
-                              .map(
-                                (tag) => Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFE8F5E9),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    '#$tag',
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: Color(0xFF388E3C),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              )
+                              .map((tag) => _buildTag(tag))
                               .toList(),
                         ),
                       ],
                       if (event.ticketUrl.isNotEmpty) ...[
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              /* Obrir URL */
+                            },
                             icon: const Icon(Icons.open_in_new, size: 16),
                             label: Text(l10n.calendarBuyTickets),
                             style: ElevatedButton.styleFrom(
@@ -1657,11 +1791,51 @@ class _EventDetailDialog extends StatelessWidget {
     );
   }
 
-  Widget _imageError() {
+  Widget _imagePlaceholder() => Container(
+    width: double.infinity,
+    height: 200,
+    color: const Color(0xFFE8F5E9),
+    child: const Icon(
+      Icons.image_not_supported_outlined,
+      color: Colors.green,
+      size: 40,
+    ),
+  );
+
+  Widget _buildInfoRow(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 16, color: const Color(0xFF4CAF50)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 13, color: Color(0xFF424242)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTag(String tag) {
     return Container(
-      width: double.infinity,
-      height: 200,
-      color: const Color(0xFFE8F5E9),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE8F5E9),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        '#$tag',
+        style: const TextStyle(
+          fontSize: 11,
+          color: Color(0xFF388E3C),
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import '../models/plant_identification.dart';
 
 class PlantResultPage extends StatelessWidget {
@@ -8,6 +9,7 @@ class PlantResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final commonName = result.plant.commonName;
     final scientificName = result.plant.scientificName;
     final family = result.plant.family;
@@ -34,11 +36,11 @@ class PlantResultPage extends StatelessWidget {
                       onPressed: () => Navigator.pop(context),
                       icon: const Icon(Icons.arrow_back),
                     ),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Planta identificada',
+                        l10n.plantResultTitle,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
                         ),
@@ -143,19 +145,19 @@ class PlantResultPage extends StatelessWidget {
                     children: [
                       _InfoTile(
                         icon: Icons.science_outlined,
-                        label: 'Nom científic',
+                        label: l10n.plantResultScientificName,
                         value: scientificName,
                       ),
                       const Divider(),
                       _InfoTile(
                         icon: Icons.park_outlined,
-                        label: 'Família',
+                        label: l10n.plantResultFamily,
                         value: family,
                       ),
                       const Divider(),
                       _InfoTile(
                         icon: Icons.verified_outlined,
-                        label: 'Confiança',
+                        label: l10n.plantResultConfidence,
                         value: score != null
                             ? '${(score * 100).toStringAsFixed(1)}%'
                             : '—',
@@ -171,7 +173,7 @@ class PlantResultPage extends StatelessWidget {
                   child: FilledButton.icon(
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.camera_alt_outlined),
-                    label: const Text('Fer una altra foto'),
+                    label: Text(l10n.plantResultTakeAnotherPhoto),
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(

@@ -24,9 +24,13 @@ class SeedService {
     return data.map((e) => SeedOption.fromJson(e)).toList();
     */
     return [
-      SeedOption(scientificName: "Rosa canina", amount: 3),
-      SeedOption(scientificName: "Lavandula angustifolia", amount: 5),
-      SeedOption(scientificName: "Helianthus annuus", amount: 2),
+      SeedOption(scientificName: "Rosa canina", amount: 3, imageUrl: ""),
+      SeedOption(
+        scientificName: "Lavandula angustifolia",
+        amount: 5,
+        imageUrl: "",
+      ),
+      SeedOption(scientificName: "Helianthus annuus", amount: 2, imageUrl: ""),
     ];
   }
 }

@@ -8,7 +8,8 @@ import '../models/dades_usr.dart';
 import '../models/plantes_desbl.dart';
 import '../models/url.dart';
 
-import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
+import 'package:meteo_garden/widgets/app_header.dart';
 
 class AlbumPage extends StatefulWidget {
   const AlbumPage({super.key});
@@ -22,7 +23,7 @@ class _AlbumPageState extends State<AlbumPage> {
     switch (language) {
       case 'Català':
         return 'ca';
-      case 'Español':
+      case 'Castellà':
         return 'es';
       case 'English':
         return 'en';
@@ -206,116 +207,152 @@ class _AlbumPageState extends State<AlbumPage> {
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.albumTitle)),
-      body: Consumer<PlantProvider>(
-        builder: (context, plantProvider, child) {
-          if (plantProvider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: SafeArea(
+        child: Consumer<PlantProvider>(
+          builder: (context, plantProvider, child) {
+            //final totalPlantes = plantProvider.plants.length;
 
-          if (plantProvider.plants.isEmpty) {
-            return RefreshIndicator(
-              onRefresh: _reloadPlants,
-              child: ListView(
+            if (plantProvider.isLoading) {
+              return Column(
                 children: [
-                  const SizedBox(height: 180),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Text(
-                        t.albumEmptyState,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
+                  AppHeader(
+                    title: t.albumTitle,
+                    subtitle: " sub", //t.albumDiscoveredPlants,
+                    extraInfo: '0',
+                  ),
+                  const Expanded(
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                ],
+              );
+            }
+
+            if (plantProvider.plants.isEmpty) {
+              return RefreshIndicator(
+                onRefresh: _reloadPlants,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    AppHeader(
+                      title: t.albumTitle,
+                      subtitle: "subtilte", //t.albumDiscoveredPlants,
+                      extraInfo: "extrainfo", //'0 ${t.albumPlantsAvailable}',
+                    ),
+                    const SizedBox(height: 140),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          t.albumEmptyState,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFFF5F9F0),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }
+                  ],
+                ),
+              );
+            }
 
-          return RefreshIndicator(
-            onRefresh: _reloadPlants,
-            child: GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: plantProvider.plants.length,
-              itemBuilder: (context, index) {
-                final planta = plantProvider.plants[index];
-                final imageUrl = planta.image;
-                final nombreCientifico = planta.name;
+            return Column(
+              children: [
+                AppHeader(
+                  title: t.albumTitle,
+                  subtitle: "subtitle", //t.albumDiscoveredPlants,
+                  extraInfo:
+                      "info extra", //'$totalPlantes ${t.albumPlantsAvailable}',
+                ),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: _reloadPlants,
+                    child: GridView.builder(
+                      padding: const EdgeInsets.all(16),
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 0.8,
+                          ),
+                      itemCount: plantProvider.plants.length,
+                      itemBuilder: (context, index) {
+                        final planta = plantProvider.plants[index];
+                        final imageUrl = planta.image;
+                        final nombreCientifico = planta.name;
 
-                return InkWell(
-                  borderRadius: BorderRadius.circular(16),
-                  onTap: () {
-                    _mostrarPopupDetalles(context, nombreCientifico);
-                  },
-                  child: Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: imageUrl.isNotEmpty
-                              ? Image.network(
-                                  imageUrl,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      color: Colors.green.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                      child: const Icon(
-                                        Icons.local_florist,
-                                        size: 50,
-                                        color: Colors.green,
-                                      ),
-                                    );
-                                  },
-                                )
-                              : Container(
-                                  color: Colors.green.withValues(alpha: 0.1),
-                                  child: const Icon(
-                                    Icons.local_florist,
-                                    size: 50,
-                                    color: Colors.green,
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () {
+                            _mostrarPopupDetalles(context, nombreCientifico);
+                          },
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                  child: imageUrl.isNotEmpty
+                                      ? Image.network(
+                                          imageUrl,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                                return Container(
+                                                  color: Colors.green
+                                                      .withValues(alpha: 0.1),
+                                                  child: const Icon(
+                                                    Icons.local_florist,
+                                                    size: 50,
+                                                    color: Colors.green,
+                                                  ),
+                                                );
+                                              },
+                                        )
+                                      : Container(
+                                          color: Colors.green.withValues(
+                                            alpha: 0.1,
+                                          ),
+                                          child: const Icon(
+                                            Icons.local_florist,
+                                            size: 50,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                ),
+                                Container(
+                                  color: Colors.white,
+                                  padding: const EdgeInsets.all(12),
+                                  child: Text(
+                                    nombreCientifico,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                        ),
-                        Container(
-                          color: Colors.white,
-                          padding: const EdgeInsets.all(12),
-                          child: Text(
-                            nombreCientifico,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic,
+                              ],
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
                   ),
-                );
-              },
-            ),
-          );
-        },
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
