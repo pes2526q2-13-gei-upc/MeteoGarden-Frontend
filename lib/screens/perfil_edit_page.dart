@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../models/perfil_info.dart';
@@ -19,7 +20,7 @@ class City {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is City && runtimeType == other.runtimeType && code == other.code;
+          other is City && runtimeType == other.runtimeType && code == other.code;
 
   @override
   int get hashCode => code.hashCode;
@@ -96,6 +97,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
   }
 
   void _actualitzar() async {
+    final l10n = AppLocalizations.of(context)!;
     final url = Uri.parse("${ApiConfig.baseUrl}/api/edit_profile/");
 
     final response = await http.post(
@@ -103,7 +105,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
       headers: {
         "Content-Type": "application/json",
         "Authorization":
-            "Token ${Provider.of<UserModel>(context, listen: false).token}",
+        "Token ${Provider.of<UserModel>(context, listen: false).token}",
       },
       body: jsonEncode({
         'username': usernameController.text,
@@ -120,7 +122,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Perfil actualitzat')));
+      ).showSnackBar(SnackBar(content: Text(l10n.profileEditUpdated)));
 
       Provider.of<UserModel>(context, listen: false).updateProfile(
         newUsername: usernameController.text,
@@ -133,14 +135,15 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
       debugPrint("Error: ${response.body}");
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error actualitzant el perfil')),
+        SnackBar(content: Text(l10n.profileEditUpdateError)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Estil refinat per als camps de text
+    final l10n = AppLocalizations.of(context)!;
+
     final defaultDecoration = InputDecoration(
       filled: true,
       fillColor: Colors.grey.withValues(alpha: 0.08),
@@ -161,15 +164,15 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     );
 
     return Scaffold(
-      extendBodyBehindAppBar: true, // Permet que el fons pugi fins a dalt
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          'Modificar perfil',
-          style: TextStyle(
+        title: Text(
+          l10n.profileEditTitle,
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w800,
             fontSize: 22,
@@ -178,22 +181,18 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
       ),
       body: Stack(
         children: [
-          // 1. Fons d'imatge (MATEIX QUE A PERFIL)
           Positioned.fill(
             child: Image.asset(
               'assets/images/imatge_fondo1.png',
               fit: BoxFit.cover,
             ),
           ),
-          // 2. Degradat (MATEIX QUE A PERFIL)
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.black.withValues(
-                      alpha: 0.50,
-                    ), // Més fosc a dalt per llegir el títol
+                    Colors.black.withValues(alpha: 0.50),
                     Colors.green.withValues(alpha: 0.10),
                     Colors.white.withValues(alpha: 0.95),
                   ],
@@ -203,161 +202,159 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
               ),
             ),
           ),
-          // 3. Contingut principal
           SafeArea(
             child: isLoading
                 ? const Center(
-                    child: CircularProgressIndicator(color: Color(0xFF166534)),
-                  )
+              child: CircularProgressIndicator(color: Color(0xFF166534)),
+            )
                 : SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
-                    child: Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(28),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                            color: Colors.black.withValues(alpha: 0.08),
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(28),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                      color: Colors.black.withValues(alpha: 0.08),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.edit_note_rounded,
+                          color: Color(0xFF166534),
+                          size: 28,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          l10n.profileEditUserDataTitle,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.grey.shade800,
                           ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.edit_note_rounded,
-                                color: Color(0xFF166534),
-                                size: 28,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Dades d'usuari",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.grey.shade800,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 24),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
 
-                          // CAMP 1: USUARI
-                          TextField(
-                            controller: usernameController,
-                            decoration: defaultDecoration.copyWith(
-                              labelText: 'Nom d\'usuari',
-                              prefixIcon: const Icon(
-                                Icons.person_outline_rounded,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          // CAMP 2: CIUTAT
-                          DropdownMenu<City>(
-                            initialSelection: selectedCity,
-                            controller: ciutatSearchController,
-                            requestFocusOnTap: true,
-                            enableFilter: true,
-                            expandedInsets:
-                                EdgeInsets.zero, // Ocupa tot l'ample
-                            menuHeight: 250,
-                            label: const Text('Ciutat'),
-                            leadingIcon: const Icon(
-                              Icons.location_city_rounded,
-                            ),
-                            inputDecorationTheme: InputDecorationTheme(
-                              filled: true,
-                              fillColor: Colors.grey.withValues(alpha: 0.08),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 16,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide.none,
-                              ),
-                            ),
-                            dropdownMenuEntries: cities
-                                .map<DropdownMenuEntry<City>>((City city) {
-                                  return DropdownMenuEntry<City>(
-                                    value: city,
-                                    label: city.name,
-                                  );
-                                })
-                                .toList(),
-                            onSelected: (City? city) {
-                              setState(() {
-                                selectedCity = city;
-                              });
-                            },
-                          ),
-                          const SizedBox(height: 20),
-
-                          // CAMP 3: IDIOMA
-                          DropdownButtonFormField<String>(
-                            initialValue: language,
-                            decoration: defaultDecoration.copyWith(
-                              labelText: 'Idioma',
-                              prefixIcon: const Icon(Icons.language_rounded),
-                            ),
-                            icon: const Icon(Icons.arrow_drop_down_rounded),
-                            items: ['Català', 'Castellano', 'English']
-                                .map(
-                                  (lang) => DropdownMenuItem(
-                                    value: lang,
-                                    child: Text(lang),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                language = value;
-                              });
-                            },
-                          ),
-
-                          const SizedBox(height: 40),
-
-                          // BOTÓ GUARDAR
-                          SizedBox(
-                            width: double.infinity,
-                            child: FilledButton.icon(
-                              onPressed: _actualitzar,
-                              icon: const Icon(Icons.save_rounded),
-                              label: const Text(
-                                'Guardar canvis',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              style: FilledButton.styleFrom(
-                                backgroundColor: const Color(
-                                  0xFF166534,
-                                ), // Verd fosc
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                elevation: 0,
-                              ),
-                            ),
-                          ),
-                        ],
+                    TextField(
+                      controller: usernameController,
+                      decoration: defaultDecoration.copyWith(
+                        labelText: l10n.loginUsernameLabel,
+                        prefixIcon: const Icon(
+                          Icons.person_outline_rounded,
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 20),
+
+                    DropdownMenu<City>(
+                      initialSelection: selectedCity,
+                      controller: ciutatSearchController,
+                      requestFocusOnTap: true,
+                      enableFilter: true,
+                      expandedInsets: EdgeInsets.zero,
+                      menuHeight: 250,
+                      label: Text(l10n.commonCity),
+                      leadingIcon: const Icon(
+                        Icons.location_city_rounded,
+                      ),
+                      inputDecorationTheme: InputDecorationTheme(
+                        filled: true,
+                        fillColor: Colors.grey.withValues(alpha: 0.08),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      dropdownMenuEntries: cities
+                          .map<DropdownMenuEntry<City>>((City city) {
+                        return DropdownMenuEntry<City>(
+                          value: city,
+                          label: city.name,
+                        );
+                      })
+                          .toList(),
+                      onSelected: (City? city) {
+                        setState(() {
+                          selectedCity = city;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+
+                    DropdownButtonFormField<String>(
+                      initialValue: language,
+                      decoration: defaultDecoration.copyWith(
+                        labelText: l10n.commonLanguage,
+                        prefixIcon: const Icon(Icons.language_rounded),
+                      ),
+                      icon: const Icon(Icons.arrow_drop_down_rounded),
+                      items: [
+                        DropdownMenuItem(
+                          value: 'Català',
+                          child: Text(l10n.languageCatalan),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Castellano',
+                          child: Text(l10n.languageSpanish),
+                        ),
+                        DropdownMenuItem(
+                          value: 'English',
+                          child: Text(l10n.languageEnglish),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          language = value;
+                        });
+                      },
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: _actualitzar,
+                        icon: const Icon(Icons.save_rounded),
+                        label: Text(
+                          l10n.commonSave,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF166534),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),

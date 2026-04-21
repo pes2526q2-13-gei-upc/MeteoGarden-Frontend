@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_garden/screens/album_page.dart';
+import 'package:meteo_garden/l10n/app_localizations.dart';
 
 import '../../models/garden.dart';
 import '../../models/weather_info.dart';
@@ -199,7 +200,7 @@ class _GardenPageState extends State<GardenPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            "Error carregant llavors: ${e.toString().replaceFirst('Exception: ', '')}",
+            '${AppLocalizations.of(context)!.gardenLoadingSeedsError}: ${e.toString().replaceFirst('Exception: ', '')}',
           ),
         ),
       );
@@ -219,6 +220,8 @@ class _GardenPageState extends State<GardenPage> {
   }
 
   Widget _buildWeatherSection() {
+    final l10n = AppLocalizations.of(context)!;
+
     return FutureBuilder<WeatherInfo>(
       future: _weatherFuture,
       builder: (context, snap) {
@@ -226,8 +229,8 @@ class _GardenPageState extends State<GardenPage> {
             snap.connectionState == ConnectionState.waiting) {
           return WeatherCard(
             nomEstacio: "",
-            title: "Carregant meteo...",
-            subtitle: "Espera un moment",
+            title: l10n.gardenLoadingWeather,
+            subtitle: l10n.gardenWaitMoment,
             trailing: const SizedBox(
               height: 18,
               width: 18,
@@ -240,8 +243,8 @@ class _GardenPageState extends State<GardenPage> {
         if (snap.hasError) {
           return WeatherCard(
             nomEstacio: "",
-            title: "No s'ha pogut carregar la meteo",
-            subtitle: "Toca per tornar-ho a provar",
+            title: l10n.gardenWeatherLoadError,
+            subtitle: l10n.gardenTapToRetry,
             trailing: const Icon(Icons.warning_amber_rounded),
             onRefresh: _refreshWeather,
           );
@@ -250,9 +253,13 @@ class _GardenPageState extends State<GardenPage> {
         final w = snap.data!;
         return WeatherCard(
           nomEstacio: w.stationName,
-          title:
-              "Temperatura: ${w.temp.toStringAsFixed(1)}°C | Precipitació: ${w.precipitation}",
-          subtitle: "Vent: ${w.wind.toStringAsFixed(1)} m/s",
+          title: l10n.gardenWeatherSummary(
+            w.temp.toStringAsFixed(1),
+            w.precipitation,
+          ),
+          subtitle: l10n.gardenWindSummary(w.wind.toStringAsFixed(1)),
+          precipitation: double.tryParse(w.precipitation),
+          wind: w.wind,
           trailing: const Icon(Icons.refresh),
           onRefresh: _refreshWeather,
         );
@@ -438,7 +445,7 @@ class _GardenPageState extends State<GardenPage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Error carregant els tests:\n${snap.error}",
+                '${AppLocalizations.of(context)!.gardenLoadingPotsError}\n${snap.error}',
                 style: const TextStyle(color: Colors.white),
                 textAlign: TextAlign.center,
               ),
@@ -449,9 +456,9 @@ class _GardenPageState extends State<GardenPage> {
         final pots = snap.data ?? [];
 
         if (pots.isEmpty) {
-          return const Center(
+          return Center(
             child: Text(
-              "No hi ha tests disponibles",
+              AppLocalizations.of(context)!.gardenNoPotsAvailable,
               style: TextStyle(color: Colors.white),
             ),
           );

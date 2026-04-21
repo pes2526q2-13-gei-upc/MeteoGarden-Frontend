@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/l10n/app_localizations.dart';
 import 'package:meteo_garden/screens/home_shell.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -23,11 +24,10 @@ class City {
     return City(code: json['code'], name: json['name']);
   }
 
-  // MOLT IMPORTANT: Perquè el Dropdown sàpiga comparar les ciutats
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is City && runtimeType == other.runtimeType && code == other.code;
+          other is City && runtimeType == other.runtimeType && code == other.code;
 
   @override
   int get hashCode => code.hashCode;
@@ -38,8 +38,6 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nomjardiController = TextEditingController();
-
-  // Afegim aquest controlador pel buscador del DropdownMenu
   final TextEditingController ciutatSearchController = TextEditingController();
 
   String? language;
@@ -86,6 +84,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   }
 
   void _submit() async {
+    final l10n = AppLocalizations.of(context)!;
     final url = Uri.parse("${ApiConfig.baseUrl}/api/register/");
 
     final response = await http.post(
@@ -117,7 +116,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Compte creat correctament!')),
+        SnackBar(content: Text(l10n.createAccountSuccess)),
       );
 
       Navigator.pushReplacement(
@@ -128,11 +127,12 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       debugPrint("Error: ${response.body}");
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Error creant el compte')));
+      ).showSnackBar(SnackBar(content: Text(l10n.createAccountError)));
     }
   }
 
   Future<void> _fetchAndSaveProfile(String token) async {
+    final l10n = AppLocalizations.of(context)!;
     final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
 
     final response = await http.get(
@@ -164,14 +164,15 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No s\'ha pogut carregar el perfil')),
+        SnackBar(content: Text(l10n.profileLoadError)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Estil refinat per als camps de text (Mateix que PerfilEditPage)
+    final l10n = AppLocalizations.of(context)!;
+
     final defaultDecoration = InputDecoration(
       filled: true,
       fillColor: Colors.grey.withValues(alpha: 0.08),
@@ -192,15 +193,15 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     );
 
     return Scaffold(
-      extendBodyBehindAppBar: true, // El fons puja fins a dalt
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          'Crear compte',
-          style: TextStyle(
+        title: Text(
+          l10n.createAccountTitle,
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w800,
             fontSize: 22,
@@ -209,14 +210,12 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       ),
       body: Stack(
         children: [
-          // 1. Fons d'imatge
           Positioned.fill(
             child: Image.asset(
-              'assets/images/imatge_fondo1.png', // Assegura't de tenir aquesta imatge
+              'assets/images/imatge_fondo1.png',
               fit: BoxFit.cover,
             ),
           ),
-          // 2. Degradat fosc a dalt, clar a baix
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -232,7 +231,6 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
               ),
             ),
           ),
-          // 3. Contingut principal
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -259,10 +257,10 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Text(
-                          "Benvingut a Meteo Garden",
+                        Text(
+                          l10n.createAccountWelcome,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF166534),
@@ -270,7 +268,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Omple les teves dades per començar",
+                          l10n.createAccountSubtitle,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14,
@@ -279,105 +277,101 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                         ),
                         const SizedBox(height: 24),
 
-                        // CAMP 1: USUARI
                         TextField(
                           controller: usernameController,
                           decoration: defaultDecoration.copyWith(
-                            labelText: 'Nom d\'usuari',
-                            prefixIcon: const Icon(
-                              Icons.person_outline_rounded,
-                            ),
+                            labelText: l10n.loginUsernameLabel,
+                            prefixIcon: const Icon(Icons.person_outline_rounded),
                           ),
                         ),
                         const SizedBox(height: 16),
 
-                        // CAMP 2: EMAIL
                         TextField(
                           controller: emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: defaultDecoration.copyWith(
-                            labelText: 'Correu electrònic',
+                            labelText: l10n.createAccountEmailLabel,
                             prefixIcon: const Icon(Icons.email_outlined),
                           ),
                         ),
                         const SizedBox(height: 16),
 
-                        // CAMP 3: CIUTAT (Ara amb DropdownMenu i menuHeight controlat)
                         isLoadingCities
                             ? const Center(
-                                child: CircularProgressIndicator(
-                                  color: Color(0xFF166534),
-                                ),
-                              )
+                          child: CircularProgressIndicator(
+                            color: Color(0xFF166534),
+                          ),
+                        )
                             : DropdownMenu<City>(
-                                initialSelection: selectedCity,
-                                controller: ciutatSearchController,
-                                requestFocusOnTap: true,
-                                enableFilter: true,
-                                expandedInsets: EdgeInsets.zero,
-                                menuHeight:
-                                    250, // <-- Això evita que ocupi tota la pantalla
-                                label: const Text('Ciutat'),
-                                leadingIcon: const Icon(
-                                  Icons.location_city_rounded,
-                                ),
-                                inputDecorationTheme: InputDecorationTheme(
-                                  filled: true,
-                                  fillColor: Colors.grey.withValues(
-                                    alpha: 0.08,
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 16,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                ),
-                                dropdownMenuEntries: cities
-                                    .map<DropdownMenuEntry<City>>((City city) {
-                                      return DropdownMenuEntry<City>(
-                                        value: city,
-                                        label: city.name,
-                                      );
-                                    })
-                                    .toList(),
-                                onSelected: (City? city) {
-                                  setState(() {
-                                    selectedCity = city;
-                                  });
-                                },
-                              ),
+                          initialSelection: selectedCity,
+                          controller: ciutatSearchController,
+                          requestFocusOnTap: true,
+                          enableFilter: true,
+                          expandedInsets: EdgeInsets.zero,
+                          menuHeight: 250,
+                          label: Text(l10n.commonCity),
+                          leadingIcon: const Icon(
+                            Icons.location_city_rounded,
+                          ),
+                          inputDecorationTheme: InputDecorationTheme(
+                            filled: true,
+                            fillColor: Colors.grey.withValues(alpha: 0.08),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                          dropdownMenuEntries: cities
+                              .map<DropdownMenuEntry<City>>((City city) {
+                            return DropdownMenuEntry<City>(
+                              value: city,
+                              label: city.name,
+                            );
+                          })
+                              .toList(),
+                          onSelected: (City? city) {
+                            setState(() {
+                              selectedCity = city;
+                            });
+                          },
+                        ),
                         const SizedBox(height: 16),
 
-                        // CAMP 4: CONTRASENYA
                         TextField(
                           controller: passwordController,
                           obscureText: true,
                           decoration: defaultDecoration.copyWith(
-                            labelText: 'Contrasenya',
+                            labelText: l10n.loginPasswordLabel,
                             prefixIcon: const Icon(Icons.lock_outline_rounded),
                           ),
                         ),
                         const SizedBox(height: 16),
 
-                        // CAMP 5: IDIOMA
                         DropdownButtonFormField<String>(
                           initialValue: language,
                           decoration: defaultDecoration.copyWith(
-                            labelText: 'Idioma',
+                            labelText: l10n.commonLanguage,
                             prefixIcon: const Icon(Icons.language_rounded),
                           ),
                           icon: const Icon(Icons.arrow_drop_down_rounded),
-                          items: ['Català', 'Castellano', 'English']
-                              .map(
-                                (lang) => DropdownMenuItem(
-                                  value: lang,
-                                  child: Text(lang),
-                                ),
-                              )
-                              .toList(),
+                          items: [
+                            DropdownMenuItem(
+                              value: 'Català',
+                              child: Text(l10n.languageCatalan),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Castellano',
+                              child: Text(l10n.languageSpanish),
+                            ),
+                            DropdownMenuItem(
+                              value: 'English',
+                              child: Text(l10n.languageEnglish),
+                            ),
+                          ],
                           onChanged: (value) {
                             setState(() {
                               language = value;
@@ -386,33 +380,28 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                         ),
                         const SizedBox(height: 16),
 
-                        // CAMP 6: NOM DEL JARDÍ
                         TextField(
                           controller: nomjardiController,
                           decoration: defaultDecoration.copyWith(
-                            labelText: 'Nom del teu jardí',
-                            prefixIcon: const Icon(
-                              Icons.local_florist_outlined,
-                            ),
+                            labelText: l10n.createAccountGardenNameLabel,
+                            prefixIcon:
+                            const Icon(Icons.local_florist_outlined),
                           ),
                         ),
                         const SizedBox(height: 32),
 
-                        // BOTÓ CREAR COMPTE
                         FilledButton.icon(
                           onPressed: _submit,
                           icon: const Icon(Icons.check_circle_outline_rounded),
-                          label: const Text(
-                            'Crear compte',
-                            style: TextStyle(
+                          label: Text(
+                            l10n.loginCreateAccount,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                           style: FilledButton.styleFrom(
-                            backgroundColor: const Color(
-                              0xFF166534,
-                            ), // Verd fosc
+                            backgroundColor: const Color(0xFF166534),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(

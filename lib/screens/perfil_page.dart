@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../models/perfil_info.dart';
 import '../models/dades_usr.dart';
@@ -13,6 +14,7 @@ class PerfilPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserModel>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: Stack(
@@ -74,7 +76,7 @@ class PerfilPage extends StatelessWidget {
                     delegate: SliverChildListDelegate([
                       _SectionTitle(
                         icon: Icons.bar_chart_rounded,
-                        title: "Estadístiques",
+                        title: l10n.profileStatsTitle,
                       ),
                       const SizedBox(height: 12),
                       _StatsGrid(
@@ -82,7 +84,7 @@ class PerfilPage extends StatelessWidget {
                         plantsDiscovered: user.numPlantsCollected,
                       ),
                       const SizedBox(height: 24),
-                      const _ActionButtons(), // Nuestros nuevos botones
+                      const _ActionButtons(),
                       const SizedBox(height: 20),
                     ]),
                   ),
@@ -117,10 +119,11 @@ class _GameHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final displayName = username.isEmpty ? "Usuari" : username;
-    final displayCity = city.isEmpty ? "Ciutat no definida" : city;
-    final displayEmail = email.isEmpty ? "—" : email;
-    final displayLanguage = language.isEmpty ? "—" : language;
+    final l10n = AppLocalizations.of(context)!;
+    final displayName = username.isEmpty ? l10n.profileDefaultUser : username;
+    final displayCity = city.isEmpty ? l10n.profileCityNotDefined : city;
+    final displayEmail = email.isEmpty ? '—' : email;
+    final displayLanguage = language.isEmpty ? '—' : language;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
@@ -214,7 +217,7 @@ class _GameHeader extends StatelessWidget {
                       Expanded(
                         child: _MiniHeaderStat(
                           icon: Icons.monetization_on,
-                          label: "Monedes",
+                          label: l10n.profileCoins,
                           value: coins.toString(),
                         ),
                       ),
@@ -222,7 +225,7 @@ class _GameHeader extends StatelessWidget {
                       Expanded(
                         child: _MiniHeaderStat(
                           icon: Icons.eco_rounded,
-                          label: "Descobertes",
+                          label: l10n.profileDiscovered,
                           value: plantsDiscovered.toString(),
                         ),
                       ),
@@ -242,25 +245,25 @@ class _GameHeader extends StatelessWidget {
                       children: [
                         _HeaderInfoRow(
                           icon: Icons.person_rounded,
-                          label: "Usuari",
+                          label: l10n.profileUserLabel,
                           value: displayName,
                         ),
                         const SizedBox(height: 12),
                         _HeaderInfoRow(
                           icon: Icons.email_rounded,
-                          label: "Email",
+                          label: l10n.profileEmailLabel,
                           value: displayEmail,
                         ),
                         const SizedBox(height: 12),
                         _HeaderInfoRow(
                           icon: Icons.location_city_rounded,
-                          label: "Ciutat",
+                          label: l10n.profileCityLabel,
                           value: displayCity,
                         ),
                         const SizedBox(height: 12),
                         _HeaderInfoRow(
                           icon: Icons.language_rounded,
-                          label: "Idioma",
+                          label: l10n.profileLanguageLabel,
                           value: displayLanguage,
                         ),
                       ],
@@ -280,9 +283,9 @@ class _GameHeader extends StatelessWidget {
                         ),
                       ),
                       icon: const Icon(Icons.edit_rounded),
-                      label: const Text(
-                        "Modificar perfil",
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                      label: Text(
+                        l10n.profileEditButton,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
@@ -424,12 +427,14 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Row(
       children: [
         Expanded(
           child: _GameStatCard(
             icon: Icons.monetization_on_rounded,
-            title: "Monedes",
+            title: l10n.profileCoins,
             value: coins.toString(),
             accent: const Color(0xFFF59E0B),
           ),
@@ -438,7 +443,7 @@ class _StatsGrid extends StatelessWidget {
         Expanded(
           child: _GameStatCard(
             icon: Icons.photo_camera_rounded,
-            title: "Plantes",
+            title: l10n.profilePlants,
             value: plantsDiscovered.toString(),
             accent: const Color(0xFF22C55E),
           ),
@@ -525,26 +530,28 @@ class _ActionButtons extends StatelessWidget {
   }
 
   void _confirmDeleteAccount(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.red),
-            SizedBox(width: 10),
-            Text("Eliminar compte"),
+            const Icon(Icons.warning_amber_rounded, color: Colors.red),
+            const SizedBox(width: 10),
+            Text(l10n.profileDeleteAccountTitle),
           ],
         ),
-        content: const Text(
-          "Estàs segur que vols eliminar el teu compte? Aquesta acció es permanent i es perdran totes les teves monedes i plantes descobertes.",
+        content: Text(
+          l10n.profileDeleteAccountMessage,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text(
-              "Cancel·lar",
-              style: TextStyle(color: Colors.grey),
+            child: Text(
+              l10n.commonCancel,
+              style: const TextStyle(color: Colors.grey),
             ),
           ),
           ElevatedButton(
@@ -569,7 +576,7 @@ class _ActionButtons extends StatelessWidget {
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Error eliminant el compte')),
+                  SnackBar(content: Text(l10n.profileDeleteAccountError)),
                 );
               }
             },
@@ -578,7 +585,7 @@ class _ActionButtons extends StatelessWidget {
               foregroundColor: Colors.red,
               elevation: 0,
             ),
-            child: const Text("Sí, eliminar"),
+            child: Text(l10n.profileDeleteAccountConfirm),
           ),
         ],
       ),
@@ -587,15 +594,17 @@ class _ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ElevatedButton.icon(
           onPressed: () => _logout(context),
           icon: const Icon(Icons.logout, size: 20),
-          label: const Text(
-            "Tancar sessió",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          label: Text(
+            l10n.profileLogout,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
@@ -612,9 +621,9 @@ class _ActionButtons extends StatelessWidget {
         TextButton.icon(
           onPressed: () => _confirmDeleteAccount(context),
           icon: const Icon(Icons.delete_forever, size: 20),
-          label: const Text(
-            "Eliminar compte",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          label: Text(
+            l10n.profileDeleteAccountTitle,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
           style: TextButton.styleFrom(
             foregroundColor: Colors.red.shade400,

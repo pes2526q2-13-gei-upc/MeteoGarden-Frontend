@@ -219,7 +219,7 @@ class _ShopPageState extends State<ShopPage>
               const SizedBox(height: 20),
               if (description != null) ...[
                 Text(
-                  l10n.shopDescriptionTitle,
+                  l10n.commonDescription,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

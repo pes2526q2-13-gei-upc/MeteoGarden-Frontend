@@ -357,7 +357,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ElevatedButton.icon(
             onPressed: _loadEvents,
             icon: const Icon(Icons.refresh),
-            label: Text(l10n.calendarRetry),
+            label: Text(l10n.commonRetry),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4CAF50),
               foregroundColor: Colors.white,
@@ -1373,26 +1373,27 @@ class _EventDetailDialog extends StatelessWidget {
 
   const _EventDetailDialog({required this.event});
 
-  String get _dateRange {
-    final start = _formatDate(event.startDate);
-    final end = _formatDate(event.endDate);
+  String _dateRange(BuildContext context) {
+    final start = _formatDate(context, event.startDate);
+    final end = _formatDate(context, event.endDate);
     return start == end ? start : '$start – $end';
   }
 
-  String _formatDate(DateTime dt) {
+  String _formatDate(BuildContext context, DateTime dt) {
+    final l10n = AppLocalizations.of(context)!;
     final months = [
-      'gen',
-      'feb',
-      'març',
-      'abr',
-      'maig',
-      'juny',
-      'jul',
-      'ago',
-      'set',
-      'oct',
-      'nov',
-      'des',
+      l10n.monthShortJanuary,
+      l10n.monthShortFebruary,
+      l10n.monthShortMarch,
+      l10n.monthShortApril,
+      l10n.monthShortMay,
+      l10n.monthShortJune,
+      l10n.monthShortJuly,
+      l10n.monthShortAugust,
+      l10n.monthShortSeptember,
+      l10n.monthShortOctober,
+      l10n.monthShortNovember,
+      l10n.monthShortDecember,
     ];
     return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
   }
@@ -1516,7 +1517,7 @@ class _EventDetailDialog extends StatelessWidget {
                         children: [
                           _MetaPill(
                             icon: Icons.calendar_today_outlined,
-                            label: _dateRange,
+                            label: _dateRange(context),
                           ),
                           if (_timeLabel.isNotEmpty)
                             _MetaPill(

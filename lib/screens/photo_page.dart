@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../services/plant_service.dart';
 import '../models/dades_usr.dart';
@@ -29,18 +30,20 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   }
 
   Future<void> _initCamera() async {
+    final l10n = AppLocalizations.of(context)!;
+
     try {
       final cameras = await availableCameras();
 
       if (cameras.isEmpty) {
         setState(() {
-          _errorMessage = 'No s’ha trobat cap càmera disponible.';
+          _errorMessage = l10n.photoNoCameraAvailable;
         });
         return;
       }
 
       final backCamera = cameras.firstWhere(
-        (camera) => camera.lensDirection == CameraLensDirection.back,
+            (camera) => camera.lensDirection == CameraLensDirection.back,
         orElse: () => cameras.first,
       );
 
@@ -54,12 +57,14 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       setState(() {});
     } catch (_) {
       setState(() {
-        _errorMessage = 'No s’ha pogut inicialitzar la càmera.';
+        _errorMessage = l10n.photoCameraInitError;
       });
     }
   }
 
   Future<void> _takePicture() async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (_controller == null || _initializeControllerFuture == null) return;
 
     if (_isProcessing) return;
@@ -108,12 +113,12 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       if (!mounted) return;
 
       setState(() {
-        _errorMessage = 'S’ha produït un error inesperat.';
+        _errorMessage = l10n.photoUnexpectedError;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('S’ha produït un error inesperat.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.photoUnexpectedError)));
     } finally {
       if (mounted) {
         setState(() {
@@ -175,6 +180,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final controller = _controller;
 
     return Scaffold(
@@ -182,201 +188,207 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       body: controller == null || _initializeControllerFuture == null
           ? const Center(child: CircularProgressIndicator())
           : FutureBuilder(
-              future: _initializeControllerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-                return Stack(
-                  fit: StackFit.expand,
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              CameraPreview(controller),
+
+              Container(color: Colors.black.withValues(alpha: 0.15)),
+
+              SafeArea(
+                child: Column(
                   children: [
-                    CameraPreview(controller),
+                    const SizedBox(height: 8),
 
-                    Container(color: Colors.black.withValues(alpha: 0.15)),
+                    // Header
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Center(
+                        child: Text(
+                          'MeteoGarden',
+                          style: TextStyle(
+                            color: Colors.green.shade400,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
 
-                    SafeArea(
-                      child: Column(
+                    const SizedBox(height: 12),
+
+                    Text(
+                      l10n.photoTakePlantPicture,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Row(
                         children: [
-                          const SizedBox(height: 8),
-
-                          // Header
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Center(
-                              child: Text(
-                                'MeteoGarden',
-                                style: TextStyle(
-                                  color: Colors.green.shade400,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+                          _buildTypeButton(
+                            label: l10n.photoTreeMode,
+                            value: 'leaf',
+                            icon: Icons.park,
                           ),
-
-                          const SizedBox(height: 12),
-
-                          const Text(
-                            'Fotografia la planta',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          const SizedBox(width: 12),
+                          _buildTypeButton(
+                            label: l10n.photoFlowerMode,
+                            value: 'flower',
+                            icon: Icons.local_florist,
                           ),
-                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ),
 
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            child: Row(
-                              children: [
-                                _buildTypeButton(
-                                  label: 'Arbre',
-                                  value: 'leaf',
-                                  icon: Icons.park,
-                                ),
-                                const SizedBox(width: 12),
-                                _buildTypeButton(
-                                  label: 'Flor',
-                                  value: 'flower',
-                                  icon: Icons.local_florist,
-                                ),
-                              ],
-                            ),
+                    const SizedBox(height: 12),
+                    Text(
+                      _selectedPlantType == 'leaf'
+                          ? l10n.photoTreeModeSelected
+                          : l10n.photoFlowerModeSelected,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    if (_isProcessing)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: Text(
+                          l10n.photoIdentifyingPlant,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+
+                    if (_errorMessage != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.redAccent),
                           ),
+                          child: Text(
+                            _errorMessage!,
+                            style: const TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
 
-                          const SizedBox(height: 12),
-                          Text(
-                            _selectedPlantType == 'leaf'
-                                ? 'Mode arbre seleccionat'
-                                : 'Mode flor seleccionat',
-                            style: const TextStyle(
+                    const Spacer(),
+
+                    // Marc central
+                    Container(
+                      width: 260,
+                      height: 260,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    Text(
+                      l10n.photoCenterPlantInFrame,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+
+                    const Spacer(),
+
+                    // Controls inferiors
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.photo,
                               color: Colors.white,
-                              fontSize: 14,
+                              size: 30,
                             ),
                           ),
-
-                          const SizedBox(height: 12),
-
-                          if (_isProcessing)
-                            const Padding(
-                              padding: EdgeInsets.only(top: 12),
-                              child: Text(
-                                'Identificant planta...',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-
-                          if (_errorMessage != null)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 12,
-                              ),
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Colors.red.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.redAccent),
-                                ),
-                                child: Text(
-                                  _errorMessage!,
-                                  style: const TextStyle(color: Colors.white),
-                                  textAlign: TextAlign.center,
+                          GestureDetector(
+                            onTap: _isProcessing ? null : _takePicture,
+                            child: Container(
+                              width: 78,
+                              height: 78,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 4,
                                 ),
                               ),
-                            ),
-
-                          const Spacer(),
-
-                          // Marc central
-                          Container(
-                            width: 260,
-                            height: 260,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white, width: 3),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          const Text(
-                            'Centra la planta dins el marc',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-
-                          const Spacer(),
-
-                          // Controls inferiors
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.photo,
-                                    color: Colors.white,
-                                    size: 30,
+                              child: Center(
+                                child: Container(
+                                  width: 58,
+                                  height: 58,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _isProcessing
+                                        ? Colors.white30
+                                        : Colors.white,
                                   ),
-                                ),
-                                GestureDetector(
-                                  onTap: _isProcessing ? null : _takePicture,
-                                  child: Container(
-                                    width: 78,
-                                    height: 78,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 4,
-                                      ),
+                                  child: _isProcessing
+                                      ? const Padding(
+                                    padding: EdgeInsets.all(14),
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                      valueColor:
+                                      AlwaysStoppedAnimation<
+                                          Color
+                                      >(Colors.black),
                                     ),
-                                    child: Center(
-                                      child: Container(
-                                        width: 58,
-                                        height: 58,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: _isProcessing
-                                              ? Colors.white30
-                                              : Colors.white,
-                                        ),
-                                        child: _isProcessing
-                                            ? const Padding(
-                                                padding: EdgeInsets.all(14),
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 3,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                        Color
-                                                      >(Colors.black),
-                                                ),
-                                              )
-                                            : null,
-                                      ),
-                                    ),
-                                  ),
+                                  )
+                                      : null,
                                 ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.cameraswitch,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                ),
-                              ],
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.cameraswitch,
+                              color: Colors.white,
+                              size: 30,
                             ),
                           ),
                         ],
                       ),
                     ),
                   ],
-                );
-              },
-            ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
