@@ -127,10 +127,7 @@ class _GameNavBar extends StatelessWidget {
                       ),
                     ),
                     if (!isLast)
-                      Container(
-                        width: 2,
-                        color: const Color(0xFF3E6B48),
-                      ),
+                      Container(width: 2, color: const Color(0xFF3E6B48)),
                   ],
                 ),
               );
@@ -162,9 +159,7 @@ class _GameNavTile extends StatelessWidget {
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
         decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFFCFE8CF)
-              : const Color(0xFF9ED2A0),
+          color: isSelected ? const Color(0xFFCFE8CF) : const Color(0xFF9ED2A0),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

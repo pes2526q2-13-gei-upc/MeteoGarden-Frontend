@@ -228,10 +228,10 @@ class _CalendarPageState extends State<CalendarPage> {
             Expanded(
               child: _loading
                   ? const Center(
-                child: CircularProgressIndicator(
-                  color: Color(0xFF4CAF50),
-                ),
-              )
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF4CAF50),
+                      ),
+                    )
                   : _error != null
                   ? _buildError()
                   : _buildContent(),
@@ -406,7 +406,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (context, i) => Padding(
+              (context, i) => Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                 child: _EventCard(
                   event: _selectedDayEvents[i],
@@ -583,10 +583,13 @@ class _CalendarPageState extends State<CalendarPage> {
     }
 
     if (_filters.maxDistanceKm != null) {
-      addChip(l10n.calendarMaxDistanceChip(_filters.maxDistanceKm!.toInt()), () {
-        setState(() => _filters = _filters.copyWith(clearDistance: true));
-        _loadEvents();
-      });
+      addChip(
+        l10n.calendarMaxDistanceChip(_filters.maxDistanceKm!.toInt()),
+        () {
+          setState(() => _filters = _filters.copyWith(clearDistance: true));
+          _loadEvents();
+        },
+      );
     }
 
     if (_filters.maxPrice != null) {
@@ -680,20 +683,20 @@ class _CalendarPageState extends State<CalendarPage> {
         children: days
             .map(
               (d) => Expanded(
-            child: Center(
-              child: Text(
-                d,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: d == l10n.weekdaySat || d == l10n.weekdaySun
-                      ? const Color(0xFF9E9E9E)
-                      : const Color(0xFF4CAF50),
+                child: Center(
+                  child: Text(
+                    d,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: d == l10n.weekdaySat || d == l10n.weekdaySun
+                          ? const Color(0xFF9E9E9E)
+                          : const Color(0xFF4CAF50),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        )
+            )
             .toList(),
       ),
     );
@@ -926,7 +929,9 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                       min: 1,
                       max: _maxDistanceSlider,
                       divisions: 199,
-                      displayValue: l10n.calendarDistanceKm(_distanceKm.toInt()),
+                      displayValue: l10n.calendarDistanceKm(
+                        _distanceKm.toInt(),
+                      ),
                       onToggle: (v) => setState(() => _distanceEnabled = v),
                       onChanged: (v) => setState(() => _distanceKm = v),
                       icon: Icons.social_distance_outlined,
@@ -968,7 +973,10 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                   ),
                   child: Text(
                     l10n.calendarApplyFilters,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
@@ -1168,7 +1176,7 @@ class _DayCell extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                   eventCount.clamp(0, 3),
-                      (_) => Container(
+                  (_) => Container(
                     width: 5,
                     height: 5,
                     margin: const EdgeInsets.only(right: 2),
@@ -1529,8 +1537,8 @@ class _EventDetailDialog extends StatelessWidget {
                             label: event.isFree
                                 ? l10n.calendarFreeAccent
                                 : l10n.calendarPriceEuros(
-                              event.price.toStringAsFixed(0),
-                            ),
+                                    event.price.toStringAsFixed(0),
+                                  ),
                             highlight: event.isFree,
                           ),
                         ],
@@ -1599,24 +1607,24 @@ class _EventDetailDialog extends StatelessWidget {
                           children: event.tags
                               .map(
                                 (tag) => Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFE8F5E9),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                '#$tag',
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: Color(0xFF388E3C),
-                                  fontWeight: FontWeight.w500,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFE8F5E9),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    '#$tag',
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Color(0xFF388E3C),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          )
+                              )
                               .toList(),
                         ),
                       ],

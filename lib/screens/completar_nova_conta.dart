@@ -20,7 +20,7 @@ class City {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is City && runtimeType == other.runtimeType && code == other.code;
+      other is City && runtimeType == other.runtimeType && code == other.code;
 
   @override
   int get hashCode => code.hashCode;
@@ -111,9 +111,9 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
       await _fetchAndSaveProfile(data['token']);
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.completeProfileSuccess)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.completeProfileSuccess)));
 
       Navigator.pushReplacement(
         context,
@@ -161,9 +161,9 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
         newGardens: gardenNames,
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.profileLoadError)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.profileLoadError)));
     }
   }
 
@@ -234,180 +234,183 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
               child: isLoading
                   ? const CircularProgressIndicator(color: Color(0xFF166534))
                   : SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
-                ),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 450),
-                  child: Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                          color: Colors.black.withValues(alpha: 0.08),
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 450),
+                        child: Container(
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 20,
+                                offset: const Offset(0, 10),
+                                color: Colors.black.withValues(alpha: 0.08),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                l10n.completeProfileHeading,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF166534),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                l10n.completeProfileSubtitle,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+
+                              TextField(
+                                controller: usernameController,
+                                decoration: defaultDecoration.copyWith(
+                                  labelText: l10n.loginUsernameLabel,
+                                  prefixIcon: const Icon(
+                                    Icons.person_outline_rounded,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+
+                              DropdownMenu<City>(
+                                initialSelection: selectedCity,
+                                controller: citySearchController,
+                                requestFocusOnTap: true,
+                                enableFilter: true,
+                                expandedInsets: EdgeInsets.zero,
+                                menuHeight: 250,
+                                label: Text(l10n.commonCity),
+                                leadingIcon: const Icon(
+                                  Icons.location_city_rounded,
+                                ),
+                                inputDecorationTheme: InputDecorationTheme(
+                                  filled: true,
+                                  fillColor: Colors.grey.withValues(
+                                    alpha: 0.08,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 16,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                dropdownMenuEntries: cities.map((city) {
+                                  return DropdownMenuEntry<City>(
+                                    value: city,
+                                    label: city.name,
+                                  );
+                                }).toList(),
+                                onSelected: (city) {
+                                  setState(() {
+                                    selectedCity = city;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 16),
+
+                              TextField(
+                                controller: passwordController,
+                                obscureText: true,
+                                decoration: defaultDecoration.copyWith(
+                                  labelText:
+                                      l10n.completeProfilePasswordOptional,
+                                  prefixIcon: const Icon(
+                                    Icons.lock_outline_rounded,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+
+                              DropdownButtonFormField<String>(
+                                initialValue: language,
+                                decoration: defaultDecoration.copyWith(
+                                  labelText: l10n.commonLanguage,
+                                  prefixIcon: const Icon(
+                                    Icons.language_rounded,
+                                  ),
+                                ),
+                                icon: const Icon(Icons.arrow_drop_down_rounded),
+                                items: [
+                                  DropdownMenuItem(
+                                    value: 'ca',
+                                    child: Text(l10n.languageCatalan),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'es',
+                                    child: Text(l10n.languageSpanish),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'en',
+                                    child: Text(l10n.languageEnglish),
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  setState(() {
+                                    language = value;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 16),
+
+                              TextField(
+                                controller: gardenController,
+                                decoration: defaultDecoration.copyWith(
+                                  labelText: l10n.createAccountGardenNameLabel,
+                                  prefixIcon: const Icon(
+                                    Icons.local_florist_outlined,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 32),
+
+                              FilledButton.icon(
+                                onPressed: _submit,
+                                icon: const Icon(
+                                  Icons.check_circle_outline_rounded,
+                                ),
+                                label: Text(
+                                  l10n.commonContinue,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: const Color(0xFF166534),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  elevation: 0,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          l10n.completeProfileHeading,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF166534),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          l10n.completeProfileSubtitle,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-
-                        TextField(
-                          controller: usernameController,
-                          decoration: defaultDecoration.copyWith(
-                            labelText: l10n.loginUsernameLabel,
-                            prefixIcon: const Icon(
-                              Icons.person_outline_rounded,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        DropdownMenu<City>(
-                          initialSelection: selectedCity,
-                          controller: citySearchController,
-                          requestFocusOnTap: true,
-                          enableFilter: true,
-                          expandedInsets: EdgeInsets.zero,
-                          menuHeight: 250,
-                          label: Text(l10n.commonCity),
-                          leadingIcon: const Icon(
-                            Icons.location_city_rounded,
-                          ),
-                          inputDecorationTheme: InputDecorationTheme(
-                            filled: true,
-                            fillColor: Colors.grey.withValues(alpha: 0.08),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          dropdownMenuEntries: cities.map((city) {
-                            return DropdownMenuEntry<City>(
-                              value: city,
-                              label: city.name,
-                            );
-                          }).toList(),
-                          onSelected: (city) {
-                            setState(() {
-                              selectedCity = city;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16),
-
-                        TextField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: defaultDecoration.copyWith(
-                            labelText: l10n.completeProfilePasswordOptional,
-                            prefixIcon: const Icon(
-                              Icons.lock_outline_rounded,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        DropdownButtonFormField<String>(
-                          initialValue: language,
-                          decoration: defaultDecoration.copyWith(
-                            labelText: l10n.commonLanguage,
-                            prefixIcon: const Icon(
-                              Icons.language_rounded,
-                            ),
-                          ),
-                          icon: const Icon(Icons.arrow_drop_down_rounded),
-                          items: [
-                            DropdownMenuItem(
-                              value: 'ca',
-                              child: Text(l10n.languageCatalan),
-                            ),
-                            DropdownMenuItem(
-                              value: 'es',
-                              child: Text(l10n.languageSpanish),
-                            ),
-                            DropdownMenuItem(
-                              value: 'en',
-                              child: Text(l10n.languageEnglish),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              language = value;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16),
-
-                        TextField(
-                          controller: gardenController,
-                          decoration: defaultDecoration.copyWith(
-                            labelText: l10n.createAccountGardenNameLabel,
-                            prefixIcon: const Icon(
-                              Icons.local_florist_outlined,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-
-                        FilledButton.icon(
-                          onPressed: _submit,
-                          icon: const Icon(
-                            Icons.check_circle_outline_rounded,
-                          ),
-                          label: Text(
-                            l10n.commonContinue,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xFF166534),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            elevation: 0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
             ),
           ),
         ],

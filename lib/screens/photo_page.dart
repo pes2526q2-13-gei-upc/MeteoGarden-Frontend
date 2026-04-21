@@ -54,7 +54,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       }
 
       final backCamera = cameras.firstWhere(
-            (camera) => camera.lensDirection == CameraLensDirection.back,
+        (camera) => camera.lensDirection == CameraLensDirection.back,
         orElse: () => cameras.first,
       );
 
@@ -197,219 +197,219 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       backgroundColor: Colors.black,
       body: _errorMessage != null && controller == null
           ? Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Text(
-            _errorMessage!,
-            style: const TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      )
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  _errorMessage!,
+                  style: const TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
           : controller == null || _initializeControllerFuture == null
           ? const Center(child: CircularProgressIndicator())
           : FutureBuilder(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
+              future: _initializeControllerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              CameraPreview(controller),
-
-              Container(color: Colors.black.withValues(alpha: 0.15)),
-
-              SafeArea(
-                child: Column(
+                return Stack(
+                  fit: StackFit.expand,
                   children: [
-                    const SizedBox(height: 8),
+                    CameraPreview(controller),
 
-                    // Header
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Center(
-                        child: Text(
-                          'MeteoGarden',
-                          style: TextStyle(
-                            color: Colors.green.shade400,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
+                    Container(color: Colors.black.withValues(alpha: 0.15)),
 
-                    const SizedBox(height: 12),
-
-                    Text(
-                      l10n.photoTakePlantPicture,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Row(
+                    SafeArea(
+                      child: Column(
                         children: [
-                          _buildTypeButton(
-                            label: l10n.photoTreeMode,
-                            value: 'leaf',
-                            icon: Icons.park,
-                          ),
-                          const SizedBox(width: 12),
-                          _buildTypeButton(
-                            label: l10n.photoFlowerMode,
-                            value: 'flower',
-                            icon: Icons.local_florist,
-                          ),
-                        ],
-                      ),
-                    ),
+                          const SizedBox(height: 8),
 
-                    const SizedBox(height: 12),
-                    Text(
-                      _selectedPlantType == 'leaf'
-                          ? l10n.photoTreeModeSelected
-                          : l10n.photoFlowerModeSelected,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    if (_isProcessing)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: Text(
-                          l10n.photoIdentifyingPlant,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-
-                    if (_errorMessage != null)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.red.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.redAccent),
-                          ),
-                          child: Text(
-                            _errorMessage!,
-                            style: const TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-
-                    const Spacer(),
-
-                    // Marc central
-                    Container(
-                      width: 260,
-                      height: 260,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 3),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    Text(
-                      l10n.photoCenterPlantInFrame,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    // Controls inferiors
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.photo,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: _isProcessing ? null : _takePicture,
-                            child: Container(
-                              width: 78,
-                              height: 78,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 4,
+                          // Header
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Center(
+                              child: Text(
+                                'MeteoGarden',
+                                style: TextStyle(
+                                  color: Colors.green.shade400,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              child: Center(
-                                child: Container(
-                                  width: 58,
-                                  height: 58,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: _isProcessing
-                                        ? Colors.white30
-                                        : Colors.white,
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          Text(
+                            l10n.photoTakePlantPicture,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: Row(
+                              children: [
+                                _buildTypeButton(
+                                  label: l10n.photoTreeMode,
+                                  value: 'leaf',
+                                  icon: Icons.park,
+                                ),
+                                const SizedBox(width: 12),
+                                _buildTypeButton(
+                                  label: l10n.photoFlowerMode,
+                                  value: 'flower',
+                                  icon: Icons.local_florist,
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+                          Text(
+                            _selectedPlantType == 'leaf'
+                                ? l10n.photoTreeModeSelected
+                                : l10n.photoFlowerModeSelected,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          if (_isProcessing)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 12),
+                              child: Text(
+                                l10n.photoIdentifyingPlant,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+
+                          if (_errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.redAccent),
+                                ),
+                                child: Text(
+                                  _errorMessage!,
+                                  style: const TextStyle(color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+
+                          const Spacer(),
+
+                          // Marc central
+                          Container(
+                            width: 260,
+                            height: 260,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white, width: 3),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          Text(
+                            l10n.photoCenterPlantInFrame,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+
+                          const Spacer(),
+
+                          // Controls inferiors
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.photo,
+                                    color: Colors.white,
+                                    size: 30,
                                   ),
-                                  child: _isProcessing
-                                      ? const Padding(
-                                    padding: EdgeInsets.all(14),
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 3,
-                                      valueColor:
-                                      AlwaysStoppedAnimation<
-                                          Color
-                                      >(Colors.black),
-                                    ),
-                                  )
-                                      : null,
                                 ),
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.cameraswitch,
-                              color: Colors.white,
-                              size: 30,
+                                GestureDetector(
+                                  onTap: _isProcessing ? null : _takePicture,
+                                  child: Container(
+                                    width: 78,
+                                    height: 78,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 4,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Container(
+                                        width: 58,
+                                        height: 58,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: _isProcessing
+                                              ? Colors.white30
+                                              : Colors.white,
+                                        ),
+                                        child: _isProcessing
+                                            ? const Padding(
+                                                padding: EdgeInsets.all(14),
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 3,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                        Color
+                                                      >(Colors.black),
+                                                ),
+                                              )
+                                            : null,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.cameraswitch,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
                   ],
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                );
+              },
+            ),
     );
   }
 }

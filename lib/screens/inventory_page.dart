@@ -100,14 +100,14 @@ class _InventoryPageState extends State<InventoryPage>
   List<SeedOption> get _filteredSeeds => _seeds
       .where(
         (s) =>
-        s.scientificName.toLowerCase().contains(_searchQuery.toLowerCase()),
-  )
+            s.scientificName.toLowerCase().contains(_searchQuery.toLowerCase()),
+      )
       .toList();
 
   List<ProductItem> get _filteredProducts => _products
       .where(
         (p) => p.productName.toLowerCase().contains(_searchQuery.toLowerCase()),
-  )
+      )
       .toList();
 
   @override

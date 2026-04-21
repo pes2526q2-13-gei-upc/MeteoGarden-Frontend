@@ -27,7 +27,7 @@ class City {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is City && runtimeType == other.runtimeType && code == other.code;
+      other is City && runtimeType == other.runtimeType && code == other.code;
 
   @override
   int get hashCode => code.hashCode;
@@ -113,9 +113,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.createAccountSuccess)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.createAccountSuccess)));
 
       Navigator.pushReplacement(
         context,
@@ -161,9 +161,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
         newGardens: gardenNames,
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.profileLoadError)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.profileLoadError)));
     }
   }
 
@@ -279,7 +279,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                           controller: usernameController,
                           decoration: defaultDecoration.copyWith(
                             labelText: l10n.loginUsernameLabel,
-                            prefixIcon: const Icon(Icons.person_outline_rounded),
+                            prefixIcon: const Icon(
+                              Icons.person_outline_rounded,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -296,47 +298,49 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
                         isLoadingCities
                             ? const Center(
-                          child: CircularProgressIndicator(
-                            color: Color(0xFF166534),
-                          ),
-                        )
+                                child: CircularProgressIndicator(
+                                  color: Color(0xFF166534),
+                                ),
+                              )
                             : DropdownMenu<City>(
-                          initialSelection: selectedCity,
-                          controller: ciutatSearchController,
-                          requestFocusOnTap: true,
-                          enableFilter: true,
-                          expandedInsets: EdgeInsets.zero,
-                          menuHeight: 250,
-                          label: Text(l10n.commonCity),
-                          leadingIcon: const Icon(
-                            Icons.location_city_rounded,
-                          ),
-                          inputDecorationTheme: InputDecorationTheme(
-                            filled: true,
-                            fillColor: Colors.grey.withValues(alpha: 0.08),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 16,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                          dropdownMenuEntries: cities
-                              .map<DropdownMenuEntry<City>>((City city) {
-                            return DropdownMenuEntry<City>(
-                              value: city,
-                              label: city.name,
-                            );
-                          })
-                              .toList(),
-                          onSelected: (City? city) {
-                            setState(() {
-                              selectedCity = city;
-                            });
-                          },
-                        ),
+                                initialSelection: selectedCity,
+                                controller: ciutatSearchController,
+                                requestFocusOnTap: true,
+                                enableFilter: true,
+                                expandedInsets: EdgeInsets.zero,
+                                menuHeight: 250,
+                                label: Text(l10n.commonCity),
+                                leadingIcon: const Icon(
+                                  Icons.location_city_rounded,
+                                ),
+                                inputDecorationTheme: InputDecorationTheme(
+                                  filled: true,
+                                  fillColor: Colors.grey.withValues(
+                                    alpha: 0.08,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 16,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
+                                dropdownMenuEntries: cities
+                                    .map<DropdownMenuEntry<City>>((City city) {
+                                      return DropdownMenuEntry<City>(
+                                        value: city,
+                                        label: city.name,
+                                      );
+                                    })
+                                    .toList(),
+                                onSelected: (City? city) {
+                                  setState(() {
+                                    selectedCity = city;
+                                  });
+                                },
+                              ),
                         const SizedBox(height: 16),
 
                         TextField(
@@ -382,8 +386,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                           controller: nomjardiController,
                           decoration: defaultDecoration.copyWith(
                             labelText: l10n.createAccountGardenNameLabel,
-                            prefixIcon:
-                            const Icon(Icons.local_florist_outlined),
+                            prefixIcon: const Icon(
+                              Icons.local_florist_outlined,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 32),

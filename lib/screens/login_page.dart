@@ -58,12 +58,8 @@ class _LoginPageState extends State<LoginPage> {
       _goToHome();
     } else {
       debugPrint("Error: ${response.body}");
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.loginError),
-          ),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.loginError)),
       );
     }
   }
@@ -97,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
 
       // 2. Obtener tokens
       final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+          await googleUser.authentication;
 
       final String? idToken = googleAuth.idToken;
       final String? accessToken = googleAuth.accessToken;
@@ -383,9 +379,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.profileLoadError),
-        ),
+        SnackBar(content: Text(AppLocalizations.of(context)!.profileLoadError)),
       );
     }
   }

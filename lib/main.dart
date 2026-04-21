@@ -26,12 +26,11 @@ class MeteoGardenApp extends StatelessWidget {
     final user = Provider.of<UserModel>(context);
 
     Locale? appLocale;
-    if (user.language == 'ca' || user.language == 'es' || user.language == 'en') {
+    if (user.language == 'ca' ||
+        user.language == 'es' ||
+        user.language == 'en') {
       appLocale = Locale(user.language);
     }
-
-    print('LANGUAGE: ${user.language}');
-    print('LOCALE: $appLocale');
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -44,11 +43,7 @@ class MeteoGardenApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('ca'),
-        Locale('es'),
-        Locale('en'),
-      ],
+      supportedLocales: const [Locale('ca'), Locale('es'), Locale('en')],
       home: const LoginPage(),
     );
   }

@@ -543,9 +543,7 @@ class _ActionButtons extends StatelessWidget {
             Text(l10n.profileDeleteAccountTitle),
           ],
         ),
-        content: Text(
-          l10n.profileDeleteAccountMessage,
-        ),
+        content: Text(l10n.profileDeleteAccountMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),

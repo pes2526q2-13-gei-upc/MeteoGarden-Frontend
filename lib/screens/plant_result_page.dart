@@ -74,33 +74,33 @@ class PlantResultPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         child: imageUrl != null && imageUrl.isNotEmpty
                             ? Image.network(
-                          imageUrl,
-                          height: 200,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              height: 200,
-                              width: double.infinity,
-                              color: Colors.green.withValues(alpha: 0.1),
-                              child: const Icon(
-                                Icons.local_florist,
-                                size: 50,
-                                color: Colors.green,
-                              ),
-                            );
-                          },
-                        )
+                                imageUrl,
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    height: 200,
+                                    width: double.infinity,
+                                    color: Colors.green.withValues(alpha: 0.1),
+                                    child: const Icon(
+                                      Icons.local_florist,
+                                      size: 50,
+                                      color: Colors.green,
+                                    ),
+                                  );
+                                },
+                              )
                             : Container(
-                          height: 200,
-                          width: double.infinity,
-                          color: Colors.green.withValues(alpha: 0.1),
-                          child: const Icon(
-                            Icons.local_florist,
-                            size: 50,
-                            color: Colors.green,
-                          ),
-                        ),
+                                height: 200,
+                                width: double.infinity,
+                                color: Colors.green.withValues(alpha: 0.1),
+                                child: const Icon(
+                                  Icons.local_florist,
+                                  size: 50,
+                                  color: Colors.green,
+                                ),
+                              ),
                       ),
                       const SizedBox(height: 16),
                       Text(
