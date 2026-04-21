@@ -212,7 +212,7 @@ class _AlbumPageState extends State<AlbumPage> {
       body: SafeArea(
         child: Consumer<PlantProvider>(
           builder: (context, plantProvider, child) {
-            final totalPlantes = plantProvider.plants.length;
+            //final totalPlantes = plantProvider.plants.length;
 
             if (plantProvider.isLoading) {
               return Column(

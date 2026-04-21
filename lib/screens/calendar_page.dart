@@ -1495,7 +1495,7 @@ class _EventDetailDialog extends StatefulWidget {
   final Future<String> Function(String text, String lang) translateText;
 
   const _EventDetailDialog({
-    super.key,
+    //super.key,
     required this.event,
     required this.langCode,
     required this.translateText,

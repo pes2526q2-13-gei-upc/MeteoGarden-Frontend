@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import '../models/garden.dart';
 import '../models/seed_option.dart';
 import '../models/url.dart';
-import '../models/seed_option.dart';
 
 class PlantingResult {
   final String message;
