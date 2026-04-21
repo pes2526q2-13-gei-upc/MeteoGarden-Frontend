@@ -22,7 +22,7 @@ class _AlbumPageState extends State<AlbumPage> {
     switch (language) {
       case 'Català':
         return 'ca';
-      case 'Español':
+      case 'Castellà':
         return 'es';
       case 'English':
         return 'en';

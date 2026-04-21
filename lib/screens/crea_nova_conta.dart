@@ -104,8 +104,6 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     if (!mounted) return;
 
     if (response.statusCode == 200) {
-      debugPrint("Cuenta creada");
-
       final data = jsonDecode(response.body);
       final token = data['token'];
 
@@ -360,15 +358,15 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                           icon: const Icon(Icons.arrow_drop_down_rounded),
                           items: [
                             DropdownMenuItem(
-                              value: 'Català',
+                              value: 'ca',
                               child: Text(l10n.languageCatalan),
                             ),
                             DropdownMenuItem(
-                              value: 'Castellano',
+                              value: 'es',
                               child: Text(l10n.languageSpanish),
                             ),
                             DropdownMenuItem(
-                              value: 'English',
+                              value: 'en',
                               child: Text(l10n.languageEnglish),
                             ),
                           ],

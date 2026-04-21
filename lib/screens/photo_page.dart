@@ -26,7 +26,18 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   @override
   void initState() {
     super.initState();
-    _initCamera();
+  }
+
+  // Inicialitzar càmera
+  bool _cameraInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_cameraInitialized) {
+      _cameraInitialized = true;
+      _initCamera();
+    }
   }
 
   Future<void> _initCamera() async {
@@ -185,7 +196,18 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: controller == null || _initializeControllerFuture == null
+      body: _errorMessage != null && controller == null
+          ? Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            _errorMessage!,
+            style: const TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      )
+          : controller == null || _initializeControllerFuture == null
           ? const Center(child: CircularProgressIndicator())
           : FutureBuilder(
         future: _initializeControllerFuture,
