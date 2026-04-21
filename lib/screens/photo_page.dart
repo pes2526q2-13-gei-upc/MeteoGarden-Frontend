@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../services/plant_service.dart';
 import '../models/dades_usr.dart';

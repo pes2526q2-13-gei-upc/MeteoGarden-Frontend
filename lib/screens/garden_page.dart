@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_garden/screens/album_page.dart';
-import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 
 import '../../models/garden.dart';
 import '../../models/weather_info.dart';

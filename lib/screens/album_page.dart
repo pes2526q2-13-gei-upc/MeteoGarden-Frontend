@@ -8,7 +8,7 @@ import '../models/dades_usr.dart';
 import '../models/plantes_desbl.dart';
 import '../models/url.dart';
 
-import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 
 class AlbumPage extends StatefulWidget {
   const AlbumPage({super.key});

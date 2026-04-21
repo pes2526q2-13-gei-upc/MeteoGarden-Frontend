@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../models/perfil_info.dart';
