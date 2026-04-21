@@ -64,7 +64,7 @@ class LocalizedPlantEvent {
   final PlantEvent original;
   final String title;
   final String subtitle;
-  final String description;
+  final String description; // aquí guardarem la descripció ORIGINAL
   final String category;
   final List<String> tags;
 
@@ -171,7 +171,6 @@ class _CalendarPageState extends State<CalendarPage> {
     final translatedFields = await Future.wait([
       _translateText(event.title, lang),
       _translateText(event.subtitle, lang),
-      _translateText(event.description, lang),
       _translateText(event.category, lang),
       ...event.tags.map((tag) => _translateText(tag, lang)),
     ]);
@@ -180,9 +179,9 @@ class _CalendarPageState extends State<CalendarPage> {
       original: event,
       title: translatedFields[0],
       subtitle: translatedFields[1],
-      description: translatedFields[2],
-      category: translatedFields[3],
-      tags: translatedFields.sublist(4),
+      description: event.description, // NO la traduïm aquí
+      category: translatedFields[2],
+      tags: translatedFields.sublist(3),
     );
   }
 
@@ -214,7 +213,6 @@ class _CalendarPageState extends State<CalendarPage> {
         month: _currentMonth.month,
         city: _filters.city.isNotEmpty ? _filters.city : null,
         county: _filters.county.isNotEmpty ? _filters.county : null,
-        // De moment no enviem distància perquè sense lat/lng pot fallar.
         distanceKm: null,
       );
 
@@ -287,10 +285,17 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   void _openEventDetail(LocalizedPlantEvent event) {
+    final user = Provider.of<UserModel>(context, listen: false);
+    final langCode = _mapLanguage(user.language);
+
     showDialog(
       context: context,
       barrierColor: Colors.black.withValues(alpha: 0.55),
-      builder: (_) => _EventDetailDialog(event: event),
+      builder: (_) => _EventDetailDialog(
+        event: event,
+        langCode: langCode,
+        translateText: _translateText,
+      ),
     );
   }
 
@@ -313,7 +318,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   int get _firstWeekdayOfMonth {
     final wd = DateTime(_currentMonth.year, _currentMonth.month, 1).weekday;
-    return wd - 1; // Monday = 0
+    return wd - 1;
   }
 
   String get _monthLabel {
@@ -1484,10 +1489,45 @@ class _EventCard extends StatelessWidget {
 
 // ─── Event Detail Dialog ──────────────────────────────────────────────────────
 
-class _EventDetailDialog extends StatelessWidget {
+class _EventDetailDialog extends StatefulWidget {
   final LocalizedPlantEvent event;
+  final String langCode;
+  final Future<String> Function(String text, String lang) translateText;
 
-  const _EventDetailDialog({super.key, required this.event});
+  const _EventDetailDialog({
+    super.key,
+    required this.event,
+    required this.langCode,
+    required this.translateText,
+  });
+
+  @override
+  State<_EventDetailDialog> createState() => _EventDetailDialogState();
+}
+
+class _EventDetailDialogState extends State<_EventDetailDialog> {
+  String? _translatedDescription;
+  bool _loadingDescription = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTranslatedDescription();
+  }
+
+  Future<void> _loadTranslatedDescription() async {
+    final translated = await widget.translateText(
+      widget.event.description,
+      widget.langCode,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _translatedDescription = translated;
+      _loadingDescription = false;
+    });
+  }
 
   String _formatDate(DateTime dt) {
     final months = [
@@ -1508,24 +1548,28 @@ class _EventDetailDialog extends StatelessWidget {
   }
 
   String get _dateRange {
-    final start = _formatDate(event.startDate);
-    final end = _formatDate(event.endDate);
+    final start = _formatDate(widget.event.startDate);
+    final end = _formatDate(widget.event.endDate);
     return start == end ? start : '$start – $end';
   }
 
   String get _timeLabel {
-    final h = event.startDate.hour.toString().padLeft(2, '0');
-    final m = event.startDate.minute.toString().padLeft(2, '0');
+    final h = widget.event.startDate.hour.toString().padLeft(2, '0');
+    final m = widget.event.startDate.minute.toString().padLeft(2, '0');
     if (h == '00' && m == '00') return '';
     return '$h:$m h';
   }
 
   String get _locationLabel {
     final parts = <String>[];
-    if (event.location.street.isNotEmpty) parts.add(event.location.street);
-    if (event.location.county.isNotEmpty) parts.add(event.location.county);
-    if (event.location.postalCode != 0) {
-      parts.add(event.location.postalCode.toString());
+    if (widget.event.location.street.isNotEmpty) {
+      parts.add(widget.event.location.street);
+    }
+    if (widget.event.location.county.isNotEmpty) {
+      parts.add(widget.event.location.county);
+    }
+    if (widget.event.location.postalCode != 0) {
+      parts.add(widget.event.location.postalCode.toString());
     }
     return parts.join(', ');
   }
@@ -1533,6 +1577,7 @@ class _EventDetailDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final event = widget.event;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -1652,14 +1697,24 @@ class _EventDetailDialog extends StatelessWidget {
                         padding: EdgeInsets.symmetric(vertical: 14),
                         child: Divider(color: Color(0xFFDCEFDC), thickness: 1),
                       ),
-                      Text(
-                        event.description,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Color(0xFF424242),
-                          height: 1.6,
+                      if (_loadingDescription)
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: CircularProgressIndicator(
+                              color: Color(0xFF4CAF50),
+                            ),
+                          ),
+                        )
+                      else
+                        Text(
+                          _translatedDescription ?? event.description,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFF424242),
+                            height: 1.6,
+                          ),
                         ),
-                      ),
                       if (event.tags.isNotEmpty) ...[
                         const SizedBox(height: 16),
                         Wrap(
