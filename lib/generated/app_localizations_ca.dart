@@ -100,6 +100,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get albumTitle => 'El meu àlbum de plantes';
 
   @override
+  String get albumDiscoveredPlants => 'Plantes descobertes';
+
+  @override
   String get albumLoadingEncyclopedia => 'Consultant enciclopèdia...';
 
   @override

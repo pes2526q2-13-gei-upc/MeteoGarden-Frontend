@@ -35,14 +35,16 @@ class EventFilters {
     double? maxPrice,
     bool clearPrice = false,
     String? q,
-  }) => EventFilters(
-    city: city ?? this.city,
-    county: county ?? this.county,
-    category: category ?? this.category,
-    maxDistanceKm: clearDistance ? null : (maxDistanceKm ?? this.maxDistanceKm),
-    maxPrice: clearPrice ? null : (maxPrice ?? this.maxPrice),
-    q: q ?? this.q,
-  );
+  }) =>
+      EventFilters(
+        city: city ?? this.city,
+        county: county ?? this.county,
+        category: category ?? this.category,
+        maxDistanceKm:
+            clearDistance ? null : (maxDistanceKm ?? this.maxDistanceKm),
+        maxPrice: clearPrice ? null : (maxPrice ?? this.maxPrice),
+        q: q ?? this.q,
+      );
 
   int get activeCount {
     int count = 0;
@@ -64,7 +66,7 @@ class LocalizedPlantEvent {
   final PlantEvent original;
   final String title;
   final String subtitle;
-  final String description; // aquí guardarem la descripció ORIGINAL
+  final String description;
   final String category;
   final List<String> tags;
 
@@ -155,7 +157,8 @@ class _CalendarPageState extends State<CalendarPage> {
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
-        final decoded = utf8.decode(response.bodyBytes).replaceAll('"', '').trim();
+        final decoded =
+            utf8.decode(response.bodyBytes).replaceAll('"', '').trim();
         _translationCache[cacheKey] = decoded;
         return decoded;
       }
@@ -167,7 +170,10 @@ class _CalendarPageState extends State<CalendarPage> {
     return text;
   }
 
-  Future<LocalizedPlantEvent> _translateEvent(PlantEvent event, String lang) async {
+  Future<LocalizedPlantEvent> _translateEvent(
+    PlantEvent event,
+    String lang,
+  ) async {
     final translatedFields = await Future.wait([
       _translateText(event.title, lang),
       _translateText(event.subtitle, lang),
@@ -179,7 +185,7 @@ class _CalendarPageState extends State<CalendarPage> {
       original: event,
       title: translatedFields[0],
       subtitle: translatedFields[1],
-      description: event.description, // NO la traduïm aquí
+      description: event.description,
       category: translatedFields[2],
       tags: translatedFields.sublist(3),
     );
@@ -207,6 +213,9 @@ class _CalendarPageState extends State<CalendarPage> {
       _selectedDayEvents = [];
     });
 
+    final user = Provider.of<UserModel>(context, listen: false);
+    final langCode = _mapLanguage(user.language);
+
     try {
       final events = await _api.fetchEventsForMonth(
         year: _currentMonth.year,
@@ -218,7 +227,9 @@ class _CalendarPageState extends State<CalendarPage> {
 
       final filtered = events.where((e) {
         if (_filters.category.isNotEmpty &&
-            !e.category.toLowerCase().contains(_filters.category.toLowerCase())) {
+            !e.category.toLowerCase().contains(
+                  _filters.category.toLowerCase(),
+                )) {
           return false;
         }
 
@@ -237,12 +248,11 @@ class _CalendarPageState extends State<CalendarPage> {
         return true;
       }).toList();
 
-      final user = Provider.of<UserModel>(context, listen: false);
-      final langCode = _mapLanguage(user.language);
-
       final localizedEvents = await Future.wait(
         filtered.map((e) => _translateEvent(e, langCode)),
       );
+
+      if (!mounted) return;
 
       setState(() {
         _events = localizedEvents;
@@ -250,6 +260,8 @@ class _CalendarPageState extends State<CalendarPage> {
         _loading = false;
       });
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         _error = e.toString();
         _loading = false;
@@ -306,6 +318,8 @@ class _CalendarPageState extends State<CalendarPage> {
       backgroundColor: Colors.transparent,
       builder: (_) => _FiltersSheet(current: _filters),
     );
+
+    if (!mounted) return;
 
     if (result != null) {
       setState(() => _filters = result);
@@ -385,7 +399,12 @@ class _CalendarPageState extends State<CalendarPage> {
                         Image.asset(
                           'assets/images/logo.png',
                           height: 28,
-                          errorBuilder: (_, _, _) => const Icon(
+                          errorBuilder: (
+                            context,
+                            error,
+                            stackTrace,
+                          ) =>
+                              const Icon(
                             Icons.eco,
                             color: Color(0xFF4CAF50),
                             size: 28,
@@ -1197,7 +1216,8 @@ class _FiltersSheetState extends State<_FiltersSheet> {
                     activeTrackColor: const Color(0xFF4CAF50),
                     inactiveTrackColor: const Color(0xFFC8E6C9),
                     thumbColor: const Color(0xFF2E7D32),
-                    overlayColor: const Color(0xFF4CAF50).withValues(alpha: 0.12),
+                    overlayColor:
+                        const Color(0xFF4CAF50).withValues(alpha: 0.12),
                   ),
                   child: Slider(
                     value: value,
@@ -1256,9 +1276,8 @@ class _DayCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color bg = Colors.transparent;
-    Color textColor = isWeekend
-        ? const Color(0xFF9E9E9E)
-        : const Color(0xFF424242);
+    Color textColor =
+        isWeekend ? const Color(0xFF9E9E9E) : const Color(0xFF424242);
     Color borderColor = Colors.transparent;
 
     if (isSelected) {
@@ -1286,9 +1305,8 @@ class _DayCell extends StatelessWidget {
               '$day',
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: isToday || isSelected
-                    ? FontWeight.w700
-                    : FontWeight.w400,
+                fontWeight:
+                    isToday || isSelected ? FontWeight.w700 : FontWeight.w400,
                 color: textColor,
               ),
             ),
@@ -1371,7 +1389,12 @@ class _EventCard extends StatelessWidget {
                   width: 80,
                   height: 88,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, _, _) => const SizedBox(width: 0),
+                  errorBuilder: (
+                    context,
+                    error,
+                    stackTrace,
+                  ) =>
+                      const SizedBox(width: 0),
                 ),
               ),
             Expanded(
@@ -1503,7 +1526,6 @@ class _EventDetailDialog extends StatefulWidget {
   final Future<String> Function(String text, String lang) translateText;
 
   const _EventDetailDialog({
-    //super.key,
     required this.event,
     required this.langCode,
     required this.translateText,
@@ -1513,10 +1535,6 @@ class _EventDetailDialog extends StatefulWidget {
   State<_EventDetailDialog> createState() => _EventDetailDialogState();
 }
 
-  String _dateRange(BuildContext context) {
-    final start = _formatDate(context, event.startDate);
-    final end = _formatDate(context, event.endDate);
-    return start == end ? start : '$start – $end';
 class _EventDetailDialogState extends State<_EventDetailDialog> {
   String? _translatedDescription;
   bool _loadingDescription = true;
@@ -1560,9 +1578,9 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
     return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
   }
 
-  String get _dateRange {
-    final start = _formatDate(widget.event.startDate);
-    final end = _formatDate(widget.event.endDate);
+  String _dateRange(BuildContext context) {
+    final start = _formatDate(context, widget.event.startDate);
+    final end = _formatDate(context, widget.event.endDate);
     return start == end ? start : '$start – $end';
   }
 
@@ -1610,7 +1628,8 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                       width: double.infinity,
                       height: 200,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _imagePlaceholder(),
+                      errorBuilder: (context, error, stackTrace) =>
+                          _imagePlaceholder(),
                     )
                   else
                     _imagePlaceholder(),
@@ -1625,7 +1644,11 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                           shape: BoxShape.circle,
                         ),
                         padding: const EdgeInsets.all(6),
-                        child: const Icon(Icons.close, color: Colors.white, size: 20),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ),
@@ -1633,7 +1656,10 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                     bottom: 12,
                     left: 14,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF4CAF50),
                         borderRadius: BorderRadius.circular(20),
@@ -1703,12 +1729,18 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                       ),
                       const SizedBox(height: 14),
                       if (_locationLabel.isNotEmpty)
-                        _buildInfoRow(Icons.location_on_outlined, _locationLabel),
+                        _buildInfoRow(
+                          Icons.location_on_outlined,
+                          _locationLabel,
+                        ),
                       if (event.phone.isNotEmpty && event.phone != '0')
                         _buildInfoRow(Icons.phone_outlined, event.phone),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
-                        child: Divider(color: Color(0xFFDCEFDC), thickness: 1),
+                        child: Divider(
+                          color: Color(0xFFDCEFDC),
+                          thickness: 1,
+                        ),
                       ),
                       if (_loadingDescription)
                         const Center(
