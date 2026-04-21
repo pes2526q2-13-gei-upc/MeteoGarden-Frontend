@@ -98,7 +98,6 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
         imagePath: image.path,
         organ: _selectedPlantType,
       );
-      debugPrint('IMAGE URL RESULT: ${result.image.url}');
 
       if (!mounted) return;
 

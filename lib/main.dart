@@ -30,6 +30,9 @@ class MeteoGardenApp extends StatelessWidget {
       appLocale = Locale(user.language);
     }
 
+    print('LANGUAGE: ${user.language}');
+    print('LOCALE: $appLocale');
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       locale: appLocale,
