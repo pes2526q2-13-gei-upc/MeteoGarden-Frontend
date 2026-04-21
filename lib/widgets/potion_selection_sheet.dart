@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/garden.dart';
 import '../services/garden_service.dart';
+import '../models/seed_option.dart';
 
 class PotionSelectionSheet extends StatefulWidget {
   final GardenPot pot;

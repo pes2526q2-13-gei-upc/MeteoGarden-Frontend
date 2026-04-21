@@ -425,9 +425,19 @@ class _SeedCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: Image.asset(
-                'assets/images/seeds/${seed.scientificName.toLowerCase().replaceAll(' ', '_')}.png',
+              child: Image.network(
+                seed.imageUrl,
                 fit: BoxFit.contain,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  );
+                },
                 errorBuilder: (_, _, _) => const Icon(
                   Icons.local_florist,
                   size: 40,

@@ -12,36 +12,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appTitle => 'MeteoGarden';
 
   @override
-  String get commonBack => 'Tornar';
-
-  @override
-  String get commonCancel => 'Cancel·lar';
-
-  @override
-  String get commonCity => 'Ciutat';
-
-  @override
-  String get commonClose => 'Tancar';
-
-  @override
-  String get commonContinue => 'Continuar';
-
-  @override
-  String get commonDescription => 'Descripció';
-
-  @override
-  String get commonLanguage => 'Idioma';
-
-  @override
-  String get commonRetry => 'Reintentar';
-
-  @override
-  String get commonSave => 'Guardar';
-
-  @override
-  String get commonSearch => 'Cerca';
-
-  @override
   String get loginWelcomeTitle => 'Benvinguda a MeteoGarden';
 
   @override
@@ -97,7 +67,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navProfile => 'Perfil';
 
   @override
+  String get commonLanguage => 'Idioma';
+
+  @override
+  String get commonCity => 'Ciutat';
+
+  @override
+  String get commonContinue => 'Continuar';
+
+  @override
   String get albumTitle => 'El meu àlbum de plantes';
+
+  @override
+  String get albumDiscoveredPlants => 'Plantes descobertes';
 
   @override
   String get albumLoadingEncyclopedia => 'Consultant enciclopèdia...';
@@ -126,12 +108,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get albumDescriptionTitle => 'Descripció';
 
   @override
+  String get commonClose => 'Tancar';
+
+  @override
   String get albumEmptyState =>
       'Encara no has descobert cap planta 🌱\nContinua explorant!';
 
   @override
   String get albumPlantInfoLoadError =>
       'Error carregant la informació de la planta';
+
+  @override
+  String get commonBack => 'Tornar';
 
   @override
   String get shopTitle => 'Botiga';
@@ -155,6 +143,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shopPurchaseSuccess => 'Compra realitzada amb èxit! 🌱';
 
   @override
+  String get shopDescriptionTitle => 'Descripció';
+
+  @override
   String get shopTotalPrice => 'Preu total:';
 
   @override
@@ -163,6 +154,9 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get shopNoItemsAvailable =>
       'No hi ha articles disponibles ara mateix.';
+
+  @override
+  String get calendarRetry => 'Reintentar';
 
   @override
   String get calendarUpcomingEvents => 'Propers esdeveniments';
@@ -331,254 +325,4 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get monthDecember => 'Desembre';
-
-  @override
-  String get monthShortJanuary => 'gen';
-
-  @override
-  String get monthShortFebruary => 'feb';
-
-  @override
-  String get monthShortMarch => 'març';
-
-  @override
-  String get monthShortApril => 'abr';
-
-  @override
-  String get monthShortMay => 'maig';
-
-  @override
-  String get monthShortJune => 'juny';
-
-  @override
-  String get monthShortJuly => 'jul';
-
-  @override
-  String get monthShortAugust => 'ago';
-
-  @override
-  String get monthShortSeptember => 'set';
-
-  @override
-  String get monthShortOctober => 'oct';
-
-  @override
-  String get monthShortNovember => 'nov';
-
-  @override
-  String get monthShortDecember => 'des';
-
-  @override
-  String get photoNoCameraAvailable => 'No s’ha trobat cap càmera disponible.';
-
-  @override
-  String get photoCameraInitError => 'No s’ha pogut inicialitzar la càmera.';
-
-  @override
-  String get photoUnexpectedError => 'S’ha produït un error inesperat.';
-
-  @override
-  String get photoTakePlantPicture => 'Fotografia la planta';
-
-  @override
-  String get photoTreeMode => 'Arbre';
-
-  @override
-  String get photoFlowerMode => 'Flor';
-
-  @override
-  String get photoTreeModeSelected => 'Mode arbre seleccionat';
-
-  @override
-  String get photoFlowerModeSelected => 'Mode flor seleccionat';
-
-  @override
-  String get photoIdentifyingPlant => 'Identificant planta...';
-
-  @override
-  String get photoCenterPlantInFrame => 'Centra la planta dins el marc';
-
-  @override
-  String get plantResultTitle => 'Planta identificada';
-
-  @override
-  String get plantResultScientificName => 'Nom científic';
-
-  @override
-  String get plantResultFamily => 'Família';
-
-  @override
-  String get plantResultConfidence => 'Confiança';
-
-  @override
-  String get plantResultTakeAnotherPhoto => 'Fer una altra foto';
-
-  @override
-  String get profileStatsTitle => 'Estadístiques';
-
-  @override
-  String get profileDefaultUser => 'Usuari';
-
-  @override
-  String get profileCityNotDefined => 'Ciutat no definida';
-
-  @override
-  String get profileCoins => 'Monedes';
-
-  @override
-  String get profileDiscovered => 'Descobertes';
-
-  @override
-  String get profileUserLabel => 'Usuari';
-
-  @override
-  String get profileEmailLabel => 'Email';
-
-  @override
-  String get profileCityLabel => 'Ciutat';
-
-  @override
-  String get profileLanguageLabel => 'Idioma';
-
-  @override
-  String get profileEditButton => 'Modificar perfil';
-
-  @override
-  String get profilePlants => 'Plantes';
-
-  @override
-  String get profileLogout => 'Tancar sessió';
-
-  @override
-  String get profileDeleteAccountTitle => 'Eliminar compte';
-
-  @override
-  String get profileDeleteAccountMessage =>
-      'Estàs segur que vols eliminar el teu compte? Aquesta acció és permanent i es perdran totes les teves monedes i plantes descobertes.';
-
-  @override
-  String get profileDeleteAccountError => 'Error eliminant el compte';
-
-  @override
-  String get profileDeleteAccountConfirm => 'Sí, eliminar';
-
-  @override
-  String get createAccountTitle => 'Crear compte';
-
-  @override
-  String get createAccountWelcome => 'Benvingut a Meteo Garden';
-
-  @override
-  String get createAccountSubtitle => 'Omple les teves dades per començar';
-
-  @override
-  String get createAccountEmailLabel => 'Correu electrònic';
-
-  @override
-  String get createAccountGardenNameLabel => 'Nom del teu jardí';
-
-  @override
-  String get createAccountSuccess => 'Compte creat correctament!';
-
-  @override
-  String get createAccountError => 'Error creant el compte';
-
-  @override
-  String get completeProfileTitle => 'Completar perfil';
-
-  @override
-  String get completeProfileHeading => 'Ja quasi ho tenim!';
-
-  @override
-  String get completeProfileSubtitle =>
-      'Completa aquestes dades per finalitzar el registre amb Google';
-
-  @override
-  String get completeProfilePasswordOptional => 'Contrasenya (Opcional)';
-
-  @override
-  String get completeProfileSuccess => 'Compte completat correctament!';
-
-  @override
-  String get completeProfileError => 'Error completant perfil';
-
-  @override
-  String get profileEditTitle => 'Modificar perfil';
-
-  @override
-  String get profileEditUserDataTitle => 'Dades d\'usuari';
-
-  @override
-  String get profileEditUpdated => 'Perfil actualitzat';
-
-  @override
-  String get profileEditUpdateError => 'Error actualitzant el perfil';
-
-  @override
-  String get languageCatalan => 'Català';
-
-  @override
-  String get languageSpanish => 'Castellà';
-
-  @override
-  String get languageEnglish => 'English';
-
-  @override
-  String get inventoryTitle => 'El teu inventari';
-
-  @override
-  String get inventorySearchHint => 'Cerca una llavor o poció...';
-
-  @override
-  String get inventorySeedsTab => 'Llavors';
-
-  @override
-  String get inventoryPotionsTab => 'Pocions';
-
-  @override
-  String get inventoryNoSeeds => 'No hi ha llavors disponibles';
-
-  @override
-  String get inventoryNoPotions => 'No hi ha pocions disponibles';
-
-  @override
-  String inventoryAvailableItems(Object count) {
-    return '$count elements disponibles';
-  }
-
-  @override
-  String inventoryQuantity(Object amount) {
-    return 'Quantitat: $amount';
-  }
-
-  @override
-  String get gardenLoadingSeedsError => 'Error carregant llavors';
-
-  @override
-  String get gardenLoadingWeather => 'Carregant meteo...';
-
-  @override
-  String get gardenWaitMoment => 'Espera un moment';
-
-  @override
-  String get gardenWeatherLoadError => 'No s\'ha pogut carregar la meteo';
-
-  @override
-  String get gardenTapToRetry => 'Toca per tornar-ho a provar';
-
-  @override
-  String get gardenLoadingPotsError => 'Error carregant els tests:';
-
-  @override
-  String get gardenNoPotsAvailable => 'No hi ha tests disponibles';
-
-  @override
-  String gardenWeatherSummary(Object temp, Object precipitation) {
-    return 'Temperatura: $temp°C | Precipitació: $precipitation';
-  }
-
-  @override
-  String gardenWindSummary(Object wind) {
-    return 'Vent: $wind m/s';
-  }
 }
