@@ -238,6 +238,12 @@ abstract class AppLocalizations {
   /// **'El meu àlbum de plantes'**
   String get albumTitle;
 
+  /// No description provided for @albumDiscoveredPlants.
+  ///
+  /// In ca, this message translates to:
+  /// **'Plantes descobertes'**
+  String get albumDiscoveredPlants;
+
   /// No description provided for @albumLoadingEncyclopedia.
   ///
   /// In ca, this message translates to:
