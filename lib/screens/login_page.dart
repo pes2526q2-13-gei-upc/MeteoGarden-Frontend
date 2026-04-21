@@ -22,6 +22,22 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  Locale _loginLocale = const Locale('ca');
+
+  AppLocalizations get _t => lookupAppLocalizations(_loginLocale);
+
+  final GoogleSignIn _googleSignIn = kIsWeb
+      ? GoogleSignIn(
+          clientId:
+              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+          scopes: ['email', 'profile', 'openid'],
+        )
+      : GoogleSignIn(
+          serverClientId:
+              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+          scopes: ['email', 'profile', 'openid'],
+        );
+
   @override
   void dispose() {
     usernameController.dispose();
@@ -36,10 +52,57 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget _buildLanguageSelector() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.95),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: PopupMenuButton<String>(
+        initialValue: _loginLocale.languageCode,
+        onSelected: (value) {
+          setState(() {
+            _loginLocale = Locale(value);
+          });
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        itemBuilder: (context) => const [
+          PopupMenuItem(value: 'ca', child: Text('Català')),
+          PopupMenuItem(value: 'es', child: Text('Español')),
+          PopupMenuItem(value: 'en', child: Text('English')),
+        ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.language, color: Color(0xFF166534), size: 20),
+              const SizedBox(width: 8),
+              Text(
+                _loginLocale.languageCode.toUpperCase(),
+                style: const TextStyle(
+                  color: Color(0xFF166534),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: 4),
+              const Icon(Icons.keyboard_arrow_down, color: Color(0xFF166534)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _login() async {
-    final url = Uri.parse(
-      '${ApiConfig.baseUrl}/api/login/',
-    ); // url del endpoint de login al backend
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/login/');
 
     final response = await http.post(
       url,
@@ -49,7 +112,9 @@ class _LoginPageState extends State<LoginPage> {
         "password": passwordController.text,
       }),
     );
+
     if (!mounted) return;
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       Provider.of<UserModel>(context, listen: false).setToken(data['token']);
@@ -58,40 +123,20 @@ class _LoginPageState extends State<LoginPage> {
       _goToHome();
     } else {
       debugPrint("Error: ${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.loginError)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_t.loginError)));
     }
   }
 
-  final GoogleSignIn _googleSignIn = kIsWeb
-      ? GoogleSignIn(
-          // CONFIGURACIÓN PARA WEB
-          clientId:
-              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
-          scopes: ['email', 'profile', 'openid'],
-        )
-      : GoogleSignIn(
-          // CONFIGURACIÓN PARA ANDROID/iOS
-          // Aquí NO se usa clientId. Se usa serverClientId con el ID de la WEB.
-          serverClientId:
-              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
-          scopes: ['email', 'profile', 'openid'],
-        );
-
   Future<void> loginWithGoogle(BuildContext context) async {
     try {
-      // 1. Login con Google
-      // per que funcioni amb web s'ha de forçar el port 62057
-      // flutter run -d chrome --web-port=62057
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
-        // Usuario canceló
         return;
       }
 
-      // 2. Obtener tokens
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
@@ -108,7 +153,6 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      // 3. Enviar a backend
       final response = await http.post(
         Uri.parse("${ApiConfig.baseUrl}/api/auth/google/verify"),
         headers: {"Content-Type": "application/json"},
@@ -120,14 +164,13 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        // 5. Navegación
         if (data["exists"] == false) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (_) => CompleteGoogleProfilePage(
-                googleToken: tokenToSend, // <-- Pasamos el token de Google
-                email: data["email"] ?? "", // <-- Pasamos el email
+                googleToken: tokenToSend,
+                email: data["email"] ?? "",
               ),
             ),
           );
@@ -138,6 +181,7 @@ class _LoginPageState extends State<LoginPage> {
           ).setToken(data["token"]);
 
           await _fetchAndSaveProfile(data['token']);
+          if (!context.mounted) return;
           _goToHome();
         }
       } else {
@@ -152,20 +196,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context);
-    if (t == null) return const SizedBox();
+    final t = _t;
 
     return Scaffold(
       body: Stack(
         children: [
-          // 1. Fons d'imatge
           Positioned.fill(
             child: Image.asset(
-              'assets/images/imatge_fondo1.png', // Assegura't de tenir aquesta imatge
+              'assets/images/imatge_fondo1.png',
               fit: BoxFit.cover,
             ),
           ),
-          // 2. Degradat fosc a dalt, clar a baix
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -181,7 +222,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          // 3. Contingut principal
+          Positioned(
+            top: 3,
+            right: 16,
+            child: SafeArea(child: _buildLanguageSelector()),
+          ),
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -208,9 +253,8 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const _LoginHeader(),
+                        _LoginHeader(t: t),
                         const SizedBox(height: 32),
-
                         _InputField(
                           controller: usernameController,
                           label: t.loginUsernameLabel,
@@ -218,7 +262,6 @@ class _LoginPageState extends State<LoginPage> {
                           icon: Icons.person_outline_rounded,
                         ),
                         const SizedBox(height: 16),
-
                         _InputField(
                           controller: passwordController,
                           label: t.loginPasswordLabel,
@@ -227,22 +270,18 @@ class _LoginPageState extends State<LoginPage> {
                           obscureText: true,
                         ),
                         const SizedBox(height: 28),
-
-                        // BOTÓ INICIAR SESSIÓ
                         FilledButton.icon(
                           onPressed: _login,
                           icon: const Icon(Icons.login_rounded),
                           label: Text(
                             t.loginButton,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                           style: FilledButton.styleFrom(
-                            backgroundColor: const Color(
-                              0xFF166534,
-                            ), // Verd fosc unificat
+                            backgroundColor: const Color(0xFF166534),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
@@ -252,8 +291,6 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         const SizedBox(height: 24),
-
-                        // DIVISOR
                         Row(
                           children: [
                             Expanded(
@@ -277,8 +314,6 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                         const SizedBox(height: 24),
-
-                        // BOTÓ GOOGLE
                         OutlinedButton.icon(
                           onPressed: () => loginWithGoogle(context),
                           icon: const Icon(
@@ -303,8 +338,6 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         const SizedBox(height: 24),
-
-                        // ENLLAÇ CREAR COMPTE
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -326,7 +359,9 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               child: Text(
                                 t.loginCreateAccount,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ],
@@ -362,7 +397,6 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      // gardens és List, extreim només els noms
       final List<String> gardenNames = (data['gardens'] as List<dynamic>)
           .map((g) => g['gardenName'] as String)
           .toList();
@@ -378,21 +412,20 @@ class _LoginPageState extends State<LoginPage> {
         newGardens: gardenNames,
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.profileLoadError)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_t.profileLoadError)));
     }
   }
 }
 
 class _LoginHeader extends StatelessWidget {
-  const _LoginHeader();
+  final AppLocalizations t;
+
+  const _LoginHeader({required this.t});
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context);
-    if (t == null) return const SizedBox();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -404,10 +437,10 @@ class _LoginHeader extends StatelessWidget {
         Text(
           t.loginWelcomeTitle,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF166534), // Toc de color al títol
+            color: Color(0xFF166534),
           ),
         ),
         const SizedBox(height: 8),

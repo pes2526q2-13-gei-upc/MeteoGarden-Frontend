@@ -40,7 +40,10 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   final TextEditingController nomjardiController = TextEditingController();
   final TextEditingController ciutatSearchController = TextEditingController();
 
-  String? language;
+  Locale _pageLocale = const Locale('ca');
+  AppLocalizations get _t => lookupAppLocalizations(_pageLocale);
+
+  String? language = 'ca';
   List<City> cities = [];
   City? selectedCity;
   bool isLoadingCities = true;
@@ -61,11 +64,62 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     super.dispose();
   }
 
+  Widget _buildLanguageSelector() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.95),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: PopupMenuButton<String>(
+        initialValue: _pageLocale.languageCode,
+        onSelected: (value) {
+          setState(() {
+            _pageLocale = Locale(value);
+          });
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        itemBuilder: (context) => const [
+          PopupMenuItem(value: 'ca', child: Text('Català')),
+          PopupMenuItem(value: 'es', child: Text('Español')),
+          PopupMenuItem(value: 'en', child: Text('English')),
+        ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.language, color: Color(0xFF166534), size: 20),
+              const SizedBox(width: 8),
+              Text(
+                _pageLocale.languageCode.toUpperCase(),
+                style: const TextStyle(
+                  color: Color(0xFF166534),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: 4),
+              const Icon(Icons.keyboard_arrow_down, color: Color(0xFF166534)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> fetchCities() async {
     try {
       final response = await http.get(
         Uri.parse('${ApiConfig.baseUrl}/api/stations/'),
       );
+
+      if (!mounted) return;
 
       if (response.statusCode == 200) {
         setState(() {
@@ -78,13 +132,14 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
         setState(() => isLoadingCities = false);
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() => isLoadingCities = false);
       debugPrint("Error carregant ciutats: $e");
     }
   }
 
   void _submit() async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = _t;
     final url = Uri.parse("${ApiConfig.baseUrl}/api/register/");
 
     final response = await http.post(
@@ -130,7 +185,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   }
 
   Future<void> _fetchAndSaveProfile(String token) async {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = _t;
     final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
 
     final response = await http.get(
@@ -169,7 +224,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = _t;
 
     final defaultDecoration = InputDecoration(
       filled: true,
@@ -187,25 +242,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
         borderRadius: BorderRadius.circular(16),
         borderSide: const BorderSide(color: Color(0xFF166534), width: 1.5),
       ),
-      labelStyle: TextStyle(color: Colors.black.withValues(alpha: 0.6)),
     );
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          l10n.createAccountTitle,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w800,
-            fontSize: 22,
-          ),
-        ),
-      ),
       body: Stack(
         children: [
           Positioned.fill(
@@ -228,6 +267,11 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                 ),
               ),
             ),
+          ),
+          Positioned(
+            top: 3,
+            right: 16,
+            child: SafeArea(child: _buildLanguageSelector()),
           ),
           SafeArea(
             child: Center(
