@@ -1,0 +1,283 @@
+{
+  "appTitle": "MeteoGarden",
+
+    "commonBack": "Tornar",
+    "commonCancel": "Cancel·lar",
+    "commonCity": "Ciutat",
+    "commonClose": "Tancar",
+    "commonContinue": "Continuar",
+    "commonDescription": "Descripció",
+    "commonLanguage": "Idioma",
+    "commonRetry": "Reintentar",
+    "commonSave": "Guardar",
+    "commonSearch": "Cerca",
+
+  "loginWelcomeTitle": "Benvinguda a MeteoGarden",
+  "loginWelcomeSubtitle": "Inicia sessió per continuar cuidant el teu jardí.",
+
+  "loginUsernameLabel": "Nom d'usuari",
+  "loginUsernameHint": "Introdueix el teu nom d'usuari",
+
+  "loginPasswordLabel": "Contrasenya",
+  "loginPasswordHint": "Introdueix la teva contrasenya",
+
+  "loginButton": "Iniciar sessió",
+  "loginContinueWith": "o continuar amb",
+
+  "loginNoAccount": "No tens compte?",
+  "loginCreateAccount": "Crear compte",
+
+  "loginError": "Error de login",
+  "loginGoogleError": "Error login Google",
+  "profileLoadError": "No s'ha pogut carregar el perfil",
+
+  "navGarden": "Jardí",
+  "navFriends": "Amics",
+  "navCamera": "Càmera",
+  "navMissions": "Missions",
+  "navProfile": "Perfil",
+
+  "albumTitle": "El meu àlbum de plantes",
+  "albumLoadingEncyclopedia": "Consultant enciclopèdia...",
+  "albumDetailsLoadError": "Error carregant detalls: {error}",
+  "@albumDetailsLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "albumUnknownPlant": "Desconeguda",
+  "albumNoDescription": "No hi ha descripció disponible.",
+  "albumFamilyLabel": "Família",
+  "albumBlooms": "Floreix",
+  "albumDoesNotBloom": "No floreix",
+  "albumDescriptionTitle": "Descripció",
+  "albumEmptyState": "Encara no has descobert cap planta 🌱\nContinua explorant!",
+  "albumPlantInfoLoadError": "Error carregant la informació de la planta",
+
+"shopTitle": "Botiga",
+"shopSeedsTab": "Llavors 🌱",
+"shopOtherTab": "Altres 🛒",
+"shopLoadError": "No s'han pogut carregar els productes.",
+"shopConnectionError": "Error de connexió o processant les dades.",
+"shopPurchaseProcessingError": "Error en processar la compra.",
+"shopPurchaseSuccess": "Compra realitzada amb èxit! 🌱",
+"shopTotalPrice": "Preu total:",
+"shopBuyButton": "Comprar",
+"shopNoItemsAvailable": "No hi ha articles disponibles ara mateix.",
+
+"calendarUpcomingEvents": "Propers esdeveniments",
+"calendarNoEventsThisMonth": "No hi ha esdeveniments aquest mes",
+"calendarClearFilters": "Eliminar filtres",
+"calendarNoEventsThisDay": "Sense esdeveniments aquest dia",
+"calendarFiltersTitle": "Filtres",
+"calendarClearAll": "Netejar tot",
+"calendarSearchTextLabel": "Cerca per text",
+"calendarSearchTextHint": "Nom, descripció...",
+"calendarCityLabel": "Ciutat",
+"calendarCityHint": "Barcelona, Girona...",
+"calendarCountyLabel": "Comarca",
+"calendarCountyHint": "Osona, Maresme...",
+"calendarCategoryLabel": "Categoria",
+"calendarCategoryHint": "Mercat, Concert, Ruta...",
+"calendarMaxDistanceLabel": "Distància màxima",
+"calendarMaxPriceLabel": "Preu màxim",
+"calendarApplyFilters": "Aplicar filtres",
+"calendarFree": "Gratis",
+"calendarFreeAccent": "Gratuït",
+"calendarBuyTickets": "Comprar entrades",
+"calendarEventSingular": "esdeveniment",
+"calendarEventPlural": "esdeveniments",
+
+"calendarEventsCount": "{count} esdeveniments",
+"@calendarEventsCount": {
+  "placeholders": {
+    "count": {}
+  }
+},
+
+"calendarSelectedDaySummary": "{day} {month} · {count} {eventWord}",
+"@calendarSelectedDaySummary": {
+  "placeholders": {
+    "day": {},
+    "month": {},
+    "count": {},
+    "eventWord": {}
+  }
+},
+
+"calendarMaxDistanceChip": "≤{km} km",
+"@calendarMaxDistanceChip": {
+  "placeholders": {
+    "km": {}
+  }
+},
+
+"calendarMaxPriceChip": "≤{price}€",
+"@calendarMaxPriceChip": {
+  "placeholders": {
+    "price": {}
+  }
+},
+
+"calendarSearchChip": "\"{query}\"",
+"@calendarSearchChip": {
+  "placeholders": {
+    "query": {}
+  }
+},
+
+"calendarDistanceKm": "{km} km",
+"@calendarDistanceKm": {
+  "placeholders": {
+    "km": {}
+  }
+},
+
+"calendarPriceEuros": "{price} €",
+"@calendarPriceEuros": {
+  "placeholders": {
+    "price": {}
+  }
+},
+
+"calendarPriceCompact": "{price}€",
+"@calendarPriceCompact": {
+  "placeholders": {
+    "price": {}
+  }
+},
+
+"weekdayMon": "Dl",
+"weekdayTue": "Dt",
+"weekdayWed": "Dc",
+"weekdayThu": "Dj",
+"weekdayFri": "Dv",
+"weekdaySat": "Ds",
+"weekdaySun": "Dg",
+
+"monthJanuary": "Gener",
+"monthFebruary": "Febrer",
+"monthMarch": "Març",
+"monthApril": "Abril",
+"monthMay": "Maig",
+"monthJune": "Juny",
+"monthJuly": "Juliol",
+"monthAugust": "Agost",
+"monthSeptember": "Setembre",
+"monthOctober": "Octubre",
+"monthNovember": "Novembre",
+"monthDecember": "Desembre",
+
+"monthShortJanuary": "gen",
+"monthShortFebruary": "feb",
+"monthShortMarch": "març",
+"monthShortApril": "abr",
+"monthShortMay": "maig",
+"monthShortJune": "juny",
+"monthShortJuly": "jul",
+"monthShortAugust": "ago",
+"monthShortSeptember": "set",
+"monthShortOctober": "oct",
+"monthShortNovember": "nov",
+"monthShortDecember": "des",
+
+"photoNoCameraAvailable": "No s’ha trobat cap càmera disponible.",
+"photoCameraInitError": "No s’ha pogut inicialitzar la càmera.",
+"photoUnexpectedError": "S’ha produït un error inesperat.",
+"photoTakePlantPicture": "Fotografia la planta",
+"photoTreeMode": "Arbre",
+"photoFlowerMode": "Flor",
+"photoTreeModeSelected": "Mode arbre seleccionat",
+"photoFlowerModeSelected": "Mode flor seleccionat",
+"photoIdentifyingPlant": "Identificant planta...",
+"photoCenterPlantInFrame": "Centra la planta dins el marc",
+
+"plantResultTitle": "Planta identificada",
+"plantResultScientificName": "Nom científic",
+"plantResultFamily": "Família",
+"plantResultConfidence": "Confiança",
+"plantResultTakeAnotherPhoto": "Fer una altra foto",
+
+"profileStatsTitle": "Estadístiques",
+"profileDefaultUser": "Usuari",
+"profileCityNotDefined": "Ciutat no definida",
+"profileCoins": "Monedes",
+"profileDiscovered": "Descobertes",
+"profileUserLabel": "Usuari",
+"profileEmailLabel": "Email",
+"profileCityLabel": "Ciutat",
+"profileLanguageLabel": "Idioma",
+"profileEditButton": "Modificar perfil",
+"profilePlants": "Plantes",
+"profileLogout": "Tancar sessió",
+"profileDeleteAccountTitle": "Eliminar compte",
+"profileDeleteAccountMessage": "Estàs segur que vols eliminar el teu compte? Aquesta acció és permanent i es perdran totes les teves monedes i plantes descobertes.",
+"profileDeleteAccountError": "Error eliminant el compte",
+"profileDeleteAccountConfirm": "Sí, eliminar",
+
+"createAccountTitle": "Crear compte",
+"createAccountWelcome": "Benvingut a Meteo Garden",
+"createAccountSubtitle": "Omple les teves dades per començar",
+"createAccountEmailLabel": "Correu electrònic",
+"createAccountGardenNameLabel": "Nom del teu jardí",
+"createAccountSuccess": "Compte creat correctament!",
+"createAccountError": "Error creant el compte",
+
+"completeProfileTitle": "Completar perfil",
+"completeProfileHeading": "Ja quasi ho tenim!",
+"completeProfileSubtitle": "Completa aquestes dades per finalitzar el registre amb Google",
+"completeProfilePasswordOptional": "Contrasenya (Opcional)",
+"completeProfileSuccess": "Compte completat correctament!",
+"completeProfileError": "Error completant perfil",
+
+"profileEditTitle": "Modificar perfil",
+"profileEditUserDataTitle": "Dades d'usuari",
+"profileEditUpdated": "Perfil actualitzat",
+"profileEditUpdateError": "Error actualitzant el perfil",
+
+"languageCatalan": "Català",
+"languageSpanish": "Castellà",
+"languageEnglish": "English",
+
+"inventoryTitle": "El teu inventari",
+"inventorySearchHint": "Cerca una llavor o poció...",
+"inventorySeedsTab": "Llavors",
+"inventoryPotionsTab": "Pocions",
+"inventoryNoSeeds": "No hi ha llavors disponibles",
+"inventoryNoPotions": "No hi ha pocions disponibles",
+"inventoryAvailableItems": "{count} elements disponibles",
+"@inventoryAvailableItems": {
+  "placeholders": {
+    "count": {}
+  }
+},
+"inventoryQuantity": "Quantitat: {amount}",
+"@inventoryQuantity": {
+  "placeholders": {
+    "amount": {}
+  }
+},
+
+"gardenLoadingSeedsError": "Error carregant llavors",
+"gardenLoadingWeather": "Carregant meteo...",
+"gardenWaitMoment": "Espera un moment",
+"gardenWeatherLoadError": "No s'ha pogut carregar la meteo",
+"gardenTapToRetry": "Toca per tornar-ho a provar",
+"gardenLoadingPotsError": "Error carregant els tests:",
+"gardenNoPotsAvailable": "No hi ha tests disponibles",
+"gardenWeatherSummary": "Temperatura: {temp}°C | Precipitació: {precipitation}",
+"@gardenWeatherSummary": {
+  "placeholders": {
+    "temp": {},
+    "precipitation": {}
+  }
+},
+"gardenWindSummary": "Vent: {wind} m/s",
+"@gardenWindSummary": {
+  "placeholders": {
+    "wind": {}
+  }
+}
+}

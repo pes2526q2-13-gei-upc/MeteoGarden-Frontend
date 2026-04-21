@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
 
@@ -35,6 +36,7 @@ class _ShopPageState extends State<ShopPage>
 
   // 1. OBTENIR DADES DE LA BOTIGA
   Future<void> fetchShopItems() async {
+    final l10n = AppLocalizations.of(context)!;
     final token = Provider.of<UserModel>(context, listen: false).token;
     final url = Uri.parse('${ApiConfig.baseUrl}/api/shop/');
 
@@ -58,17 +60,19 @@ class _ShopPageState extends State<ShopPage>
           });
         }
       } else {
-        _showError("No s'han pogut carregar els productes.");
+        _showError(l10n.shopLoadError);
         if (mounted) setState(() => isLoading = false);
       }
     } catch (e) {
-      _showError("Error de connexió o procesando los datos.");
+      _showError(l10n.shopConnectionError);
       if (mounted) setState(() => isLoading = false);
     }
   }
 
   // 2. COMPRAR UN ARTICLE
   Future<void> buyItem(bool isSeed, Map<String, dynamic> item) async {
+    final l10n = AppLocalizations.of(context)!;
+
     Navigator.pop(context); // Tanquem el BottomSheet primer
 
     // Mostrem un indicador de càrrega
@@ -81,7 +85,6 @@ class _ShopPageState extends State<ShopPage>
     );
 
     final token = Provider.of<UserModel>(context, listen: false).token;
-
     final username = Provider.of<UserModel>(context, listen: false).username;
 
     final url = Uri.parse('${ApiConfig.baseUrl}/api/users/$username/buy/');
@@ -113,20 +116,21 @@ class _ShopPageState extends State<ShopPage>
         ).setCoins(jsonDecode(response.body)['coins_remaining']);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Compra realitzada amb èxit! 🌱'),
-            backgroundColor: Color(0xFF166534),
+          SnackBar(
+            content: Text(l10n.shopPurchaseSuccess),
+            backgroundColor: const Color(0xFF166534),
           ),
         );
       } else {
         _showError(
-          jsonDecode(response.body)['error'] ?? "Error al processar la compra.",
+          jsonDecode(response.body)['error'] ??
+              l10n.shopPurchaseProcessingError,
         );
       }
     } catch (e) {
       if (!mounted) return;
       Navigator.pop(context);
-      _showError("Error al processar la compra.");
+      _showError(l10n.shopPurchaseProcessingError);
     }
   }
 
@@ -142,6 +146,8 @@ class _ShopPageState extends State<ShopPage>
     bool isSeed,
     Map<String, dynamic> item,
   ) {
+    final l10n = AppLocalizations.of(context)!;
+
     final String name = isSeed
         ? (item['commonName'] ?? item['scientificName'])
         : item['name'];
@@ -214,7 +220,7 @@ class _ShopPageState extends State<ShopPage>
               const SizedBox(height: 20),
               if (description != null) ...[
                 Text(
-                  "Descripció",
+                  l10n.commonDescription,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -235,9 +241,12 @@ class _ShopPageState extends State<ShopPage>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "Preu total:",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    l10n.shopTotalPrice,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Row(
                     children: [
@@ -272,9 +281,12 @@ class _ShopPageState extends State<ShopPage>
                         ),
                         side: BorderSide(color: Colors.grey.shade300),
                       ),
-                      child: const Text(
-                        "Tornar",
-                        style: TextStyle(color: Colors.black87, fontSize: 16),
+                      child: Text(
+                        l10n.commonBack,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),
@@ -289,9 +301,9 @@ class _ShopPageState extends State<ShopPage>
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text(
-                        "Comprar",
-                        style: TextStyle(
+                      child: Text(
+                        l10n.shopBuyButton,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -300,7 +312,7 @@ class _ShopPageState extends State<ShopPage>
                   ),
                 ],
               ),
-              const SizedBox(height: 16), // SafeArea inferior
+              const SizedBox(height: 16),
             ],
           ),
         );
@@ -309,10 +321,12 @@ class _ShopPageState extends State<ShopPage>
   }
 
   Widget _buildItemList(List<dynamic> items, bool isSeed) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (items.isEmpty) {
       return Center(
         child: Text(
-          "No hi ha articles disponibles ara mateix.",
+          l10n.shopNoItemsAvailable,
           style: TextStyle(color: Colors.black.withValues(alpha: 0.6)),
         ),
       );
@@ -396,6 +410,8 @@ class _ShopPageState extends State<ShopPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -403,9 +419,9 @@ class _ShopPageState extends State<ShopPage>
         elevation: 0,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          'Botiga',
-          style: TextStyle(
+        title: Text(
+          l10n.shopTitle,
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w800,
             fontSize: 24,
@@ -414,14 +430,12 @@ class _ShopPageState extends State<ShopPage>
       ),
       body: Stack(
         children: [
-          // 1. Fons d'imatge
           Positioned.fill(
             child: Image.asset(
               'assets/images/imatge_fondo1.png',
               fit: BoxFit.cover,
             ),
           ),
-          // 2. Degradat
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -437,11 +451,9 @@ class _ShopPageState extends State<ShopPage>
               ),
             ),
           ),
-          // 3. Contingut principal
           SafeArea(
             child: Column(
               children: [
-                // Pestanyes
                 Container(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 20,
@@ -471,13 +483,12 @@ class _ShopPageState extends State<ShopPage>
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
-                    tabs: const [
-                      Tab(text: "Llavors 🌱"),
-                      Tab(text: "Altres 🛒"),
+                    tabs: [
+                      Tab(text: l10n.shopSeedsTab),
+                      Tab(text: l10n.shopOtherTab),
                     ],
                   ),
                 ),
-                // Llistes de productes
                 Expanded(
                   child: isLoading
                       ? const Center(

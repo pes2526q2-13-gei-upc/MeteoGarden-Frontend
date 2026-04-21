@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../services/plant_service.dart';
 import '../models/dades_usr.dart';
@@ -25,16 +26,29 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   @override
   void initState() {
     super.initState();
-    _initCamera();
+  }
+
+  // Inicialitzar càmera
+  bool _cameraInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_cameraInitialized) {
+      _cameraInitialized = true;
+      _initCamera();
+    }
   }
 
   Future<void> _initCamera() async {
+    final l10n = AppLocalizations.of(context)!;
+
     try {
       final cameras = await availableCameras();
 
       if (cameras.isEmpty) {
         setState(() {
-          _errorMessage = 'No s’ha trobat cap càmera disponible.';
+          _errorMessage = l10n.photoNoCameraAvailable;
         });
         return;
       }
@@ -54,12 +68,14 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       setState(() {});
     } catch (_) {
       setState(() {
-        _errorMessage = 'No s’ha pogut inicialitzar la càmera.';
+        _errorMessage = l10n.photoCameraInitError;
       });
     }
   }
 
   Future<void> _takePicture() async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (_controller == null || _initializeControllerFuture == null) return;
 
     if (_isProcessing) return;
@@ -82,7 +98,6 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
         imagePath: image.path,
         organ: _selectedPlantType,
       );
-      debugPrint('IMAGE URL RESULT: ${result.image.url}');
 
       if (!mounted) return;
 
@@ -108,12 +123,12 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       if (!mounted) return;
 
       setState(() {
-        _errorMessage = 'S’ha produït un error inesperat.';
+        _errorMessage = l10n.photoUnexpectedError;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('S’ha produït un error inesperat.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.photoUnexpectedError)));
     } finally {
       if (mounted) {
         setState(() {
@@ -175,11 +190,23 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final controller = _controller;
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: controller == null || _initializeControllerFuture == null
+      body: _errorMessage != null && controller == null
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  _errorMessage!,
+                  style: const TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+          : controller == null || _initializeControllerFuture == null
           ? const Center(child: CircularProgressIndicator())
           : FutureBuilder(
               future: _initializeControllerFuture,
@@ -217,9 +244,12 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
 
                           const SizedBox(height: 12),
 
-                          const Text(
-                            'Fotografia la planta',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          Text(
+                            l10n.photoTakePlantPicture,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
                           ),
                           const SizedBox(height: 16),
 
@@ -228,13 +258,13 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                             child: Row(
                               children: [
                                 _buildTypeButton(
-                                  label: 'Arbre',
+                                  label: l10n.photoTreeMode,
                                   value: 'leaf',
                                   icon: Icons.park,
                                 ),
                                 const SizedBox(width: 12),
                                 _buildTypeButton(
-                                  label: 'Flor',
+                                  label: l10n.photoFlowerMode,
                                   value: 'flower',
                                   icon: Icons.local_florist,
                                 ),
@@ -245,8 +275,8 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                           const SizedBox(height: 12),
                           Text(
                             _selectedPlantType == 'leaf'
-                                ? 'Mode arbre seleccionat'
-                                : 'Mode flor seleccionat',
+                                ? l10n.photoTreeModeSelected
+                                : l10n.photoFlowerModeSelected,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 14,
@@ -256,11 +286,11 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                           const SizedBox(height: 12),
 
                           if (_isProcessing)
-                            const Padding(
-                              padding: EdgeInsets.only(top: 12),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 12),
                               child: Text(
-                                'Identificant planta...',
-                                style: TextStyle(color: Colors.white),
+                                l10n.photoIdentifyingPlant,
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ),
 
@@ -300,9 +330,12 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
 
                           const SizedBox(height: 16),
 
-                          const Text(
-                            'Centra la planta dins el marc',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          Text(
+                            l10n.photoCenterPlantInFrame,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
                           ),
 
                           const Spacer(),
