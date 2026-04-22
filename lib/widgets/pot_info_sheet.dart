@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/garden.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 
 class PotInfoSheet extends StatelessWidget {
   final GardenPot pot;
@@ -21,6 +22,7 @@ class PotInfoSheet extends StatelessWidget {
     final isMature = pot.growthPhase == 'mature';
     final waterValue = (pot.waterLevel ?? 0) / 100;
     final healthValue = (pot.healthLevel ?? 0) / 100;
+    final t = AppLocalizations.of(context)!;
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
@@ -77,7 +79,7 @@ class PotInfoSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 22),
                     _StatBar(
-                      label: "Nivell d'Aigua",
+                      label: t.waterlabel,
                       value: waterValue,
                       percent: pot.waterLevel?.toStringAsFixed(0) ?? '0',
                       color: const Color(0xFF38bdf8),
@@ -85,7 +87,7 @@ class PotInfoSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
                     _StatBar(
-                      label: "Salut",
+                      label: t.salut,
                       value: healthValue,
                       percent: pot.healthLevel?.toStringAsFixed(0) ?? '0',
                       color: const Color(0xFF4ade80),
@@ -101,7 +103,7 @@ class PotInfoSheet extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          "Últim reg: ${pot.lastWateredAt ?? '-'}",
+                          "${t.lastReg} ${pot.lastWateredAt ?? '-'}",
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 12,
@@ -116,7 +118,7 @@ class PotInfoSheet extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: onWater,
                           icon: const Icon(Icons.water_drop),
-                          label: const Text("Regar planta"),
+                          label: Text(t.regar),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF0ea5e9),
                             foregroundColor: Colors.white,
@@ -139,7 +141,7 @@ class PotInfoSheet extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: onCollect,
                           icon: const Icon(Icons.agriculture),
-                          label: const Text("Recollir planta"),
+                          label: Text(t.recolectPlant),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF16a34a),
                             foregroundColor: Colors.white,
@@ -162,7 +164,7 @@ class PotInfoSheet extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: onPotion,
                           icon: const Icon(Icons.flash_on),
-                          label: const Text("Aplicar poció"),
+                          label: Text(t.aplyPotion),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFFCD34D),
                             foregroundColor: Colors.white,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/garden.dart';
 import '../models/seed_option.dart';
 import '../services/garden_service.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 
 class SeedSelectionSheet extends StatefulWidget {
   final GardenPot pot;
@@ -83,7 +84,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                 padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
                 child: _plantingResult != null
                     ? _buildSuccessView()
-                    : _buildSelectionView(),
+                    : _buildSelectionView(context),
               ),
             ),
           ],
@@ -150,7 +151,8 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
     );
   }
 
-  Widget _buildSelectionView() {
+  Widget _buildSelectionView(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -177,8 +179,8 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Test buit",
+                  Text(
+                    t.testbuit,
                     style: TextStyle(
                       fontSize: 23,
                       fontWeight: FontWeight.w800,
@@ -187,7 +189,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Selecciona una llavor pel test ${widget.pot.potNumber}",
+                    "${t.selectionLlavor} ${widget.pot.potNumber}",
                     style: const TextStyle(fontSize: 14, color: Colors.white70),
                   ),
                 ],
@@ -199,7 +201,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
         const SizedBox(height: 20),
 
         if (widget.seeds.isEmpty)
-          _buildEmptyState()
+          _buildEmptyState(context)
         else ...[
           Flexible(
             child: ListView.separated(
@@ -278,8 +280,8 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                const Text(
-                                  "Llavor disponible per plantar",
+                                Text(
+                                  t.llavorDisp,
                                   style: TextStyle(
                                     fontSize: 13,
                                     color: Colors.white70,
@@ -381,7 +383,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                     )
                   : const Icon(Icons.spa_rounded),
               label: Text(
-                _isPlanting ? 'Plantant...' : 'Plantar',
+                _isPlanting ? t.planting : t.plant,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -416,7 +418,8 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
@@ -425,12 +428,12 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
       ),
-      child: const Column(
+      child: Column(
         children: [
           Icon(Icons.inventory_2_outlined, size: 42, color: Colors.white70),
           SizedBox(height: 10),
           Text(
-            "No tens llavors disponibles",
+            t.noLlavor,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -439,7 +442,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
           ),
           SizedBox(height: 6),
           Text(
-            "Quan n'aconsegueixis, les podràs plantar aquí.",
+            t.extraLlavor,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 13, color: Colors.white70),
           ),

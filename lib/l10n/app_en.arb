@@ -279,5 +279,25 @@
     "placeholders": {
       "wind": {}
     }
-  }
+  },
+"waterlabel": "Water Level",
+"salut": "Health",
+"lastReg": "Last watered: ",
+"regar": "Water plant",
+"recolectPlant": "Collect plant",
+"aplyPotion": "Apply potion",
+"selectPotion": "Select a potion for the pot",
+"errorPotions": "Error loading potions",
+"readyPotion": "Potion available to apply",
+"aplyingPotion": "Applying...",
+"noPotions": "You have no potions available",
+"extraPotions": "When you get some, you will be able to apply them here.",
+"testbuit": "Empty pot",
+"selectionLlavor": "Select a seed for the pot",
+"llavorDisp": "Seed available for planting",
+"plant": "Plant",
+"planting": "Planting...",
+"noLlavor": "You have no seeds available",
+"extraLlavor": "When you get some, you will be able to plant them here."
 }
+
