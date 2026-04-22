@@ -7,6 +7,7 @@ class PotInfoSheet extends StatelessWidget {
   final Future<void> Function() onWater;
   final Future<void> Function()? onCollect;
   final Function()? onPotion;
+  final Future<void> Function()? onDeletePlant;
 
   const PotInfoSheet({
     super.key,
@@ -14,6 +15,7 @@ class PotInfoSheet extends StatelessWidget {
     required this.onWater,
     this.onCollect,
     this.onPotion,
+    this.onDeletePlant,
   });
 
   @override
@@ -167,6 +169,29 @@ class PotInfoSheet extends StatelessWidget {
                           label: Text(t.aplyPotion),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFFCD34D),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (onDeletePlant != null) ...[
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: onDeletePlant,
+                          icon: const Icon(Icons.delete_outline),
+                          label: Text(t.deletePlant),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFDC2626),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(

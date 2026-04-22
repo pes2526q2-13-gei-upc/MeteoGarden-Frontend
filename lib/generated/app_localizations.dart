@@ -166,6 +166,12 @@ abstract class AppLocalizations {
   /// **'Cerca'**
   String get commonSearch;
 
+  /// No description provided for @commonEliminar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Eliminar'**
+  String get commonEliminar;
+
   /// No description provided for @loginWelcomeTitle.
   ///
   /// In ca, this message translates to:
@@ -1298,6 +1304,24 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Quan n\'aconsegueixis, les podràs plantar aquí.'**
   String get extraLlavor;
+
+  /// No description provided for @confirmDeletePlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Segur que vols eliminar {plantName}?\nAquesta acció no es pot desfer.'**
+  String confirmDeletePlant(Object plantName);
+
+  /// No description provided for @thisPlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'aquesta planta'**
+  String get thisPlant;
+
+  /// No description provided for @deletePlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Eliminar planta'**
+  String get deletePlant;
 }
 
 class _AppLocalizationsDelegate

@@ -42,6 +42,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get commonSearch => 'Cerca';
 
   @override
+  String get commonEliminar => 'Eliminar';
+
+  @override
   String get loginWelcomeTitle => 'Benvinguda a MeteoGarden';
 
   @override
@@ -641,4 +644,15 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get extraLlavor => 'Quan n\'aconsegueixis, les podràs plantar aquí.';
+
+  @override
+  String confirmDeletePlant(Object plantName) {
+    return 'Segur que vols eliminar $plantName?\nAquesta acció no es pot desfer.';
+  }
+
+  @override
+  String get thisPlant => 'aquesta planta';
+
+  @override
+  String get deletePlant => 'Eliminar planta';
 }

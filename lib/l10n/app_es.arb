@@ -11,6 +11,7 @@
   "commonRetry": "Reintentar",
   "commonSave": "Guardar",
   "commonSearch": "Buscar",
+  "commonEliminar": "Eliminar",
 
   "loginWelcomeTitle": "Bienvenida a MeteoGarden",
   "loginWelcomeSubtitle": "Inicia sesión para seguir cuidando tu jardín.",
@@ -298,6 +299,9 @@
 "plant": "Plantar",
 "planting": "Plantando...",
 "noLlavor": "No tienes semillas disponibles",
-"extraLlavor": "Cuando consigas, podrás plantarlas aquí."
+"extraLlavor": "Cuando consigas, podrás plantarlas aquí.",
+"confirmDeletePlant": "¿Estás seguro de que quieres eliminar {plantName}?\nEsta acción no se puede deshacer.",
+"thisPlant": "esta planta",
+"deletePlant": "Eliminar planta"
 }
 
