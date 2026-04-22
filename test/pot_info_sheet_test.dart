@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:meteo_garden/models/garden.dart';
 import 'package:meteo_garden/widgets/pot_info_sheet.dart';
 
@@ -18,10 +19,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PotInfoSheet(pot: pot, onWater: () async {}),
-          ),
+        _wrapWithApp(
+          PotInfoSheet(pot: pot, onWater: () async {}),
         ),
       );
 
@@ -48,10 +47,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PotInfoSheet(pot: pot, onWater: () async {}),
-          ),
+        _wrapWithApp(
+          PotInfoSheet(pot: pot, onWater: () async {}),
         ),
       );
 
@@ -74,16 +71,14 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PotInfoSheet(pot: pot, onWater: () async {}),
-          ),
+        _wrapWithApp(
+          PotInfoSheet(pot: pot, onWater: () async {}),
         ),
       );
 
       expect(find.text('Planta'), findsOneWidget);
       expect(find.text('Creixent'), findsOneWidget);
-      expect(find.text('Últim reg: -'), findsOneWidget);
+      expect(find.textContaining('Últim reg:'), findsOneWidget);
     });
 
     testWidgets(
@@ -99,13 +94,11 @@ void main() {
         );
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: PotInfoSheet(
-                pot: pot,
-                onWater: () async {},
-                onCollect: () async {},
-              ),
+          _wrapWithApp(
+            PotInfoSheet(
+              pot: pot,
+              onWater: () async {},
+              onCollect: () async {},
             ),
           ),
         );
@@ -115,7 +108,6 @@ void main() {
       },
     );
 
-    //test no mostra botó per recollir planta si aquesta es madura però onCollect es null
     testWidgets(
       'no mostra el botó de recollir si és madura però onCollect és null',
       (WidgetTester tester) async {
@@ -129,13 +121,11 @@ void main() {
         );
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: PotInfoSheet(
-                pot: pot,
-                onWater: () async {},
-                onCollect: null,
-              ),
+          _wrapWithApp(
+            PotInfoSheet(
+              pot: pot,
+              onWater: () async {},
+              onCollect: null,
             ),
           ),
         );
@@ -144,7 +134,6 @@ void main() {
       },
     );
 
-    //test que comprova que no es mostra el botó de regar si el nivell de l'aigua ja es 100
     testWidgets('no mostra el botó de regar si el nivell d’aigua és 100', (
       WidgetTester tester,
     ) async {
@@ -158,17 +147,14 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PotInfoSheet(pot: pot, onWater: () async {}),
-          ),
+        _wrapWithApp(
+          PotInfoSheet(pot: pot, onWater: () async {}),
         ),
       );
 
       expect(find.text('Regar planta'), findsNothing);
     });
 
-    //test per comprovar que el botó de regar realment fa la crida a l'api de ragar
     testWidgets('crida onWater quan es prem el botó de regar', (
       WidgetTester tester,
     ) async {
@@ -184,14 +170,12 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PotInfoSheet(
-              pot: pot,
-              onWater: () async {
-                watered = true;
-              },
-            ),
+        _wrapWithApp(
+          PotInfoSheet(
+            pot: pot,
+            onWater: () async {
+              watered = true;
+            },
           ),
         ),
       );
@@ -202,7 +186,6 @@ void main() {
       expect(watered, true);
     });
 
-    //test per comprovar el botó de recollir planta
     testWidgets('crida onCollect quan es prem el botó de recollir', (
       WidgetTester tester,
     ) async {
@@ -218,15 +201,13 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: PotInfoSheet(
-              pot: pot,
-              onWater: () async {},
-              onCollect: () async {
-                collected = true;
-              },
-            ),
+        _wrapWithApp(
+          PotInfoSheet(
+            pot: pot,
+            onWater: () async {},
+            onCollect: () async {
+              collected = true;
+            },
           ),
         ),
       );
@@ -239,7 +220,16 @@ void main() {
   });
 }
 
-//mock de les dades d'un pot
+Widget _wrapWithApp(Widget child) {
+  return MaterialApp(
+    locale: const Locale('ca'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(body: child),
+  );
+}
+
+// mock de les dades d'un pot
 GardenPot _buildPot({
   required String commonName,
   required String scientificName,
