@@ -25,9 +25,7 @@ class _ShopPageState extends State<ShopPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      fetchShopItems();
-    });
+    fetchShopItems();
   }
 
   @override
@@ -75,8 +73,9 @@ class _ShopPageState extends State<ShopPage>
   Future<void> buyItem(bool isSeed, Map<String, dynamic> item) async {
     final l10n = AppLocalizations.of(context)!;
 
-    Navigator.pop(context);
+    Navigator.pop(context); // Tanquem el BottomSheet primer
 
+    // Mostrem un indicador de càrrega
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -90,6 +89,7 @@ class _ShopPageState extends State<ShopPage>
 
     final url = Uri.parse('${ApiConfig.baseUrl}/api/users/$username/buy/');
 
+    // Preparem el payload depenent de si és llavor o producte
     final body = jsonEncode({
       "type": isSeed ? "seed" : "product",
       "name": isSeed ? item['scientificName'] : item['name'],
@@ -107,7 +107,7 @@ class _ShopPageState extends State<ShopPage>
       );
 
       if (!mounted) return;
-      Navigator.pop(context);
+      Navigator.pop(context); // Amaguem l'indicador de càrrega
 
       if (response.statusCode == 200) {
         Provider.of<UserModel>(
@@ -154,9 +154,6 @@ class _ShopPageState extends State<ShopPage>
     final String? description = isSeed ? item['description'] : null;
     final int price = item['price'] ?? 0;
 
-    // Forzamos la variable a que sea un String seguro
-    final String imageUrl = item['image_url']?.toString() ?? '';
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -185,35 +182,14 @@ class _ShopPageState extends State<ShopPage>
               const SizedBox(height: 24),
               Row(
                 children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.green.withValues(alpha: 0.1),
+                    child: Icon(
+                      isSeed ? Icons.eco_rounded : Icons.shopping_bag_rounded,
+                      color: const Color(0xFF166534),
+                      size: 32,
                     ),
-                    clipBehavior: Clip.hardEdge,
-                    child: imageUrl.isNotEmpty
-                        ? Image.network(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(
-                                isSeed
-                                    ? Icons.eco_rounded
-                                    : Icons.shopping_bag_rounded,
-                                color: const Color(0xFF166534),
-                                size: 32,
-                              );
-                            },
-                          )
-                        : Icon(
-                            isSeed
-                                ? Icons.eco_rounded
-                                : Icons.shopping_bag_rounded,
-                            color: const Color(0xFF166534),
-                            size: 32,
-                          ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -367,9 +343,6 @@ class _ShopPageState extends State<ShopPage>
             : item['name'];
         final price = item['price'] ?? 0;
 
-        // Forzamos la variable a que sea un String seguro
-        final String imageUrl = item['image_url']?.toString() ?? '';
-
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
@@ -389,30 +362,15 @@ class _ShopPageState extends State<ShopPage>
               vertical: 12,
             ),
             leading: Container(
-              width: 50,
-              height: 50,
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.green.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              clipBehavior: Clip.hardEdge,
-              child: imageUrl.isNotEmpty
-                  ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          isSeed
-                              ? Icons.eco_rounded
-                              : Icons.shopping_bag_rounded,
-                          color: const Color(0xFF166534),
-                        );
-                      },
-                    )
-                  : Icon(
-                      isSeed ? Icons.eco_rounded : Icons.shopping_bag_rounded,
-                      color: const Color(0xFF166534),
-                    ),
+              child: Icon(
+                isSeed ? Icons.eco_rounded : Icons.shopping_bag_rounded,
+                color: const Color(0xFF166534),
+              ),
             ),
             title: Text(
               name,
@@ -443,8 +401,7 @@ class _ShopPageState extends State<ShopPage>
                 ),
               ],
             ),
-            onTap: () =>
-                _showItemDetails(context, isSeed, item as Map<String, dynamic>),
+            onTap: () => _showItemDetails(context, isSeed, item),
           ),
         );
       },
