@@ -42,6 +42,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get commonSearch => 'Cerca';
 
   @override
+  String get commonEliminar => 'Eliminar';
+
+  @override
   String get loginWelcomeTitle => 'Benvinguda a MeteoGarden';
 
   @override
@@ -584,4 +587,72 @@ class AppLocalizationsCa extends AppLocalizations {
   String gardenWindSummary(Object wind) {
     return 'Vent: $wind m/s';
   }
+
+  @override
+  String get waterlabel => 'Nivell d\'Aigua';
+
+  @override
+  String get salut => 'Salut';
+
+  @override
+  String get lastReg => 'Últim reg: ';
+
+  @override
+  String get regar => 'Regar planta';
+
+  @override
+  String get recolectPlant => 'Recollir planta';
+
+  @override
+  String get aplyPotion => 'Aplicar poció';
+
+  @override
+  String get selectPotion => 'Selecciona una poció pel test';
+
+  @override
+  String get errorPotions => 'Error carregant potions';
+
+  @override
+  String get readyPotion => 'Poció disponible per aplicar';
+
+  @override
+  String get aplyingPotion => 'Aplicant...';
+
+  @override
+  String get noPotions => 'No tens potions disponibles';
+
+  @override
+  String get extraPotions => 'Quan n\'aconsegueixis, les podràs aplicar aquí.';
+
+  @override
+  String get testbuit => 'Test Buit';
+
+  @override
+  String get selectionLlavor => 'Selecciona una llavor pel test';
+
+  @override
+  String get llavorDisp => 'Llavor disponible per plantar';
+
+  @override
+  String get plant => 'Plantar';
+
+  @override
+  String get planting => 'Plantant...';
+
+  @override
+  String get noLlavor => 'No tens llavors disponibles';
+
+  @override
+  String get extraLlavor => 'Quan n\'aconsegueixis, les podràs plantar aquí.';
+
+  @override
+  String confirmDeletePlant(Object plantName) {
+    return 'Segur que vols eliminar $plantName?\nAquesta acció no es pot desfer.';
+  }
+
+  @override
+  String get thisPlant => 'aquesta planta';
+
+  @override
+  String get deletePlant => 'Eliminar planta';
 }

@@ -11,6 +11,7 @@
     "commonRetry": "Reintentar",
     "commonSave": "Guardar",
     "commonSearch": "Cerca",
+    "commonEliminar": "Eliminar",
 
   "loginWelcomeTitle": "Benvinguda a MeteoGarden",
   "loginWelcomeSubtitle": "Inicia sessió per continuar cuidant el teu jardí.",
@@ -280,5 +281,28 @@
   "placeholders": {
     "wind": {}
   }
+},
+"waterlabel": "Nivell d'Aigua",
+"salut": "Salut",
+"lastReg": "Últim reg: ",
+"regar": "Regar planta",
+"recolectPlant": "Recollir planta",
+"aplyPotion": "Aplicar poció",
+"selectPotion": "Selecciona una poció pel test",
+"errorPotions":"Error carregant potions",
+"readyPotion":"Poció disponible per aplicar",
+"aplyingPotion": "Aplicant...",
+"noPotions": "No tens potions disponibles",
+"extraPotions": "Quan n'aconsegueixis, les podràs aplicar aquí.",
+"testbuit": "Test Buit",
+"selectionLlavor": "Selecciona una llavor pel test",
+"llavorDisp":"Llavor disponible per plantar",
+"plant": "Plantar",
+"planting": "Plantant...",
+"noLlavor":"No tens llavors disponibles",
+"extraLlavor": "Quan n'aconsegueixis, les podràs plantar aquí.",
+"confirmDeletePlant": "Segur que vols eliminar {plantName}?\nAquesta acció no es pot desfer.",
+"thisPlant": "aquesta planta",
+"deletePlant": "Eliminar planta"
 }
-}
+

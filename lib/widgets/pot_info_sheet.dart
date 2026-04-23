@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../models/garden.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 
 class PotInfoSheet extends StatelessWidget {
   final GardenPot pot;
   final Future<void> Function() onWater;
   final Future<void> Function()? onCollect;
   final Function()? onPotion;
+  final Future<void> Function()? onDeletePlant;
 
   const PotInfoSheet({
     super.key,
@@ -13,6 +15,7 @@ class PotInfoSheet extends StatelessWidget {
     required this.onWater,
     this.onCollect,
     this.onPotion,
+    this.onDeletePlant,
   });
 
   @override
@@ -21,6 +24,7 @@ class PotInfoSheet extends StatelessWidget {
     final isMature = pot.growthPhase == 'mature';
     final waterValue = (pot.waterLevel ?? 0) / 100;
     final healthValue = (pot.healthLevel ?? 0) / 100;
+    final t = AppLocalizations.of(context)!;
 
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
@@ -77,7 +81,7 @@ class PotInfoSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 22),
                     _StatBar(
-                      label: "Nivell d'Aigua",
+                      label: t.waterlabel,
                       value: waterValue,
                       percent: pot.waterLevel?.toStringAsFixed(0) ?? '0',
                       color: const Color(0xFF38bdf8),
@@ -85,7 +89,7 @@ class PotInfoSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
                     _StatBar(
-                      label: "Salut",
+                      label: t.salut,
                       value: healthValue,
                       percent: pot.healthLevel?.toStringAsFixed(0) ?? '0',
                       color: const Color(0xFF4ade80),
@@ -101,7 +105,7 @@ class PotInfoSheet extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          "Últim reg: ${pot.lastWateredAt ?? '-'}",
+                          "${t.lastReg} ${pot.lastWateredAt ?? '-'}",
                           style: const TextStyle(
                             color: Colors.white70,
                             fontSize: 12,
@@ -116,7 +120,7 @@ class PotInfoSheet extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: onWater,
                           icon: const Icon(Icons.water_drop),
-                          label: const Text("Regar planta"),
+                          label: Text(t.regar),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF0ea5e9),
                             foregroundColor: Colors.white,
@@ -139,7 +143,7 @@ class PotInfoSheet extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: onCollect,
                           icon: const Icon(Icons.agriculture),
-                          label: const Text("Recollir planta"),
+                          label: Text(t.recolectPlant),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF16a34a),
                             foregroundColor: Colors.white,
@@ -162,9 +166,32 @@ class PotInfoSheet extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: onPotion,
                           icon: const Icon(Icons.flash_on),
-                          label: const Text("Aplicar poció"),
+                          label: Text(t.aplyPotion),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFFCD34D),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (onDeletePlant != null) ...[
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: onDeletePlant,
+                          icon: const Icon(Icons.delete_outline),
+                          label: Text(t.deletePlant),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFDC2626),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(

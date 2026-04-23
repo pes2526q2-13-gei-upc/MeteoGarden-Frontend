@@ -42,6 +42,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonSearch => 'Search';
 
   @override
+  String get commonEliminar => 'Delete';
+
+  @override
   String get loginWelcomeTitle => 'Welcome to MeteoGarden';
 
   @override
@@ -583,4 +586,74 @@ class AppLocalizationsEn extends AppLocalizations {
   String gardenWindSummary(Object wind) {
     return 'Wind: $wind m/s';
   }
+
+  @override
+  String get waterlabel => 'Water Level';
+
+  @override
+  String get salut => 'Health';
+
+  @override
+  String get lastReg => 'Last watered: ';
+
+  @override
+  String get regar => 'Water plant';
+
+  @override
+  String get recolectPlant => 'Collect plant';
+
+  @override
+  String get aplyPotion => 'Apply potion';
+
+  @override
+  String get selectPotion => 'Select a potion for the pot';
+
+  @override
+  String get errorPotions => 'Error loading potions';
+
+  @override
+  String get readyPotion => 'Potion available to apply';
+
+  @override
+  String get aplyingPotion => 'Applying...';
+
+  @override
+  String get noPotions => 'You have no potions available';
+
+  @override
+  String get extraPotions =>
+      'When you get some, you will be able to apply them here.';
+
+  @override
+  String get testbuit => 'Empty pot';
+
+  @override
+  String get selectionLlavor => 'Select a seed for the pot';
+
+  @override
+  String get llavorDisp => 'Seed available for planting';
+
+  @override
+  String get plant => 'Plant';
+
+  @override
+  String get planting => 'Planting...';
+
+  @override
+  String get noLlavor => 'You have no seeds available';
+
+  @override
+  String get extraLlavor =>
+      'When you get some, you will be able to plant them here.';
+
+  @override
+  String confirmDeletePlant(Object plantName) {
+    return 'Are you sure you want to delete $plantName?\nThis action cannot be undone.';
+  }
+
+  @override
+  String get thisPlant => 'this plant';
+
+  @override
+  String get deletePlant => 'Delete plant';
 }

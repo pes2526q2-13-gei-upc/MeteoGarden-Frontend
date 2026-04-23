@@ -11,6 +11,7 @@
   "commonRetry": "Reintentar",
   "commonSave": "Guardar",
   "commonSearch": "Buscar",
+  "commonEliminar": "Eliminar",
 
   "loginWelcomeTitle": "Bienvenida a MeteoGarden",
   "loginWelcomeSubtitle": "Inicia sesión para seguir cuidando tu jardín.",
@@ -279,5 +280,28 @@
     "placeholders": {
       "wind": {}
     }
-  }
+  },
+  "waterlabel": "Nivel de agua",
+"salut": "Salud",
+"lastReg": "Último riego: ",
+"regar": "Regar planta",
+"recolectPlant": "Recolectar planta",
+"aplyPotion": "Aplicar poción",
+"selectPotion": "Selecciona una poción para la maceta",
+"errorPotions": "Error cargando pociones",
+"readyPotion": "Poción disponible para aplicar",
+"aplyingPotion": "Aplicando...",
+"noPotions": "No tienes pociones disponibles",
+"extraPotions": "Cuando consigas, podrás aplicarlas aquí.",
+"testbuit": "Maceta vacía",
+"selectionLlavor": "Selecciona una semilla para la maceta",
+"llavorDisp": "Semilla disponible para plantar",
+"plant": "Plantar",
+"planting": "Plantando...",
+"noLlavor": "No tienes semillas disponibles",
+"extraLlavor": "Cuando consigas, podrás plantarlas aquí.",
+"confirmDeletePlant": "¿Estás seguro de que quieres eliminar {plantName}?\nEsta acción no se puede deshacer.",
+"thisPlant": "esta planta",
+"deletePlant": "Eliminar planta"
 }
+

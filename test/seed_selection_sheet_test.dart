@@ -1,5 +1,6 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:meteo_garden/models/garden.dart';
 import 'package:meteo_garden/models/seed_option.dart';
 import 'package:meteo_garden/services/garden_service.dart';
@@ -7,25 +8,26 @@ import 'package:meteo_garden/widgets/seed_selection_sheet.dart';
 
 void main() {
   group('SeedSelectionSheet', () {
-    testWidgets('mostra empty state si no hi ha llavors', (
+    testWidgets('mostra estat buit si no hi ha llavors', (
       WidgetTester tester,
     ) async {
+      final pot = _buildEmptyPot();
+      final gardenService = TestGardenService();
+
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SeedSelectionSheet(
-              pot: _buildPot(),
-              seeds: const [],
-              username: 'jana',
-              gardenName: 'jardi1',
-              gardenService: FakeGardenService.success(),
-              onPlantingSuccess: () {},
-            ),
+        _wrapWithApp(
+          SeedSelectionSheet(
+            pot: pot,
+            seeds: const [],
+            username: 'jana',
+            gardenName: 'Garden 1',
+            gardenService: gardenService,
+            onPlantingSuccess: () {},
           ),
         ),
       );
 
-      expect(find.text('Test buit'), findsOneWidget);
+      expect(find.text('Test Buit'), findsOneWidget);
       expect(find.text('No tens llavors disponibles'), findsOneWidget);
       expect(
         find.text("Quan n'aconsegueixis, les podràs plantar aquí."),
@@ -34,232 +36,194 @@ void main() {
       expect(find.text('Plantar'), findsNothing);
     });
 
-    testWidgets('mostra la llista de llavors disponibles', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('mostra les llavors disponibles', (WidgetTester tester) async {
+      final pot = _buildEmptyPot();
+      final gardenService = TestGardenService();
+      final seeds = [
+        _buildSeed(
+          scientificName: 'Rosa canina',
+          amount: 3,
+          imageUrl: 'https://example.com/rosa.png',
+        ),
+        _buildSeed(
+          scientificName: 'Mentha spicata',
+          amount: 2,
+          imageUrl: 'https://example.com/menta.png',
+        ),
+      ];
+
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SeedSelectionSheet(
-              pot: _buildPot(),
-              seeds: [
-                _buildSeed(scientificName: 'Ocimum basilicum', amount: 2),
-                _buildSeed(scientificName: 'Mentha spicata', amount: 1),
-              ],
-              username: 'jana',
-              gardenName: 'jardi1',
-              gardenService: FakeGardenService.success(),
-              onPlantingSuccess: () {},
-            ),
+        _wrapWithApp(
+          SeedSelectionSheet(
+            pot: pot,
+            seeds: seeds,
+            username: 'jana',
+            gardenName: 'Garden 1',
+            gardenService: gardenService,
+            onPlantingSuccess: () {},
           ),
         ),
       );
 
-      expect(find.text('Ocimum basilicum'), findsOneWidget);
+      expect(find.text('Test Buit'), findsOneWidget);
+      expect(
+        find.textContaining('Selecciona una llavor pel test'),
+        findsOneWidget,
+      );
+      expect(find.text('Rosa canina'), findsOneWidget);
       expect(find.text('Mentha spicata'), findsOneWidget);
+      expect(find.text('x3'), findsOneWidget);
       expect(find.text('x2'), findsOneWidget);
-      expect(find.text('x1'), findsOneWidget);
       expect(find.text('Plantar'), findsOneWidget);
     });
 
-    testWidgets(
-      'el botó Plantar està desactivat si no hi ha cap llavor seleccionada',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: SeedSelectionSheet(
-                pot: _buildPot(),
-                seeds: [
-                  _buildSeed(scientificName: 'Ocimum basilicum', amount: 2),
-                ],
-                username: 'jana',
-                gardenName: 'jardi1',
-                gardenService: FakeGardenService.success(),
-                onPlantingSuccess: () {},
-              ),
-            ),
-          ),
-        );
-
-        final button = tester.widget<ElevatedButton>(
-          find.byType(ElevatedButton),
-        );
-
-        expect(button.onPressed, isNull);
-      },
-    );
-
-    testWidgets('en seleccionar una llavor, el botó Plantar s’activa', (
+    testWidgets('el botó Plantar està desactivat fins seleccionar una llavor', (
       WidgetTester tester,
     ) async {
+      final pot = _buildEmptyPot();
+      final gardenService = TestGardenService();
+      final seeds = [
+        _buildSeed(
+          scientificName: 'Rosa canina',
+          amount: 3,
+          imageUrl: 'https://example.com/rosa.png',
+        ),
+      ];
+
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SeedSelectionSheet(
-              pot: _buildPot(),
-              seeds: [
-                _buildSeed(scientificName: 'Ocimum basilicum', amount: 2),
-              ],
-              username: 'jana',
-              gardenName: 'jardi1',
-              gardenService: FakeGardenService.success(),
-              onPlantingSuccess: () {},
-            ),
+        _wrapWithApp(
+          SeedSelectionSheet(
+            pot: pot,
+            seeds: seeds,
+            username: 'jana',
+            gardenName: 'Garden 1',
+            gardenService: gardenService,
+            onPlantingSuccess: () {},
           ),
         ),
       );
 
-      await tester.tap(find.text('Ocimum basilicum'));
+      var button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.onPressed, isNull);
+
+      await tester.tap(find.text('Rosa canina'));
       await tester.pump();
 
-      final button = tester.widget<ElevatedButton>(
-        find.byType(ElevatedButton),
-      );
-
+      button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
       expect(button.onPressed, isNotNull);
     });
 
-    testWidgets('mostra estat de càrrega mentre planta', (
+    testWidgets('crida plantSeed i mostra vista d èxit', (
       WidgetTester tester,
     ) async {
-      final service = FakeGardenService.delayedSuccess();
+      final pot = _buildEmptyPot();
+      final gardenService = TestGardenService()
+        ..plantSeedResult = PlantingResult(
+          message: 'Plantada correctament',
+          potNumber: 1,
+          scientificName: 'Rosa canina',
+          commonName: 'Roser silvestre',
+          growthPhase: 'seed',
+          healthLevel: 100,
+          waterLevel: 100,
+          plantedAt: '2026-04-22T00:00:00',
+          remainingSeeds: 2,
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SeedSelectionSheet(
-              pot: _buildPot(),
-              seeds: [
-                _buildSeed(scientificName: 'Ocimum basilicum', amount: 2),
-              ],
-              username: 'jana',
-              gardenName: 'jardi1',
-              gardenService: service,
-              onPlantingSuccess: () {},
-            ),
-          ),
+      final seeds = [
+        _buildSeed(
+          scientificName: 'Rosa canina',
+          amount: 3,
+          imageUrl: 'https://example.com/rosa.png',
         ),
-      );
+      ];
 
-      await tester.tap(find.text('Ocimum basilicum'));
-      await tester.pump();
-
-      await tester.tap(find.text('Plantar'));
-      await tester.pump();
-
-      expect(find.text('Plantant...'), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    });
-
-    testWidgets('si el servei retorna èxit, mostra la vista d’èxit', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SeedSelectionSheet(
-              pot: _buildPot(),
-              seeds: [
-                _buildSeed(scientificName: 'Ocimum basilicum', amount: 2),
-              ],
-              username: 'jana',
-              gardenName: 'jardi1',
-              gardenService: FakeGardenService.success(
-                message: 'Planta plantada correctament',
-              ),
-              onPlantingSuccess: () {},
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Ocimum basilicum'));
-      await tester.pump();
-
-      await tester.tap(find.text('Plantar'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Planta plantada correctament'), findsOneWidget);
-      expect(find.text('Tancar'), findsOneWidget);
-      expect(find.text('Plantar'), findsNothing);
-    });
-
-    testWidgets('si el servei falla, mostra el missatge d’error', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SeedSelectionSheet(
-              pot: _buildPot(),
-              seeds: [
-                _buildSeed(scientificName: 'Ocimum basilicum', amount: 2),
-              ],
-              username: 'jana',
-              gardenName: 'jardi1',
-              gardenService: FakeGardenService.error(
-                message: 'No es pot plantar aquesta llavor',
-              ),
-              onPlantingSuccess: () {},
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Ocimum basilicum'));
-      await tester.pump();
-
-      await tester.tap(find.text('Plantar'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('No es pot plantar aquesta llavor'), findsOneWidget);
-      expect(find.text('Plantar'), findsOneWidget);
-    });
-
-    testWidgets('el botó Tancar crida onPlantingSuccess', (
-      WidgetTester tester,
-    ) async {
       bool plantingSuccessCalled = false;
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SeedSelectionSheet(
-              pot: _buildPot(),
-              seeds: [
-                _buildSeed(scientificName: 'Ocimum basilicum', amount: 2),
-              ],
-              username: 'jana',
-              gardenName: 'jardi1',
-              gardenService: FakeGardenService.success(
-                message: 'Planta plantada correctament',
-              ),
-              onPlantingSuccess: () {
-                plantingSuccessCalled = true;
-              },
-            ),
+        _wrapWithApp(
+          SeedSelectionSheet(
+            pot: pot,
+            seeds: seeds,
+            username: 'jana',
+            gardenName: 'Garden 1',
+            gardenService: gardenService,
+            onPlantingSuccess: () {
+              plantingSuccessCalled = true;
+            },
           ),
         ),
       );
 
-      await tester.tap(find.text('Ocimum basilicum'));
+      await tester.tap(find.text('Rosa canina'));
       await tester.pump();
 
       await tester.tap(find.text('Plantar'));
       await tester.pumpAndSettle();
+
+      expect(gardenService.lastPlantSeedUsername, 'jana');
+      expect(gardenService.lastPlantSeedGardenName, 'Garden 1');
+      expect(gardenService.lastPlantSeedPotNumber, 1);
+      expect(gardenService.lastPlantSeedScientificName, 'Rosa canina');
+
+      expect(find.text('Plantada correctament'), findsOneWidget);
+      expect(find.text('Tancar'), findsOneWidget);
 
       await tester.tap(find.text('Tancar'));
       await tester.pumpAndSettle();
 
       expect(plantingSuccessCalled, true);
     });
+
+    testWidgets('mostra error si plantSeed falla', (WidgetTester tester) async {
+      final pot = _buildEmptyPot();
+      final gardenService = TestGardenService()
+        ..plantSeedException = Exception('No queden llavors');
+
+      final seeds = [
+        _buildSeed(
+          scientificName: 'Rosa canina',
+          amount: 3,
+          imageUrl: 'https://example.com/rosa.png',
+        ),
+      ];
+
+      await tester.pumpWidget(
+        _wrapWithApp(
+          SeedSelectionSheet(
+            pot: pot,
+            seeds: seeds,
+            username: 'jana',
+            gardenName: 'Garden 1',
+            gardenService: gardenService,
+            onPlantingSuccess: () {},
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Rosa canina'));
+      await tester.pump();
+
+      await tester.tap(find.text('Plantar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('No queden llavors'), findsOneWidget);
+    });
   });
 }
 
-GardenPot _buildPot() {
+Widget _wrapWithApp(Widget child) {
+  return MaterialApp(
+    locale: const Locale('ca'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(body: child),
+  );
+}
+
+GardenPot _buildEmptyPot() {
   return GardenPot(
-    potNumber: 3,
+    potNumber: 1,
     occupied: false,
     plant: null,
     growthPhase: null,
@@ -270,41 +234,26 @@ GardenPot _buildPot() {
   );
 }
 
-/// Si el constructor real de SeedOption té més camps obligatoris,
-/// afegeix-los aquí.
 SeedOption _buildSeed({
   required String scientificName,
   required int amount,
+  required String imageUrl,
 }) {
   return SeedOption(
     scientificName: scientificName,
     amount: amount,
+    imageUrl: imageUrl,
   );
 }
 
-class FakeGardenService extends GardenService {
-  final Future<PlantingResult> Function() _handler;
+class TestGardenService implements GardenService {
+  PlantingResult? plantSeedResult;
+  Exception? plantSeedException;
 
-  FakeGardenService._(this._handler);
-
-  factory FakeGardenService.success({String message = 'Èxit'}) {
-    return FakeGardenService._(() async {
-      return _buildPlantingResult(message: message);
-    });
-  }
-
-  factory FakeGardenService.delayedSuccess({String message = 'Èxit'}) {
-    return FakeGardenService._(() async {
-      await Future<void>.delayed(const Duration(milliseconds: 300));
-      return _buildPlantingResult(message: message);
-    });
-  }
-
-  factory FakeGardenService.error({required String message}) {
-    return FakeGardenService._(() async {
-      throw Exception(message);
-    });
-  }
+  String? lastPlantSeedUsername;
+  String? lastPlantSeedGardenName;
+  int? lastPlantSeedPotNumber;
+  String? lastPlantSeedScientificName;
 
   @override
   Future<PlantingResult> plantSeed({
@@ -312,19 +261,76 @@ class FakeGardenService extends GardenService {
     required String gardenName,
     required int potNumber,
     required String scientificName,
-  }) {
-    return _handler();
+  }) async {
+    lastPlantSeedUsername = username;
+    lastPlantSeedGardenName = gardenName;
+    lastPlantSeedPotNumber = potNumber;
+    lastPlantSeedScientificName = scientificName;
+
+    if (plantSeedException != null) {
+      throw plantSeedException!;
+    }
+
+    if (plantSeedResult != null) {
+      return plantSeedResult!;
+    }
+
+    throw Exception('No plantSeedResult configured');
+  }
+
+  @override
+  Future<List<GardenPot>> fetchGardenPlants({
+    required String username,
+    required String gardenName,
+  }) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String> waterPlant({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+  }) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<SeedOption>> fetchSeeds(String username) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<ProductItem>> fetchProducts(String username) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String> applyPotion({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+    required String productName,
+  }) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String> collectPlant({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+    required String scientificName,
+  }) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String> deletePlant({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+  }) async {
+    throw UnimplementedError();
   }
 }
-
-PlantingResult _buildPlantingResult({
-  required String message,
-  String scientificName = 'Ocimum basilicum',
-  int potNumber = 3,
-}) {
-  return PlantingResult(
-    message: message,
-    potNumber: potNumber,
-    scientificName: scientificName,
-  );
-}*/

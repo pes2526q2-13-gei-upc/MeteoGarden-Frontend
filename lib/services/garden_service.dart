@@ -194,4 +194,27 @@ class GardenService {
       );
     }
   }
+
+  Future<String> deletePlant({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+  }) async {
+    final url = Uri.parse(
+      '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/delete/',
+    );
+
+    final response = await http.delete(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return data['message'] ?? 'Plant deleted successfully.';
+    } else {
+      throw Exception(data['error'] ?? 'Error deleting plant.');
+    }
+  }
 }

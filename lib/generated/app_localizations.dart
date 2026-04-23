@@ -166,6 +166,12 @@ abstract class AppLocalizations {
   /// **'Cerca'**
   String get commonSearch;
 
+  /// No description provided for @commonEliminar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Eliminar'**
+  String get commonEliminar;
+
   /// No description provided for @loginWelcomeTitle.
   ///
   /// In ca, this message translates to:
@@ -1184,6 +1190,138 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Vent: {wind} m/s'**
   String gardenWindSummary(Object wind);
+
+  /// No description provided for @waterlabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nivell d\'Aigua'**
+  String get waterlabel;
+
+  /// No description provided for @salut.
+  ///
+  /// In ca, this message translates to:
+  /// **'Salut'**
+  String get salut;
+
+  /// No description provided for @lastReg.
+  ///
+  /// In ca, this message translates to:
+  /// **'Últim reg: '**
+  String get lastReg;
+
+  /// No description provided for @regar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Regar planta'**
+  String get regar;
+
+  /// No description provided for @recolectPlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Recollir planta'**
+  String get recolectPlant;
+
+  /// No description provided for @aplyPotion.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aplicar poció'**
+  String get aplyPotion;
+
+  /// No description provided for @selectPotion.
+  ///
+  /// In ca, this message translates to:
+  /// **'Selecciona una poció pel test'**
+  String get selectPotion;
+
+  /// No description provided for @errorPotions.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant potions'**
+  String get errorPotions;
+
+  /// No description provided for @readyPotion.
+  ///
+  /// In ca, this message translates to:
+  /// **'Poció disponible per aplicar'**
+  String get readyPotion;
+
+  /// No description provided for @aplyingPotion.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aplicant...'**
+  String get aplyingPotion;
+
+  /// No description provided for @noPotions.
+  ///
+  /// In ca, this message translates to:
+  /// **'No tens potions disponibles'**
+  String get noPotions;
+
+  /// No description provided for @extraPotions.
+  ///
+  /// In ca, this message translates to:
+  /// **'Quan n\'aconsegueixis, les podràs aplicar aquí.'**
+  String get extraPotions;
+
+  /// No description provided for @testbuit.
+  ///
+  /// In ca, this message translates to:
+  /// **'Test Buit'**
+  String get testbuit;
+
+  /// No description provided for @selectionLlavor.
+  ///
+  /// In ca, this message translates to:
+  /// **'Selecciona una llavor pel test'**
+  String get selectionLlavor;
+
+  /// No description provided for @llavorDisp.
+  ///
+  /// In ca, this message translates to:
+  /// **'Llavor disponible per plantar'**
+  String get llavorDisp;
+
+  /// No description provided for @plant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Plantar'**
+  String get plant;
+
+  /// No description provided for @planting.
+  ///
+  /// In ca, this message translates to:
+  /// **'Plantant...'**
+  String get planting;
+
+  /// No description provided for @noLlavor.
+  ///
+  /// In ca, this message translates to:
+  /// **'No tens llavors disponibles'**
+  String get noLlavor;
+
+  /// No description provided for @extraLlavor.
+  ///
+  /// In ca, this message translates to:
+  /// **'Quan n\'aconsegueixis, les podràs plantar aquí.'**
+  String get extraLlavor;
+
+  /// No description provided for @confirmDeletePlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Segur que vols eliminar {plantName}?\nAquesta acció no es pot desfer.'**
+  String confirmDeletePlant(Object plantName);
+
+  /// No description provided for @thisPlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'aquesta planta'**
+  String get thisPlant;
+
+  /// No description provided for @deletePlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Eliminar planta'**
+  String get deletePlant;
 }
 
 class _AppLocalizationsDelegate

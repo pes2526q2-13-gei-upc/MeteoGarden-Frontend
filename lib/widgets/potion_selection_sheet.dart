@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/garden.dart';
 import '../services/garden_service.dart';
 import '../models/seed_option.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 
 class PotionSelectionSheet extends StatefulWidget {
   final GardenPot pot;
@@ -90,7 +91,7 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                 padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
                 child: _potionResult != null
                     ? _buildSuccessView()
-                    : _buildSelectionView(),
+                    : _buildSelectionView(context),
               ),
             ),
           ],
@@ -155,7 +156,8 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
     );
   }
 
-  Widget _buildSelectionView() {
+  Widget _buildSelectionView(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -181,8 +183,8 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Aplicar poció",
+                  Text(
+                    t.aplyPotion,
                     style: TextStyle(
                       fontSize: 23,
                       fontWeight: FontWeight.w800,
@@ -191,7 +193,7 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Selecciona una poció pel test ${widget.pot.potNumber}",
+                    "${t.selectPotion} ${widget.pot.potNumber}",
                     style: const TextStyle(fontSize: 14, color: Colors.white70),
                   ),
                 ],
@@ -227,8 +229,8 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                       color: Colors.redAccent,
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      "Error carregant potions",
+                    Text(
+                      t.errorPotions,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -243,7 +245,7 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
             final potions = snap.data ?? [];
 
             if (potions.isEmpty) {
-              return _buildEmptyState();
+              return _buildEmptyState(context);
             }
 
             return Flexible(
@@ -306,8 +308,8 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-                                  const Text(
-                                    "Poció disponible per aplicar",
+                                  Text(
+                                    t.readyPotion,
                                     style: TextStyle(
                                       fontSize: 13,
                                       color: Colors.white70,
@@ -410,7 +412,7 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                   )
                 : const Icon(Icons.local_drink),
             label: Text(
-              _isApplying ? 'Aplicant...' : 'Aplicar poció',
+              _isApplying ? t.aplyingPotion : t.aplyPotion,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
             style: ElevatedButton.styleFrom(
@@ -441,7 +443,8 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
@@ -450,12 +453,12 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
       ),
-      child: const Column(
+      child: Column(
         children: [
           Icon(Icons.inventory_2_outlined, size: 42, color: Colors.white70),
           SizedBox(height: 10),
           Text(
-            "No tens potions disponibles",
+            t.noPotions,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -464,7 +467,7 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
           ),
           SizedBox(height: 6),
           Text(
-            "Quan n'aconsegueixis, les podràs aplicar aquí.",
+            t.extraPotions,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 13, color: Colors.white70),
           ),

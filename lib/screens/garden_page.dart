@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:meteo_garden/screens/album_page.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
+import 'package:meteo_garden/screens/album_page.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/garden.dart';
 import '../../models/weather_info.dart';
 import '../../services/garden_service.dart';
 import '../../services/weather_service.dart';
-import '../../widgets/pot_widget.dart';
-import '../../widgets/weather_card.dart';
-//import 'botiga_page.dart';
-import 'inventory_page.dart';
 import '../../widgets/pot_info_sheet.dart';
-import '../../widgets/seed_selection_sheet.dart';
-//import '../../models/seed_option.dart';
+import '../../widgets/pot_widget.dart';
 import '../../widgets/potion_selection_sheet.dart';
-import 'calendar_page.dart';
-
-import 'package:provider/provider.dart';
+import '../../widgets/seed_selection_sheet.dart';
+import '../../widgets/weather_card.dart';
 import '../models/dades_usr.dart';
-
 import '../screens/botiga_page.dart';
+import 'calendar_page.dart';
+import 'inventory_page.dart';
 
 class GardenPage extends StatefulWidget {
   final String username;
@@ -52,6 +48,8 @@ class _GardenPageState extends State<GardenPage> {
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
       final user = Provider.of<UserModel>(context, listen: false);
 
       setState(() {
@@ -77,8 +75,10 @@ class _GardenPageState extends State<GardenPage> {
   }
 
   Future<void> onTapPot(GardenPot pot) async {
+    final t = AppLocalizations.of(context)!;
+
     if (!pot.occupied || pot.plant == null) {
-      _showSeedSelection(pot);
+      await _showSeedSelection(pot);
       return;
     }
 
@@ -104,14 +104,16 @@ class _GardenPageState extends State<GardenPage> {
             );
 
             if (!mounted) return;
-            Navigator.pop(context);
+
+            Navigator.of(context).pop();
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(missatge)));
             _refreshGarden();
           } catch (e) {
             if (!mounted) return;
-            Navigator.pop(context);
+
+            Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(e.toString().replaceFirst('Exception: ', '')),
@@ -129,14 +131,16 @@ class _GardenPageState extends State<GardenPage> {
             );
 
             if (!mounted) return;
-            Navigator.pop(context);
+
+            Navigator.of(context).pop();
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(missatge)));
             _refreshGarden();
           } catch (e) {
             if (!mounted) return;
-            Navigator.pop(context);
+
+            Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(e.toString().replaceFirst('Exception: ', '')),
@@ -146,8 +150,10 @@ class _GardenPageState extends State<GardenPage> {
         },
         onPotion: () async {
           try {
-            Navigator.pop(context);
+            Navigator.of(context).pop();
+
             if (!mounted) return;
+
             showModalBottomSheet(
               context: context,
               backgroundColor: Colors.transparent,
@@ -162,6 +168,153 @@ class _GardenPageState extends State<GardenPage> {
             );
           } catch (e) {
             if (!mounted) return;
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(e.toString().replaceFirst('Exception: ', '')),
+              ),
+            );
+          }
+        },
+        onDeletePlant: () async {
+          final confirm = await showDialog<bool>(
+            context: context,
+            builder: (dialogContext) {
+              return Dialog(
+                backgroundColor: Colors.transparent,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F9F0),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: const Color(0xFF4CAF50).withValues(alpha: 0.35),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.10),
+                        blurRadius: 18,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: const Color(
+                            0xFF4CAF50,
+                          ).withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.local_florist,
+                          color: Color(0xFF2E7D32),
+                          size: 32,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        t.deletePlant,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF1B5E20),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        t.confirmDeletePlant(
+                          pot.plant?.commonName ?? t.thisPlant,
+                        ),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF2E7D32),
+                          height: 1.35,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () =>
+                                  Navigator.of(dialogContext).pop(false),
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(
+                                  color: Color(0xFF4CAF50),
+                                ),
+                                foregroundColor: const Color(0xFF2E7D32),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              child: Text(
+                                t.commonCancel,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () =>
+                                  Navigator.of(dialogContext).pop(true),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFDC2626),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: Text(
+                                t.commonEliminar,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+
+          if (confirm != true) return;
+
+          try {
+            final missatge = await _gardenService.deletePlant(
+              username: widget.username,
+              gardenName: widget.gardenName,
+              potNumber: pot.potNumber,
+            );
+
+            if (!mounted) return;
+
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(missatge)));
+            _refreshGarden();
+          } catch (e) {
+            if (!mounted) return;
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(e.toString().replaceFirst('Exception: ', '')),
@@ -197,10 +350,12 @@ class _GardenPageState extends State<GardenPage> {
     } catch (e) {
       if (!mounted) return;
 
+      final t = AppLocalizations.of(context)!;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '${AppLocalizations.of(context)!.gardenLoadingSeedsError}: ${e.toString().replaceFirst('Exception: ', '')}',
+            '${t.gardenLoadingSeedsError}: ${e.toString().replaceFirst('Exception: ', '')}',
           ),
         ),
       );
@@ -331,10 +486,8 @@ class _GardenPageState extends State<GardenPage> {
         bottom: height * 0.005,
       ),
       child: Row(
-        // 1. CAMBIAR A STRETCH: Fuerza a la fila a tener un límite de altura exacto
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ESQUERRA: icones a dalt
           Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,18 +546,13 @@ class _GardenPageState extends State<GardenPage> {
               ),
             ],
           ),
-
-          const Spacer(), // Este Spacer horizontal está bien, separa izquierda de derecha.
-          // DRETA: monedes a dalt, botiga a baix
+          const Spacer(),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
-              // 2. AÑADIR SPACE BETWEEN: Empuja las monedas arriba y la tienda abajo automáticamente
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildCoinsChip(monedes, width, height),
-
-                // ¡BORRAMOS EL const Spacer() QUE HABÍA AQUÍ!
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
@@ -459,7 +607,7 @@ class _GardenPageState extends State<GardenPage> {
           return Center(
             child: Text(
               AppLocalizations.of(context)!.gardenNoPotsAvailable,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           );
         }

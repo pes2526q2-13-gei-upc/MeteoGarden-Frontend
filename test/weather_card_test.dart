@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:meteo_garden/widgets/weather_card.dart';
 
 void main() {
-  //test per comprovar que es mostra la informació correcte al widget
   testWidgets('WeatherCard mostra la informació correctament', (
     WidgetTester tester,
   ) async {
@@ -12,23 +11,24 @@ void main() {
         home: Scaffold(
           body: WeatherCard(
             nomEstacio: 'Lladurs',
-            title: '18.5 · 0',
+            title: 'Temperatura: 18.5 | Precipitació: 0',
             subtitle: 'Vent: 3 m/s',
             trailing: const Icon(Icons.refresh),
             onRefresh: () {},
+            precipitation: 0,
+            wind: 3,
           ),
         ),
       ),
     );
 
     expect(find.text('Lladurs'), findsOneWidget);
-    expect(find.text('18.5 · 0'), findsOneWidget);
+    expect(find.text('Temperatura: 18.5 | Precipitació: 0'), findsOneWidget);
     expect(find.text('Vent: 3 m/s'), findsOneWidget);
     expect(find.byIcon(Icons.refresh), findsOneWidget);
-    expect(find.byIcon(Icons.wb_sunny), findsOneWidget);
+    expect(find.byIcon(Icons.wb_sunny_rounded), findsOneWidget);
   });
 
-  //test per comprovar que es mostra la icona de pluja si  hi ha precipitació
   testWidgets('Mostra icona de pluja si hi ha precipitació', (
     WidgetTester tester,
   ) async {
@@ -37,58 +37,62 @@ void main() {
         home: Scaffold(
           body: WeatherCard(
             nomEstacio: 'Test',
-            title: '20 · 5',
+            title: 'Temperatura: 20 | Precipitació: 5',
             subtitle: 'Vent: 2 m/s',
             trailing: const Icon(Icons.refresh),
             onRefresh: () {},
+            precipitation: 5,
+            wind: 2,
           ),
         ),
       ),
     );
 
-    expect(find.byIcon(Icons.grain), findsOneWidget);
+    expect(find.byIcon(Icons.water_drop_rounded), findsOneWidget);
   });
 
-  //test per comprovar que es mostra la icona de vent si es registren valors de vent > 8
   testWidgets('Mostra icona de vent si vent >= 8', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           body: WeatherCard(
             nomEstacio: 'Test',
-            title: '20 · 0',
+            title: 'Temperatura: 20 | Precipitació: 0',
             subtitle: 'Vent: 10 m/s',
             trailing: const Icon(Icons.refresh),
             onRefresh: () {},
+            precipitation: 0,
+            wind: 10,
           ),
         ),
       ),
     );
 
-    expect(find.byIcon(Icons.air), findsOneWidget);
+    expect(find.byIcon(Icons.air_rounded), findsOneWidget);
   });
 
-  testWidgets(
-    'Mostra icona de sol si el format no es pot parsejar però no hi ha excepció',
-    (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: WeatherCard(
-              nomEstacio: 'Test',
-              title: 'format incorrecte',
-              subtitle: '???',
-              trailing: const Icon(Icons.refresh),
-              onRefresh: () {},
-            ),
+  testWidgets('Mostra icona de sol si no hi ha precipitació ni vent fort', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: WeatherCard(
+            nomEstacio: 'Test',
+            title: 'format incorrecte',
+            subtitle: '???',
+            trailing: const Icon(Icons.refresh),
+            onRefresh: () {},
+            precipitation: 0,
+            wind: 0,
           ),
         ),
-      );
+      ),
+    );
 
-      expect(find.byIcon(Icons.wb_sunny), findsOneWidget);
-    },
-  );
-  //test per comprovar que funciona el refresh del temps
+    expect(find.byIcon(Icons.wb_sunny_rounded), findsOneWidget);
+  });
+
   testWidgets('Crida onRefresh quan es fa tap', (WidgetTester tester) async {
     bool clicked = false;
 
@@ -97,12 +101,14 @@ void main() {
         home: Scaffold(
           body: WeatherCard(
             nomEstacio: 'Test',
-            title: '20 · 0',
+            title: 'Temperatura: 20 | Precipitació: 0',
             subtitle: 'Vent: 2 m/s',
             trailing: const Icon(Icons.refresh),
             onRefresh: () {
               clicked = true;
             },
+            precipitation: 0,
+            wind: 2,
           ),
         ),
       ),
