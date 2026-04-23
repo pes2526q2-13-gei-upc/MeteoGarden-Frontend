@@ -32,7 +32,6 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
   late Future<List<ProductItem>> _productsFuture;
 
   static const Color potionYellow = Color(0xFFFCD34D);
-  
 
   @override
   void initState() {

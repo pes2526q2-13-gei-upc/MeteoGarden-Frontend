@@ -195,7 +195,6 @@ class GardenService {
     }
   }
 
-
   Future<String> deletePlant({
     required String username,
     required String gardenName,
@@ -207,9 +206,7 @@ class GardenService {
 
     final response = await http.delete(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
     );
 
     final data = jsonDecode(response.body);
