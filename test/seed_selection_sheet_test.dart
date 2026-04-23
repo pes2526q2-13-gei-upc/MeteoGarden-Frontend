@@ -36,9 +36,7 @@ void main() {
       expect(find.text('Plantar'), findsNothing);
     });
 
-    testWidgets('mostra les llavors disponibles', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('mostra les llavors disponibles', (WidgetTester tester) async {
       final pot = _buildEmptyPot();
       final gardenService = TestGardenService();
       final seeds = [
@@ -68,7 +66,10 @@ void main() {
       );
 
       expect(find.text('Test Buit'), findsOneWidget);
-      expect(find.textContaining('Selecciona una llavor pel test'), findsOneWidget);
+      expect(
+        find.textContaining('Selecciona una llavor pel test'),
+        findsOneWidget,
+      );
       expect(find.text('Rosa canina'), findsOneWidget);
       expect(find.text('Mentha spicata'), findsOneWidget);
       expect(find.text('x3'), findsOneWidget);
@@ -174,9 +175,7 @@ void main() {
       expect(plantingSuccessCalled, true);
     });
 
-    testWidgets('mostra error si plantSeed falla', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('mostra error si plantSeed falla', (WidgetTester tester) async {
       final pot = _buildEmptyPot();
       final gardenService = TestGardenService()
         ..plantSeedException = Exception('No queden llavors');

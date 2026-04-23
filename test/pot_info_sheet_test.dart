@@ -19,9 +19,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        _wrapWithApp(
-          PotInfoSheet(pot: pot, onWater: () async {}),
-        ),
+        _wrapWithApp(PotInfoSheet(pot: pot, onWater: () async {})),
       );
 
       expect(find.text('Tomàquet'), findsOneWidget);
@@ -47,9 +45,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        _wrapWithApp(
-          PotInfoSheet(pot: pot, onWater: () async {}),
-        ),
+        _wrapWithApp(PotInfoSheet(pot: pot, onWater: () async {})),
       );
 
       expect(find.text('Alfàbrega'), findsOneWidget);
@@ -71,9 +67,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        _wrapWithApp(
-          PotInfoSheet(pot: pot, onWater: () async {}),
-        ),
+        _wrapWithApp(PotInfoSheet(pot: pot, onWater: () async {})),
       );
 
       expect(find.text('Planta'), findsOneWidget);
@@ -122,11 +116,7 @@ void main() {
 
         await tester.pumpWidget(
           _wrapWithApp(
-            PotInfoSheet(
-              pot: pot,
-              onWater: () async {},
-              onCollect: null,
-            ),
+            PotInfoSheet(pot: pot, onWater: () async {}, onCollect: null),
           ),
         );
 
@@ -147,9 +137,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        _wrapWithApp(
-          PotInfoSheet(pot: pot, onWater: () async {}),
-        ),
+        _wrapWithApp(PotInfoSheet(pot: pot, onWater: () async {})),
       );
 
       expect(find.text('Regar planta'), findsNothing);

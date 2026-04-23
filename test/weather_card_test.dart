@@ -71,28 +71,27 @@ void main() {
     expect(find.byIcon(Icons.air_rounded), findsOneWidget);
   });
 
-  testWidgets(
-    'Mostra icona de sol si no hi ha precipitació ni vent fort',
-    (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: WeatherCard(
-              nomEstacio: 'Test',
-              title: 'format incorrecte',
-              subtitle: '???',
-              trailing: const Icon(Icons.refresh),
-              onRefresh: () {},
-              precipitation: 0,
-              wind: 0,
-            ),
+  testWidgets('Mostra icona de sol si no hi ha precipitació ni vent fort', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: WeatherCard(
+            nomEstacio: 'Test',
+            title: 'format incorrecte',
+            subtitle: '???',
+            trailing: const Icon(Icons.refresh),
+            onRefresh: () {},
+            precipitation: 0,
+            wind: 0,
           ),
         ),
-      );
+      ),
+    );
 
-      expect(find.byIcon(Icons.wb_sunny_rounded), findsOneWidget);
-    },
-  );
+    expect(find.byIcon(Icons.wb_sunny_rounded), findsOneWidget);
+  });
 
   testWidgets('Crida onRefresh quan es fa tap', (WidgetTester tester) async {
     bool clicked = false;

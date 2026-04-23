@@ -21,10 +21,7 @@ void main() {
           SizedBox(
             width: 140,
             height: 140,
-            child: PotWidget(
-              pot: pot,
-              onTap: () {},
-            ),
+            child: PotWidget(pot: pot, onTap: () {}),
           ),
         ),
       );
@@ -53,10 +50,7 @@ void main() {
           SizedBox(
             width: 140,
             height: 140,
-            child: PotWidget(
-              pot: pot,
-              onTap: () {},
-            ),
+            child: PotWidget(pot: pot, onTap: () {}),
           ),
         ),
       );
@@ -82,10 +76,7 @@ void main() {
           SizedBox(
             width: 140,
             height: 140,
-            child: PotWidget(
-              pot: pot,
-              onTap: () {},
-            ),
+            child: PotWidget(pot: pot, onTap: () {}),
           ),
         ),
       );
@@ -113,10 +104,7 @@ void main() {
           SizedBox(
             width: 140,
             height: 140,
-            child: PotWidget(
-              pot: pot,
-              onTap: () {},
-            ),
+            child: PotWidget(pot: pot, onTap: () {}),
           ),
         ),
       );
@@ -174,10 +162,7 @@ void main() {
           SizedBox(
             width: 140,
             height: 140,
-            child: PotWidget(
-              pot: pot,
-              onTap: () {},
-            ),
+            child: PotWidget(pot: pot, onTap: () {}),
           ),
         ),
       );
@@ -202,10 +187,7 @@ void main() {
           SizedBox(
             width: 140,
             height: 140,
-            child: PotWidget(
-              pot: pot,
-              onTap: () {},
-            ),
+            child: PotWidget(pot: pot, onTap: () {}),
           ),
         ),
       );
@@ -218,9 +200,7 @@ void main() {
 
 Widget _wrapWithApp(Widget child) {
   return MaterialApp(
-    home: Scaffold(
-      body: Center(child: child),
-    ),
+    home: Scaffold(body: Center(child: child)),
   );
 }
 
