@@ -109,36 +109,36 @@ class GardenService {
     throw Exception('Error carregant pocions: ${response.statusCode}');
   }
 
-  Future<String> applyPotion({
+    Future<String> applyPotion({
     required String username,
     required String gardenName,
     required int potNumber,
     required String productName,
   }) async {
-    /*
-    final url = Uri.parse(
-      '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/potion/',
-    );
-
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/use_product/');
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'productName': productName}),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'pot_number': potNumber,
+        'product_name': productName,
+        'username': username,
+        'garden_name': gardenName,
+      }),
     );
-
-    print('STATUS: ${response.statusCode}');
-    print('BODY: ${response.body}');
-
     final data = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      return data['message'] ?? 'Poció aplicada correctament.';
+    if (response.statusCode != 200 || data['error'] != null) {
+      throw Exception(data['error'] ?? 'Error aplicant la poció');
+    }
+    final isInstant = data['isInstant'] == true;
+    final product = data['product'] ?? productName;
+    if (isInstant) {
+      return 'Poció $product aplicada correctament';
     } else {
-      throw Exception(
-        data['message'] ?? data['error'] ?? 'Error aplicant la poció.',
-      );
-    }*/
-    return 'Encara falta implementar aplicar poció.';
+      return 'Efecte $product activat';
+    }
   }
 
   Future<PlantingResult> plantSeed({

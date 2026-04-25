@@ -1322,6 +1322,12 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Eliminar planta'**
   String get deletePlant;
+
+  /// No description provided for @finalitza.
+  ///
+  /// In ca, this message translates to:
+  /// **'Finalitza el'**
+  String get finalitza;
 }
 
 class _AppLocalizationsDelegate

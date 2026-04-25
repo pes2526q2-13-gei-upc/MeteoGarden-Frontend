@@ -477,6 +477,8 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+     print("Product: ${product.productName} → URL: ${product.imageUrl}");
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -494,34 +496,32 @@ class _ProductCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              child: Image.asset(
-                'assets/images/products/${product.productName.toLowerCase().replaceAll(' ', '_')}.png',
-                fit: BoxFit.contain,
-                errorBuilder: (_, _, _) => const Icon(
-                  Icons.science,
-                  size: 40,
-                  color: Color(0xFF7E57C2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              product.productName,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF4527A0),
-              ),
-            ),
-            Text(
-              l10n.inventoryQuantity(product.amount),
-              style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
-            ),
-          ],
+          Expanded(
+            child: Image.network(
+                    product.imageUrl,
+                    fit: BoxFit.contain,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      );
+                    },
+                    errorBuilder: (_, _, _) => const Icon(
+                      Icons.science,
+                      size: 40,
+                      color: Color.fromARGB(255, 182, 194, 87),
+                    ),
+                  )
+          ),
+          const SizedBox(height: 6),
+          Text(
+            product.productName,
+          ),
+        ]
         ),
       ),
     );
