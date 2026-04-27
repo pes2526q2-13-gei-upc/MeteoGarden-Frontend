@@ -8,6 +8,15 @@ class GardenPot {
   final DateTime? plantedAt;
   final DateTime? lastWateredAt;
 
+  // Buff actiu (poció no instantània)
+  final String? activeBuffName;
+  final DateTime? buffExpiresAt;
+
+  bool get hasBuff =>
+      activeBuffName != null &&
+      buffExpiresAt != null &&
+      DateTime.now().isBefore(buffExpiresAt!);
+
   GardenPot({
     required this.potNumber,
     required this.occupied,
@@ -17,6 +26,8 @@ class GardenPot {
     required this.waterLevel,
     required this.plantedAt,
     required this.lastWateredAt,
+    this.activeBuffName,
+    this.buffExpiresAt,
   });
 
   factory GardenPot.fromJson(Map<String, dynamic> json) {
@@ -36,6 +47,10 @@ class GardenPot {
           : null,
       lastWateredAt: json['last_watered_at'] != null
           ? DateTime.parse(json['last_watered_at'])
+          : null,
+      activeBuffName: json['active_buff'] as String?,
+      buffExpiresAt: json['buff_expires_at'] != null
+          ? DateTime.parse(json['buff_expires_at'])
           : null,
     );
   }
@@ -57,7 +72,7 @@ class PlantData {
     required this.canFlower,
     required this.minTemperature,
     required this.maxTemperature,
-    this.imageUrl, //de moment ho posem opcional
+    this.imageUrl,
   });
 
   factory PlantData.fromJson(Map<String, dynamic> json) {
@@ -68,7 +83,7 @@ class PlantData {
       canFlower: json['can_flower'],
       minTemperature: (json['min_temperature'] as num).toDouble(),
       maxTemperature: (json['max_temperature'] as num).toDouble(),
-      imageUrl: json['image_url'] as String?, //llegeix del json
+      imageUrl: json['image_url'] as String?,
     );
   }
 }

@@ -16,6 +16,7 @@ import '../models/dades_usr.dart';
 import '../screens/botiga_page.dart';
 import 'calendar_page.dart';
 import 'inventory_page.dart';
+import '../../widgets/centered_message.dart';
 
 class GardenPage extends StatefulWidget {
   final String username;
@@ -106,9 +107,7 @@ class _GardenPageState extends State<GardenPage> {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(missatge)));
+            CenteredMessage.show(context, missatge);
             _refreshGarden();
           } catch (e) {
             if (!mounted) return;
