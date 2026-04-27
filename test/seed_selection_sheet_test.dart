@@ -333,4 +333,20 @@ class TestGardenService implements GardenService {
   }) async {
     throw UnimplementedError();
   }
+
+  @override
+Future<Map<String, dynamic>> fetchPlantDetails(
+  String scientificName,
+  String lang,
+) async {
+  return {
+    "scientificName": scientificName,
+    "commonName": "Roser silvestre",
+    "family": "Rosaceae",
+    "canFlower": true,
+    "minTemperature": 5,
+    "maxTemperature": 30,
+    "description": "Descripció de prova",
+  };
+}
 }

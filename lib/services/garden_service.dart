@@ -217,4 +217,30 @@ Future<List<ProductItem>> fetchProducts(String username) async {
       throw Exception(data['error'] ?? 'Error deleting plant.');
     }
   }
+
+  Future<Map<String, dynamic>> fetchPlantDetails(
+    String scientificName,
+    String lang,
+  ) async {
+    final response = await http.get(
+      Uri.parse(
+        '${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName&lang=$lang',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return {
+        "scientificName": data['scientificName'],
+        "commonName": data['commonName'],
+        "family": data['family'],
+        "canFlower": data['canFlower'],
+        "minTemperature": data['minTemperature'],
+        "maxTemperature": data['maxTemperature'],
+        "description": data['description'],
+      };
+    } else {
+      throw Exception('plant_info_load_error');
+    }
+  }
 }

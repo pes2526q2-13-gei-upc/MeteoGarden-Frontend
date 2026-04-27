@@ -124,7 +124,7 @@ class PotInfoSheet extends StatelessWidget {
                     ],
 
                     const SizedBox(height: 22),
-                    if ((pot.waterLevel ?? 0) < 100) ...[
+                    if ((pot.waterLevel ?? 0) < 100 && pot.growthPhase != 'dead') ...[
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
