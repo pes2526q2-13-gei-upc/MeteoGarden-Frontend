@@ -84,30 +84,30 @@ class GardenService {
   }
 
   Future<List<SeedOption>> fetchSeeds(String username) async {
-    final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/seeds/'),
-    );
+  final response = await http.get(
+    Uri.parse('${ApiConfig.baseUrl}/api/users/$username/seeds/'),
+  );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.map((e) => SeedOption.fromJson(e)).toList();
-    }
-
-    throw Exception('Error carregant llavors: ${response.statusCode}');
+  if (response.statusCode == 200) {
+    final List<dynamic> data = jsonDecode(response.body);
+    return data.map((e) => SeedOption.fromJson(e)).toList();
   }
 
-  Future<List<ProductItem>> fetchProducts(String username) async {
-    final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/products/'),
-    );
+  throw Exception('Error carregant llavors: ${response.statusCode}');
+}
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.map((e) => ProductItem.fromJson(e)).toList();
-    }
+Future<List<ProductItem>> fetchProducts(String username) async {
+  final response = await http.get(
+    Uri.parse('${ApiConfig.baseUrl}/api/users/$username/products/'),
+  );
 
-    throw Exception('Error carregant pocions: ${response.statusCode}');
+  if (response.statusCode == 200) {
+    final List<dynamic> data = jsonDecode(response.body);
+    return data.map((e) => ProductItem.fromJson(e)).toList();
   }
+
+  throw Exception('Error carregant pocions: ${response.statusCode}');
+}
 
     Future<String> applyPotion({
     required String username,
