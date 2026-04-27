@@ -103,7 +103,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get albumTitle => 'My plant album';
 
   @override
-  String get albumDiscoveredPlants => 'Plantes descobertes';
+  String get albumDiscoveredPlants => 'Discovered plants';
 
   @override
   String get albumLoadingEncyclopedia => 'Consulting encyclopedia...';

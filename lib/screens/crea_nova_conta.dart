@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 
 class CreaNovaConta extends StatefulWidget {
   const CreaNovaConta({super.key});
@@ -39,6 +41,8 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nomjardiController = TextEditingController();
   final TextEditingController ciutatSearchController = TextEditingController();
+  final storage = const FlutterSecureStorage();
+
 
   Locale _pageLocale = const Locale('ca');
   AppLocalizations get _t => lookupAppLocalizations(_pageLocale);
@@ -164,6 +168,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
       Provider.of<UserModel>(context, listen: false).setToken(token);
 
+      await storage.write(key: 'auth_token', value: data['token']);
       await _fetchAndSaveProfile(token);
 
       if (!mounted) return;
