@@ -8,7 +8,6 @@ import '../models/url.dart';
 import 'home_shell.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-
 class City {
   final String code;
   final String name;
@@ -49,7 +48,6 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
   final TextEditingController gardenController = TextEditingController();
   final TextEditingController citySearchController = TextEditingController();
   final storage = const FlutterSecureStorage();
-
 
   List<City> cities = [];
   City? selectedCity;
