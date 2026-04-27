@@ -124,7 +124,8 @@ class PotInfoSheet extends StatelessWidget {
                     ],
 
                     const SizedBox(height: 22),
-                    if ((pot.waterLevel ?? 0) < 100 && pot.growthPhase != 'dead') ...[
+                    if ((pot.waterLevel ?? 0) < 100 &&
+                        pot.growthPhase != 'dead') ...[
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
@@ -232,10 +233,7 @@ class _ActiveBuffBadge extends StatelessWidget {
   final String buffName;
   final DateTime expiresAt;
 
-  const _ActiveBuffBadge({
-    required this.buffName,
-    required this.expiresAt,
-  });
+  const _ActiveBuffBadge({required this.buffName, required this.expiresAt});
 
   String _formatExpiry() {
     final d = expiresAt;
@@ -243,12 +241,12 @@ class _ActiveBuffBadge extends StatelessWidget {
     final month = d.month.toString().padLeft(2, '0');
     final hour = d.hour.toString().padLeft(2, '0');
     final min = d.minute.toString().padLeft(2, '0');
-    return '$day/$month ${hour}:${min}h';
+    return '$day/$month $hour:${min}h';
   }
 
   @override
   Widget build(BuildContext context) {
-     final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     const buffPurple = Color(0xFFA78BFA);
 
     return Container(
@@ -278,10 +276,7 @@ class _ActiveBuffBadge extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   '${l10n.finalitza} ${_formatExpiry()}',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.white60,
-                  ),
+                  style: const TextStyle(fontSize: 12, color: Colors.white60),
                 ),
               ],
             ),

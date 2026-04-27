@@ -68,16 +68,16 @@ class _InventoryPageState extends State<InventoryPage>
   List<SeedOption> get _filteredSeeds {
     final list = _seeds
         .where(
-          (s) => s.scientificName
-              .toLowerCase()
-              .contains(_searchQuery.toLowerCase()),
+          (s) => s.scientificName.toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          ),
         )
         .toList();
 
     list.sort(
-      (a, b) => a.scientificName
-          .toLowerCase()
-          .compareTo(b.scientificName.toLowerCase()),
+      (a, b) => a.scientificName.toLowerCase().compareTo(
+        b.scientificName.toLowerCase(),
+      ),
     );
 
     return list;
@@ -100,167 +100,166 @@ class _InventoryPageState extends State<InventoryPage>
   }
 
   void _showSeedInfo(SeedOption seed) {
-  final lang = Localizations.localeOf(context).languageCode;
+    final lang = Localizations.localeOf(context).languageCode;
     final t = AppLocalizations.of(context)!;
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return FutureBuilder<Map<String, dynamic>>(
-        future: _api.fetchPlantDetails(seed.scientificName, lang),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Dialog(
-              child: Padding(
-                padding: EdgeInsets.all(30),
-                child: Center(child: CircularProgressIndicator()),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return FutureBuilder<Map<String, dynamic>>(
+          future: _api.fetchPlantDetails(seed.scientificName, lang),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Dialog(
+                child: Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              );
+            }
+
+            final data = snapshot.data!;
+
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-            );
-          }
-
-          final data = snapshot.data!;
-
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.network(
-                      seed.imageUrl,
-                      height: 120,
-                      fit: BoxFit.contain,
-                    ),
-                    const SizedBox(height: 16),
-
-                    Text(
-                      data["commonName"] ?? seed.scientificName,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.network(
+                        seed.imageUrl,
+                        height: 120,
+                        fit: BoxFit.contain,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
+                      const SizedBox(height: 16),
 
-                    const SizedBox(height: 6),
-
-                    Text(
-                      data["scientificName"],
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.grey,
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    if (data["family"] != null)
-                      Text("${t.albumFamilyLabel}: ${data["family"]}"),
-
-                    if (data["canFlower"] != null)
                       Text(
-                        data["canFlower"] ? t.albumBlooms : t.albumDoesNotBloom,
+                        data["commonName"] ?? seed.scientificName,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
 
-                    if (data["minTemperature"] != null &&
-                        data["maxTemperature"] != null)
+                      const SizedBox(height: 6),
+
                       Text(
-                        "Temp: ${data["minTemperature"]}° - ${data["maxTemperature"]}°",
-                      ),
-
-                    const SizedBox(height: 12),
-
-                    if (data["description"] != null)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Text(
-                          data["description"],
-                          textAlign: TextAlign.justify,
-                          style: TextStyle(
-                            fontSize: 14,
-                            height: 1.5, // interlineat
-                            color: Colors.grey.shade800,
-                          ),
+                        data["scientificName"],
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey,
                         ),
                       ),
 
-                    const SizedBox(height: 16),
+                      const SizedBox(height: 12),
 
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(t.commonClose),
-                    ),
-                  ],
+                      if (data["family"] != null)
+                        Text("${t.albumFamilyLabel}: ${data["family"]}"),
+
+                      if (data["canFlower"] != null)
+                        Text(
+                          data["canFlower"]
+                              ? t.albumBlooms
+                              : t.albumDoesNotBloom,
+                        ),
+
+                      if (data["minTemperature"] != null &&
+                          data["maxTemperature"] != null)
+                        Text(
+                          "Temp: ${data["minTemperature"]}° - ${data["maxTemperature"]}°",
+                        ),
+
+                      const SizedBox(height: 12),
+
+                      if (data["description"] != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            data["description"],
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              fontSize: 14,
+                              height: 1.5, // interlineat
+                              color: Colors.grey.shade800,
+                            ),
+                          ),
+                        ),
+
+                      const SizedBox(height: 16),
+
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(t.commonClose),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
-      );
-    },
-  );
-}
+            );
+          },
+        );
+      },
+    );
+  }
 
   void _showProductInfo(ProductItem product) {
-  final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.network(
-                product.imageUrl,
-                height: 120,
-                fit: BoxFit.contain,
-                errorBuilder: (_, _, _) => const Icon(
-                  Icons.science,
-                  size: 80,
-                  color: Color.fromARGB(255, 182, 194, 87),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                product.productName,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2E7D32),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.inventoryQuantity(product.amount),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("Tancar"),
-              ),
-            ],
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
-        ),
-      );
-    },
-  );
-}
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.network(
+                  product.imageUrl,
+                  height: 120,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, _, _) => const Icon(
+                    Icons.science,
+                    size: 80,
+                    color: Color.fromARGB(255, 182, 194, 87),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  product.productName,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2E7D32),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.inventoryQuantity(product.amount),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Tancar"),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -563,10 +562,7 @@ class _SeedCard extends StatelessWidget {
   final SeedOption seed;
   final VoidCallback onTap;
 
-  const _SeedCard({
-    required this.seed,
-    required this.onTap,
-  });
+  const _SeedCard({required this.seed, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -641,10 +637,7 @@ class _ProductCard extends StatelessWidget {
   final ProductItem product;
   final VoidCallback onTap;
 
-  const _ProductCard({
-    required this.product,
-    required this.onTap,
-  });
+  const _ProductCard({required this.product, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -705,10 +698,7 @@ class _ProductCard extends StatelessWidget {
               ),
               Text(
                 l10n.inventoryQuantity(product.amount),
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.grey.shade500,
-                ),
+                style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
               ),
             ],
           ),

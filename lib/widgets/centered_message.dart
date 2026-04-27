@@ -13,9 +13,7 @@ class CenteredMessage {
       builder: (context) => Stack(
         children: [
           Positioned.fill(
-            child: Container(
-              color: Colors.black.withValues(alpha: 0.25),
-            ),
+            child: Container(color: Colors.black.withValues(alpha: 0.25)),
           ),
 
           Positioned(
@@ -30,30 +28,23 @@ class CenteredMessage {
                   vertical: 14,
                 ),
                 decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF388E3C),
-                     Color(0xFF1B5E20),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 14,
-                    offset: const Offset(0, 6),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF388E3C), Color(0xFF1B5E20)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ],
-              ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.15),
+                      blurRadius: 14,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
                 child: Row(
                   children: [
-                    Icon(
-                      icon,
-                      color: Colors.white,
-                      size: 22,
-                    ),
+                    Icon(icon, color: Colors.white, size: 22),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(

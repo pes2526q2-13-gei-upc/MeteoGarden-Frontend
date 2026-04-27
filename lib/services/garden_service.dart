@@ -84,32 +84,32 @@ class GardenService {
   }
 
   Future<List<SeedOption>> fetchSeeds(String username) async {
-  final response = await http.get(
-    Uri.parse('${ApiConfig.baseUrl}/api/users/$username/seeds/'),
-  );
+    final response = await http.get(
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/seeds/'),
+    );
 
-  if (response.statusCode == 200) {
-    final List<dynamic> data = jsonDecode(response.body);
-    return data.map((e) => SeedOption.fromJson(e)).toList();
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => SeedOption.fromJson(e)).toList();
+    }
+
+    throw Exception('Error carregant llavors: ${response.statusCode}');
   }
 
-  throw Exception('Error carregant llavors: ${response.statusCode}');
-}
+  Future<List<ProductItem>> fetchProducts(String username) async {
+    final response = await http.get(
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/products/'),
+    );
 
-Future<List<ProductItem>> fetchProducts(String username) async {
-  final response = await http.get(
-    Uri.parse('${ApiConfig.baseUrl}/api/users/$username/products/'),
-  );
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => ProductItem.fromJson(e)).toList();
+    }
 
-  if (response.statusCode == 200) {
-    final List<dynamic> data = jsonDecode(response.body);
-    return data.map((e) => ProductItem.fromJson(e)).toList();
+    throw Exception('Error carregant pocions: ${response.statusCode}');
   }
 
-  throw Exception('Error carregant pocions: ${response.statusCode}');
-}
-
-    Future<String> applyPotion({
+  Future<String> applyPotion({
     required String username,
     required String gardenName,
     required int potNumber,
@@ -118,9 +118,7 @@ Future<List<ProductItem>> fetchProducts(String username) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/api/use_product/');
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'pot_number': potNumber,
         'product_name': productName,

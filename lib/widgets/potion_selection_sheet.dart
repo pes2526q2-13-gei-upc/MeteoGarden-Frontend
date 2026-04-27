@@ -221,7 +221,7 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: potions.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (context, index) =>
                     _buildPotionTile(potions[index], t),
               ),
@@ -236,8 +236,9 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
-            onPressed:
-                (_selectedPotion == null || _isApplying) ? null : _applyPotion,
+            onPressed: (_selectedPotion == null || _isApplying)
+                ? null
+                : _applyPotion,
             icon: _isApplying
                 ? const SizedBox(
                     width: 18,
@@ -303,9 +304,9 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(6),
-                  child: potion.imageUrl != null && potion.imageUrl!.isNotEmpty
+                  child: potion.imageUrl.isNotEmpty
                       ? Image.network(
-                          potion.imageUrl!,
+                          potion.imageUrl,
                           fit: BoxFit.contain,
                           errorBuilder: (_, _, _) => const Icon(
                             Icons.local_drink,
