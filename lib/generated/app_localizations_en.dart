@@ -656,4 +656,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deletePlant => 'Delete plant';
+
+  @override
+  String get finalitza => 'Ends on';
 }

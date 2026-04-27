@@ -303,6 +303,7 @@
 "extraLlavor": "When you get some, you will be able to plant them here.",
 "confirmDeletePlant": "Are you sure you want to delete {plantName}?\nThis action cannot be undone.",
 "thisPlant": "this plant",
-"deletePlant": "Delete plant"
+"deletePlant": "Delete plant",
+"finalitza": "Ends on"
 }
 

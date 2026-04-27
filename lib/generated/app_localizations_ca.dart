@@ -655,4 +655,7 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get deletePlant => 'Eliminar planta';
+
+  @override
+  String get finalitza => 'Finalitza el';
 }

@@ -113,8 +113,19 @@ class PotInfoSheet extends StatelessWidget {
                         ),
                       ],
                     ),
+
+                    // Buff actiu
+                    if (pot.hasBuff) ...[
+                      const SizedBox(height: 14),
+                      _ActiveBuffBadge(
+                        buffName: pot.activeBuffName!,
+                        expiresAt: pot.buffExpiresAt!,
+                      ),
+                    ],
+
                     const SizedBox(height: 22),
-                    if ((pot.waterLevel ?? 0) < 100) ...[
+                    if ((pot.waterLevel ?? 0) < 100 &&
+                        pot.growthPhase != 'dead') ...[
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
@@ -215,6 +226,68 @@ class PotInfoSheet extends StatelessWidget {
     );
   }
 }
+
+// ─── Buff actiu ───────────────────────────────────────────────────────────────
+
+class _ActiveBuffBadge extends StatelessWidget {
+  final String buffName;
+  final DateTime expiresAt;
+
+  const _ActiveBuffBadge({required this.buffName, required this.expiresAt});
+
+  String _formatExpiry() {
+    final d = expiresAt;
+    final day = d.day.toString().padLeft(2, '0');
+    final month = d.month.toString().padLeft(2, '0');
+    final hour = d.hour.toString().padLeft(2, '0');
+    final min = d.minute.toString().padLeft(2, '0');
+    return '$day/$month $hour:${min}h';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    const buffPurple = Color(0xFFA78BFA);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: buffPurple.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: buffPurple.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.shield_rounded, color: buffPurple, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  buffName,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: buffPurple,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${l10n.finalitza} ${_formatExpiry()}',
+                  style: const TextStyle(fontSize: 12, color: Colors.white60),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Widgets auxiliars ────────────────────────────────────────────────────────
 
 class _StatBar extends StatelessWidget {
   final String label;

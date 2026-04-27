@@ -6,6 +6,7 @@ import '../../models/perfil_info.dart';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
+import '../../widgets/centered_message.dart';
 
 class City {
   final String code;
@@ -120,9 +121,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     if (response.statusCode == 200) {
       debugPrint("perfil actualitzat");
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.profileEditUpdated)));
+      CenteredMessage.show(context, l10n.profileEditUpdated);
 
       Provider.of<UserModel>(context, listen: false).updateProfile(
         newUsername: usernameController.text,
