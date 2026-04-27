@@ -7,6 +7,10 @@ import 'perfil_edit_page.dart';
 import 'login_page.dart';
 import 'package:http/http.dart' as http;
 import '../models/url.dart';
+import '../../models/avatar_stack.dart'; 
+import 'avatar_editor_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../models/avatar_user.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
@@ -124,6 +128,8 @@ class _GameHeader extends StatelessWidget {
     final displayCity = city.isEmpty ? l10n.profileCityNotDefined : city;
     final displayEmail = email.isEmpty ? '—' : email;
     final displayLanguage = language.isEmpty ? '—' : language;
+    final avatar = Provider.of<AvatarUser>(context);
+
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
@@ -155,21 +161,37 @@ class _GameHeader extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        height: 74,
-                        width: 74,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withValues(alpha: 0.12),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.28),
-                            width: 2,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AvatarEditorPage(isNewUser: false),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 74,
+                          width: 74,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withValues(alpha: 0.12),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.28),
+                              width: 2,
+                            ),
                           ),
-                        ),
-                        child: const Icon(
-                          Icons.person_rounded,
-                          size: 40,
-                          color: Colors.white,
+                          child: ClipOval(
+                            child: AvatarStack(
+                              body: avatar.body,
+                              eye: avatar.eye,
+                              expression: avatar.expression,
+                              hair: avatar.hair,
+                              facialHair: avatar.facialHair,
+                              clothing: avatar.clothing,
+                              accessories: avatar.accessories,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -519,9 +541,13 @@ class _GameStatCard extends StatelessWidget {
 
 class _ActionButtons extends StatelessWidget {
   const _ActionButtons();
+  final storage = const FlutterSecureStorage();
 
-  void _logout(BuildContext context) {
+  Future<void> _logout(BuildContext context) async {
     Provider.of<UserModel>(context, listen: false).logout();
+    await storage.delete(key: 'auth_token');
+
+    if (!context.mounted) return;
 
     Navigator.pushReplacement(
       context,
@@ -567,6 +593,10 @@ class _ActionButtons extends StatelessWidget {
 
               if (response.statusCode == 200) {
                 Provider.of<UserModel>(context, listen: false).logout();
+
+                await storage.delete(key: 'auth_token');
+
+                if (!context.mounted) return;
 
                 Navigator.pushReplacement(
                   context,

@@ -659,4 +659,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get finalitza => 'Finaliza el';
+
+  @override
+  String get avatarLoadError => 'Error cargando el avatar';
 }

@@ -658,4 +658,7 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get finalitza => 'Finalitza el';
+
+  @override
+  String get avatarLoadError => 'Error carregant l\'avatar';
 }

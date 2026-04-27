@@ -5,8 +5,7 @@ import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
-import 'home_shell.dart';
-
+import 'avatar_editor_page.dart';
 class City {
   final String code;
   final String name;
@@ -117,7 +116,9 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomeShell()),
+        MaterialPageRoute(
+          builder: (context) => const AvatarEditorPage(isNewUser: true),
+        ),
       );
     } else {
       ScaffoldMessenger.of(

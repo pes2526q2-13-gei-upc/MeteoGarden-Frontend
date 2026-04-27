@@ -304,6 +304,8 @@
 "confirmDeletePlant": "Segur que vols eliminar {plantName}?\nAquesta acció no es pot desfer.",
 "thisPlant": "aquesta planta",
 "deletePlant": "Eliminar planta",
-"finalitza": "Finalitza el"
+"finalitza": "Finalitza el",
+
+"avatarLoadError": "Error carregant l'avatar"
 }
 

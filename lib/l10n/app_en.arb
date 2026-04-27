@@ -303,6 +303,8 @@
 "confirmDeletePlant": "Are you sure you want to delete {plantName}?\nThis action cannot be undone.",
 "thisPlant": "this plant",
 "deletePlant": "Delete plant",
-"finalitza": "Ends on"
+"finalitza": "Ends on",
+
+"avatarLoadError": "Error loading the avatar"
 }
 

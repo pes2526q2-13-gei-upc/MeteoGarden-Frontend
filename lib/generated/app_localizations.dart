@@ -1328,6 +1328,12 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Finalitza el'**
   String get finalitza;
+
+  /// No description provided for @avatarLoadError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant l\'avatar'**
+  String get avatarLoadError;
 }
 
 class _AppLocalizationsDelegate
