@@ -97,18 +97,35 @@ class _InventoryPageState extends State<InventoryPage>
 
   int get _totalItems => _seeds.length + _products.length;
 
-  List<SeedOption> get _filteredSeeds => _seeds
-      .where(
-        (s) =>
-            s.scientificName.toLowerCase().contains(_searchQuery.toLowerCase()),
-      )
-      .toList();
+  List<SeedOption> get _filteredSeeds {
+    final list = _seeds
+        .where(
+          (s) => s.scientificName
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase()),
+        )
+        .toList();
+    list.sort(
+      (a, b) => a.scientificName
+          .toLowerCase()
+          .compareTo(b.scientificName.toLowerCase()),
+    );
+    return list;
+  }
 
-  List<ProductItem> get _filteredProducts => _products
-      .where(
-        (p) => p.productName.toLowerCase().contains(_searchQuery.toLowerCase()),
-      )
-      .toList();
+  List<ProductItem> get _filteredProducts {
+    final list = _products
+        .where(
+          (p) =>
+              p.productName.toLowerCase().contains(_searchQuery.toLowerCase()),
+        )
+        .toList();
+    list.sort(
+      (a, b) =>
+          a.productName.toLowerCase().compareTo(b.productName.toLowerCase()),
+    );
+    return list;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -477,8 +494,6 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-     print("Product: ${product.productName} → URL: ${product.imageUrl}");
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -496,32 +511,51 @@ class _ProductCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-          Expanded(
-            child: Image.network(
-                    product.imageUrl,
-                    fit: BoxFit.contain,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return const Center(
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      );
-                    },
-                    errorBuilder: (_, _, _) => const Icon(
-                      Icons.science,
-                      size: 40,
-                      color: Color.fromARGB(255, 182, 194, 87),
+            Expanded(
+              child: Image.network(
+                product.imageUrl,
+                fit: BoxFit.contain,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
                     ),
-                  )
-          ),
-          const SizedBox(height: 6),
-          Text(
-            product.productName,
-          ),
-        ]
+                  );
+                },
+                errorBuilder: (_, _, _) => const Icon(
+                  Icons.science,
+                  size: 40,
+                  color: Color.fromARGB(255, 182, 194, 87),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+
+            // NOM DEL PRODUCTE
+            Text(
+              product.productName,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF2E7D32),
+              ),
+            ),
+
+            // 👇 QUANTITAT AFEGIDA
+            Text(
+              l10n.inventoryQuantity(product.amount),
+              style: TextStyle(
+                fontSize: 10,
+                color: Colors.grey.shade500,
+              ),
+            ),
+          ],
         ),
       ),
     );
