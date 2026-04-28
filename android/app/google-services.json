@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:504020085047:android:358176e91256b6a81e92b2",
+        "mobilesdk_app_id": "1:504020085047:android:158e46eb78b378c21e92b2",
         "android_client_info": {
-          "package_name": "com.example.flutter_application_1"
+          "package_name": "com.meteogarden.app"
         }
       },
       "oauth_client": [],
