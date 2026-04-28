@@ -34,12 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Provider.of<UserModel>(context, listen: false).setToken(token);
 
         await _fetchAndSaveProfile(token);
-        if (!mounted) return;
-        // Vamos a la Home y borramos la Splash del historial
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeShell()),
-        );
+        // await and save profile el encarregat de la navegació
       }
     } else {
       // No hay token, vamos al Login
@@ -83,9 +78,18 @@ class _SplashScreenState extends State<SplashScreen> {
         newMonedes: data['numCoins'] ?? 0,
         newGardens: gardenNames,
       );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeShell()),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.profileLoadError)),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginPage()),
       );
     }
   }
