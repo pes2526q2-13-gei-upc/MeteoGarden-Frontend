@@ -5,18 +5,6 @@ import '../models/garden.dart';
 import '../models/seed_option.dart';
 import '../models/url.dart';
 
-class ProductItem {
-  final String productName;
-  final int amount;
-
-  ProductItem({required this.productName, required this.amount});
-
-  factory ProductItem.fromJson(Map<String, dynamic> json) => ProductItem(
-    productName: json['productName'] as String,
-    amount: json['amount'] as int,
-  );
-}
-
 class PlantingResult {
   final String message;
   final int potNumber;
@@ -68,6 +56,7 @@ class GardenService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
+
       return data.map((e) => GardenPot.fromJson(e)).toList();
     }
     throw Exception('Error carregant els tests: ${response.statusCode}');
@@ -118,6 +107,36 @@ class GardenService {
     }
 
     throw Exception('Error carregant pocions: ${response.statusCode}');
+  }
+
+  Future<String> applyPotion({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+    required String productName,
+  }) async {
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/use_product/');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'pot_number': potNumber,
+        'product_name': productName,
+        'username': username,
+        'garden_name': gardenName,
+      }),
+    );
+    final data = jsonDecode(response.body);
+    if (response.statusCode != 200 || data['error'] != null) {
+      throw Exception(data['error'] ?? 'Error aplicant la poció');
+    }
+    final isInstant = data['isInstant'] == true;
+    final product = data['product'] ?? productName;
+    if (isInstant) {
+      return 'Poció $product aplicada correctament';
+    } else {
+      return 'Efecte $product activat';
+    }
   }
 
   Future<PlantingResult> plantSeed({
@@ -171,6 +190,55 @@ class GardenService {
       throw Exception(
         data['message'] ?? data['error'] ?? 'Error recollint la planta.',
       );
+    }
+  }
+
+  Future<String> deletePlant({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+  }) async {
+    final url = Uri.parse(
+      '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/delete/',
+    );
+
+    final response = await http.delete(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return data['message'] ?? 'Plant deleted successfully.';
+    } else {
+      throw Exception(data['error'] ?? 'Error deleting plant.');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchPlantDetails(
+    String scientificName,
+    String lang,
+  ) async {
+    final response = await http.get(
+      Uri.parse(
+        '${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName&lang=$lang',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return {
+        "scientificName": data['scientificName'],
+        "commonName": data['commonName'],
+        "family": data['family'],
+        "canFlower": data['canFlower'],
+        "minTemperature": data['minTemperature'],
+        "maxTemperature": data['maxTemperature'],
+        "description": data['description'],
+      };
+    } else {
+      throw Exception('plant_info_load_error');
     }
   }
 }

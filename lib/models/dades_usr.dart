@@ -7,7 +7,7 @@ Text('Benvingut, ${user.username}');
 i afegir aquests 2 imports:
 
 import 'package:provider/provider.dart';
-import 'package:meteo_gareden/services/dades_usr.dart';
+import 'package:meteo_garden/models/dades_usr.dart';
 
 Per guardar qualsevol dada nova, s'ha de fer (també son necessaris els imports):
 
@@ -30,8 +30,32 @@ class UserModel with ChangeNotifier {
   int monedes = 0;
   String token = '';
   List<String> gardens = [];
+
   void setToken(String newToken) {
     token = newToken;
+    notifyListeners();
+  }
+
+  void setEmail(String newEmail) {
+    email = newEmail;
+    notifyListeners();
+  }
+
+  void logout() {
+    token = '';
+    username = '';
+    email = '';
+    city = '';
+    language = '';
+    lastEntry = '';
+    numPlantsCollected = 0;
+    monedes = 0;
+    gardens = [];
+    notifyListeners();
+  }
+
+  void setCoins(int newCoins) {
+    monedes = newCoins;
     notifyListeners();
   }
 
@@ -69,6 +93,17 @@ class UserModel with ChangeNotifier {
     monedes = 0;
     token = '';
     gardens = [];
+    notifyListeners();
+  }
+
+  void updateProfile({
+    String? newUsername,
+    String? newCity,
+    String? newLanguage,
+  }) {
+    if (newUsername != null) username = newUsername;
+    if (newCity != null) city = newCity;
+    if (newLanguage != null) language = newLanguage;
     notifyListeners();
   }
 }

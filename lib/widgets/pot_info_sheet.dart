@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import '../models/garden.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 
 class PotInfoSheet extends StatelessWidget {
   final GardenPot pot;
   final Future<void> Function() onWater;
   final Future<void> Function()? onCollect;
+  final Function()? onPotion;
+  final Future<void> Function()? onDeletePlant;
 
   const PotInfoSheet({
     super.key,
     required this.pot,
     required this.onWater,
     this.onCollect,
+    this.onPotion,
+    this.onDeletePlant,
   });
 
   @override
@@ -19,154 +24,270 @@ class PotInfoSheet extends StatelessWidget {
     final isMature = pot.growthPhase == 'mature';
     final waterValue = (pot.waterLevel ?? 0) / 100;
     final healthValue = (pot.healthLevel ?? 0) / 100;
+    final t = AppLocalizations.of(context)!;
 
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            child: Image.asset(
-              'assets/images/foto_terra2.png',
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        // Overlay fosc per llegibilitat
-        Positioned.fill(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            child: Container(color: Colors.black.withValues(alpha: 0.65)),
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-            color: Colors.transparent,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      child: Material(
+        color: const Color(0xFF1F2937),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 320),
+          child: Stack(
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/foto_terra2.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned.fill(
+                child: Container(color: Colors.black.withValues(alpha: 0.65)),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Text(
-                          plant?.commonName ??
-                              plant?.scientificName ??
-                              "Planta",
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(blurRadius: 6, color: Colors.black54),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                plant?.commonName ??
+                                    plant?.scientificName ??
+                                    "Planta",
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                      blurRadius: 6,
+                                      color: Colors.black54,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              _PhaseBadge(phase: pot.growthPhase ?? '-'),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        _PhaseBadge(phase: pot.growthPhase ?? '-'),
                       ],
                     ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 22),
-
-              _StatBar(
-                label: "Nivell d'Aigua",
-                value: waterValue,
-                percent: pot.waterLevel?.toStringAsFixed(0) ?? '0',
-                color: const Color(0xFF38bdf8),
-                backgroundColor: Colors.white.withValues(alpha: 0.2),
-              ),
-
-              const SizedBox(height: 14),
-
-              _StatBar(
-                label: "Salut",
-                value: healthValue,
-                percent: pot.healthLevel?.toStringAsFixed(0) ?? '0',
-                color: const Color(0xFF4ade80),
-                backgroundColor: Colors.white.withValues(alpha: 0.2),
-              ),
-
-              const SizedBox(height: 10),
-
-              Row(
-                children: [
-                  const Icon(
-                    Icons.access_time,
-                    size: 14,
-                    color: Colors.white70,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    "Últim reg: ${pot.lastWateredAt ?? '-'}",
-                    style: const TextStyle(color: Colors.white70, fontSize: 12),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 22),
-
-              if ((pot.waterLevel ?? 0) < 100) ...[
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: onWater,
-                    icon: const Icon(Icons.water_drop),
-                    label: const Text("Regar planta"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0ea5e9),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    const SizedBox(height: 22),
+                    _StatBar(
+                      label: t.waterlabel,
+                      value: waterValue,
+                      percent: pot.waterLevel?.toStringAsFixed(0) ?? '0',
+                      color: const Color(0xFF38bdf8),
+                      backgroundColor: Colors.white.withValues(alpha: 0.2),
                     ),
-                  ),
-                ),
-              ],
-
-              if (isMature && onCollect != null) ...[
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: onCollect,
-                    icon: const Icon(Icons.agriculture),
-                    label: const Text("Recollir planta"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF16a34a),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    const SizedBox(height: 14),
+                    _StatBar(
+                      label: t.salut,
+                      value: healthValue,
+                      percent: pot.healthLevel?.toStringAsFixed(0) ?? '0',
+                      color: const Color(0xFF4ade80),
+                      backgroundColor: Colors.white.withValues(alpha: 0.2),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: Colors.white70,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "${t.lastReg} ${pot.lastWateredAt ?? '-'}",
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // Buff actiu
+                    if (pot.hasBuff) ...[
+                      const SizedBox(height: 14),
+                      _ActiveBuffBadge(
+                        buffName: pot.activeBuffName!,
+                        expiresAt: pot.buffExpiresAt!,
+                      ),
+                    ],
+
+                    const SizedBox(height: 22),
+                    if ((pot.waterLevel ?? 0) < 100 &&
+                        pot.growthPhase != 'dead') ...[
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: onWater,
+                          icon: const Icon(Icons.water_drop),
+                          label: Text(t.regar),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF0ea5e9),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (isMature && onCollect != null) ...[
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: onCollect,
+                          icon: const Icon(Icons.agriculture),
+                          label: Text(t.recolectPlant),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF16a34a),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (onPotion != null) ...[
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: onPotion,
+                          icon: const Icon(Icons.flash_on),
+                          label: Text(t.aplyPotion),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFCD34D),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (onDeletePlant != null) ...[
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: onDeletePlant,
+                          icon: const Icon(Icons.delete_outline),
+                          label: Text(t.deletePlant),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFDC2626),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-              ],
+              ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }
+
+// ─── Buff actiu ───────────────────────────────────────────────────────────────
+
+class _ActiveBuffBadge extends StatelessWidget {
+  final String buffName;
+  final DateTime expiresAt;
+
+  const _ActiveBuffBadge({required this.buffName, required this.expiresAt});
+
+  String _formatExpiry() {
+    final d = expiresAt;
+    final day = d.day.toString().padLeft(2, '0');
+    final month = d.month.toString().padLeft(2, '0');
+    final hour = d.hour.toString().padLeft(2, '0');
+    final min = d.minute.toString().padLeft(2, '0');
+    return '$day/$month $hour:${min}h';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    const buffPurple = Color(0xFFA78BFA);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: buffPurple.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: buffPurple.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.shield_rounded, color: buffPurple, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  buffName,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: buffPurple,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${l10n.finalitza} ${_formatExpiry()}',
+                  style: const TextStyle(fontSize: 12, color: Colors.white60),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Widgets auxiliars ────────────────────────────────────────────────────────
 
 class _StatBar extends StatelessWidget {
   final String label;

@@ -1,0 +1,308 @@
+{
+  "appTitle": "MeteoGarden",
+
+  "commonBack": "Volver",
+  "commonCancel": "Cancelar",
+  "commonCity": "Ciudad",
+  "commonClose": "Cerrar",
+  "commonContinue": "Continuar",
+  "commonDescription": "Descripción",
+  "commonLanguage": "Idioma",
+  "commonRetry": "Reintentar",
+  "commonSave": "Guardar",
+  "commonSearch": "Buscar",
+  "commonEliminar": "Eliminar",
+
+  "loginWelcomeTitle": "Bienvenida a MeteoGarden",
+  "loginWelcomeSubtitle": "Inicia sesión para seguir cuidando tu jardín.",
+
+  "loginUsernameLabel": "Nombre de usuario",
+  "loginUsernameHint": "Introduce tu nombre de usuario",
+
+  "loginPasswordLabel": "Contraseña",
+  "loginPasswordHint": "Introduce tu contraseña",
+
+  "loginButton": "Iniciar sesión",
+  "loginContinueWith": "o continuar con",
+
+  "loginNoAccount": "¿No tienes cuenta?",
+  "loginCreateAccount": "Crear cuenta",
+
+  "loginError": "Error de inicio de sesión",
+  "loginGoogleError": "Error de inicio de sesión con Google",
+  "profileLoadError": "No se ha podido cargar el perfil",
+
+  "navGarden": "Jardín",
+  "navFriends": "Amigos",
+  "navCamera": "Cámara",
+  "navMissions": "Misiones",
+  "navProfile": "Perfil",
+
+  "albumTitle": "Mi álbum de plantas",
+  "albumLoadingEncyclopedia": "Consultando enciclopedia...",
+  "albumDetailsLoadError": "Error cargando detalles: {error}",
+  "@albumDetailsLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "albumUnknownPlant": "Desconocida",
+  "albumNoDescription": "No hay descripción disponible.",
+  "albumFamilyLabel": "Familia",
+  "albumBlooms": "Florece",
+  "albumDoesNotBloom": "No florece",
+  "albumDescriptionTitle": "Descripción",
+  "albumEmptyState": "Todavía no has descubierto ninguna planta 🌱\n¡Sigue explorando!",
+  "albumPlantInfoLoadError": "Error cargando la información de la planta",
+
+  "shopTitle": "Tienda",
+  "shopSeedsTab": "Semillas 🌱",
+  "shopOtherTab": "Otros 🛒",
+  "shopLoadError": "No se han podido cargar los productos.",
+  "shopConnectionError": "Error de conexión o procesando los datos.",
+  "shopPurchaseProcessingError": "Error al procesar la compra.",
+  "shopPurchaseSuccess": "¡Compra realizada con éxito! 🌱",
+  "shopTotalPrice": "Precio total:",
+  "shopBuyButton": "Comprar",
+  "shopNoItemsAvailable": "No hay artículos disponibles ahora mismo.",
+
+  "calendarUpcomingEvents": "Próximos eventos",
+  "calendarNoEventsThisMonth": "No hay eventos este mes",
+  "calendarClearFilters": "Eliminar filtros",
+  "calendarNoEventsThisDay": "Sin eventos este día",
+  "calendarFiltersTitle": "Filtros",
+  "calendarClearAll": "Limpiar todo",
+  "calendarSearchTextLabel": "Buscar por texto",
+  "calendarSearchTextHint": "Nombre, descripción...",
+  "calendarCityLabel": "Ciudad",
+  "calendarCityHint": "Barcelona, Girona...",
+  "calendarCountyLabel": "Comarca",
+  "calendarCountyHint": "Osona, Maresme...",
+  "calendarCategoryLabel": "Categoría",
+  "calendarCategoryHint": "Mercado, Concierto, Ruta...",
+  "calendarMaxDistanceLabel": "Distancia máxima",
+  "calendarMaxPriceLabel": "Precio máximo",
+  "calendarApplyFilters": "Aplicar filtros",
+  "calendarFree": "Gratis",
+  "calendarFreeAccent": "Gratuito",
+  "calendarBuyTickets": "Comprar entradas",
+  "calendarEventSingular": "evento",
+  "calendarEventPlural": "eventos",
+
+  "calendarEventsCount": "{count} eventos",
+  "@calendarEventsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "calendarSelectedDaySummary": "{day} {month} · {count} {eventWord}",
+  "@calendarSelectedDaySummary": {
+    "placeholders": {
+      "day": {},
+      "month": {},
+      "count": {},
+      "eventWord": {}
+    }
+  },
+
+  "calendarMaxDistanceChip": "≤{km} km",
+  "@calendarMaxDistanceChip": {
+    "placeholders": {
+      "km": {}
+    }
+  },
+
+  "calendarMaxPriceChip": "≤{price}€",
+  "@calendarMaxPriceChip": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+
+  "calendarSearchChip": "\"{query}\"",
+  "@calendarSearchChip": {
+    "placeholders": {
+      "query": {}
+    }
+  },
+
+  "calendarDistanceKm": "{km} km",
+  "@calendarDistanceKm": {
+    "placeholders": {
+      "km": {}
+    }
+  },
+
+  "calendarPriceEuros": "{price} €",
+  "@calendarPriceEuros": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+
+  "calendarPriceCompact": "{price}€",
+  "@calendarPriceCompact": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+
+  "weekdayMon": "Lun",
+  "weekdayTue": "Mar",
+  "weekdayWed": "Mié",
+  "weekdayThu": "Jue",
+  "weekdayFri": "Vie",
+  "weekdaySat": "Sáb",
+  "weekdaySun": "Dom",
+
+  "monthJanuary": "Enero",
+  "monthFebruary": "Febrero",
+  "monthMarch": "Marzo",
+  "monthApril": "Abril",
+  "monthMay": "Mayo",
+  "monthJune": "Junio",
+  "monthJuly": "Julio",
+  "monthAugust": "Agosto",
+  "monthSeptember": "Septiembre",
+  "monthOctober": "Octubre",
+  "monthNovember": "Noviembre",
+  "monthDecember": "Diciembre",
+
+  "monthShortJanuary": "ene",
+  "monthShortFebruary": "feb",
+  "monthShortMarch": "mar",
+  "monthShortApril": "abr",
+  "monthShortMay": "may",
+  "monthShortJune": "jun",
+  "monthShortJuly": "jul",
+  "monthShortAugust": "ago",
+  "monthShortSeptember": "sep",
+  "monthShortOctober": "oct",
+  "monthShortNovember": "nov",
+  "monthShortDecember": "dic",
+
+  "photoNoCameraAvailable": "No se ha encontrado ninguna cámara disponible.",
+  "photoCameraInitError": "No se ha podido inicializar la cámara.",
+  "photoUnexpectedError": "Se ha producido un error inesperado.",
+  "photoTakePlantPicture": "Fotografía la planta",
+  "photoTreeMode": "Árbol",
+  "photoFlowerMode": "Flor",
+  "photoTreeModeSelected": "Modo árbol seleccionado",
+  "photoFlowerModeSelected": "Modo flor seleccionado",
+  "photoIdentifyingPlant": "Identificando planta...",
+  "photoCenterPlantInFrame": "Centra la planta dentro del marco",
+
+  "plantResultTitle": "Planta identificada",
+  "plantResultScientificName": "Nombre científico",
+  "plantResultFamily": "Familia",
+  "plantResultConfidence": "Confianza",
+  "plantResultTakeAnotherPhoto": "Hacer otra foto",
+
+  "profileStatsTitle": "Estadísticas",
+  "profileDefaultUser": "Usuario",
+  "profileCityNotDefined": "Ciudad no definida",
+  "profileCoins": "Monedas",
+  "profileDiscovered": "Descubiertas",
+  "profileUserLabel": "Usuario",
+  "profileEmailLabel": "Email",
+  "profileCityLabel": "Ciudad",
+  "profileLanguageLabel": "Idioma",
+  "profileEditButton": "Modificar perfil",
+  "profilePlants": "Plantas",
+  "profileLogout": "Cerrar sesión",
+  "profileDeleteAccountTitle": "Eliminar cuenta",
+  "profileDeleteAccountMessage": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción es permanente y se perderán todas tus monedas y plantas descubiertas.",
+  "profileDeleteAccountError": "Error eliminando la cuenta",
+  "profileDeleteAccountConfirm": "Sí, eliminar",
+
+  "createAccountTitle": "Crear cuenta",
+  "createAccountWelcome": "Bienvenido a Meteo Garden",
+  "createAccountSubtitle": "Rellena tus datos para empezar",
+  "createAccountEmailLabel": "Correo electrónico",
+  "createAccountGardenNameLabel": "Nombre de tu jardín",
+  "createAccountSuccess": "¡Cuenta creada correctamente!",
+  "createAccountError": "Error creando la cuenta",
+
+  "completeProfileTitle": "Completar perfil",
+  "completeProfileHeading": "¡Ya casi lo tenemos!",
+  "completeProfileSubtitle": "Completa estos datos para finalizar el registro con Google",
+  "completeProfilePasswordOptional": "Contraseña (Opcional)",
+  "completeProfileSuccess": "¡Cuenta completada correctamente!",
+  "completeProfileError": "Error completando perfil",
+
+  "profileEditTitle": "Modificar perfil",
+  "profileEditUserDataTitle": "Datos de usuario",
+  "profileEditUpdated": "Perfil actualizado",
+  "profileEditUpdateError": "Error actualizando el perfil",
+
+  "languageCatalan": "Catalán",
+  "languageSpanish": "Castellano",
+  "languageEnglish": "English",
+
+  "inventoryTitle": "Tu inventario",
+  "inventorySearchHint": "Busca una semilla o poción...",
+  "inventorySeedsTab": "Semillas",
+  "inventoryPotionsTab": "Pociones",
+  "inventoryNoSeeds": "No hay semillas disponibles",
+  "inventoryNoPotions": "No hay pociones disponibles",
+  "inventoryAvailableItems": "{count} elementos disponibles",
+  "@inventoryAvailableItems": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "inventoryQuantity": "Cantidad: {amount}",
+  "@inventoryQuantity": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+
+  "gardenLoadingSeedsError": "Error cargando semillas",
+  "gardenLoadingWeather": "Cargando meteo...",
+  "gardenWaitMoment": "Espera un momento",
+  "gardenWeatherLoadError": "No se ha podido cargar la meteo",
+  "gardenTapToRetry": "Toca para volver a intentarlo",
+  "gardenLoadingPotsError": "Error cargando las macetas:",
+  "gardenNoPotsAvailable": "No hay macetas disponibles",
+  "gardenWeatherSummary": "Temperatura: {temp}°C | Precipitación: {precipitation}",
+  "@gardenWeatherSummary": {
+    "placeholders": {
+      "temp": {},
+      "precipitation": {}
+    }
+  },
+  "gardenWindSummary": "Viento: {wind} m/s",
+  "@gardenWindSummary": {
+    "placeholders": {
+      "wind": {}
+    }
+  },
+  "waterlabel": "Nivel de agua",
+"salut": "Salud",
+"lastReg": "Último riego: ",
+"regar": "Regar planta",
+"recolectPlant": "Recolectar planta",
+"aplyPotion": "Aplicar poción",
+"selectPotion": "Selecciona una poción para la maceta",
+"errorPotions": "Error cargando pociones",
+"readyPotion": "Poción disponible para aplicar",
+"aplyingPotion": "Aplicando...",
+"noPotions": "No tienes pociones disponibles",
+"extraPotions": "Cuando consigas, podrás aplicarlas aquí.",
+"testbuit": "Maceta vacía",
+"selectionLlavor": "Selecciona una semilla para la maceta",
+"llavorDisp": "Semilla disponible para plantar",
+"plant": "Plantar",
+"planting": "Plantando...",
+"noLlavor": "No tienes semillas disponibles",
+"extraLlavor": "Cuando consigas, podrás plantarlas aquí.",
+"confirmDeletePlant": "¿Estás seguro de que quieres eliminar {plantName}?\nEsta acción no se puede deshacer.",
+"thisPlant": "esta planta",
+"deletePlant": "Eliminar planta",
+"finalitza": "Finaliza el"
+}
+

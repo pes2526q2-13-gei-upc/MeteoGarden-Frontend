@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/screens/completar_nova_conta.dart';
 import 'package:meteo_garden/screens/home_shell.dart';
 import 'package:meteo_garden/screens/crea_nova_conta.dart';
 import 'package:http/http.dart' as http;
@@ -6,6 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import 'dart:convert';
 import '../models/url.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:meteo_garden/generated/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,6 +21,22 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  Locale _loginLocale = const Locale('ca');
+
+  AppLocalizations get _t => lookupAppLocalizations(_loginLocale);
+
+  final GoogleSignIn _googleSignIn = kIsWeb
+      ? GoogleSignIn(
+          clientId:
+              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+          scopes: ['email', 'profile', 'openid'],
+        )
+      : GoogleSignIn(
+          serverClientId:
+              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+          scopes: ['email', 'profile', 'openid'],
+        );
 
   @override
   void dispose() {
@@ -32,10 +52,57 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget _buildLanguageSelector() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.95),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: PopupMenuButton<String>(
+        initialValue: _loginLocale.languageCode,
+        onSelected: (value) {
+          setState(() {
+            _loginLocale = Locale(value);
+          });
+        },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        itemBuilder: (context) => const [
+          PopupMenuItem(value: 'ca', child: Text('Català')),
+          PopupMenuItem(value: 'es', child: Text('Español')),
+          PopupMenuItem(value: 'en', child: Text('English')),
+        ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.language, color: Color(0xFF166534), size: 20),
+              const SizedBox(width: 8),
+              Text(
+                _loginLocale.languageCode.toUpperCase(),
+                style: const TextStyle(
+                  color: Color(0xFF166534),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: 4),
+              const Icon(Icons.keyboard_arrow_down, color: Color(0xFF166534)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _login() async {
-    final url = Uri.parse(
-      '${ApiConfig.baseUrl}/api/login/',
-    ); // url del endpoint de login al backend
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/login/');
 
     final response = await http.post(
       url,
@@ -45,7 +112,9 @@ class _LoginPageState extends State<LoginPage> {
         "password": passwordController.text,
       }),
     );
+
     if (!mounted) return;
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       Provider.of<UserModel>(context, listen: false).setToken(data['token']);
@@ -56,147 +125,246 @@ class _LoginPageState extends State<LoginPage> {
       debugPrint("Error: ${response.body}");
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Error de login')));
+      ).showSnackBar(SnackBar(content: Text(_t.loginError)));
+    }
+  }
+
+  Future<void> loginWithGoogle(BuildContext context) async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final String? idToken = googleAuth.idToken;
+      final String? accessToken = googleAuth.accessToken;
+
+      final String tokenToSend = idToken ?? accessToken ?? "";
+
+      if (tokenToSend.isEmpty) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Error obteniendo token de Google")),
+        );
+        return;
+      }
+
+      final response = await http.post(
+        Uri.parse("${ApiConfig.baseUrl}/api/auth/google/verify"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"id_token": tokenToSend}),
+      );
+
+      if (!context.mounted) return;
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data["exists"] == false) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => CompleteGoogleProfilePage(
+                googleToken: tokenToSend,
+                email: data["email"] ?? "",
+              ),
+            ),
+          );
+        } else {
+          Provider.of<UserModel>(
+            context,
+            listen: false,
+          ).setToken(data["token"]);
+
+          await _fetchAndSaveProfile(data['token']);
+          if (!context.mounted) return;
+          _goToHome();
+        }
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Error login Google")));
+      }
+    } catch (e) {
+      debugPrint("Error Google Sign-In: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final t = _t;
+
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.green.withValues(alpha: 0.12), Colors.white],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/imatge_fondo1.png',
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 430),
-                child: Material(
-                  elevation: 0,
-                  borderRadius: BorderRadius.circular(24),
-                  color: Colors.white.withValues(alpha: 0.92),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.black.withValues(alpha: 0.60),
+                    Colors.green.withValues(alpha: 0.10),
+                    Colors.white.withValues(alpha: 0.95),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 3,
+            right: 16,
+            child: SafeArea(child: _buildLanguageSelector()),
+          ),
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 450),
                   child: Container(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(28),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: Colors.black.withValues(alpha: 0.06),
-                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
-                          blurRadius: 18,
-                          color: Colors.black.withValues(alpha: 0.05),
-                          offset: const Offset(0, 8),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                          color: Colors.black.withValues(alpha: 0.08),
                         ),
                       ],
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const _LoginHeader(),
-                        const SizedBox(height: 24),
+                        _LoginHeader(t: t),
+                        const SizedBox(height: 32),
                         _InputField(
                           controller: usernameController,
-                          label: "Nom d'usuari",
-                          hint: "Introdueix el teu nom d'usuari",
-                          icon: Icons.person_outline,
+                          label: t.loginUsernameLabel,
+                          hint: t.loginUsernameHint,
+                          icon: Icons.person_outline_rounded,
                         ),
                         const SizedBox(height: 16),
                         _InputField(
                           controller: passwordController,
-                          label: "Contrasenya",
-                          hint: "Introdueix la teva contrasenya",
-                          icon: Icons.lock_outline,
+                          label: t.loginPasswordLabel,
+                          hint: t.loginPasswordHint,
+                          icon: Icons.lock_outline_rounded,
                           obscureText: true,
                         ),
-                        const SizedBox(height: 22),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton.icon(
-                            onPressed: _login, // _goToHome,//
-                            icon: const Icon(Icons.login),
-                            label: const Text("Iniciar sessió"),
-                            style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              textStyle: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
+                        const SizedBox(height: 28),
+                        FilledButton.icon(
+                          onPressed: _login,
+                          icon: const Icon(Icons.login_rounded),
+                          label: Text(
+                            t.loginButton,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF166534),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(color: Colors.grey.shade300),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                              child: Text(
+                                t.loginContinueWith,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade600,
+                                ),
                               ),
+                            ),
+                            Expanded(
+                              child: Divider(color: Colors.grey.shade300),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        OutlinedButton.icon(
+                          onPressed: () => loginWithGoogle(context),
+                          icon: const Icon(
+                            Icons.g_mobiledata,
+                            size: 28,
+                            color: Colors.black87,
+                          ),
+                          label: const Text(
+                            'Google',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            side: BorderSide(color: Colors.grey.shade300),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 14),
-
-                        // login with social providers and link to create account
-                        Center(
-                          child: Column(
-                            children: [
-                              const Text(
-                                'o continuar amb',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black54,
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              t.loginNoAccount,
+                              style: TextStyle(color: Colors.grey.shade600),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const CreaNovaConta(),
+                                  ),
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                foregroundColor: const Color(0xFF166534),
+                              ),
+                              child: Text(
+                                t.loginCreateAccount,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      // TODO: implementar login amb Google
-                                    },
-                                    icon: const Icon(Icons.g_mobiledata),
-                                    label: const Text('Google'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.white,
-                                      foregroundColor: Colors.black,
-                                    ),
-                                  ),
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      // TODO: implementar login amb Facebook
-                                    },
-                                    icon: const Icon(Icons.facebook),
-                                    label: const Text('Facebook'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF1877F2),
-                                      foregroundColor: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const CreaNovaConta(),
-                                    ),
-                                  );
-                                },
-                                child: const Text('Crear compte'),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        Center(
-                          child: TextButton(
-                            onPressed: () {},
-                            child: const Text("Has oblidat la contrasenya?"),
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -205,7 +373,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -229,7 +397,6 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      // gardens és List, extreim només els noms
       final List<String> gardenNames = (data['gardens'] as List<dynamic>)
           .map((g) => g['gardenName'] as String)
           .toList();
@@ -245,15 +412,17 @@ class _LoginPageState extends State<LoginPage> {
         newGardens: gardenNames,
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No s\'ha pogut carregar el perfil')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_t.profileLoadError)));
     }
   }
 }
 
 class _LoginHeader extends StatelessWidget {
-  const _LoginHeader();
+  final AppLocalizations t;
+
+  const _LoginHeader({required this.t});
 
   @override
   Widget build(BuildContext context) {
@@ -262,20 +431,23 @@ class _LoginHeader extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(5),
-          child: Image.asset('assets/images/logo.png', width: 150),
+          child: Image.asset('assets/images/logo.png', width: 120),
         ),
         const SizedBox(height: 18),
-        const Text(
-          "Benvinguda a MeteoGarden",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
+        Text(
+          t.loginWelcomeTitle,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF166534),
+          ),
         ),
         const SizedBox(height: 8),
         Text(
-          "Inicia sessió per continuar cuidant el teu jardí.",
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.black.withValues(alpha: 0.65),
-          ),
+          t.loginWelcomeSubtitle,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
         ),
       ],
     );
@@ -288,7 +460,6 @@ class _InputField extends StatelessWidget {
   final String hint;
   final IconData icon;
   final bool obscureText;
-  //final TextInputType? keyboardType;
 
   const _InputField({
     required this.controller,
@@ -296,7 +467,6 @@ class _InputField extends StatelessWidget {
     required this.hint,
     required this.icon,
     this.obscureText = false,
-    //this.keyboardType,
   });
 
   @override
@@ -306,39 +476,41 @@ class _InputField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade700,
+          ),
         ),
         const SizedBox(height: 8),
         TextField(
           controller: controller,
           obscureText: obscureText,
-          //keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: Icon(icon),
+            hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+            prefixIcon: Icon(icon, color: Colors.grey.shade500),
             filled: true,
-            fillColor: Colors.green.withValues(alpha: 0.04),
+            fillColor: Colors.grey.withValues(alpha: 0.08),
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
+              horizontal: 16,
               vertical: 16,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: Colors.black.withValues(alpha: 0.08),
-              ),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide(
-                color: Colors.black.withValues(alpha: 0.08),
+                color: Colors.black.withValues(alpha: 0.05),
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: Colors.green.withValues(alpha: 0.6),
-                width: 1.4,
+              borderSide: const BorderSide(
+                color: Color(0xFF166534),
+                width: 1.5,
               ),
             ),
           ),

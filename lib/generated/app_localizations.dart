@@ -1,0 +1,1367 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_ca.dart';
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'generated/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('ca'),
+    Locale('en'),
+    Locale('es'),
+  ];
+
+  /// No description provided for @appTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'MeteoGarden'**
+  String get appTitle;
+
+  /// No description provided for @commonBack.
+  ///
+  /// In ca, this message translates to:
+  /// **'Tornar'**
+  String get commonBack;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Cancel·lar'**
+  String get commonCancel;
+
+  /// No description provided for @commonCity.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ciutat'**
+  String get commonCity;
+
+  /// No description provided for @commonClose.
+  ///
+  /// In ca, this message translates to:
+  /// **'Tancar'**
+  String get commonClose;
+
+  /// No description provided for @commonContinue.
+  ///
+  /// In ca, this message translates to:
+  /// **'Continuar'**
+  String get commonContinue;
+
+  /// No description provided for @commonDescription.
+  ///
+  /// In ca, this message translates to:
+  /// **'Descripció'**
+  String get commonDescription;
+
+  /// No description provided for @commonLanguage.
+  ///
+  /// In ca, this message translates to:
+  /// **'Idioma'**
+  String get commonLanguage;
+
+  /// No description provided for @commonRetry.
+  ///
+  /// In ca, this message translates to:
+  /// **'Reintentar'**
+  String get commonRetry;
+
+  /// No description provided for @commonSave.
+  ///
+  /// In ca, this message translates to:
+  /// **'Guardar'**
+  String get commonSave;
+
+  /// No description provided for @commonSearch.
+  ///
+  /// In ca, this message translates to:
+  /// **'Cerca'**
+  String get commonSearch;
+
+  /// No description provided for @commonEliminar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Eliminar'**
+  String get commonEliminar;
+
+  /// No description provided for @loginWelcomeTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Benvinguda a MeteoGarden'**
+  String get loginWelcomeTitle;
+
+  /// No description provided for @loginWelcomeSubtitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Inicia sessió per continuar cuidant el teu jardí.'**
+  String get loginWelcomeSubtitle;
+
+  /// No description provided for @loginUsernameLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nom d\'usuari'**
+  String get loginUsernameLabel;
+
+  /// No description provided for @loginUsernameHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Introdueix el teu nom d\'usuari'**
+  String get loginUsernameHint;
+
+  /// No description provided for @loginPasswordLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Contrasenya'**
+  String get loginPasswordLabel;
+
+  /// No description provided for @loginPasswordHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Introdueix la teva contrasenya'**
+  String get loginPasswordHint;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In ca, this message translates to:
+  /// **'Iniciar sessió'**
+  String get loginButton;
+
+  /// No description provided for @loginContinueWith.
+  ///
+  /// In ca, this message translates to:
+  /// **'o continuar amb'**
+  String get loginContinueWith;
+
+  /// No description provided for @loginNoAccount.
+  ///
+  /// In ca, this message translates to:
+  /// **'No tens compte?'**
+  String get loginNoAccount;
+
+  /// No description provided for @loginCreateAccount.
+  ///
+  /// In ca, this message translates to:
+  /// **'Crear compte'**
+  String get loginCreateAccount;
+
+  /// No description provided for @loginError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error de login'**
+  String get loginError;
+
+  /// No description provided for @loginGoogleError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error login Google'**
+  String get loginGoogleError;
+
+  /// No description provided for @profileLoadError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut carregar el perfil'**
+  String get profileLoadError;
+
+  /// No description provided for @navGarden.
+  ///
+  /// In ca, this message translates to:
+  /// **'Jardí'**
+  String get navGarden;
+
+  /// No description provided for @navFriends.
+  ///
+  /// In ca, this message translates to:
+  /// **'Amics'**
+  String get navFriends;
+
+  /// No description provided for @navCamera.
+  ///
+  /// In ca, this message translates to:
+  /// **'Càmera'**
+  String get navCamera;
+
+  /// No description provided for @navMissions.
+  ///
+  /// In ca, this message translates to:
+  /// **'Missions'**
+  String get navMissions;
+
+  /// No description provided for @navProfile.
+  ///
+  /// In ca, this message translates to:
+  /// **'Perfil'**
+  String get navProfile;
+
+  /// No description provided for @albumTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'El meu àlbum de plantes'**
+  String get albumTitle;
+
+  /// No description provided for @albumDiscoveredPlants.
+  ///
+  /// In ca, this message translates to:
+  /// **'Plantes descobertes'**
+  String get albumDiscoveredPlants;
+
+  /// No description provided for @albumLoadingEncyclopedia.
+  ///
+  /// In ca, this message translates to:
+  /// **'Consultant enciclopèdia...'**
+  String get albumLoadingEncyclopedia;
+
+  /// No description provided for @albumDetailsLoadError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant detalls: {error}'**
+  String albumDetailsLoadError(String error);
+
+  /// No description provided for @albumUnknownPlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Desconeguda'**
+  String get albumUnknownPlant;
+
+  /// No description provided for @albumNoDescription.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha descripció disponible.'**
+  String get albumNoDescription;
+
+  /// No description provided for @albumFamilyLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Família'**
+  String get albumFamilyLabel;
+
+  /// No description provided for @albumBlooms.
+  ///
+  /// In ca, this message translates to:
+  /// **'Floreix'**
+  String get albumBlooms;
+
+  /// No description provided for @albumDoesNotBloom.
+  ///
+  /// In ca, this message translates to:
+  /// **'No floreix'**
+  String get albumDoesNotBloom;
+
+  /// No description provided for @albumDescriptionTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Descripció'**
+  String get albumDescriptionTitle;
+
+  /// No description provided for @albumEmptyState.
+  ///
+  /// In ca, this message translates to:
+  /// **'Encara no has descobert cap planta 🌱\nContinua explorant!'**
+  String get albumEmptyState;
+
+  /// No description provided for @albumPlantInfoLoadError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant la informació de la planta'**
+  String get albumPlantInfoLoadError;
+
+  /// No description provided for @shopTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Botiga'**
+  String get shopTitle;
+
+  /// No description provided for @shopSeedsTab.
+  ///
+  /// In ca, this message translates to:
+  /// **'Llavors 🌱'**
+  String get shopSeedsTab;
+
+  /// No description provided for @shopOtherTab.
+  ///
+  /// In ca, this message translates to:
+  /// **'Altres 🛒'**
+  String get shopOtherTab;
+
+  /// No description provided for @shopLoadError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'han pogut carregar els productes.'**
+  String get shopLoadError;
+
+  /// No description provided for @shopConnectionError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error de connexió o processant les dades.'**
+  String get shopConnectionError;
+
+  /// No description provided for @shopPurchaseProcessingError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error en processar la compra.'**
+  String get shopPurchaseProcessingError;
+
+  /// No description provided for @shopPurchaseSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Compra realitzada amb èxit! 🌱'**
+  String get shopPurchaseSuccess;
+
+  /// No description provided for @shopTotalPrice.
+  ///
+  /// In ca, this message translates to:
+  /// **'Preu total:'**
+  String get shopTotalPrice;
+
+  /// No description provided for @shopBuyButton.
+  ///
+  /// In ca, this message translates to:
+  /// **'Comprar'**
+  String get shopBuyButton;
+
+  /// No description provided for @shopNoItemsAvailable.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha articles disponibles ara mateix.'**
+  String get shopNoItemsAvailable;
+
+  /// No description provided for @calendarUpcomingEvents.
+  ///
+  /// In ca, this message translates to:
+  /// **'Propers esdeveniments'**
+  String get calendarUpcomingEvents;
+
+  /// No description provided for @calendarNoEventsThisMonth.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha esdeveniments aquest mes'**
+  String get calendarNoEventsThisMonth;
+
+  /// No description provided for @calendarClearFilters.
+  ///
+  /// In ca, this message translates to:
+  /// **'Eliminar filtres'**
+  String get calendarClearFilters;
+
+  /// No description provided for @calendarNoEventsThisDay.
+  ///
+  /// In ca, this message translates to:
+  /// **'Sense esdeveniments aquest dia'**
+  String get calendarNoEventsThisDay;
+
+  /// No description provided for @calendarFiltersTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Filtres'**
+  String get calendarFiltersTitle;
+
+  /// No description provided for @calendarClearAll.
+  ///
+  /// In ca, this message translates to:
+  /// **'Netejar tot'**
+  String get calendarClearAll;
+
+  /// No description provided for @calendarSearchTextLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Cerca per text'**
+  String get calendarSearchTextLabel;
+
+  /// No description provided for @calendarSearchTextHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nom, descripció...'**
+  String get calendarSearchTextHint;
+
+  /// No description provided for @calendarCityLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ciutat'**
+  String get calendarCityLabel;
+
+  /// No description provided for @calendarCityHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Barcelona, Girona...'**
+  String get calendarCityHint;
+
+  /// No description provided for @calendarCountyLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Comarca'**
+  String get calendarCountyLabel;
+
+  /// No description provided for @calendarCountyHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Osona, Maresme...'**
+  String get calendarCountyHint;
+
+  /// No description provided for @calendarCategoryLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Categoria'**
+  String get calendarCategoryLabel;
+
+  /// No description provided for @calendarCategoryHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Mercat, Concert, Ruta...'**
+  String get calendarCategoryHint;
+
+  /// No description provided for @calendarMaxDistanceLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Distància màxima'**
+  String get calendarMaxDistanceLabel;
+
+  /// No description provided for @calendarMaxPriceLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Preu màxim'**
+  String get calendarMaxPriceLabel;
+
+  /// No description provided for @calendarApplyFilters.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aplicar filtres'**
+  String get calendarApplyFilters;
+
+  /// No description provided for @calendarFree.
+  ///
+  /// In ca, this message translates to:
+  /// **'Gratis'**
+  String get calendarFree;
+
+  /// No description provided for @calendarFreeAccent.
+  ///
+  /// In ca, this message translates to:
+  /// **'Gratuït'**
+  String get calendarFreeAccent;
+
+  /// No description provided for @calendarBuyTickets.
+  ///
+  /// In ca, this message translates to:
+  /// **'Comprar entrades'**
+  String get calendarBuyTickets;
+
+  /// No description provided for @calendarEventSingular.
+  ///
+  /// In ca, this message translates to:
+  /// **'esdeveniment'**
+  String get calendarEventSingular;
+
+  /// No description provided for @calendarEventPlural.
+  ///
+  /// In ca, this message translates to:
+  /// **'esdeveniments'**
+  String get calendarEventPlural;
+
+  /// No description provided for @calendarEventsCount.
+  ///
+  /// In ca, this message translates to:
+  /// **'{count} esdeveniments'**
+  String calendarEventsCount(Object count);
+
+  /// No description provided for @calendarSelectedDaySummary.
+  ///
+  /// In ca, this message translates to:
+  /// **'{day} {month} · {count} {eventWord}'**
+  String calendarSelectedDaySummary(
+    Object day,
+    Object month,
+    Object count,
+    Object eventWord,
+  );
+
+  /// No description provided for @calendarMaxDistanceChip.
+  ///
+  /// In ca, this message translates to:
+  /// **'≤{km} km'**
+  String calendarMaxDistanceChip(Object km);
+
+  /// No description provided for @calendarMaxPriceChip.
+  ///
+  /// In ca, this message translates to:
+  /// **'≤{price}€'**
+  String calendarMaxPriceChip(Object price);
+
+  /// No description provided for @calendarSearchChip.
+  ///
+  /// In ca, this message translates to:
+  /// **'\"{query}\"'**
+  String calendarSearchChip(Object query);
+
+  /// No description provided for @calendarDistanceKm.
+  ///
+  /// In ca, this message translates to:
+  /// **'{km} km'**
+  String calendarDistanceKm(Object km);
+
+  /// No description provided for @calendarPriceEuros.
+  ///
+  /// In ca, this message translates to:
+  /// **'{price} €'**
+  String calendarPriceEuros(Object price);
+
+  /// No description provided for @calendarPriceCompact.
+  ///
+  /// In ca, this message translates to:
+  /// **'{price}€'**
+  String calendarPriceCompact(Object price);
+
+  /// No description provided for @weekdayMon.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dl'**
+  String get weekdayMon;
+
+  /// No description provided for @weekdayTue.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dt'**
+  String get weekdayTue;
+
+  /// No description provided for @weekdayWed.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dc'**
+  String get weekdayWed;
+
+  /// No description provided for @weekdayThu.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dj'**
+  String get weekdayThu;
+
+  /// No description provided for @weekdayFri.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dv'**
+  String get weekdayFri;
+
+  /// No description provided for @weekdaySat.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ds'**
+  String get weekdaySat;
+
+  /// No description provided for @weekdaySun.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dg'**
+  String get weekdaySun;
+
+  /// No description provided for @monthJanuary.
+  ///
+  /// In ca, this message translates to:
+  /// **'Gener'**
+  String get monthJanuary;
+
+  /// No description provided for @monthFebruary.
+  ///
+  /// In ca, this message translates to:
+  /// **'Febrer'**
+  String get monthFebruary;
+
+  /// No description provided for @monthMarch.
+  ///
+  /// In ca, this message translates to:
+  /// **'Març'**
+  String get monthMarch;
+
+  /// No description provided for @monthApril.
+  ///
+  /// In ca, this message translates to:
+  /// **'Abril'**
+  String get monthApril;
+
+  /// No description provided for @monthMay.
+  ///
+  /// In ca, this message translates to:
+  /// **'Maig'**
+  String get monthMay;
+
+  /// No description provided for @monthJune.
+  ///
+  /// In ca, this message translates to:
+  /// **'Juny'**
+  String get monthJune;
+
+  /// No description provided for @monthJuly.
+  ///
+  /// In ca, this message translates to:
+  /// **'Juliol'**
+  String get monthJuly;
+
+  /// No description provided for @monthAugust.
+  ///
+  /// In ca, this message translates to:
+  /// **'Agost'**
+  String get monthAugust;
+
+  /// No description provided for @monthSeptember.
+  ///
+  /// In ca, this message translates to:
+  /// **'Setembre'**
+  String get monthSeptember;
+
+  /// No description provided for @monthOctober.
+  ///
+  /// In ca, this message translates to:
+  /// **'Octubre'**
+  String get monthOctober;
+
+  /// No description provided for @monthNovember.
+  ///
+  /// In ca, this message translates to:
+  /// **'Novembre'**
+  String get monthNovember;
+
+  /// No description provided for @monthDecember.
+  ///
+  /// In ca, this message translates to:
+  /// **'Desembre'**
+  String get monthDecember;
+
+  /// No description provided for @monthShortJanuary.
+  ///
+  /// In ca, this message translates to:
+  /// **'gen'**
+  String get monthShortJanuary;
+
+  /// No description provided for @monthShortFebruary.
+  ///
+  /// In ca, this message translates to:
+  /// **'feb'**
+  String get monthShortFebruary;
+
+  /// No description provided for @monthShortMarch.
+  ///
+  /// In ca, this message translates to:
+  /// **'març'**
+  String get monthShortMarch;
+
+  /// No description provided for @monthShortApril.
+  ///
+  /// In ca, this message translates to:
+  /// **'abr'**
+  String get monthShortApril;
+
+  /// No description provided for @monthShortMay.
+  ///
+  /// In ca, this message translates to:
+  /// **'maig'**
+  String get monthShortMay;
+
+  /// No description provided for @monthShortJune.
+  ///
+  /// In ca, this message translates to:
+  /// **'juny'**
+  String get monthShortJune;
+
+  /// No description provided for @monthShortJuly.
+  ///
+  /// In ca, this message translates to:
+  /// **'jul'**
+  String get monthShortJuly;
+
+  /// No description provided for @monthShortAugust.
+  ///
+  /// In ca, this message translates to:
+  /// **'ago'**
+  String get monthShortAugust;
+
+  /// No description provided for @monthShortSeptember.
+  ///
+  /// In ca, this message translates to:
+  /// **'set'**
+  String get monthShortSeptember;
+
+  /// No description provided for @monthShortOctober.
+  ///
+  /// In ca, this message translates to:
+  /// **'oct'**
+  String get monthShortOctober;
+
+  /// No description provided for @monthShortNovember.
+  ///
+  /// In ca, this message translates to:
+  /// **'nov'**
+  String get monthShortNovember;
+
+  /// No description provided for @monthShortDecember.
+  ///
+  /// In ca, this message translates to:
+  /// **'des'**
+  String get monthShortDecember;
+
+  /// No description provided for @photoNoCameraAvailable.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s’ha trobat cap càmera disponible.'**
+  String get photoNoCameraAvailable;
+
+  /// No description provided for @photoCameraInitError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s’ha pogut inicialitzar la càmera.'**
+  String get photoCameraInitError;
+
+  /// No description provided for @photoUnexpectedError.
+  ///
+  /// In ca, this message translates to:
+  /// **'S’ha produït un error inesperat.'**
+  String get photoUnexpectedError;
+
+  /// No description provided for @photoTakePlantPicture.
+  ///
+  /// In ca, this message translates to:
+  /// **'Fotografia la planta'**
+  String get photoTakePlantPicture;
+
+  /// No description provided for @photoTreeMode.
+  ///
+  /// In ca, this message translates to:
+  /// **'Arbre'**
+  String get photoTreeMode;
+
+  /// No description provided for @photoFlowerMode.
+  ///
+  /// In ca, this message translates to:
+  /// **'Flor'**
+  String get photoFlowerMode;
+
+  /// No description provided for @photoTreeModeSelected.
+  ///
+  /// In ca, this message translates to:
+  /// **'Mode arbre seleccionat'**
+  String get photoTreeModeSelected;
+
+  /// No description provided for @photoFlowerModeSelected.
+  ///
+  /// In ca, this message translates to:
+  /// **'Mode flor seleccionat'**
+  String get photoFlowerModeSelected;
+
+  /// No description provided for @photoIdentifyingPlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Identificant planta...'**
+  String get photoIdentifyingPlant;
+
+  /// No description provided for @photoCenterPlantInFrame.
+  ///
+  /// In ca, this message translates to:
+  /// **'Centra la planta dins el marc'**
+  String get photoCenterPlantInFrame;
+
+  /// No description provided for @plantResultTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta identificada'**
+  String get plantResultTitle;
+
+  /// No description provided for @plantResultScientificName.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nom científic'**
+  String get plantResultScientificName;
+
+  /// No description provided for @plantResultFamily.
+  ///
+  /// In ca, this message translates to:
+  /// **'Família'**
+  String get plantResultFamily;
+
+  /// No description provided for @plantResultConfidence.
+  ///
+  /// In ca, this message translates to:
+  /// **'Confiança'**
+  String get plantResultConfidence;
+
+  /// No description provided for @plantResultTakeAnotherPhoto.
+  ///
+  /// In ca, this message translates to:
+  /// **'Fer una altra foto'**
+  String get plantResultTakeAnotherPhoto;
+
+  /// No description provided for @profileStatsTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Estadístiques'**
+  String get profileStatsTitle;
+
+  /// No description provided for @profileDefaultUser.
+  ///
+  /// In ca, this message translates to:
+  /// **'Usuari'**
+  String get profileDefaultUser;
+
+  /// No description provided for @profileCityNotDefined.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ciutat no definida'**
+  String get profileCityNotDefined;
+
+  /// No description provided for @profileCoins.
+  ///
+  /// In ca, this message translates to:
+  /// **'Monedes'**
+  String get profileCoins;
+
+  /// No description provided for @profileDiscovered.
+  ///
+  /// In ca, this message translates to:
+  /// **'Descobertes'**
+  String get profileDiscovered;
+
+  /// No description provided for @profileUserLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Usuari'**
+  String get profileUserLabel;
+
+  /// No description provided for @profileEmailLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Email'**
+  String get profileEmailLabel;
+
+  /// No description provided for @profileCityLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ciutat'**
+  String get profileCityLabel;
+
+  /// No description provided for @profileLanguageLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Idioma'**
+  String get profileLanguageLabel;
+
+  /// No description provided for @profileEditButton.
+  ///
+  /// In ca, this message translates to:
+  /// **'Modificar perfil'**
+  String get profileEditButton;
+
+  /// No description provided for @profilePlants.
+  ///
+  /// In ca, this message translates to:
+  /// **'Plantes'**
+  String get profilePlants;
+
+  /// No description provided for @profileLogout.
+  ///
+  /// In ca, this message translates to:
+  /// **'Tancar sessió'**
+  String get profileLogout;
+
+  /// No description provided for @profileDeleteAccountTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Eliminar compte'**
+  String get profileDeleteAccountTitle;
+
+  /// No description provided for @profileDeleteAccountMessage.
+  ///
+  /// In ca, this message translates to:
+  /// **'Estàs segur que vols eliminar el teu compte? Aquesta acció és permanent i es perdran totes les teves monedes i plantes descobertes.'**
+  String get profileDeleteAccountMessage;
+
+  /// No description provided for @profileDeleteAccountError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error eliminant el compte'**
+  String get profileDeleteAccountError;
+
+  /// No description provided for @profileDeleteAccountConfirm.
+  ///
+  /// In ca, this message translates to:
+  /// **'Sí, eliminar'**
+  String get profileDeleteAccountConfirm;
+
+  /// No description provided for @createAccountTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Crear compte'**
+  String get createAccountTitle;
+
+  /// No description provided for @createAccountWelcome.
+  ///
+  /// In ca, this message translates to:
+  /// **'Benvingut a Meteo Garden'**
+  String get createAccountWelcome;
+
+  /// No description provided for @createAccountSubtitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Omple les teves dades per començar'**
+  String get createAccountSubtitle;
+
+  /// No description provided for @createAccountEmailLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Correu electrònic'**
+  String get createAccountEmailLabel;
+
+  /// No description provided for @createAccountGardenNameLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nom del teu jardí'**
+  String get createAccountGardenNameLabel;
+
+  /// No description provided for @createAccountSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Compte creat correctament!'**
+  String get createAccountSuccess;
+
+  /// No description provided for @createAccountError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error creant el compte'**
+  String get createAccountError;
+
+  /// No description provided for @completeProfileTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Completar perfil'**
+  String get completeProfileTitle;
+
+  /// No description provided for @completeProfileHeading.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ja quasi ho tenim!'**
+  String get completeProfileHeading;
+
+  /// No description provided for @completeProfileSubtitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Completa aquestes dades per finalitzar el registre amb Google'**
+  String get completeProfileSubtitle;
+
+  /// No description provided for @completeProfilePasswordOptional.
+  ///
+  /// In ca, this message translates to:
+  /// **'Contrasenya (Opcional)'**
+  String get completeProfilePasswordOptional;
+
+  /// No description provided for @completeProfileSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Compte completat correctament!'**
+  String get completeProfileSuccess;
+
+  /// No description provided for @completeProfileError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error completant perfil'**
+  String get completeProfileError;
+
+  /// No description provided for @profileEditTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Modificar perfil'**
+  String get profileEditTitle;
+
+  /// No description provided for @profileEditUserDataTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dades d\'usuari'**
+  String get profileEditUserDataTitle;
+
+  /// No description provided for @profileEditUpdated.
+  ///
+  /// In ca, this message translates to:
+  /// **'Perfil actualitzat'**
+  String get profileEditUpdated;
+
+  /// No description provided for @profileEditUpdateError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error actualitzant el perfil'**
+  String get profileEditUpdateError;
+
+  /// No description provided for @languageCatalan.
+  ///
+  /// In ca, this message translates to:
+  /// **'Català'**
+  String get languageCatalan;
+
+  /// No description provided for @languageSpanish.
+  ///
+  /// In ca, this message translates to:
+  /// **'Castellà'**
+  String get languageSpanish;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In ca, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @inventoryTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'El teu inventari'**
+  String get inventoryTitle;
+
+  /// No description provided for @inventorySearchHint.
+  ///
+  /// In ca, this message translates to:
+  /// **'Cerca una llavor o poció...'**
+  String get inventorySearchHint;
+
+  /// No description provided for @inventorySeedsTab.
+  ///
+  /// In ca, this message translates to:
+  /// **'Llavors'**
+  String get inventorySeedsTab;
+
+  /// No description provided for @inventoryPotionsTab.
+  ///
+  /// In ca, this message translates to:
+  /// **'Pocions'**
+  String get inventoryPotionsTab;
+
+  /// No description provided for @inventoryNoSeeds.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha llavors disponibles'**
+  String get inventoryNoSeeds;
+
+  /// No description provided for @inventoryNoPotions.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha pocions disponibles'**
+  String get inventoryNoPotions;
+
+  /// No description provided for @inventoryAvailableItems.
+  ///
+  /// In ca, this message translates to:
+  /// **'{count} elements disponibles'**
+  String inventoryAvailableItems(Object count);
+
+  /// No description provided for @inventoryQuantity.
+  ///
+  /// In ca, this message translates to:
+  /// **'Quantitat: {amount}'**
+  String inventoryQuantity(Object amount);
+
+  /// No description provided for @gardenLoadingSeedsError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant llavors'**
+  String get gardenLoadingSeedsError;
+
+  /// No description provided for @gardenLoadingWeather.
+  ///
+  /// In ca, this message translates to:
+  /// **'Carregant meteo...'**
+  String get gardenLoadingWeather;
+
+  /// No description provided for @gardenWaitMoment.
+  ///
+  /// In ca, this message translates to:
+  /// **'Espera un moment'**
+  String get gardenWaitMoment;
+
+  /// No description provided for @gardenWeatherLoadError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut carregar la meteo'**
+  String get gardenWeatherLoadError;
+
+  /// No description provided for @gardenTapToRetry.
+  ///
+  /// In ca, this message translates to:
+  /// **'Toca per tornar-ho a provar'**
+  String get gardenTapToRetry;
+
+  /// No description provided for @gardenLoadingPotsError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant els tests:'**
+  String get gardenLoadingPotsError;
+
+  /// No description provided for @gardenNoPotsAvailable.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha tests disponibles'**
+  String get gardenNoPotsAvailable;
+
+  /// No description provided for @gardenWeatherSummary.
+  ///
+  /// In ca, this message translates to:
+  /// **'Temperatura: {temp}°C | Precipitació: {precipitation}'**
+  String gardenWeatherSummary(Object temp, Object precipitation);
+
+  /// No description provided for @gardenWindSummary.
+  ///
+  /// In ca, this message translates to:
+  /// **'Vent: {wind} m/s'**
+  String gardenWindSummary(Object wind);
+
+  /// No description provided for @waterlabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nivell d\'Aigua'**
+  String get waterlabel;
+
+  /// No description provided for @salut.
+  ///
+  /// In ca, this message translates to:
+  /// **'Salut'**
+  String get salut;
+
+  /// No description provided for @lastReg.
+  ///
+  /// In ca, this message translates to:
+  /// **'Últim reg: '**
+  String get lastReg;
+
+  /// No description provided for @regar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Regar planta'**
+  String get regar;
+
+  /// No description provided for @recolectPlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Recollir planta'**
+  String get recolectPlant;
+
+  /// No description provided for @aplyPotion.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aplicar poció'**
+  String get aplyPotion;
+
+  /// No description provided for @selectPotion.
+  ///
+  /// In ca, this message translates to:
+  /// **'Selecciona una poció pel test'**
+  String get selectPotion;
+
+  /// No description provided for @errorPotions.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant potions'**
+  String get errorPotions;
+
+  /// No description provided for @readyPotion.
+  ///
+  /// In ca, this message translates to:
+  /// **'Poció disponible per aplicar'**
+  String get readyPotion;
+
+  /// No description provided for @aplyingPotion.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aplicant...'**
+  String get aplyingPotion;
+
+  /// No description provided for @noPotions.
+  ///
+  /// In ca, this message translates to:
+  /// **'No tens potions disponibles'**
+  String get noPotions;
+
+  /// No description provided for @extraPotions.
+  ///
+  /// In ca, this message translates to:
+  /// **'Quan n\'aconsegueixis, les podràs aplicar aquí.'**
+  String get extraPotions;
+
+  /// No description provided for @testbuit.
+  ///
+  /// In ca, this message translates to:
+  /// **'Test Buit'**
+  String get testbuit;
+
+  /// No description provided for @selectionLlavor.
+  ///
+  /// In ca, this message translates to:
+  /// **'Selecciona una llavor pel test'**
+  String get selectionLlavor;
+
+  /// No description provided for @llavorDisp.
+  ///
+  /// In ca, this message translates to:
+  /// **'Llavor disponible per plantar'**
+  String get llavorDisp;
+
+  /// No description provided for @plant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Plantar'**
+  String get plant;
+
+  /// No description provided for @planting.
+  ///
+  /// In ca, this message translates to:
+  /// **'Plantant...'**
+  String get planting;
+
+  /// No description provided for @noLlavor.
+  ///
+  /// In ca, this message translates to:
+  /// **'No tens llavors disponibles'**
+  String get noLlavor;
+
+  /// No description provided for @extraLlavor.
+  ///
+  /// In ca, this message translates to:
+  /// **'Quan n\'aconsegueixis, les podràs plantar aquí.'**
+  String get extraLlavor;
+
+  /// No description provided for @confirmDeletePlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Segur que vols eliminar {plantName}?\nAquesta acció no es pot desfer.'**
+  String confirmDeletePlant(Object plantName);
+
+  /// No description provided for @thisPlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'aquesta planta'**
+  String get thisPlant;
+
+  /// No description provided for @deletePlant.
+  ///
+  /// In ca, this message translates to:
+  /// **'Eliminar planta'**
+  String get deletePlant;
+
+  /// No description provided for @finalitza.
+  ///
+  /// In ca, this message translates to:
+  /// **'Finalitza el'**
+  String get finalitza;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['ca', 'en', 'es'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'ca':
+      return AppLocalizationsCa();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}
