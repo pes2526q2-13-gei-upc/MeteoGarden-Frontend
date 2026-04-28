@@ -39,6 +39,7 @@
   "navProfile": "Perfil",
 
   "albumTitle": "Mi álbum de plantas",
+  "albumDiscoveredPlants": "Plantas descubiertas",
   "albumLoadingEncyclopedia": "Consultando enciclopedia...",
   "albumDetailsLoadError": "Error cargando detalles: {error}",
   "@albumDetailsLoadError": {
