@@ -7,6 +7,7 @@ import 'perfil_edit_page.dart';
 import 'login_page.dart';
 import 'package:http/http.dart' as http;
 import '../models/url.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
@@ -519,9 +520,13 @@ class _GameStatCard extends StatelessWidget {
 
 class _ActionButtons extends StatelessWidget {
   const _ActionButtons();
+  final storage = const FlutterSecureStorage();
 
-  void _logout(BuildContext context) {
+  Future<void> _logout(BuildContext context) async {
     Provider.of<UserModel>(context, listen: false).logout();
+    await storage.delete(key: 'auth_token');
+
+    if (!context.mounted) return;
 
     Navigator.pushReplacement(
       context,
@@ -567,6 +572,10 @@ class _ActionButtons extends StatelessWidget {
 
               if (response.statusCode == 200) {
                 Provider.of<UserModel>(context, listen: false).logout();
+
+                await storage.delete(key: 'auth_token');
+
+                if (!context.mounted) return;
 
                 Navigator.pushReplacement(
                   context,
