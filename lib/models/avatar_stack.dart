@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AvatarStack extends StatelessWidget {
+  // Definimos los parámetros que recibirá el widget
   final String body;
   final String eye;
   final String expression;
@@ -22,28 +23,41 @@ class AvatarStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Definimos una función de ayuda para cargar las rutas de las imágenes
-    // Asume que tienes tus imágenes en assets/avatar/categoria/nombre_archivo.png
-    Widget buildLayer(String category, String item) {
-      if (item.isEmpty || item == 'none') return const SizedBox.shrink();
-      return Image.asset(
-        'assets/avatar/$category/$item.png',
-        fit: BoxFit.contain,
-        errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(), // Evita errores si falta la imagen
-      );
-    }
-
+    // Usamos un Stack para encimar las imágenes una sobre otra
     return Stack(
       alignment: Alignment.center,
       children: [
-        buildLayer('body', body),
-        buildLayer('eye', eye),
-        buildLayer('expression', expression),
-        buildLayer('hair', hair),
-        buildLayer('facial_hair', facialHair),
-        buildLayer('clothing', clothing),
-        buildLayer('accessories', accessories),
+        // El orden importa: lo que va abajo en el código se ve "encima" en la pantalla
+        _buildImage(body),
+        _buildImage(clothing),
+        _buildImage(eye),
+        _buildImage(expression),
+        _buildImage(hair),
+        _buildImage(facialHair),
+        _buildImage(accessories),
       ],
+    );
+  }
+
+  // Función auxiliar para evitar errores si la ruta está vacía
+  // Cambiamos el nombre de la función para que tenga más sentido
+  Widget _buildImage(String path) {
+    if (path.isEmpty) return const SizedBox.shrink();
+
+    // Si la ruta empieza con http, es de internet. Usamos Image.network
+    if (path.startsWith('http')) {
+      return Image.network(
+        path,
+        fit: BoxFit.contain,
+        // Volvemos a activar el errorBuilder por si falla la conexión a internet
+        errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+      );
+    }
+    // mantenemos esto como plan B.
+    return Image.asset(
+      path,
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
     );
   }
 }

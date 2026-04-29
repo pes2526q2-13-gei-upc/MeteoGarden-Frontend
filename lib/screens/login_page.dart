@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
       await _fetchAndSaveProfile(data['token']);
       if (!context.mounted) return;
       await _checkAvatar();
-      // el go to home es fa a la funcio de checkavatar, per que no es sobreposin el canvis de pantalla      
+      // el go to home es fa a la funcio de checkavatar, per que no es sobreposin el canvis de pantalla
     } else {
       debugPrint("Error: ${response.body}");
       ScaffoldMessenger.of(
@@ -185,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
           await _fetchAndSaveProfile(data['token']);
           if (!context.mounted) return;
           await _checkAvatar();
-        // el go to home es fa a la funcio de checkavatar, per que no es sobreposin el canvis de pantalla
+          // el go to home es fa a la funcio de checkavatar, per que no es sobreposin el canvis de pantalla
         }
       } else {
         ScaffoldMessenger.of(
@@ -434,12 +434,16 @@ class _LoginPageState extends State<LoginPage> {
     if (avatarResponse.statusCode == 200) {
       final avatar = jsonDecode(avatarResponse.body);
       Provider.of<AvatarUser>(context, listen: false).setAvatar(
-        newBody: avatar['body'], newEye: avatar['eye'],
-         newExpression: avatar['expression'], 
-         newHair: avatar['hair'], newFacialHair: avatar['facial_hair'], 
-         newClothing: avatar['clothing'], newAccessories: avatar['accessories']);
-        _goToHome(); 
-    } else if (avatarResponse.statusCode == 404){
+        newBody: avatar['body'],
+        newEye: avatar['eye'],
+        newExpression: avatar['expression'],
+        newHair: avatar['hair'],
+        newFacialHair: avatar['facial_hair'],
+        newClothing: avatar['clothing'],
+        newAccessories: avatar['accessories'],
+      );
+      _goToHome();
+    } else if (avatarResponse.statusCode == 404) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

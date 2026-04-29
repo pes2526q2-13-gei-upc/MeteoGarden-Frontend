@@ -306,6 +306,24 @@
 "deletePlant": "Eliminar planta",
 "finalitza": "Finalitza el",
 
-"avatarLoadError": "Error carregant l'avatar"
+"avatarLoadError": "Error carregant l'avatar",
+
+"createYourAvatar": "Crea el teu avatar",
+"editAvatar": "Edita el teu avatar",
+"errorLoadingOptions": "Error carregant opcions",
+"errorConnectionOptions": "Error de connexió carregant les opcions.",
+"errorConnectionAvatar": "Error de connexió carregant l'avatar.",
+"errorSavingAvatar": "Error guardant l'avatar",
+"errorConnectionSaving": "Error de connexió guardant l'avatar.",
+"noOptionsAvailable": "No hi ha opcions disponibles",
+"continueButton": "Continuar",
+"saveChangesButton": "Guardar canvis",
+"categoryBody": "Cos",
+"categoryEyes": "Ulls",
+"categoryExpression": "Expressió",
+"categoryHair": "Cabell",
+"categoryFacialHair": "Barba",
+"categoryClothing": "Roba",
+"categoryAccessories": "Accessoris"
 }
 

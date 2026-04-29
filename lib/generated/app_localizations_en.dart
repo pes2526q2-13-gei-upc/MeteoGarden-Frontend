@@ -103,7 +103,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get albumTitle => 'My plant album';
 
   @override
-  String get albumDiscoveredPlants => 'Plantes descobertes';
+  String get albumDiscoveredPlants => 'Plants discovered';
 
   @override
   String get albumLoadingEncyclopedia => 'Consulting encyclopedia...';
@@ -662,4 +662,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get avatarLoadError => 'Error loading the avatar';
+
+  @override
+  String get createYourAvatar => 'Create your Avatar';
+
+  @override
+  String get editAvatar => 'Edit Avatar';
+
+  @override
+  String get errorLoadingOptions => 'Error loading options';
+
+  @override
+  String get errorConnectionOptions =>
+      'Connection error while loading options.';
+
+  @override
+  String get errorConnectionAvatar =>
+      'Connection error while loading user avatar.';
+
+  @override
+  String get errorSavingAvatar => 'Error saving avatar';
+
+  @override
+  String get errorConnectionSaving => 'Connection error while saving avatar.';
+
+  @override
+  String get noOptionsAvailable => 'No options available';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get saveChangesButton => 'Save Changes';
+
+  @override
+  String get categoryBody => 'Body';
+
+  @override
+  String get categoryEyes => 'Eyes';
+
+  @override
+  String get categoryExpression => 'Expression';
+
+  @override
+  String get categoryHair => 'Hair';
+
+  @override
+  String get categoryFacialHair => 'Facial Hair';
+
+  @override
+  String get categoryClothing => 'Clothing';
+
+  @override
+  String get categoryAccessories => 'Accessories';
 }

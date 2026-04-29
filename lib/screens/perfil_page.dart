@@ -7,7 +7,7 @@ import 'perfil_edit_page.dart';
 import 'login_page.dart';
 import 'package:http/http.dart' as http;
 import '../models/url.dart';
-import '../../models/avatar_stack.dart'; 
+import '../../models/avatar_stack.dart';
 import 'avatar_editor_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../models/avatar_user.dart';
@@ -130,7 +130,6 @@ class _GameHeader extends StatelessWidget {
     final displayLanguage = language.isEmpty ? '—' : language;
     final avatar = Provider.of<AvatarUser>(context);
 
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
       child: Container(
@@ -166,7 +165,8 @@ class _GameHeader extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const AvatarEditorPage(isNewUser: false),
+                              builder: (_) =>
+                                  const AvatarEditorPage(isNewUser: false),
                             ),
                           );
                         },

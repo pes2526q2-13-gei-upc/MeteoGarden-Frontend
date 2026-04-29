@@ -39,6 +39,7 @@
   "navProfile": "Profile",
 
   "albumTitle": "My plant album",
+  "albumDiscoveredPlants": "Plants discovered",
   "albumLoadingEncyclopedia": "Consulting encyclopedia...",
   "albumDetailsLoadError": "Error loading details: {error}",
   "@albumDetailsLoadError": {
@@ -305,6 +306,24 @@
 "deletePlant": "Delete plant",
 "finalitza": "Ends on",
 
-"avatarLoadError": "Error loading the avatar"
+"avatarLoadError": "Error loading the avatar",
+
+"createYourAvatar": "Create your Avatar",
+"editAvatar": "Edit Avatar",
+"errorLoadingOptions": "Error loading options",
+"errorConnectionOptions": "Connection error while loading options.",
+"errorConnectionAvatar": "Connection error while loading user avatar.",
+"errorSavingAvatar": "Error saving avatar",
+"errorConnectionSaving": "Connection error while saving avatar.",
+"noOptionsAvailable": "No options available",
+"continueButton": "Continue",
+"saveChangesButton": "Save Changes",
+"categoryBody": "Body",
+"categoryEyes": "Eyes",
+"categoryExpression": "Expression",
+"categoryHair": "Hair",
+"categoryFacialHair": "Facial Hair",
+"categoryClothing": "Clothing",
+"categoryAccessories": "Accessories"
 }
 

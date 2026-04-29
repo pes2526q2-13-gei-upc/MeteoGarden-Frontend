@@ -27,5 +27,4 @@ class AvatarUser with ChangeNotifier {
     accessories = newAccessories;
     notifyListeners();
   }
-
 }

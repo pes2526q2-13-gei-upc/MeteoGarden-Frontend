@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
 import 'avatar_editor_page.dart';
+
 class City {
   final String code;
   final String name;
