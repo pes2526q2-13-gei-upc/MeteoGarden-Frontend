@@ -152,12 +152,15 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
       parsedOptions[mappedCategory] = urls;
     });
 
-    if (parsedOptions.containsKey('Hair'))
+    if (parsedOptions.containsKey('Hair')) {
       parsedOptions['Hair']!.insert(0, 'none');
-    if (parsedOptions.containsKey('Facial Hair'))
+    }
+    if (parsedOptions.containsKey('Facial Hair')) {
       parsedOptions['Facial Hair']!.insert(0, 'none');
-    if (parsedOptions.containsKey('Accessories'))
+    }
+    if (parsedOptions.containsKey('Accessories')) {
       parsedOptions['Accessories']!.insert(0, 'none');
+    }
 
     return parsedOptions;
   }
@@ -196,7 +199,7 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
   // ==========================================
   Future<void> _fetchUserAvatar() async {
     final avatar = Provider.of<AvatarUser>(context, listen: false);
-    
+
     currentBody = avatar.body;
     currentEye = avatar.eye;
     currentExpression = avatar.expression;
@@ -377,7 +380,7 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
@@ -436,7 +439,9 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
 
                         // ─── TITLE ───
                         Text(
-                          widget.isNewUser ? l10n.createYourAvatar : l10n.editAvatar,
+                          widget.isNewUser
+                              ? l10n.createYourAvatar
+                              : l10n.editAvatar,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -457,7 +462,10 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                   left: 0,
                   top: 0,
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Color(0xFF4CAF50)),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Color(0xFF4CAF50),
+                    ),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ),
@@ -472,7 +480,8 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     // ------------------------------------
     if (isLoading) {
       return Scaffold(
-        backgroundColor: Colors.white, // Fondo blanco para que encaje con el nuevo header
+        backgroundColor:
+            Colors.white, // Fondo blanco para que encaje con el nuevo header
         body: Column(
           children: [
             customHeader,
@@ -497,8 +506,9 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
           children: [
             customHeader,
 
-            const SizedBox(height: 16), // Un poco de espacio extra debajo del header
-
+            const SizedBox(
+              height: 16,
+            ), // Un poco de espacio extra debajo del header
             // --- ZONA DE VISTA PREVIA ---
             Container(
               height: 250,
@@ -508,8 +518,8 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                 border: Border(
                   bottom: BorderSide(
                     color: const Color(0xFF4CAF50).withValues(alpha: 0.2),
-                    width: 1
-                    ),
+                    width: 1,
+                  ),
                 ),
               ),
               child: Center(
@@ -532,7 +542,9 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
             // --- PESTAÑAS (TABS) ---
             TabBar(
               isScrollable: true,
-              labelColor: const Color(0xFF2E7D32), // Ajustado al verde de tu título
+              labelColor: const Color(
+                0xFF2E7D32,
+              ), // Ajustado al verde de tu título
               unselectedLabelColor: Colors.grey,
               indicatorColor: const Color(0xFF2E7D32),
               tabs: categories
@@ -576,10 +588,10 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                     padding: const EdgeInsets.all(16),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                    ),
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
                     itemCount: displayedItems.length,
                     itemBuilder: (context, index) {
                       final item = displayedItems[index];
@@ -618,7 +630,9 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: isSelected
-                                  ? const Color(0xFF4CAF50) // Ajustado a tu color principal
+                                  ? const Color(
+                                      0xFF4CAF50,
+                                    ) // Ajustado a tu color principal
                                   : Colors.grey.shade300,
                               width: isSelected ? 3 : 1,
                             ),
@@ -646,14 +660,15 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                                     },
                                     loadingBuilder:
                                         (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return const Center(
-                                        child: CircularProgressIndicator(
-                                          color: Color(0xFF4CAF50),
-                                          strokeWidth: 2,
-                                        ),
-                                      );
-                                    },
+                                          if (loadingProgress == null)
+                                            return child;
+                                          return const Center(
+                                            child: CircularProgressIndicator(
+                                              color: Color(0xFF4CAF50),
+                                              strokeWidth: 2,
+                                            ),
+                                          );
+                                        },
                                   ),
                           ),
                         ),
@@ -686,7 +701,9 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                   child: FilledButton(
                     onPressed: isSaving ? null : _saveAvatar,
                     style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF2E7D32), // Ajustado al verde oscuro de MeteoGarden
+                      backgroundColor: const Color(
+                        0xFF2E7D32,
+                      ), // Ajustado al verde oscuro de MeteoGarden
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),

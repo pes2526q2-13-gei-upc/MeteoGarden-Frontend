@@ -7,6 +7,7 @@ import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
 import 'avatar_editor_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class CreaNovaConta extends StatefulWidget {
   const CreaNovaConta({super.key});
 

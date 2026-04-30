@@ -202,19 +202,22 @@ class _GameHeader extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
-                                color: Colors.white, // Fondo blanco para que destaque
+                                color: Colors
+                                    .white, // Fondo blanco para que destaque
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withValues(alpha: 0.2),
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
-                                  )
+                                  ),
                                 ],
                               ),
                               child: const Icon(
                                 Icons.edit_rounded,
-                                color: Color(0xFF3E6B48), // Tu color verde oscuro
+                                color: Color(
+                                  0xFF3E6B48,
+                                ), // Tu color verde oscuro
                                 size: 16,
                               ),
                             ),
