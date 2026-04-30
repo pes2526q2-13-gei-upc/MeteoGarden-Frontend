@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_garden/models/avatar_user.dart';
 import 'package:provider/provider.dart';
-import 'package:meteo_garden/screens/login_page.dart';
+import 'package:meteo_garden/screens/login_persistencia.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -46,7 +46,7 @@ class MeteoGardenApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [Locale('ca'), Locale('es'), Locale('en')],
-      home: const LoginPage(),
+      home: const SplashScreen(),
     );
   }
 }

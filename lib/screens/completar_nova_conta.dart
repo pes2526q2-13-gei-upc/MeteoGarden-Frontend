@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
 import 'avatar_editor_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class City {
   final String code;
@@ -46,6 +47,7 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController gardenController = TextEditingController();
   final TextEditingController citySearchController = TextEditingController();
+  final storage = const FlutterSecureStorage();
 
   List<City> cities = [];
   City? selectedCity;
@@ -108,6 +110,7 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      await storage.write(key: 'auth_token', value: data['token']);
       await _fetchAndSaveProfile(data['token']);
       if (!mounted) return;
 
