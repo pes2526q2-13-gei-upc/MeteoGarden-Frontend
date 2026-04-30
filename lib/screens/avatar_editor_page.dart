@@ -377,24 +377,111 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     }
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    // ------------------------------------
+    // HEADER METEOGARDEN REUTILIZABLE
+    // ------------------------------------
+    final Widget customHeader = Container(
+      decoration: BoxDecoration(
+        color: Colors.white, // Fondo blanco asegurado para el header
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05), // Sombra muy suavecita
+            blurRadius: 10,
+            offset: const Offset(0, 4), // Desplazada un poco hacia abajo
+          ),
+        ],
+      ),
+      child: SafeArea(
+        bottom: false, // Solo protegemos la parte superior
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+          child: Stack(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // ─── LOGO + NOM APP ───
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/logo.png',
+                              height: 28,
+                              errorBuilder: (_, _, _) => const Icon(
+                                Icons.eco,
+                                color: Color(0xFF4CAF50),
+                                size: 28,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            const Text(
+                              'MeteoGarden',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2E7D32),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        // ─── TITLE ───
+                        Text(
+                          widget.isNewUser ? l10n.createYourAvatar : l10n.editAvatar,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF1B5E20),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              // ─── BACK BUTTON ───
+              // Si NO es usuario nuevo, mostramos la flecha hacia atrás
+              if (!widget.isNewUser)
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Color(0xFF4CAF50)),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
 
     // ------------------------------------
     // PANTALLA DE CARGA INICIAL
     // ------------------------------------
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            widget.isNewUser ? l10n.createYourAvatar : l10n.editAvatar,
-          ),
-          backgroundColor: const Color(0xFF355F3F),
-          foregroundColor: Colors.white,
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(color: Color(0xFF355F3F)),
+        backgroundColor: Colors.white, // Fondo blanco para que encaje con el nuevo header
+        body: Column(
+          children: [
+            customHeader,
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(color: Color(0xFF355F3F)),
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -405,23 +492,24 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     return DefaultTabController(
       length: categories.length,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            widget.isNewUser ? l10n.createYourAvatar : l10n.editAvatar,
-          ),
-          backgroundColor: const Color(0xFF355F3F),
-          foregroundColor: Colors.white,
-        ),
+        backgroundColor: Colors.white, // Fondo blanco sugerido por tu diseño
         body: Column(
           children: [
+            customHeader,
+
+            const SizedBox(height: 16), // Un poco de espacio extra debajo del header
+
             // --- ZONA DE VISTA PREVIA ---
             Container(
               height: 250,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                border: const Border(
-                  bottom: BorderSide(color: Colors.grey, width: 1),
+                color: Colors.grey.shade100, // Un gris un poco más suave
+                border: Border(
+                  bottom: BorderSide(
+                    color: const Color(0xFF4CAF50).withValues(alpha: 0.2),
+                    width: 1
+                    ),
                 ),
               ),
               child: Center(
@@ -444,10 +532,9 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
             // --- PESTAÑAS (TABS) ---
             TabBar(
               isScrollable: true,
-              labelColor: const Color(0xFF355F3F),
+              labelColor: const Color(0xFF2E7D32), // Ajustado al verde de tu título
               unselectedLabelColor: Colors.grey,
-              indicatorColor: const Color(0xFF355F3F),
-              // Traducimos el texto de cada pestaña
+              indicatorColor: const Color(0xFF2E7D32),
               tabs: categories
                   .map((cat) => Tab(text: _getLocalizedCategoryName(cat, l10n)))
                   .toList(),
@@ -489,10 +576,10 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                     padding: const EdgeInsets.all(16),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                        ),
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                    ),
                     itemCount: displayedItems.length,
                     itemBuilder: (context, index) {
                       final item = displayedItems[index];
@@ -531,7 +618,7 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: isSelected
-                                  ? const Color(0xFF355F3F)
+                                  ? const Color(0xFF4CAF50) // Ajustado a tu color principal
                                   : Colors.grey.shade300,
                               width: isSelected ? 3 : 1,
                             ),
@@ -559,15 +646,14 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                                     },
                                     loadingBuilder:
                                         (context, child, loadingProgress) {
-                                          if (loadingProgress == null)
-                                            return child;
-                                          return const Center(
-                                            child: CircularProgressIndicator(
-                                              color: Color(0xFF355F3F),
-                                              strokeWidth: 2,
-                                            ),
-                                          );
-                                        },
+                                      if (loadingProgress == null) return child;
+                                      return const Center(
+                                        child: CircularProgressIndicator(
+                                          color: Color(0xFF4CAF50),
+                                          strokeWidth: 2,
+                                        ),
+                                      );
+                                    },
                                   ),
                           ),
                         ),
@@ -592,6 +678,7 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
 
             // --- BOTÓN DE GUARDAR ---
             SafeArea(
+              top: false,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SizedBox(
@@ -599,7 +686,7 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                   child: FilledButton(
                     onPressed: isSaving ? null : _saveAvatar,
                     style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF355F3F),
+                      backgroundColor: const Color(0xFF2E7D32), // Ajustado al verde oscuro de MeteoGarden
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
