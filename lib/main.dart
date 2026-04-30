@@ -5,8 +5,13 @@ import 'package:meteo_garden/models/dades_usr.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
+import 'package:flutter/services.dart';
 
-void main() {
+void main() async {
+   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(
     MultiProvider(
       providers: [

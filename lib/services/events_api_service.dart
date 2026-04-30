@@ -1,38 +1,55 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
 
-// ─── Model ────────────────────────────────────────────────────────────────────
+// ─── Models ───────────────────────────────────────────────────────────────────
 
-class EventLocation {
-  final String county;
-  final String city;
-  final int postalCode;
-  final String street;
-  final double latitude;
-  final double longitude;
+class EventCount {
+  final DateTime day;
+  final int total;
 
-  const EventLocation({
-    required this.county,
-    required this.city,
-    required this.postalCode,
-    required this.street,
-    required this.latitude,
-    required this.longitude,
-  });
+  const EventCount({required this.day, required this.total});
 
-  factory EventLocation.fromJson(Map<String, dynamic> json) => EventLocation(
-    county: json['county'] as String? ?? '',
-    city: json['city'] as String? ?? '',
-    postalCode: (json['postal_code'] as num?)?.toInt() ?? 0,
-    street: json['street'] as String? ?? '',
-    latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
-    longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
+  factory EventCount.fromJson(Map<String, dynamic> json) => EventCount(
+    day: DateTime.parse(json['day'] as String),
+    total: json['total'] as int,
   );
 }
 
-class PlantEvent {
+class EventSummary {
   final String id;
-  final String sourceType;
+  final String title;
+  final String subtitle;
+  final String city;
+  final DateTime endDate;
+  final double price;
+  final String image;
+
+  const EventSummary({
+    required this.id,
+    required this.title,
+    required this.subtitle,
+    required this.city,
+    required this.endDate,
+    required this.price,
+    required this.image,
+  });
+
+  bool get isFree => price == 0;
+
+  factory EventSummary.fromJson(Map<String, dynamic> json) => EventSummary(
+    id: json['id'] as String,
+    title: json['title'] as String? ?? '',
+    subtitle: json['subtitle'] as String? ?? '',
+    city: json['city'] as String? ?? '',
+    endDate: DateTime.parse(json['end_date'] as String),
+    price: (json['price'] as num).toDouble(),
+    image: json['image'] as String? ?? '',
+  );
+}
+
+class EventDetail {
+  final String id;
   final String title;
   final String subtitle;
   final String description;
@@ -40,16 +57,13 @@ class PlantEvent {
   final DateTime endDate;
   final String category;
   final double price;
-  final String ticketUrl;
-  final String phone;
-  final EventLocation location;
   final List<String> tags;
-  final String imageUrl;
-  final double? distanceKm;
+  final String image;
+  final String city;
+  final String street;
 
-  const PlantEvent({
+  const EventDetail({
     required this.id,
-    required this.sourceType,
     required this.title,
     required this.subtitle,
     required this.description,
@@ -57,231 +71,147 @@ class PlantEvent {
     required this.endDate,
     required this.category,
     required this.price,
-    required this.ticketUrl,
-    required this.phone,
-    required this.location,
     required this.tags,
-    required this.imageUrl,
-    this.distanceKm,
+    required this.image,
+    required this.city,
+    required this.street,
   });
 
-  factory PlantEvent.fromJson(Map<String, dynamic> json) => PlantEvent(
-    id: json['id'] as String? ?? '',
-    sourceType: json['source_type'] as String? ?? '',
+  bool get isFree => price == 0;
+
+  factory EventDetail.fromJson(Map<String, dynamic> json) => EventDetail(
+    id: json['id'] as String,
     title: json['title'] as String? ?? '',
     subtitle: json['subtitle'] as String? ?? '',
     description: json['description'] as String? ?? '',
     startDate: DateTime.parse(json['start_date'] as String),
     endDate: DateTime.parse(json['end_date'] as String),
     category: json['category'] as String? ?? '',
-    price: (json['price'] as num?)?.toDouble() ?? 0.0,
-    ticketUrl: json['ticket_url'] as String? ?? '',
-    phone: json['phone'] as String? ?? '',
-    location: EventLocation.fromJson(
-      json['location'] as Map<String, dynamic>? ?? {},
-    ),
-    tags:
-        (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-        [],
-    imageUrl: json['image_url'] as String? ?? '',
-    distanceKm: (json['distance_km'] as num?)?.toDouble(),
-  );
-
-  bool get isFree => price == 0.0;
-}
-
-class EventsPage {
-  final int count;
-  final int page;
-  final int pageSize;
-  final int totalPages;
-  final List<PlantEvent> results;
-
-  const EventsPage({
-    required this.count,
-    required this.page,
-    required this.pageSize,
-    required this.totalPages,
-    required this.results,
-  });
-
-  factory EventsPage.fromJson(Map<String, dynamic> json) => EventsPage(
-    count: json['count'] as int? ?? 0,
-    page: json['page'] as int? ?? 1,
-    pageSize: json['page_size'] as int? ?? 20,
-    totalPages: json['total_pages'] as int? ?? 1,
-    results:
-        (json['results'] as List<dynamic>?)
-            ?.map((e) => PlantEvent.fromJson(e as Map<String, dynamic>))
+    price: (json['price'] as num).toDouble(),
+    tags: (json['tags'] as List<dynamic>?)
+            ?.map((t) => t.toString())
             .toList() ??
         [],
+    image: json['image'] as String? ?? '',
+    city: json['city'] as String? ?? '',
+    street: json['street'] as String? ?? '',
   );
-}
-
-// ─── Query Params ─────────────────────────────────────────────────────────────
-
-class EventsQueryParams {
-  final DateTime? dateFrom;
-  final DateTime? dateTo;
-  final String? city;
-  final String? county;
-  final String? category;
-  final String? q;
-  final double? lat;
-  final double? lng;
-  final double? distanceKm;
-  final double? minPrice;
-  final double? maxPrice;
-  final String? source; // 'all', 'party', 'dataset'
-  final String? sortBy; // 'start_date', 'price', 'title', 'distance'
-  final String? order; // 'asc', 'desc'
-  final bool includePast;
-  final int page;
-  final int pageSize;
-
-  const EventsQueryParams({
-    this.dateFrom,
-    this.dateTo,
-    this.city,
-    this.county,
-    this.category,
-    this.q,
-    this.lat,
-    this.lng,
-    this.distanceKm,
-    this.minPrice,
-    this.maxPrice,
-    this.source,
-    this.sortBy,
-    this.order,
-    this.includePast = false,
-    this.page = 1,
-    this.pageSize = 100,
-  });
-
-  Map<String, String> toQueryMap() {
-    final params = <String, String>{};
-
-    if (dateFrom != null) {
-      params['date_from'] = dateFrom!.toUtc().toIso8601String();
-    }
-    if (dateTo != null) {
-      params['date_to'] = dateTo!.toUtc().toIso8601String();
-    }
-    if (city != null && city!.isNotEmpty) params['city'] = city!;
-    if (county != null && county!.isNotEmpty) params['county'] = county!;
-    if (category != null && category!.isNotEmpty) {
-      params['category'] = category!;
-    }
-    if (q != null && q!.isNotEmpty) params['q'] = q!;
-    if (lat != null) params['lat'] = lat!.toString();
-    if (lng != null) params['lng'] = lng!.toString();
-    if (distanceKm != null) params['distance_km'] = distanceKm!.toString();
-    if (minPrice != null) params['min_price'] = minPrice!.toString();
-    if (maxPrice != null) params['max_price'] = maxPrice!.toString();
-    if (source != null) params['source'] = source!;
-    if (sortBy != null) params['sort_by'] = sortBy!;
-    if (order != null) params['order'] = order!;
-    if (includePast) params['include_past'] = 'true';
-    params['page'] = page.toString();
-    params['page_size'] = pageSize.toString();
-
-    return params;
-  }
 }
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 
-class EventsApiService {
-  static const String _baseUrl =
-      'https://gresca.jaumelopez.dev/api/external/events';
+class EventsService {
+  static const String _baseUrl = 'http://127.0.0.1:8000';
 
-  // Token d'autorització — substitueix pel teu valor real
-  static const String _token = 'lBw8w2gZbXebuJ-FxhziSVNCHTli-h6jZj3FuPZ-erU';
-
-  Map<String, String> get _headers => {
-    'Authorization': 'Token $_token',
-    'Content-Type': 'application/json',
-  };
-
-  /// Fetch a single page of events with the given query parameters.
-  Future<EventsPage> fetchEvents(EventsQueryParams params) async {
-    final uri = Uri.parse(
-      _baseUrl,
-    ).replace(queryParameters: params.toQueryMap());
-
-    final response = await http.get(uri, headers: _headers);
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-      return EventsPage.fromJson(data);
-    }
-
-    throw Exception('Error carregant esdeveniments: ${response.statusCode}');
-  }
-
-  /// Fetch ALL events for a given month, handling pagination automatically.
-  ///
-  /// Exemple: fetchEventsForMonth(year: 2026, month: 4, city: 'barcelona')
-  /// → crida l'API amb date_from=2026-04-01 i date_to=2026-04-30T23:59:59
-  /// → si l'API retorna total_pages > 1, fa les crides successives fins tenir-los tots.
-  Future<List<PlantEvent>> fetchEventsForMonth({
+  /// GET /api/events/count?year=&month=
+  /// Retorna el recompte d'events per dia del mes indicat.
+  Future<Map<int, int>> fetchEventCountByDay({
     required int year,
     required int month,
-    String? city,
-    String? county,
-    double? lat,
-    double? lng,
-    double? distanceKm,
-    bool includePast = true,
   }) async {
-    final dateFrom = DateTime(year, month, 1);
-    // Primer dia del mes següent - 1 segon = últim instant del mes actual.
-    // Funciona correctament al desembre: DateTime(2026, 13, 1) → Dart ho resol
-    // automàticament com DateTime(2027, 1, 1).
-    final dateTo = DateTime(
-      year,
-      month + 1,
-      1,
-    ).subtract(const Duration(seconds: 1));
+    final uri = Uri.parse('$_baseUrl/api/events/count').replace(
+      queryParameters: {
+        'year': '$year',
+        'month': month.toString().padLeft(2, '0'),
+      },
+    );
 
-    final allEvents = <PlantEvent>[];
-    int currentPage = 1;
-    int totalPages = 1;
-
-    do {
-      final page = await fetchEvents(
-        EventsQueryParams(
-          dateFrom: dateFrom,
-          dateTo: dateTo,
-          city: city,
-          county: county,
-          lat: lat,
-          lng: lng,
-          distanceKm: distanceKm,
-          includePast: includePast,
-          sortBy: 'start_date',
-          order: 'asc',
-          page: currentPage,
-          pageSize: 100, // màxim permès per l'API
-        ),
-      );
-
-      allEvents.addAll(page.results);
-      totalPages = page.totalPages;
-      currentPage++;
-    } while (currentPage <= totalPages);
-
-    return allEvents;
-  }
-
-  /// Group events by day-of-month for easy calendar rendering.
-  Map<int, List<PlantEvent>> groupEventsByDay(List<PlantEvent> events) {
-    final grouped = <int, List<PlantEvent>>{};
-    for (final event in events) {
-      final day = event.startDate.day;
-      grouped.putIfAbsent(day, () => []).add(event);
+    final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      throw Exception('Error carregant recompte: ${response.statusCode}');
     }
-    return grouped;
+
+    final body = jsonDecode(utf8.decode(response.bodyBytes))
+        as Map<String, dynamic>;
+    final events = body['events'] as List<dynamic>;
+
+    final Map<int, int> result = {};
+    for (final item in events) {
+      final count = EventCount.fromJson(item as Map<String, dynamic>);
+      result[count.day.day] = count.total;
+    }
+    return result;
   }
+
+  /// GET /api/events/city?city=&date=&lang=
+  /// Retorna els events d'una ciutat concreta per a la data indicada.
+  Future<List<EventSummary>> fetchEventsByCity({
+    required String city,
+    required DateTime date,
+    String lang = 'en',
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/events/city').replace(
+      queryParameters: {
+        'city': city.toLowerCase(),
+        'date': _formatDate(date),
+        'lang': lang,
+      },
+    );
+
+    final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      throw Exception('Error carregant events de la ciutat: ${response.statusCode}');
+    }
+
+    final body = jsonDecode(utf8.decode(response.bodyBytes))
+        as Map<String, dynamic>;
+    final events = body['events'] as List<dynamic>;
+    return events
+        .map((e) => EventSummary.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// GET /api/events/?date=&lang=
+  /// Retorna tots els events per a la data indicada (totes les ciutats).
+  Future<List<EventSummary>> fetchAllEvents({
+    required DateTime date,
+    String lang = 'en',
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/events/').replace(
+      queryParameters: {
+        'date': _formatDate(date),
+        'lang': lang,
+      },
+    );
+
+    final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      throw Exception('Error carregant events: ${response.statusCode}');
+    }
+
+    final body = jsonDecode(utf8.decode(response.bodyBytes))
+        as Map<String, dynamic>;
+    final events = body['events'] as List<dynamic>;
+    return events
+        .map((e) => EventSummary.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// GET /api/events/detail?id=&date=&lang=
+  /// Retorna el detall complet d'un event.
+  Future<EventDetail> fetchEventDetail({
+    required String id,
+    required DateTime date,
+    String lang = 'en',
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/events/detail').replace(
+      queryParameters: {
+        'id': id,
+        'date': _formatDate(date),
+        'lang': lang,
+      },
+    );
+
+    final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      throw Exception('Error carregant detall: ${response.statusCode}');
+    }
+
+    final body = jsonDecode(utf8.decode(response.bodyBytes))
+        as Map<String, dynamic>;
+    return EventDetail.fromJson(body['events'] as Map<String, dynamic>);
+  }
+
+  String _formatDate(DateTime date) =>
+      '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 }
