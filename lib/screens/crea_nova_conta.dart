@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
-import 'package:meteo_garden/screens/home_shell.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
+import 'avatar_editor_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CreaNovaConta extends StatefulWidget {
@@ -177,7 +177,9 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomeShell()),
+        MaterialPageRoute(
+          builder: (context) => const AvatarEditorPage(isNewUser: true),
+        ),
       );
     } else {
       debugPrint("Error: ${response.body}");

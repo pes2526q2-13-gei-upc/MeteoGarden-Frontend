@@ -304,6 +304,26 @@
 "confirmDeletePlant": "¿Estás seguro de que quieres eliminar {plantName}?\nEsta acción no se puede deshacer.",
 "thisPlant": "esta planta",
 "deletePlant": "Eliminar planta",
-"finalitza": "Finaliza el"
+"finalitza": "Finaliza el",
+
+"avatarLoadError": "Error cargando el avatar",
+
+"createYourAvatar": "Create your Avatar",
+"editAvatar": "Editar avatar",
+"errorLoadingOptions": "Error cargando las opciones",
+"errorConnectionOptions": "Error de conexión cargando las opciones.",
+"errorConnectionAvatar": "Error de conexión cargando el avatar.",
+"errorSavingAvatar": "Error guardando el avatar",
+"errorConnectionSaving": "Error de conexión guardando el avatar.",
+"noOptionsAvailable": "No hay opciones disponibles",
+"continueButton": "Continuar",
+"saveChangesButton": "Guardar cambios",
+"categoryBody": "Cuerpo",
+"categoryEyes": "Ojos",
+"categoryExpression": "Expresión",
+"categoryHair": "Cabello",
+"categoryFacialHair": "Barba",
+"categoryClothing": "Ropa",
+"categoryAccessories": "Accesorios"
 }
 

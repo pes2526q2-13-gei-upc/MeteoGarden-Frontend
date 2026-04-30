@@ -659,4 +659,59 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get finalitza => 'Finaliza el';
+
+  @override
+  String get avatarLoadError => 'Error cargando el avatar';
+
+  @override
+  String get createYourAvatar => 'Create your Avatar';
+
+  @override
+  String get editAvatar => 'Editar avatar';
+
+  @override
+  String get errorLoadingOptions => 'Error cargando las opciones';
+
+  @override
+  String get errorConnectionOptions =>
+      'Error de conexión cargando las opciones.';
+
+  @override
+  String get errorConnectionAvatar => 'Error de conexión cargando el avatar.';
+
+  @override
+  String get errorSavingAvatar => 'Error guardando el avatar';
+
+  @override
+  String get errorConnectionSaving => 'Error de conexión guardando el avatar.';
+
+  @override
+  String get noOptionsAvailable => 'No hay opciones disponibles';
+
+  @override
+  String get continueButton => 'Continuar';
+
+  @override
+  String get saveChangesButton => 'Guardar cambios';
+
+  @override
+  String get categoryBody => 'Cuerpo';
+
+  @override
+  String get categoryEyes => 'Ojos';
+
+  @override
+  String get categoryExpression => 'Expresión';
+
+  @override
+  String get categoryHair => 'Cabello';
+
+  @override
+  String get categoryFacialHair => 'Barba';
+
+  @override
+  String get categoryClothing => 'Ropa';
+
+  @override
+  String get categoryAccessories => 'Accesorios';
 }
