@@ -302,6 +302,11 @@
 "extraLlavor": "Cuando consigas, podrás plantarlas aquí.",
 "confirmDeletePlant": "¿Estás seguro de que quieres eliminar {plantName}?\nEsta acción no se puede deshacer.",
 "thisPlant": "esta planta",
-"deletePlant": "Eliminar planta"
-}
+"deletePlant": "Eliminar planta",
 
+"missionsTitle": "Misiones",
+"missionsSubtitle": "Completa retos y gana monedas",
+"missionsCompleted": "Completadas",
+"missionsTagCompleted": "Completada",
+"missionsTagInProgress": "En progreso"
+}

@@ -1322,6 +1322,36 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Eliminar planta'**
   String get deletePlant;
+
+  /// No description provided for @missionsTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Missions'**
+  String get missionsTitle;
+
+  /// No description provided for @missionsSubtitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Completa reptes i guanya monedes'**
+  String get missionsSubtitle;
+
+  /// No description provided for @missionsCompleted.
+  ///
+  /// In ca, this message translates to:
+  /// **'Completades'**
+  String get missionsCompleted;
+
+  /// No description provided for @missionsTagCompleted.
+  ///
+  /// In ca, this message translates to:
+  /// **'Completada'**
+  String get missionsTagCompleted;
+
+  /// No description provided for @missionsTagInProgress.
+  ///
+  /// In ca, this message translates to:
+  /// **'En progrés'**
+  String get missionsTagInProgress;
 }
 
 class _AppLocalizationsDelegate

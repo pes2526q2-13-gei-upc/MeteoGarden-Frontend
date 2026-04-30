@@ -656,4 +656,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get deletePlant => 'Eliminar planta';
+
+  @override
+  String get missionsTitle => 'Misiones';
+
+  @override
+  String get missionsSubtitle => 'Completa retos y gana monedas';
+
+  @override
+  String get missionsCompleted => 'Completadas';
+
+  @override
+  String get missionsTagCompleted => 'Completada';
+
+  @override
+  String get missionsTagInProgress => 'En progreso';
 }

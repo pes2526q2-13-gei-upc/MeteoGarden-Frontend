@@ -655,4 +655,19 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get deletePlant => 'Eliminar planta';
+
+  @override
+  String get missionsTitle => 'Missions';
+
+  @override
+  String get missionsSubtitle => 'Completa reptes i guanya monedes';
+
+  @override
+  String get missionsCompleted => 'Completades';
+
+  @override
+  String get missionsTagCompleted => 'Completada';
+
+  @override
+  String get missionsTagInProgress => 'En progrés';
 }
