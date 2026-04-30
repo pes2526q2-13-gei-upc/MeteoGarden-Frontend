@@ -715,4 +715,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryAccessories => 'Accessories';
+
+  @override
+  String get errorMessageSession => 'Error logging in';
+
+  @override
+  String get connectionError => 'Conneixon error';
 }
