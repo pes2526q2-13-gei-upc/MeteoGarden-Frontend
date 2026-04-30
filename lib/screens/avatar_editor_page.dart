@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:meteo_garden/models/avatar_user.dart';
 import 'package:meteo_garden/screens/home_shell.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -194,35 +195,15 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
   // OBTENER AVATAR (USUARIOS EXISTENTES)
   // ==========================================
   Future<void> _fetchUserAvatar() async {
-    final user = Provider.of<UserModel>(context, listen: false);
-    final username = user.username;
-
-    try {
-      final response = await http.get(
-        Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar'),
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-
-        setState(() {
-          currentBody = _extractId(data['body']) ?? currentBody;
-          currentEye = _extractId(data['eye']) ?? currentEye;
-          currentClothing = _extractId(data['clothing']) ?? currentClothing;
-          currentAccessories =
-              _extractId(data['accessories']) ?? currentAccessories;
-          currentExpression =
-              _extractId(data['expression']) ?? currentExpression;
-          currentHair = _extractId(data['hair']) ?? currentHair;
-          currentFacialHair =
-              _extractId(data['facialHair']) ?? currentFacialHair;
-        });
-      }
-    } catch (e) {
-      if (!mounted) return;
-      final l10n = AppLocalizations.of(context)!;
-      _showError(l10n.errorConnectionAvatar);
-    }
+    final avatar = Provider.of<AvatarUser>(context, listen: false);
+    
+    currentBody = avatar.body;
+    currentEye = avatar.eye;
+    currentExpression = avatar.expression;
+    currentHair = avatar.hair;
+    currentFacialHair = avatar.facialHair;
+    currentClothing = avatar.clothing;
+    currentAccessories = avatar.accessories;
   }
 
   // Función auxiliar para sacar el ID numérico de cualquier URL
@@ -273,6 +254,16 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (!mounted) return;
+
+        Provider.of<AvatarUser>(context, listen: false).setAvatar(
+          newBody: currentBody,
+          newEye: currentEye,
+          newExpression: currentExpression,
+          newHair: currentHair,
+          newFacialHair: currentFacialHair,
+          newClothing: currentClothing,
+          newAccessories: currentAccessories,
+        );
 
         if (widget.isNewUser) {
           Navigator.pushReplacement(

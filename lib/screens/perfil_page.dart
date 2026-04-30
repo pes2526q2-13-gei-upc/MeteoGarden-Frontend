@@ -160,6 +160,7 @@ class _GameHeader extends StatelessWidget {
                 children: [
                   Row(
                     children: [
+                      // --- CÍRCULO DEL AVATAR CLICKABLE ---
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -170,28 +171,54 @@ class _GameHeader extends StatelessWidget {
                             ),
                           );
                         },
-                        child: Container(
-                          height: 74,
-                          width: 74,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withValues(alpha: 0.12),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.28),
-                              width: 2,
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            // círculo con el AvatarStack actual
+                            Container(
+                              height: 74,
+                              width: 74,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  width: 2,
+                                ),
+                              ),
+                              child: ClipOval(
+                                child: AvatarStack(
+                                  body: avatar.body,
+                                  eye: avatar.eye,
+                                  expression: avatar.expression,
+                                  hair: avatar.hair,
+                                  facialHair: avatar.facialHair,
+                                  clothing: avatar.clothing,
+                                  accessories: avatar.accessories,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: ClipOval(
-                            child: AvatarStack(
-                              body: avatar.body,
-                              eye: avatar.eye,
-                              expression: avatar.expression,
-                              hair: avatar.hair,
-                              facialHair: avatar.facialHair,
-                              clothing: avatar.clothing,
-                              accessories: avatar.accessories,
+                            // Icono de edición flotante
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.white, // Fondo blanco para que destaque
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  )
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.edit_rounded,
+                                color: Color(0xFF3E6B48), // Tu color verde oscuro
+                                size: 16,
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
                       const SizedBox(width: 14),
