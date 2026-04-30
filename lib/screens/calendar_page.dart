@@ -3,7 +3,7 @@ import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/dades_usr.dart';
 import '../services/events_api_service.dart';
-import '../services/mock_events_service.dart';
+import '../services/events_api_service.dart';
 
 // ─── Calendar Page ────────────────────────────────────────────────────────────
 
@@ -17,7 +17,7 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  final EventsService _service = MockEventsService();
+  final EventsService _service = EventsService();
 
   late DateTime _currentMonth;
   late String _filterCity;
