@@ -48,8 +48,7 @@ class GardenPot {
 
   factory GardenPot.fromJson(Map<String, dynamic> json) {
     final plantJson = json['plant'] as Map<String, dynamic>?;
-final rawProducts = plantJson?['active_products'] as List<dynamic>? ?? [];
-  print('POT ${json['pot_number']} - active_products: $rawProducts'); 
+    final rawProducts = plantJson?['active_products'] as List<dynamic>? ?? [];
     return GardenPot(
       potNumber: json['pot_number'],
       occupied: json['occupied'],

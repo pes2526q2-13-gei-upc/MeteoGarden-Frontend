@@ -144,7 +144,7 @@ class PotWidget extends StatelessWidget {
                   ),
                 ),
 
-                if (pot.hasBuff)
+              if (pot.hasBuff)
                 Positioned(
                   top: boxSize * 0.04,
                   right: boxSize * 0.04,

@@ -238,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      _buildLanguageSelector(), 
+                      _buildLanguageSelector(),
                       const SizedBox(height: 16),
 
                       Container(
@@ -292,7 +292,9 @@ class _LoginPageState extends State<LoginPage> {
                               style: FilledButton.styleFrom(
                                 backgroundColor: const Color(0xFF166534),
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
@@ -308,7 +310,9 @@ class _LoginPageState extends State<LoginPage> {
                                   child: Divider(color: Colors.grey.shade300),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                  ),
                                   child: Text(
                                     t.loginContinueWith,
                                     style: TextStyle(
@@ -341,7 +345,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
                                 side: BorderSide(color: Colors.grey.shade300),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),

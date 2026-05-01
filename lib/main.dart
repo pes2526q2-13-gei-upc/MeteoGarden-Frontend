@@ -8,10 +8,8 @@ import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter/services.dart';
 
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     MultiProvider(
       providers: [

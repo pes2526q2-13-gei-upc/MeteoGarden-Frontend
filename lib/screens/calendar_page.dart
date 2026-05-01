@@ -73,8 +73,10 @@ class _CalendarPageState extends State<CalendarPage> {
               autofocus: true,
               decoration: InputDecoration(
                 hintText: 'Escriu una ciutat...',
-                prefixIcon: const Icon(Icons.location_on_outlined,
-                    color: Color(0xFF4CAF50)),
+                prefixIcon: const Icon(
+                  Icons.location_on_outlined,
+                  color: Color(0xFF4CAF50),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: const BorderSide(color: Color(0xFF4CAF50)),
@@ -82,7 +84,9 @@ class _CalendarPageState extends State<CalendarPage> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: const BorderSide(
-                      color: Color(0xFF4CAF50), width: 2),
+                    color: Color(0xFF4CAF50),
+                    width: 2,
+                  ),
                 ),
               ),
             ),
@@ -100,8 +104,10 @@ class _CalendarPageState extends State<CalendarPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, null),
-            child: const Text('Cancel·lar',
-                style: TextStyle(color: Color(0xFF9E9E9E))),
+            child: const Text(
+              'Cancel·lar',
+              style: TextStyle(color: Color(0xFF9E9E9E)),
+            ),
           ),
           ElevatedButton(
             onPressed: () =>
@@ -110,7 +116,8 @@ class _CalendarPageState extends State<CalendarPage> {
               backgroundColor: const Color(0xFF4CAF50),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
             child: const Text('Aplicar'),
           ),
@@ -226,16 +233,14 @@ class _CalendarPageState extends State<CalendarPage> {
 
   void _goToPreviousMonth() {
     setState(() {
-      _currentMonth =
-          DateTime(_currentMonth.year, _currentMonth.month - 1, 1);
+      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1, 1);
     });
     _loadMonthCounts();
   }
 
   void _goToNextMonth() {
     setState(() {
-      _currentMonth =
-          DateTime(_currentMonth.year, _currentMonth.month + 1, 1);
+      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 1);
     });
     _loadMonthCounts();
   }
@@ -246,8 +251,7 @@ class _CalendarPageState extends State<CalendarPage> {
       DateTime(_currentMonth.year, _currentMonth.month + 1, 0).day;
 
   int get _firstWeekdayOfMonth {
-    final wd =
-        DateTime(_currentMonth.year, _currentMonth.month, 1).weekday;
+    final wd = DateTime(_currentMonth.year, _currentMonth.month, 1).weekday;
     return wd - 1;
   }
 
@@ -315,7 +319,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         Image.asset(
                           'assets/images/logo.png',
                           height: 28,
-                          errorBuilder: (_, __, ___) => const Icon(
+                          errorBuilder: (_, _, _) => const Icon(
                             Icons.eco,
                             color: Color(0xFF4CAF50),
                             size: 28,
@@ -338,7 +342,9 @@ class _CalendarPageState extends State<CalendarPage> {
                       onTap: _showCityFilterDialog,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 5),
+                          horizontal: 12,
+                          vertical: 5,
+                        ),
                         decoration: BoxDecoration(
                           color: _filterCity.isNotEmpty
                               ? const Color(0xFFE8F5E9)
@@ -448,9 +454,7 @@ class _CalendarPageState extends State<CalendarPage> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 32),
                 child: Center(
-                  child: CircularProgressIndicator(
-                    color: Color(0xFF4CAF50),
-                  ),
+                  child: CircularProgressIndicator(color: Color(0xFF4CAF50)),
                 ),
               ),
             )
@@ -497,11 +501,7 @@ class _CalendarPageState extends State<CalendarPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.event_busy_outlined,
-              size: 48,
-              color: Color(0xFFBDBDBD),
-            ),
+            Icon(Icons.event_busy_outlined, size: 48, color: Color(0xFFBDBDBD)),
             SizedBox(height: 10),
             Text(
               l10n.noEventsToday,
@@ -579,8 +579,7 @@ class _CalendarPageState extends State<CalendarPage> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       child: Row(
         children: days.map((d) {
-          final isWeekend =
-              d == l10n.weekdaySat || d == l10n.weekdaySun;
+          final isWeekend = d == l10n.weekdaySat || d == l10n.weekdaySun;
           return Expanded(
             child: Center(
               child: Text(
@@ -602,8 +601,8 @@ class _CalendarPageState extends State<CalendarPage> {
 
   Widget _buildCalendarGrid() {
     final today = DateTime.now();
-    final isCurrentMonth = today.year == _currentMonth.year &&
-        today.month == _currentMonth.month;
+    final isCurrentMonth =
+        today.year == _currentMonth.year && today.month == _currentMonth.month;
 
     final totalCells = _firstWeekdayOfMonth + _daysInMonth;
     final rows = (totalCells / 7).ceil();
@@ -661,8 +660,9 @@ class _DayCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color bgColor = Colors.transparent;
-    Color textColor =
-        isWeekend ? const Color(0xFF9E9E9E) : const Color(0xFF212121);
+    Color textColor = isWeekend
+        ? const Color(0xFF9E9E9E)
+        : const Color(0xFF212121);
 
     if (isSelected) {
       bgColor = const Color(0xFF2E7D32);
@@ -688,8 +688,9 @@ class _DayCell extends StatelessWidget {
               '$day',
               style: TextStyle(
                 fontSize: 14,
-                fontWeight:
-                    isToday || isSelected ? FontWeight.w700 : FontWeight.w400,
+                fontWeight: isToday || isSelected
+                    ? FontWeight.w700
+                    : FontWeight.w400,
                 color: textColor,
               ),
             ),
@@ -705,8 +706,7 @@ class _DayCell extends StatelessWidget {
 
   Widget _buildDots(int count, bool isSelected) {
     final dotCount = count.clamp(1, 3);
-    final dotColor =
-        isSelected ? Colors.white70 : const Color(0xFF4CAF50);
+    final dotColor = isSelected ? Colors.white70 : const Color(0xFF4CAF50);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -716,10 +716,7 @@ class _DayCell extends StatelessWidget {
           width: 4,
           height: 4,
           margin: const EdgeInsets.symmetric(horizontal: 1),
-          decoration: BoxDecoration(
-            color: dotColor,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
         ),
       ),
     );
@@ -764,7 +761,7 @@ class _EventCard extends StatelessWidget {
                       width: 90,
                       height: 90,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _placeholder(),
+                      errorBuilder: (_, _, _) => _placeholder(),
                     )
                   : _placeholder(),
             ),
@@ -868,15 +865,15 @@ class _EventCard extends StatelessWidget {
   }
 
   Widget _placeholder() => Container(
-        width: 90,
-        height: 90,
-        color: const Color(0xFFE8F5E9),
-        child: const Icon(
-          Icons.image_not_supported_outlined,
-          color: Color(0xFF4CAF50),
-          size: 28,
-        ),
-      );
+    width: 90,
+    height: 90,
+    color: const Color(0xFFE8F5E9),
+    child: const Icon(
+      Icons.image_not_supported_outlined,
+      color: Color(0xFF4CAF50),
+      size: 28,
+    ),
+  );
 }
 
 // ─── Event Detail Dialog ──────────────────────────────────────────────────────
@@ -933,19 +930,14 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      insetPadding:
-          const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       clipBehavior: Clip.hardEdge,
       child: _loading
           ? const SizedBox(
               height: 200,
               child: Center(
-                child: CircularProgressIndicator(
-                  color: Color(0xFF4CAF50),
-                ),
+                child: CircularProgressIndicator(color: Color(0xFF4CAF50)),
               ),
             )
           : _error != null
@@ -979,7 +971,7 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                     width: double.infinity,
                     height: 200,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _imagePlaceholder(),
+                    errorBuilder: (_, _, _) => _imagePlaceholder(),
                   )
                 : _imagePlaceholder(),
             Positioned(
@@ -993,11 +985,7 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                     shape: BoxShape.circle,
                   ),
                   padding: const EdgeInsets.all(6),
-                  child: const Icon(
-                    Icons.close,
-                    color: Colors.white,
-                    size: 18,
-                  ),
+                  child: const Icon(Icons.close, color: Colors.white, size: 18),
                 ),
               ),
             ),
@@ -1074,16 +1062,14 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                 if (event.city.isNotEmpty || event.street.isNotEmpty)
                   _buildInfoRow(
                     Icons.location_on_outlined,
-                    [event.city, event.street]
-                        .where((s) => s.isNotEmpty)
-                        .join(', '),
+                    [
+                      event.city,
+                      event.street,
+                    ].where((s) => s.isNotEmpty).join(', '),
                   ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 14),
-                  child: Divider(
-                    color: Color(0xFFDCEFDC),
-                    thickness: 1,
-                  ),
+                  child: Divider(color: Color(0xFFDCEFDC), thickness: 1),
                 ),
                 if (event.description.isNotEmpty)
                   Text(
@@ -1099,9 +1085,7 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                   Wrap(
                     spacing: 6,
                     runSpacing: 6,
-                    children: event.tags
-                        .map((tag) => _buildTag(tag))
-                        .toList(),
+                    children: event.tags.map((tag) => _buildTag(tag)).toList(),
                   ),
                 ],
               ],
@@ -1116,15 +1100,15 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
       '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
   Widget _imagePlaceholder() => Container(
-        width: double.infinity,
-        height: 200,
-        color: const Color(0xFFE8F5E9),
-        child: const Icon(
-          Icons.image_not_supported_outlined,
-          color: Colors.green,
-          size: 40,
-        ),
-      );
+    width: double.infinity,
+    height: 200,
+    color: const Color(0xFFE8F5E9),
+    child: const Icon(
+      Icons.image_not_supported_outlined,
+      color: Colors.green,
+      size: 40,
+    ),
+  );
 
   Widget _buildInfoRow(IconData icon, String text) {
     return Padding(
@@ -1137,10 +1121,7 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
-                fontSize: 13,
-                color: Color(0xFF424242),
-              ),
+              style: const TextStyle(fontSize: 13, color: Color(0xFF424242)),
             ),
           ),
         ],

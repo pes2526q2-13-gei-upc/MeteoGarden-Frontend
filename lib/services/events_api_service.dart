@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter/foundation.dart';
 import '../models/url.dart';
 
 // ─── Models ───────────────────────────────────────────────────────────────────
@@ -89,9 +88,8 @@ class EventDetail {
     endDate: DateTime.parse(json['end_date'] as String),
     category: json['category'] as String? ?? '',
     price: (json['price'] as num).toDouble(),
-    tags: (json['tags'] as List<dynamic>?)
-            ?.map((t) => t.toString())
-            .toList() ??
+    tags:
+        (json['tags'] as List<dynamic>?)?.map((t) => t.toString()).toList() ??
         [],
     image: json['image'] as String? ?? '',
     city: json['city'] as String? ?? '',
@@ -120,8 +118,8 @@ class EventsService {
       throw Exception('Error carregant recompte: ${response.statusCode}');
     }
 
-    final body = jsonDecode(utf8.decode(response.bodyBytes))
-        as Map<String, dynamic>;
+    final body =
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
     final events = body['events'] as List<dynamic>;
 
     final Map<int, int> result = {};
@@ -149,11 +147,13 @@ class EventsService {
 
     final response = await http.get(uri);
     if (response.statusCode != 200) {
-      throw Exception('Error carregant events de la ciutat: ${response.statusCode}');
+      throw Exception(
+        'Error carregant events de la ciutat: ${response.statusCode}',
+      );
     }
 
-    final body = jsonDecode(utf8.decode(response.bodyBytes))
-        as Map<String, dynamic>;
+    final body =
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
     final events = body['events'] as List<dynamic>;
     return events
         .map((e) => EventSummary.fromJson(e as Map<String, dynamic>))
@@ -166,20 +166,17 @@ class EventsService {
     required DateTime date,
     String lang = 'en',
   }) async {
-    final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/').replace(
-      queryParameters: {
-        'date': _formatDate(date),
-        'lang': lang,
-      },
-    );
+    final uri = Uri.parse(
+      '${ApiConfig.baseUrl}/api/events/',
+    ).replace(queryParameters: {'date': _formatDate(date), 'lang': lang});
 
     final response = await http.get(uri);
     if (response.statusCode != 200) {
       throw Exception('Error carregant events: ${response.statusCode}');
     }
 
-    final body = jsonDecode(utf8.decode(response.bodyBytes))
-        as Map<String, dynamic>;
+    final body =
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
     final events = body['events'] as List<dynamic>;
     return events
         .map((e) => EventSummary.fromJson(e as Map<String, dynamic>))
@@ -194,11 +191,7 @@ class EventsService {
     String lang = 'en',
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/detail').replace(
-      queryParameters: {
-        'id': id,
-        'date': _formatDate(date),
-        'lang': lang,
-      },
+      queryParameters: {'id': id, 'date': _formatDate(date), 'lang': lang},
     );
 
     final response = await http.get(uri);
@@ -206,8 +199,8 @@ class EventsService {
       throw Exception('Error carregant detall: ${response.statusCode}');
     }
 
-    final body = jsonDecode(utf8.decode(response.bodyBytes))
-        as Map<String, dynamic>;
+    final body =
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
     return EventDetail.fromJson(body['events'] as Map<String, dynamic>);
   }
 

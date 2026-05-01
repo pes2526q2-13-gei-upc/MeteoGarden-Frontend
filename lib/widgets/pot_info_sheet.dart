@@ -119,10 +119,12 @@ class PotInfoSheet extends StatelessWidget {
                       const SizedBox(height: 14),
                       ...pot.activeProducts
                           .where((p) => p.isActive)
-                          .map((p) => Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: _ActiveBuffBadge(potion: p),
-                              )),
+                          .map(
+                            (p) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: _ActiveBuffBadge(potion: p),
+                            ),
+                          ),
                     ],
 
                     const SizedBox(height: 22),

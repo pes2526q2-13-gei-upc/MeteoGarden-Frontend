@@ -29,9 +29,7 @@ class MockEventsService extends EventsService {
   }) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
-    return _eventsByDate(date)
-        .map(EventSummary.fromJson)
-        .toList();
+    return _eventsByDate(date).map(EventSummary.fromJson).toList();
   }
 
   @override
