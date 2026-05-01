@@ -733,13 +733,16 @@ class AppLocalizationsCa extends AppLocalizations {
   String get phaseSeed => 'Llavor';
 
   @override
-  String get phaseSprout => 'Brot';
+  String get phaseGermination => 'Germinació';
 
   @override
-  String get phaseGrowing => 'Creixent';
+  String get phaseGrowth => 'Creixement';
 
   @override
   String get phaseMature => 'Madura';
+
+  @override
+  String get phaseFlowering => 'Floració';
 
   @override
   String get phaseDead => 'Morta';

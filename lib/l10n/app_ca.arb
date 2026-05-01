@@ -333,9 +333,10 @@
 "noEventsToday": "No hi ha events aquest dia",
 
 "phaseSeed": "Llavor",
-"phaseSprout": "Brot",
-"phaseGrowing": "Creixent",
+"phaseGermination": "Germinació",
+"phaseGrowth": "Creixement",
 "phaseMature": "Madura",
+"phaseFlowering": "Floració",
 "phaseDead": "Morta"
 }
 

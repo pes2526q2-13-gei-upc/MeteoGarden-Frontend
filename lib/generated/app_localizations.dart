@@ -1473,23 +1473,29 @@ abstract class AppLocalizations {
   /// **'Llavor'**
   String get phaseSeed;
 
-  /// No description provided for @phaseSprout.
+  /// No description provided for @phaseGermination.
   ///
   /// In ca, this message translates to:
-  /// **'Brot'**
-  String get phaseSprout;
+  /// **'Germinació'**
+  String get phaseGermination;
 
-  /// No description provided for @phaseGrowing.
+  /// No description provided for @phaseGrowth.
   ///
   /// In ca, this message translates to:
-  /// **'Creixent'**
-  String get phaseGrowing;
+  /// **'Creixement'**
+  String get phaseGrowth;
 
   /// No description provided for @phaseMature.
   ///
   /// In ca, this message translates to:
   /// **'Madura'**
   String get phaseMature;
+
+  /// No description provided for @phaseFlowering.
+  ///
+  /// In ca, this message translates to:
+  /// **'Floració'**
+  String get phaseFlowering;
 
   /// No description provided for @phaseDead.
   ///

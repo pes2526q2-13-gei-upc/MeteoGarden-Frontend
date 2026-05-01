@@ -332,9 +332,10 @@
 "allCities": "Todas las ciudades",
 
 "phaseSeed": "Semilla",
-"phaseSprout": "Brote",
-"phaseGrowing": "Creciendo",
+"phaseGermination": "Germinación",
+"phaseGrowth": "Crecimiento",
 "phaseMature": "Madura",
+"phaseFlowering": "Floración",
 "phaseDead": "Muerta"
 }
 

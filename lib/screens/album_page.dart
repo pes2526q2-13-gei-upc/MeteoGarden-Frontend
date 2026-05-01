@@ -266,7 +266,7 @@ class _AlbumPageState extends State<AlbumPage> {
               children: [
                 AppHeader(
                   title: t.albumTitle,
-                  extraInfo:'$totalPlantes ${t.albumNumber}',
+                  extraInfo: '$totalPlantes ${t.albumNumber}',
                 ),
                 Expanded(
                   child: RefreshIndicator(

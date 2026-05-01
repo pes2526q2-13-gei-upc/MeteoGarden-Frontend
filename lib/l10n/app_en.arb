@@ -329,9 +329,10 @@
 "allCities": "All cities",
 
 "phaseSeed": "Seed",
-"phaseSprout": "Sprout",
-"phaseGrowing": "Growing",
+"phaseGermination": "Germination",
+"phaseGrowth": "Growth",
 "phaseMature": "Mature",
+"phaseFlowering": "Flowering",
 "phaseDead": "Dead"
 }
 

@@ -360,9 +360,10 @@ class _PhaseBadge extends StatelessWidget {
 
     final Map<String, (String, Color)> phaseInfo = {
       'seed': (t.phaseSeed, const Color(0xFFfbbf24)),
-      'sprout': (t.phaseSprout, const Color(0xFF34d399)),
-      'growing': (t.phaseGrowing, const Color(0xFF4ade80)),
+      'germination': (t.phaseGermination, const Color(0xFF34d399)),
+      'growth': (t.phaseGrowth, const Color(0xFF4ade80)),
       'mature': (t.phaseMature, const Color(0xFFfcd34d)),
+      'flowering': (t.phaseFlowering, const Color(0xFFfcd34d)),
       'dead': (t.phaseDead, const Color(0xFF9ca3af)),
     };
 

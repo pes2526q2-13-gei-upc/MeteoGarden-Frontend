@@ -735,13 +735,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phaseSeed => 'Seed';
 
   @override
-  String get phaseSprout => 'Sprout';
+  String get phaseGermination => 'Germination';
 
   @override
-  String get phaseGrowing => 'Growing';
+  String get phaseGrowth => 'Growth';
 
   @override
   String get phaseMature => 'Mature';
+
+  @override
+  String get phaseFlowering => 'Flowering';
 
   @override
   String get phaseDead => 'Dead';

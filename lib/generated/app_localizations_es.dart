@@ -734,13 +734,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get phaseSeed => 'Semilla';
 
   @override
-  String get phaseSprout => 'Brote';
+  String get phaseGermination => 'Germinación';
 
   @override
-  String get phaseGrowing => 'Creciendo';
+  String get phaseGrowth => 'Crecimiento';
 
   @override
   String get phaseMature => 'Madura';
+
+  @override
+  String get phaseFlowering => 'Floración';
 
   @override
   String get phaseDead => 'Muerta';
