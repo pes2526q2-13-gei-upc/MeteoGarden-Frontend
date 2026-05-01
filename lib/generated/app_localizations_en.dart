@@ -721,4 +721,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectionError => 'Conneixon error';
+
+  @override
+  String get allCities => 'All cities';
+
+  @override
+  String get noEventsToday => 'No hi ha events aquest dia';
 }

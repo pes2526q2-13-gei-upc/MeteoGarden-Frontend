@@ -720,4 +720,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get connectionError => 'Error de connexión';
+
+  @override
+  String get allCities => 'Todas las ciudades';
+
+  @override
+  String get noEventsToday => 'No hi ha events aquest dia';
 }

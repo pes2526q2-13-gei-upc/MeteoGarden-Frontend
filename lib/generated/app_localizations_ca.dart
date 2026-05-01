@@ -719,4 +719,10 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get connectionError => 'Error de connexió';
+
+  @override
+  String get allCities => 'Totes les ciutats';
+
+  @override
+  String get noEventsToday => 'No hi ha events aquest dia';
 }

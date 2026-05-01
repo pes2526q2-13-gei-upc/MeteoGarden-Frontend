@@ -1448,6 +1448,18 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Error de connexió'**
   String get connectionError;
+
+  /// No description provided for @allCities.
+  ///
+  /// In ca, this message translates to:
+  /// **'Totes les ciutats'**
+  String get allCities;
+
+  /// No description provided for @noEventsToday.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha events aquest dia'**
+  String get noEventsToday;
 }
 
 class _AppLocalizationsDelegate

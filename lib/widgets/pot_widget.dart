@@ -22,6 +22,7 @@ class PotWidget extends StatelessWidget {
         final nameFontSize = (boxSize * 0.10).clamp(8.0, 12.0);
         final iconSize = (boxSize * 0.28).clamp(20.0, 34.0);
         final borderRadius = boxSize * 0.18;
+        final shieldSize = (boxSize * 0.28).clamp(18.0, 30.0);
 
         return GestureDetector(
           onTap: onTap,
@@ -140,6 +141,17 @@ class PotWidget extends StatelessWidget {
                         color: Colors.blue,
                       ),
                     ),
+                  ),
+                ),
+
+              if (pot.hasBuff)
+                Positioned(
+                  top: boxSize * 0.04,
+                  right: boxSize * 0.04,
+                  child: Image.asset(
+                    'assets/images/escut.png', // canvia pel nom del teu fitxer
+                    width: shieldSize,
+                    height: shieldSize,
                   ),
                 ),
             ],

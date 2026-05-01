@@ -327,6 +327,8 @@
 "categoryAccessories": "Accessoris",
 
 "errorMessageSession": "Error iniciant sessió",
-"connectionError": "Error de connexió"
+"connectionError": "Error de connexió",
+"allCities": "Totes les ciutats",
+"noEventsToday": "No hi ha events aquest dia"
 }
 

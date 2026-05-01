@@ -304,10 +304,7 @@
 "confirmDeletePlant": "Are you sure you want to delete {plantName}?\nThis action cannot be undone.",
 "thisPlant": "this plant",
 "deletePlant": "Delete plant",
-"finalitza": "Ends on",
-
 "avatarLoadError": "Error loading the avatar",
-
 "createYourAvatar": "Create your Avatar",
 "editAvatar": "Edit Avatar",
 "errorLoadingOptions": "Error loading options",
@@ -325,8 +322,9 @@
 "categoryFacialHair": "Facial Hair",
 "categoryClothing": "Clothing",
 "categoryAccessories": "Accessories",
-
 "errorMessageSession": "Error logging in",
-"connectionError": "Conneixon error"
+"connectionError": "Conneixon error",
+"finalitza": "Ends on",
+"allCities": "All cities"
 }
 
