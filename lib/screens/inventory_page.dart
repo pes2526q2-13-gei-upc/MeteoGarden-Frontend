@@ -334,10 +334,6 @@ class _InventoryPageState extends State<InventoryPage>
                   ],
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.menu, color: Color(0xFF4CAF50)),
-                onPressed: () {},
-              ),
             ],
           ),
           Positioned(

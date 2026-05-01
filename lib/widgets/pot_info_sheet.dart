@@ -356,12 +356,14 @@ class _PhaseBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     final Map<String, (String, Color)> phaseInfo = {
-      'seed': ('Llavor', Color(0xFFfbbf24)),
-      'sprout': ('Brot', Color(0xFF34d399)),
-      'growing': ('Creixent', Color(0xFF4ade80)),
-      'mature': ('Madura', Color(0xFFfcd34d)),
-      'dead': ('Morta', Color(0xFF9ca3af)),
+      'seed': (t.phaseSeed, const Color(0xFFfbbf24)),
+      'sprout': (t.phaseSprout, const Color(0xFF34d399)),
+      'growing': (t.phaseGrowing, const Color(0xFF4ade80)),
+      'mature': (t.phaseMature, const Color(0xFFfcd34d)),
+      'dead': (t.phaseDead, const Color(0xFF9ca3af)),
     };
 
     final info = phaseInfo[phase] ?? ('❓ $phase', const Color(0xFF9ca3af));

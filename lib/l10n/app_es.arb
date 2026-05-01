@@ -57,6 +57,7 @@
   "albumDescriptionTitle": "Descripción",
   "albumEmptyState": "Todavía no has descubierto ninguna planta 🌱\n¡Sigue explorando!",
   "albumPlantInfoLoadError": "Error cargando la información de la planta",
+  "albumNumber": "plantas descubiertas",
 
   "shopTitle": "Tienda",
   "shopSeedsTab": "Semillas 🌱",
@@ -328,6 +329,12 @@
 "errorMessageSession": "Error iniciando sessión",
 "connectionError": "Error de connexión",
 "finalitza": "Finaliza el",
-"allCities": "Todas las ciudades"
+"allCities": "Todas las ciudades",
+
+"phaseSeed": "Semilla",
+"phaseSprout": "Brote",
+"phaseGrowing": "Creciendo",
+"phaseMature": "Madura",
+"phaseDead": "Muerta"
 }
 

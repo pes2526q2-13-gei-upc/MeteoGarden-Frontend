@@ -139,6 +139,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get albumPlantInfoLoadError => 'Error loading plant information';
 
   @override
+  String get albumNumber => 'discovered plants';
+
+  @override
   String get shopTitle => 'Shop';
 
   @override
@@ -727,4 +730,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noEventsToday => 'No hi ha events aquest dia';
+
+  @override
+  String get phaseSeed => 'Seed';
+
+  @override
+  String get phaseSprout => 'Sprout';
+
+  @override
+  String get phaseGrowing => 'Growing';
+
+  @override
+  String get phaseMature => 'Mature';
+
+  @override
+  String get phaseDead => 'Dead';
 }

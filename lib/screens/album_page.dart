@@ -210,15 +210,14 @@ class _AlbumPageState extends State<AlbumPage> {
       body: SafeArea(
         child: Consumer<PlantProvider>(
           builder: (context, plantProvider, child) {
-            //final totalPlantes = plantProvider.plants.length;
+            final totalPlantes = plantProvider.plants.length;
 
             if (plantProvider.isLoading) {
               return Column(
                 children: [
                   AppHeader(
                     title: t.albumTitle,
-                    subtitle: " sub", //t.albumDiscoveredPlants,
-                    extraInfo: '0',
+                    extraInfo: '$totalPlantes ${t.albumNumber}',
                   ),
                   const Expanded(
                     child: Center(child: CircularProgressIndicator()),
@@ -235,20 +234,26 @@ class _AlbumPageState extends State<AlbumPage> {
                   children: [
                     AppHeader(
                       title: t.albumTitle,
-                      subtitle: "subtilte", //t.albumDiscoveredPlants,
-                      extraInfo: "extrainfo", //'0 ${t.albumPlantsAvailable}',
+                      extraInfo: '$totalPlantes ${t.albumNumber}',
                     ),
-                    const SizedBox(height: 140),
+                    const SizedBox(height: 120),
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Text(
-                          t.albumEmptyState,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Color(0xFFF5F9F0),
-                          ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 24),
+                            Text(
+                              t.albumEmptyState,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2E5E3E),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -261,9 +266,7 @@ class _AlbumPageState extends State<AlbumPage> {
               children: [
                 AppHeader(
                   title: t.albumTitle,
-                  subtitle: "subtitle", //t.albumDiscoveredPlants,
-                  extraInfo:
-                      "info extra", //'$totalPlantes ${t.albumPlantsAvailable}',
+                  extraInfo:'$totalPlantes ${t.albumNumber}',
                 ),
                 Expanded(
                   child: RefreshIndicator(

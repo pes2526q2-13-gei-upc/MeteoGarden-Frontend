@@ -140,6 +140,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'Error cargando la información de la planta';
 
   @override
+  String get albumNumber => 'plantas descubiertas';
+
+  @override
   String get shopTitle => 'Tienda';
 
   @override
@@ -726,4 +729,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noEventsToday => 'No hi ha events aquest dia';
+
+  @override
+  String get phaseSeed => 'Semilla';
+
+  @override
+  String get phaseSprout => 'Brote';
+
+  @override
+  String get phaseGrowing => 'Creciendo';
+
+  @override
+  String get phaseMature => 'Madura';
+
+  @override
+  String get phaseDead => 'Muerta';
 }

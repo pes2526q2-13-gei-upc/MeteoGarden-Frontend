@@ -263,26 +263,6 @@ class _GameHeader extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 18),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _MiniHeaderStat(
-                          icon: Icons.monetization_on,
-                          label: l10n.profileCoins,
-                          value: coins.toString(),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _MiniHeaderStat(
-                          icon: Icons.eco_rounded,
-                          label: l10n.profileDiscovered,
-                          value: plantsDiscovered.toString(),
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.all(14),
