@@ -263,26 +263,6 @@ class _GameHeader extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 18),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _MiniHeaderStat(
-                          icon: Icons.monetization_on,
-                          label: l10n.profileCoins,
-                          value: coins.toString(),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _MiniHeaderStat(
-                          icon: Icons.eco_rounded,
-                          label: l10n.profileDiscovered,
-                          value: plantsDiscovered.toString(),
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.all(14),
@@ -392,56 +372,6 @@ class _HeaderInfoRow extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _MiniHeaderStat extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-
-  const _MiniHeaderStat({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white, size: 22),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

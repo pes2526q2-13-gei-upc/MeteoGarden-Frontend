@@ -352,6 +352,12 @@ abstract class AppLocalizations {
   /// **'Error carregant la informació de la planta'**
   String get albumPlantInfoLoadError;
 
+  /// No description provided for @albumNumber.
+  ///
+  /// In ca, this message translates to:
+  /// **'plantes descobertes'**
+  String get albumNumber;
+
   /// No description provided for @shopTitle.
   ///
   /// In ca, this message translates to:
@@ -1460,6 +1466,42 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'No hi ha events aquest dia'**
   String get noEventsToday;
+
+  /// No description provided for @phaseSeed.
+  ///
+  /// In ca, this message translates to:
+  /// **'Llavor'**
+  String get phaseSeed;
+
+  /// No description provided for @phaseGermination.
+  ///
+  /// In ca, this message translates to:
+  /// **'Germinació'**
+  String get phaseGermination;
+
+  /// No description provided for @phaseGrowth.
+  ///
+  /// In ca, this message translates to:
+  /// **'Creixement'**
+  String get phaseGrowth;
+
+  /// No description provided for @phaseMature.
+  ///
+  /// In ca, this message translates to:
+  /// **'Madura'**
+  String get phaseMature;
+
+  /// No description provided for @phaseFlowering.
+  ///
+  /// In ca, this message translates to:
+  /// **'Floració'**
+  String get phaseFlowering;
+
+  /// No description provided for @phaseDead.
+  ///
+  /// In ca, this message translates to:
+  /// **'Morta'**
+  String get phaseDead;
 }
 
 class _AppLocalizationsDelegate

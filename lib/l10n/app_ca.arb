@@ -57,6 +57,7 @@
   "albumDescriptionTitle": "Descripció",
   "albumEmptyState": "Encara no has descobert cap planta 🌱\nContinua explorant!",
   "albumPlantInfoLoadError": "Error carregant la informació de la planta",
+  "albumNumber": "plantes descobertes",
 
 "shopTitle": "Botiga",
 "shopSeedsTab": "Llavors 🌱",
@@ -329,6 +330,13 @@
 "errorMessageSession": "Error iniciant sessió",
 "connectionError": "Error de connexió",
 "allCities": "Totes les ciutats",
-"noEventsToday": "No hi ha events aquest dia"
+"noEventsToday": "No hi ha events aquest dia",
+
+"phaseSeed": "Llavor",
+"phaseGermination": "Germinació",
+"phaseGrowth": "Creixement",
+"phaseMature": "Madura",
+"phaseFlowering": "Floració",
+"phaseDead": "Morta"
 }
 

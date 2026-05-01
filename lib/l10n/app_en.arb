@@ -57,6 +57,7 @@
   "albumDescriptionTitle": "Description",
   "albumEmptyState": "You haven't discovered any plants yet 🌱\nKeep exploring!",
   "albumPlantInfoLoadError": "Error loading plant information",
+  "albumNumber": "discovered plants",
 
   "shopTitle": "Shop",
   "shopSeedsTab": "Seeds 🌱",
@@ -325,6 +326,13 @@
 "errorMessageSession": "Error logging in",
 "connectionError": "Conneixon error",
 "finalitza": "Ends on",
-"allCities": "All cities"
+"allCities": "All cities",
+
+"phaseSeed": "Seed",
+"phaseGermination": "Germination",
+"phaseGrowth": "Growth",
+"phaseMature": "Mature",
+"phaseFlowering": "Flowering",
+"phaseDead": "Dead"
 }
 
