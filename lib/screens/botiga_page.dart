@@ -151,10 +151,11 @@ class _ShopPageState extends State<ShopPage>
     final String name = isSeed
         ? (item['commonName'] ?? item['scientificName'])
         : item['name'];
-    final String? description = isSeed ? item['description'] : null;
+
+    // CAMBIO: Ahora obtenemos la descripción independientemente de si es semilla o producto
+    final String? description = item['description'];
     final int price = item['price'] ?? 0;
 
-    // Forzamos la variable a que sea un String seguro
     final String imageUrl = item['image_url']?.toString() ?? '';
 
     showModalBottomSheet(
@@ -201,7 +202,7 @@ class _ShopPageState extends State<ShopPage>
                               return Icon(
                                 isSeed
                                     ? Icons.eco_rounded
-                                    : Icons.shopping_bag_rounded,
+                                    : Icons.local_drink_rounded,
                                 color: const Color(0xFF166534),
                                 size: 32,
                               );
@@ -210,7 +211,7 @@ class _ShopPageState extends State<ShopPage>
                         : Icon(
                             isSeed
                                 ? Icons.eco_rounded
-                                : Icons.shopping_bag_rounded,
+                                : Icons.local_drink_rounded,
                             color: const Color(0xFF166534),
                             size: 32,
                           ),
@@ -242,7 +243,7 @@ class _ShopPageState extends State<ShopPage>
                 ],
               ),
               const SizedBox(height: 20),
-              if (description != null) ...[
+              if (description != null && description.isNotEmpty) ...[
                 Text(
                   l10n.commonDescription,
                   style: TextStyle(
@@ -344,14 +345,99 @@ class _ShopPageState extends State<ShopPage>
     );
   }
 
-  Widget _buildItemList(List<dynamic> items, bool isSeed) {
+  // WIDGET REUTILIZABLE PARA LAS TARJETAS DE LA LISTA
+  Widget _buildItemCard(Map<String, dynamic> item, bool isSeed) {
+    final name = isSeed
+        ? (item['commonName'] ?? item['scientificName'])
+        : item['name'];
+    final price = item['price'] ?? 0;
+    final String imageUrl = item['image_url']?.toString() ?? '';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.95),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 12,
+        ),
+        leading: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.green.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          clipBehavior: Clip.hardEdge,
+          child: imageUrl.isNotEmpty
+              ? Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      isSeed ? Icons.eco_rounded : Icons.local_drink_rounded,
+                      color: const Color(0xFF166534),
+                    );
+                  },
+                )
+              : Icon(
+                  isSeed ? Icons.eco_rounded : Icons.local_drink_rounded,
+                  color: const Color(0xFF166534),
+                ),
+        ),
+        title: Text(
+          name,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        subtitle: isSeed && item['family'] != null
+            ? Text(
+                item['family'],
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              )
+            : null,
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "$price",
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF166534),
+              ),
+            ),
+            const SizedBox(width: 4),
+            const Icon(
+              Icons.monetization_on_rounded,
+              color: Colors.amber,
+              size: 20,
+            ),
+          ],
+        ),
+        onTap: () => _showItemDetails(context, isSeed, item),
+      ),
+    );
+  }
+
+  // LISTA PLANA PARA SEMILLAS
+  Widget _buildItemList(List<dynamic> items) {
     final l10n = AppLocalizations.of(context)!;
 
     if (items.isEmpty) {
       return Center(
         child: Text(
           l10n.shopNoItemsAvailable,
-          style: TextStyle(color: Colors.black.withValues(alpha: 0.6)),
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.9)),
         ),
       );
     }
@@ -361,91 +447,71 @@ class _ShopPageState extends State<ShopPage>
       physics: const BouncingScrollPhysics(),
       itemCount: items.length,
       itemBuilder: (context, index) {
-        final item = items[index];
-        final name = isSeed
-            ? (item['commonName'] ?? item['scientificName'])
-            : item['name'];
-        final price = item['price'] ?? 0;
+        return _buildItemCard(items[index] as Map<String, dynamic>, true);
+      },
+    );
+  }
 
-        // Forzamos la variable a que sea un String seguro
-        final String imageUrl = item['image_url']?.toString() ?? '';
+  // LISTA CATEGORIZADA PARA PRODUCTOS/POCIONES
+  Widget _buildCategorizedProductList(List<dynamic> items) {
+    final l10n = AppLocalizations.of(context)!;
 
-        return Container(
-          margin: const EdgeInsets.only(bottom: 16),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.95),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 12,
-            ),
-            leading: Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.green.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: imageUrl.isNotEmpty
-                  ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          isSeed
-                              ? Icons.eco_rounded
-                              : Icons.shopping_bag_rounded,
-                          color: const Color(0xFF166534),
-                        );
-                      },
-                    )
-                  : Icon(
-                      isSeed ? Icons.eco_rounded : Icons.shopping_bag_rounded,
-                      color: const Color(0xFF166534),
+    if (items.isEmpty) {
+      return Center(
+        child: Text(
+          l10n.shopNoItemsAvailable,
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.9)),
+        ),
+      );
+    }
+
+    // 1. Agrupar los items usando 'effectType'
+    Map<String, List<dynamic>> groupedItems = {};
+    for (var item in items) {
+      String category = item['effectType'] ?? 'General';
+
+      if (!groupedItems.containsKey(category)) {
+        groupedItems[category] = [];
+      }
+      groupedItems[category]!.add(item);
+    }
+
+    // 2. Construir la vista con cabeceras
+    return ListView.builder(
+      padding: const EdgeInsets.all(20),
+      physics: const BouncingScrollPhysics(),
+      itemCount: groupedItems.length,
+      itemBuilder: (context, index) {
+        String categoryName = groupedItems.keys.elementAt(index);
+        List<dynamic> categoryItems = groupedItems[categoryName]!;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8, top: 10, bottom: 16),
+              child: Text(
+                categoryName.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  letterSpacing: 1.2,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black45,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
                     ),
-            ),
-            title: Text(
-              name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            subtitle: isSeed && item['family'] != null
-                ? Text(
-                    item['family'],
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                  )
-                : null,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "$price",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF166534),
-                  ),
+                  ],
                 ),
-                const SizedBox(width: 4),
-                const Icon(
-                  Icons.monetization_on_rounded,
-                  color: Colors.amber,
-                  size: 20,
-                ),
-              ],
+              ),
             ),
-            onTap: () =>
-                _showItemDetails(context, isSeed, item as Map<String, dynamic>),
-          ),
+            ...categoryItems.map((item) {
+              return _buildItemCard(item as Map<String, dynamic>, false);
+            }),
+            const SizedBox(height: 10),
+          ],
         );
       },
     );
@@ -540,8 +606,10 @@ class _ShopPageState extends State<ShopPage>
                       : TabBarView(
                           controller: _tabController,
                           children: [
-                            _buildItemList(seeds, true),
-                            _buildItemList(products, false),
+                            // Pestaña 1: Semillas planas
+                            _buildItemList(seeds),
+                            // Pestaña 2: Productos clasificados por effectType
+                            _buildCategorizedProductList(products),
                           ],
                         ),
                 ),

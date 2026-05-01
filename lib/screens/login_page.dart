@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/models/avatar_user.dart';
 import 'package:meteo_garden/screens/completar_nova_conta.dart';
 import 'package:meteo_garden/screens/home_shell.dart';
 import 'package:meteo_garden/screens/crea_nova_conta.dart';
@@ -11,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'avatar_editor_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -122,8 +124,9 @@ class _LoginPageState extends State<LoginPage> {
       Provider.of<UserModel>(context, listen: false).setToken(data['token']);
       await storage.write(key: 'auth_token', value: data['token']);
       await _fetchAndSaveProfile(data['token']);
-      if (!mounted) return;
-      _goToHome();
+      if (!context.mounted) return;
+      await _checkAvatar();
+      // el go to home es fa a la funcio de checkavatar, per que no es sobreposin el canvis de pantalla
     } else {
       debugPrint("Error: ${response.body}");
       ScaffoldMessenger.of(
@@ -185,7 +188,8 @@ class _LoginPageState extends State<LoginPage> {
           await storage.write(key: 'auth_token', value: data['token']);
           await _fetchAndSaveProfile(data['token']);
           if (!context.mounted) return;
-          _goToHome();
+          await _checkAvatar();
+          // el go to home es fa a la funcio de checkavatar, per que no es sobreposin el canvis de pantalla
         }
       } else {
         ScaffoldMessenger.of(
@@ -436,6 +440,42 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(_t.profileLoadError)));
+    }
+  }
+
+  Future<void> _checkAvatar() async {
+    final user = Provider.of<UserModel>(context, listen: false);
+    String username = user.username;
+
+    final avatarResponse = await http.get(
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar/'),
+    );
+
+    if (!mounted) return;
+
+    if (avatarResponse.statusCode == 200) {
+      final avatar = jsonDecode(avatarResponse.body);
+      Provider.of<AvatarUser>(context, listen: false).setAvatar(
+        newBody: avatar['body'],
+        newEye: avatar['eye'],
+        newExpression: avatar['expression'],
+        newHair: avatar['hair'],
+        newFacialHair: avatar['facial_hair'],
+        newClothing: avatar['clothing'],
+        newAccessories: avatar['accessories'],
+      );
+      _goToHome();
+    } else if (avatarResponse.statusCode == 404) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const AvatarEditorPage(isNewUser: true),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_t.avatarLoadError)));
     }
   }
 }

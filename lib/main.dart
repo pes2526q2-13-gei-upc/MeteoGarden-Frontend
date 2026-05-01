@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/models/avatar_user.dart';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/screens/login_persistencia.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
@@ -15,6 +16,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => UserModel()),
         ChangeNotifierProvider(create: (_) => PlantProvider()),
+        ChangeNotifierProvider(create: (_) => AvatarUser()),
       ],
       child: const MeteoGardenApp(),
     ),
