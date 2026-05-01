@@ -1436,6 +1436,18 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Accessoris'**
   String get categoryAccessories;
+
+  /// No description provided for @errorMessageSession.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error iniciant sessió'**
+  String get errorMessageSession;
+
+  /// No description provided for @connectionError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error de connexió'**
+  String get connectionError;
 }
 
 class _AppLocalizationsDelegate

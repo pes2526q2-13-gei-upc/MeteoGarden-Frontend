@@ -324,6 +324,9 @@
 "categoryHair": "Cabello",
 "categoryFacialHair": "Barba",
 "categoryClothing": "Ropa",
-"categoryAccessories": "Accesorios"
+"categoryAccessories": "Accesorios",
+
+"errorMessageSession": "Error iniciando sessión",
+"connectionError": "Error de connexión"
 }
 

@@ -714,4 +714,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get categoryAccessories => 'Accesorios';
+
+  @override
+  String get errorMessageSession => 'Error iniciando sessión';
+
+  @override
+  String get connectionError => 'Error de connexión';
 }
