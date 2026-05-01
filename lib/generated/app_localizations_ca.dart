@@ -658,4 +658,10 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get finalitza => 'Finalitza el';
+
+  @override
+  String get allCities => 'Totes les ciutats';
+
+  @override
+  String get noEventsToday => 'No hi ha events aquest dia';
 }

@@ -304,6 +304,7 @@
 "confirmDeletePlant": "¿Estás seguro de que quieres eliminar {plantName}?\nEsta acción no se puede deshacer.",
 "thisPlant": "esta planta",
 "deletePlant": "Eliminar planta",
-"finalitza": "Finaliza el"
+"finalitza": "Finaliza el",
+"allCities": "Todas las ciudades"
 }
 

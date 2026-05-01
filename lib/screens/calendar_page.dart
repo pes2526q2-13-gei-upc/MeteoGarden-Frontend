@@ -3,7 +3,6 @@ import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/dades_usr.dart';
 import '../services/events_api_service.dart';
-import '../services/events_api_service.dart';
 
 // ─── Calendar Page ────────────────────────────────────────────────────────────
 
@@ -22,14 +21,10 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _currentMonth;
   late String _filterCity;
 
-  /// Recompte d'events per dia (clau = dia del mes)
   Map<int, int> _countByDay = {};
-
-  /// Events del dia seleccionat
   List<EventSummary> _selectedDayEvents = [];
   int? _selectedDay;
   bool _loadingDay = false;
-
   bool _loadingMonth = true;
   String? _error;
 
@@ -52,6 +47,86 @@ class _CalendarPageState extends State<CalendarPage> {
       default:
         return 'en';
     }
+  }
+
+  // ── City filter ─────────────────────────────────────────────────────────────
+
+  Future<void> _showCityFilterDialog() async {
+    final controller = TextEditingController(text: _filterCity);
+
+    final result = await showDialog<String?>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(
+          'Filtra per ciutat',
+          style: TextStyle(
+            color: Color(0xFF1B5E20),
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: controller,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: 'Escriu una ciutat...',
+                prefixIcon: const Icon(Icons.location_on_outlined,
+                    color: Color(0xFF4CAF50)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(color: Color(0xFF4CAF50)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(
+                      color: Color(0xFF4CAF50), width: 2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextButton.icon(
+              onPressed: () => Navigator.pop(dialogContext, ''),
+              icon: const Icon(Icons.public, color: Color(0xFF757575)),
+              label: const Text(
+                'Totes les ciutats',
+                style: TextStyle(color: Color(0xFF757575)),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, null),
+            child: const Text('Cancel·lar',
+                style: TextStyle(color: Color(0xFF9E9E9E))),
+          ),
+          ElevatedButton(
+            onPressed: () =>
+                Navigator.pop(dialogContext, controller.text.trim()),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF4CAF50),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('Aplicar'),
+          ),
+        ],
+      ),
+    );
+
+    // null = cancel·lat, String = nova ciutat (pot ser buida)
+    if (result == null) return;
+
+    setState(() {
+      _filterCity = result;
+      _selectedDay = null;
+      _selectedDayEvents = [];
+    });
+    _loadMonthCounts();
   }
 
   // ── Data loading ────────────────────────────────────────────────────────────
@@ -84,7 +159,6 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Future<void> _onDayTapped(int day) async {
-    // Si toquem el dia ja seleccionat, tanquem
     if (_selectedDay == day) {
       setState(() {
         _selectedDay = null;
@@ -174,7 +248,7 @@ class _CalendarPageState extends State<CalendarPage> {
   int get _firstWeekdayOfMonth {
     final wd =
         DateTime(_currentMonth.year, _currentMonth.month, 1).weekday;
-    return wd - 1; // dilluns = 0
+    return wd - 1;
   }
 
   String get _monthLabel {
@@ -224,6 +298,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
       child: Stack(
@@ -257,27 +332,61 @@ class _CalendarPageState extends State<CalendarPage> {
                         ),
                       ],
                     ),
-                    if (_filterCity.isNotEmpty) ...[
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            size: 13,
-                            color: Color(0xFF4CAF50),
+                    const SizedBox(height: 6),
+                    // Chip de ciutat clicable
+                    GestureDetector(
+                      onTap: _showCityFilterDialog,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: _filterCity.isNotEmpty
+                              ? const Color(0xFFE8F5E9)
+                              : const Color(0xFFF5F5F5),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: _filterCity.isNotEmpty
+                                ? const Color(0xFF4CAF50)
+                                : const Color(0xFFBDBDBD),
                           ),
-                          const SizedBox(width: 3),
-                          Text(
-                            _filterCity,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF757575),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              _filterCity.isNotEmpty
+                                  ? Icons.location_on
+                                  : Icons.public,
+                              size: 13,
+                              color: _filterCity.isNotEmpty
+                                  ? const Color(0xFF4CAF50)
+                                  : const Color(0xFF757575),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 4),
+                            Text(
+                              _filterCity.isNotEmpty
+                                  ? _filterCity
+                                  : l10n.allCities,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: _filterCity.isNotEmpty
+                                    ? const Color(0xFF2E7D32)
+                                    : const Color(0xFF757575),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.edit,
+                              size: 11,
+                              color: _filterCity.isNotEmpty
+                                  ? const Color(0xFF4CAF50)
+                                  : const Color(0xFF9E9E9E),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ],
                 ),
               ),
@@ -287,8 +396,7 @@ class _CalendarPageState extends State<CalendarPage> {
             left: 0,
             top: 0,
             child: IconButton(
-              icon:
-                  const Icon(Icons.arrow_back, color: Color(0xFF4CAF50)),
+              icon: const Icon(Icons.arrow_back, color: Color(0xFF4CAF50)),
               onPressed: () => Navigator.pop(context),
             ),
           ),
@@ -298,6 +406,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildError() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -309,7 +418,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ElevatedButton.icon(
             onPressed: _loadMonthCounts,
             icon: const Icon(Icons.refresh),
-            label: const Text('Reintentar'),
+            label: Text(l10n.commonRetry),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF4CAF50),
               foregroundColor: Colors.white,
@@ -381,7 +490,8 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildEmptyDay() {
-    return const Padding(
+    final l10n = AppLocalizations.of(context)!;
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 32),
       child: Center(
         child: Column(
@@ -394,7 +504,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
             SizedBox(height: 10),
             Text(
-              'No hi ha events aquest dia',
+              l10n.noEventsToday,
               style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 14),
             ),
           ],
@@ -418,8 +528,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
           ],
         ),
-        padding:
-            const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -627,6 +736,7 @@ class _EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -644,7 +754,6 @@ class _EventCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // Imatge
             ClipRRect(
               borderRadius: const BorderRadius.horizontal(
                 left: Radius.circular(16),
@@ -659,7 +768,6 @@ class _EventCard extends StatelessWidget {
                     )
                   : _placeholder(),
             ),
-            // Contingut
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -728,7 +836,7 @@ class _EventCard extends StatelessWidget {
                           ),
                           child: Text(
                             event.isFree
-                                ? 'Gratuït'
+                                ? l10n.calendarFreeAccent
                                 : '${event.price.toStringAsFixed(0)} €',
                             style: TextStyle(
                               fontSize: 11,
@@ -760,15 +868,15 @@ class _EventCard extends StatelessWidget {
   }
 
   Widget _placeholder() => Container(
-    width: 90,
-    height: 90,
-    color: const Color(0xFFE8F5E9),
-    child: const Icon(
-      Icons.image_not_supported_outlined,
-      color: Color(0xFF4CAF50),
-      size: 28,
-    ),
-  );
+        width: 90,
+        height: 90,
+        color: const Color(0xFFE8F5E9),
+        child: const Icon(
+          Icons.image_not_supported_outlined,
+          color: Color(0xFF4CAF50),
+          size: 28,
+        ),
+      );
 }
 
 // ─── Event Detail Dialog ──────────────────────────────────────────────────────
@@ -859,10 +967,10 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
   }
 
   Widget _buildDetail(EventDetail event) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Imatge capçalera
         Stack(
           children: [
             event.image.isNotEmpty
@@ -918,7 +1026,6 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
               ),
           ],
         ),
-        // Contingut scrollable
         Flexible(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -957,7 +1064,7 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
                     _MetaPill(
                       icon: Icons.euro,
                       label: event.isFree
-                          ? 'Gratuït'
+                          ? l10n.calendarFreeAccent
                           : '${event.price.toStringAsFixed(0)} €',
                       highlight: event.isFree,
                     ),
@@ -1009,15 +1116,15 @@ class _EventDetailDialogState extends State<_EventDetailDialog> {
       '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
   Widget _imagePlaceholder() => Container(
-    width: double.infinity,
-    height: 200,
-    color: const Color(0xFFE8F5E9),
-    child: const Icon(
-      Icons.image_not_supported_outlined,
-      color: Colors.green,
-      size: 40,
-    ),
-  );
+        width: double.infinity,
+        height: 200,
+        color: const Color(0xFFE8F5E9),
+        child: const Icon(
+          Icons.image_not_supported_outlined,
+          color: Colors.green,
+          size: 40,
+        ),
+      );
 
   Widget _buildInfoRow(IconData icon, String text) {
     return Padding(

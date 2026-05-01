@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import '../models/url.dart';
 
 // ─── Models ───────────────────────────────────────────────────────────────────
 
@@ -101,15 +102,13 @@ class EventDetail {
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 class EventsService {
-  static const String _baseUrl = 'http://127.0.0.1:8000';
-
   /// GET /api/events/count?year=&month=
   /// Retorna el recompte d'events per dia del mes indicat.
   Future<Map<int, int>> fetchEventCountByDay({
     required int year,
     required int month,
   }) async {
-    final uri = Uri.parse('$_baseUrl/api/events/count').replace(
+    final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/count').replace(
       queryParameters: {
         'year': '$year',
         'month': month.toString().padLeft(2, '0'),
@@ -140,7 +139,7 @@ class EventsService {
     required DateTime date,
     String lang = 'en',
   }) async {
-    final uri = Uri.parse('$_baseUrl/api/events/city').replace(
+    final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/city').replace(
       queryParameters: {
         'city': city.toLowerCase(),
         'date': _formatDate(date),
@@ -167,7 +166,7 @@ class EventsService {
     required DateTime date,
     String lang = 'en',
   }) async {
-    final uri = Uri.parse('$_baseUrl/api/events/').replace(
+    final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/').replace(
       queryParameters: {
         'date': _formatDate(date),
         'lang': lang,
@@ -194,7 +193,7 @@ class EventsService {
     required DateTime date,
     String lang = 'en',
   }) async {
-    final uri = Uri.parse('$_baseUrl/api/events/detail').replace(
+    final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/detail').replace(
       queryParameters: {
         'id': id,
         'date': _formatDate(date),
