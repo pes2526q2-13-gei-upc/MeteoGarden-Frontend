@@ -56,7 +56,7 @@ class GardenService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-
+      print('GARDEN DATA: $data'); // Debug print to check the response structure
       return data.map((e) => GardenPot.fromJson(e)).toList();
     }
     throw Exception('Error carregant els tests: ${response.statusCode}');
