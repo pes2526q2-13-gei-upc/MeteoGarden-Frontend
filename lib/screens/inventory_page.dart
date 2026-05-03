@@ -317,6 +317,7 @@ class _InventoryPageState extends State<InventoryPage>
                     const SizedBox(height: 4),
                     Text(
                       l10n.inventoryTitle,
+                      key: const Key('inventory_title'),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -412,6 +413,7 @@ class _InventoryPageState extends State<InventoryPage>
           dividerColor: Colors.transparent,
           tabs: [
             Tab(
+              key: const Key('inventory_seeds_tab'),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -423,6 +425,7 @@ class _InventoryPageState extends State<InventoryPage>
               ),
             ),
             Tab(
+              key: const Key('inventory_products_tab'),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -491,6 +494,7 @@ class _InventoryPageState extends State<InventoryPage>
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
         child: GridView.builder(
+          key: const Key('inventory_seeds_grid'),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 10,
@@ -521,6 +525,7 @@ class _InventoryPageState extends State<InventoryPage>
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
         child: GridView.builder(
+          key: const Key('inventory_products_grid'),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 10,
@@ -565,6 +570,7 @@ class _SeedCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return InkWell(
+       key: Key('seed_card_${seed.scientificName}'),
       borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Container(
@@ -640,6 +646,7 @@ class _ProductCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return InkWell(
+      key: Key('product_card_${product.productName}'),
       borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Container(

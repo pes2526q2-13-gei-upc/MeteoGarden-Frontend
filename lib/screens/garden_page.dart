@@ -492,6 +492,7 @@ class _GardenPageState extends State<GardenPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GestureDetector(
+                key: const Key('garden_inventory_button'),
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   Navigator.of(context).push(
