@@ -39,6 +39,7 @@
   "navProfile": "Profile",
 
   "albumTitle": "My plant album",
+  "albumDiscoveredPlants": "Plants discovered",
   "albumLoadingEncyclopedia": "Consulting encyclopedia...",
   "albumDetailsLoadError": "Error loading details: {error}",
   "@albumDetailsLoadError": {
@@ -56,6 +57,7 @@
   "albumDescriptionTitle": "Description",
   "albumEmptyState": "You haven't discovered any plants yet 🌱\nKeep exploring!",
   "albumPlantInfoLoadError": "Error loading plant information",
+  "albumNumber": "discovered plants",
 
   "shopTitle": "Shop",
   "shopSeedsTab": "Seeds 🌱",
@@ -302,7 +304,37 @@
 "extraLlavor": "When you get some, you will be able to plant them here.",
 "confirmDeletePlant": "Are you sure you want to delete {plantName}?\nThis action cannot be undone.",
 "thisPlant": "this plant",
-"deletePlant": "Delete plant",
+"deletePlant": "Delete plant"
+
+"avatarLoadError": "Error loading the avatar",
+"createYourAvatar": "Create your Avatar",
+"editAvatar": "Edit Avatar",
+"errorLoadingOptions": "Error loading options",
+"errorConnectionOptions": "Connection error while loading options.",
+"errorConnectionAvatar": "Connection error while loading user avatar.",
+"errorSavingAvatar": "Error saving avatar",
+"errorConnectionSaving": "Connection error while saving avatar.",
+"noOptionsAvailable": "No options available",
+"continueButton": "Continue",
+"saveChangesButton": "Save Changes",
+"categoryBody": "Body",
+"categoryEyes": "Eyes",
+"categoryExpression": "Expression",
+"categoryHair": "Hair",
+"categoryFacialHair": "Facial Hair",
+"categoryClothing": "Clothing",
+"categoryAccessories": "Accessories",
+"errorMessageSession": "Error logging in",
+"connectionError": "Conneixon error",
+"finalitza": "Ends on",
+"allCities": "All cities",
+
+"phaseSeed": "Seed",
+"phaseGermination": "Germination",
+"phaseGrowth": "Growth",
+"phaseMature": "Mature",
+"phaseFlowering": "Flowering",
+"phaseDead": "Dead"
 
 "missionsTitle": "Missions",
 "missionsSubtitle": "Complete challenges and earn coins",

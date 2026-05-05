@@ -103,7 +103,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get albumTitle => 'My plant album';
 
   @override
-  String get albumDiscoveredPlants => 'Plantes descobertes';
+  String get albumDiscoveredPlants => 'Plants discovered';
 
   @override
   String get albumLoadingEncyclopedia => 'Consulting encyclopedia...';
@@ -137,6 +137,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get albumPlantInfoLoadError => 'Error loading plant information';
+
+  @override
+  String get albumNumber => 'discovered plants';
 
   @override
   String get shopTitle => 'Shop';
@@ -656,6 +659,95 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deletePlant => 'Delete plant';
+
+  @override
+  String get finalitza => 'Ends on';
+
+  @override
+  String get avatarLoadError => 'Error loading the avatar';
+
+  @override
+  String get createYourAvatar => 'Create your Avatar';
+
+  @override
+  String get editAvatar => 'Edit Avatar';
+
+  @override
+  String get errorLoadingOptions => 'Error loading options';
+
+  @override
+  String get errorConnectionOptions =>
+      'Connection error while loading options.';
+
+  @override
+  String get errorConnectionAvatar =>
+      'Connection error while loading user avatar.';
+
+  @override
+  String get errorSavingAvatar => 'Error saving avatar';
+
+  @override
+  String get errorConnectionSaving => 'Connection error while saving avatar.';
+
+  @override
+  String get noOptionsAvailable => 'No options available';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get saveChangesButton => 'Save Changes';
+
+  @override
+  String get categoryBody => 'Body';
+
+  @override
+  String get categoryEyes => 'Eyes';
+
+  @override
+  String get categoryExpression => 'Expression';
+
+  @override
+  String get categoryHair => 'Hair';
+
+  @override
+  String get categoryFacialHair => 'Facial Hair';
+
+  @override
+  String get categoryClothing => 'Clothing';
+
+  @override
+  String get categoryAccessories => 'Accessories';
+
+  @override
+  String get errorMessageSession => 'Error logging in';
+
+  @override
+  String get connectionError => 'Conneixon error';
+
+  @override
+  String get allCities => 'All cities';
+
+  @override
+  String get noEventsToday => 'No hi ha events aquest dia';
+
+  @override
+  String get phaseSeed => 'Seed';
+
+  @override
+  String get phaseGermination => 'Germination';
+
+  @override
+  String get phaseGrowth => 'Growth';
+
+  @override
+  String get phaseMature => 'Mature';
+
+  @override
+  String get phaseFlowering => 'Flowering';
+
+  @override
+  String get phaseDead => 'Dead';
 
   @override
   String get missionsTitle => 'Missions';

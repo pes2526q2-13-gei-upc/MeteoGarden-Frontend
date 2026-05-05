@@ -1,41 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:meteo_garden/generated/app_localizations.dart';
 import '../models/seed_option.dart';
-import '../models/url.dart';
-
-// ─── API Service ──────────────────────────────────────────────────────────────
-
-class InventoryApiService {
-  final String username;
-
-  InventoryApiService({required this.username});
-
-  Future<List<SeedOption>> fetchSeeds() async {
-    final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/seeds/'),
-    );
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.map((e) => SeedOption.fromJson(e)).toList();
-    }
-    throw Exception('Error carregant llavors: ${response.statusCode}');
-  }
-
-  Future<List<ProductItem>> fetchProducts() async {
-    final response = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/products/'),
-    );
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.map((e) => ProductItem.fromJson(e)).toList();
-    }
-    throw Exception('Error carregant pocions: ${response.statusCode}');
-  }
-}
-
-// ─── Inventory Page ───────────────────────────────────────────────────────────
+import '../services/garden_service.dart';
 
 class InventoryPage extends StatefulWidget {
   final String username;
@@ -48,7 +14,7 @@ class InventoryPage extends StatefulWidget {
 
 class _InventoryPageState extends State<InventoryPage>
     with SingleTickerProviderStateMixin {
-  late final InventoryApiService _api;
+  late final GardenService _api;
   late final TabController _tabController;
 
   List<SeedOption> _seeds = [];
@@ -61,7 +27,7 @@ class _InventoryPageState extends State<InventoryPage>
   @override
   void initState() {
     super.initState();
-    _api = InventoryApiService(username: widget.username);
+    _api = GardenService();
     _tabController = TabController(length: 2, vsync: this);
     _loadInventory();
   }
@@ -77,11 +43,13 @@ class _InventoryPageState extends State<InventoryPage>
       _loading = true;
       _error = null;
     });
+
     try {
       final results = await Future.wait([
-        _api.fetchSeeds(),
-        _api.fetchProducts(),
+        _api.fetchSeeds(widget.username),
+        _api.fetchProducts(widget.username),
       ]);
+
       setState(() {
         _seeds = results[0] as List<SeedOption>;
         _products = results[1] as List<ProductItem>;
@@ -97,18 +65,201 @@ class _InventoryPageState extends State<InventoryPage>
 
   int get _totalItems => _seeds.length + _products.length;
 
-  List<SeedOption> get _filteredSeeds => _seeds
-      .where(
-        (s) =>
-            s.scientificName.toLowerCase().contains(_searchQuery.toLowerCase()),
-      )
-      .toList();
+  List<SeedOption> get _filteredSeeds {
+    final list = _seeds
+        .where(
+          (s) => s.scientificName.toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          ),
+        )
+        .toList();
 
-  List<ProductItem> get _filteredProducts => _products
-      .where(
-        (p) => p.productName.toLowerCase().contains(_searchQuery.toLowerCase()),
-      )
-      .toList();
+    list.sort(
+      (a, b) => a.scientificName.toLowerCase().compareTo(
+        b.scientificName.toLowerCase(),
+      ),
+    );
+
+    return list;
+  }
+
+  List<ProductItem> get _filteredProducts {
+    final list = _products
+        .where(
+          (p) =>
+              p.productName.toLowerCase().contains(_searchQuery.toLowerCase()),
+        )
+        .toList();
+
+    list.sort(
+      (a, b) =>
+          a.productName.toLowerCase().compareTo(b.productName.toLowerCase()),
+    );
+
+    return list;
+  }
+
+  void _showSeedInfo(SeedOption seed) {
+    final lang = Localizations.localeOf(context).languageCode;
+    final t = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return FutureBuilder<Map<String, dynamic>>(
+          future: _api.fetchPlantDetails(seed.scientificName, lang),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Dialog(
+                child: Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              );
+            }
+
+            final data = snapshot.data!;
+
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.network(
+                        seed.imageUrl,
+                        height: 120,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(height: 16),
+
+                      Text(
+                        data["commonName"] ?? seed.scientificName,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      Text(
+                        data["scientificName"],
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey,
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      if (data["family"] != null)
+                        Text("${t.albumFamilyLabel}: ${data["family"]}"),
+
+                      if (data["canFlower"] != null)
+                        Text(
+                          data["canFlower"]
+                              ? t.albumBlooms
+                              : t.albumDoesNotBloom,
+                        ),
+
+                      if (data["minTemperature"] != null &&
+                          data["maxTemperature"] != null)
+                        Text(
+                          "Temp: ${data["minTemperature"]}° - ${data["maxTemperature"]}°",
+                        ),
+
+                      const SizedBox(height: 12),
+
+                      if (data["description"] != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            data["description"],
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              fontSize: 14,
+                              height: 1.5, // interlineat
+                              color: Colors.grey.shade800,
+                            ),
+                          ),
+                        ),
+
+                      const SizedBox(height: 16),
+
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(t.commonClose),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showProductInfo(ProductItem product) {
+    final l10n = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.network(
+                  product.imageUrl,
+                  height: 120,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, _, _) => const Icon(
+                    Icons.science,
+                    size: 80,
+                    color: Color.fromARGB(255, 182, 194, 87),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  product.productName,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2E7D32),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.inventoryQuantity(product.amount),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Tancar"),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,10 +334,6 @@ class _InventoryPageState extends State<InventoryPage>
                   ],
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.menu, color: Color(0xFF4CAF50)),
-                onPressed: () {},
-              ),
             ],
           ),
           Positioned(
@@ -194,9 +341,7 @@ class _InventoryPageState extends State<InventoryPage>
             top: 0,
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Color(0xFF4CAF50)),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
             ),
           ),
         ],
@@ -302,6 +447,7 @@ class _InventoryPageState extends State<InventoryPage>
         child: CircularProgressIndicator(color: Color(0xFF4CAF50)),
       );
     }
+
     if (_error != null) {
       return Center(
         child: Column(
@@ -334,9 +480,11 @@ class _InventoryPageState extends State<InventoryPage>
   Widget _buildSeedsGrid() {
     final l10n = AppLocalizations.of(context)!;
     final items = _filteredSeeds;
+
     if (items.isEmpty) {
       return _buildEmptyState(l10n.inventoryNoSeeds);
     }
+
     return RefreshIndicator(
       onRefresh: _loadInventory,
       color: const Color(0xFF4CAF50),
@@ -350,7 +498,10 @@ class _InventoryPageState extends State<InventoryPage>
             childAspectRatio: 0.85,
           ),
           itemCount: items.length,
-          itemBuilder: (context, index) => _SeedCard(seed: items[index]),
+          itemBuilder: (context, index) => _SeedCard(
+            seed: items[index],
+            onTap: () => _showSeedInfo(items[index]),
+          ),
         ),
       ),
     );
@@ -359,9 +510,11 @@ class _InventoryPageState extends State<InventoryPage>
   Widget _buildProductsGrid() {
     final l10n = AppLocalizations.of(context)!;
     final items = _filteredProducts;
+
     if (items.isEmpty) {
       return _buildEmptyState(l10n.inventoryNoPotions);
     }
+
     return RefreshIndicator(
       onRefresh: _loadInventory,
       color: const Color(0xFF4CAF50),
@@ -375,7 +528,10 @@ class _InventoryPageState extends State<InventoryPage>
             childAspectRatio: 0.85,
           ),
           itemCount: items.length,
-          itemBuilder: (context, index) => _ProductCard(product: items[index]),
+          itemBuilder: (context, index) => _ProductCard(
+            product: items[index],
+            onTap: () => _showProductInfo(items[index]),
+          ),
         ),
       ),
     );
@@ -400,68 +556,73 @@ class _InventoryPageState extends State<InventoryPage>
 
 class _SeedCard extends StatelessWidget {
   final SeedOption seed;
+  final VoidCallback onTap;
 
-  const _SeedCard({required this.seed});
+  const _SeedCard({required this.seed, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.07),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Image.network(
-                seed.imageUrl,
-                fit: BoxFit.contain,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  );
-                },
-                errorBuilder: (_, _, _) => const Icon(
-                  Icons.local_florist,
-                  size: 40,
-                  color: Color(0xFF66BB6A),
-                ),
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              seed.scientificName,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF2E7D32),
-              ),
-            ),
-            Text(
-              l10n.inventoryQuantity(seed.amount),
-              style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.07),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Image.network(
+                  seed.imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    );
+                  },
+                  errorBuilder: (_, _, _) => const Icon(
+                    Icons.local_florist,
+                    size: 40,
+                    color: Color(0xFF66BB6A),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                seed.scientificName,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF2E7D32),
+                ),
+              ),
+              Text(
+                l10n.inventoryQuantity(seed.amount),
+                style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -470,58 +631,73 @@ class _SeedCard extends StatelessWidget {
 
 class _ProductCard extends StatelessWidget {
   final ProductItem product;
+  final VoidCallback onTap;
 
-  const _ProductCard({required this.product});
+  const _ProductCard({required this.product, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.07),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Image.asset(
-                'assets/images/products/${product.productName.toLowerCase().replaceAll(' ', '_')}.png',
-                fit: BoxFit.contain,
-                errorBuilder: (_, _, _) => const Icon(
-                  Icons.science,
-                  size: 40,
-                  color: Color(0xFF7E57C2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              product.productName,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF4527A0),
-              ),
-            ),
-            Text(
-              l10n.inventoryQuantity(product.amount),
-              style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.07),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Image.network(
+                  product.imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    );
+                  },
+                  errorBuilder: (_, _, _) => const Icon(
+                    Icons.science,
+                    size: 40,
+                    color: Color.fromARGB(255, 182, 194, 87),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                product.productName,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF2E7D32),
+                ),
+              ),
+              Text(
+                l10n.inventoryQuantity(product.amount),
+                style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
+              ),
+            ],
+          ),
         ),
       ),
     );

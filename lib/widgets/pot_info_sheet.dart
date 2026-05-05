@@ -113,8 +113,23 @@ class PotInfoSheet extends StatelessWidget {
                         ),
                       ],
                     ),
+
+                    // Pocions actives (llista)
+                    if (pot.activeProducts.isNotEmpty) ...[
+                      const SizedBox(height: 14),
+                      ...pot.activeProducts
+                          .where((p) => p.isActive)
+                          .map(
+                            (p) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: _ActiveBuffBadge(potion: p),
+                            ),
+                          ),
+                    ],
+
                     const SizedBox(height: 22),
-                    if ((pot.waterLevel ?? 0) < 100) ...[
+                    if ((pot.waterLevel ?? 0) < 100 &&
+                        pot.growthPhase != 'dead') ...[
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
@@ -216,6 +231,67 @@ class PotInfoSheet extends StatelessWidget {
   }
 }
 
+// ─── Badge poció activa ───────────────────────────────────────────────────────
+
+class _ActiveBuffBadge extends StatelessWidget {
+  final ActivePotion potion;
+
+  const _ActiveBuffBadge({required this.potion});
+
+  String _formatExpiry() {
+    final d = potion.expiresAt;
+    final day = d.day.toString().padLeft(2, '0');
+    final month = d.month.toString().padLeft(2, '0');
+    final hour = d.hour.toString().padLeft(2, '0');
+    final min = d.minute.toString().padLeft(2, '0');
+    return '$day/$month $hour:${min}h';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    const buffPurple = Color(0xFFA78BFA);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: buffPurple.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: buffPurple.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.shield_rounded, color: buffPurple, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  potion.name,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: buffPurple,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${l10n.finalitza} ${_formatExpiry()}',
+                  style: const TextStyle(fontSize: 12, color: Colors.white60),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Widgets auxiliars ────────────────────────────────────────────────────────
+
 class _StatBar extends StatelessWidget {
   final String label;
   final double value;
@@ -280,12 +356,15 @@ class _PhaseBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     final Map<String, (String, Color)> phaseInfo = {
-      'seed': ('Llavor', Color(0xFFfbbf24)),
-      'sprout': ('Brot', Color(0xFF34d399)),
-      'growing': ('Creixent', Color(0xFF4ade80)),
-      'mature': ('Madura', Color(0xFFfcd34d)),
-      'dead': ('Morta', Color(0xFF9ca3af)),
+      'seed': (t.phaseSeed, const Color(0xFFfbbf24)),
+      'germination': (t.phaseGermination, const Color(0xFF34d399)),
+      'growth': (t.phaseGrowth, const Color(0xFF4ade80)),
+      'mature': (t.phaseMature, const Color(0xFFfcd34d)),
+      'flowering': (t.phaseFlowering, const Color(0xFFfcd34d)),
+      'dead': (t.phaseDead, const Color(0xFF9ca3af)),
     };
 
     final info = phaseInfo[phase] ?? ('❓ $phase', const Color(0xFF9ca3af));

@@ -56,7 +56,6 @@ class GardenService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-
       return data.map((e) => GardenPot.fromJson(e)).toList();
     }
     throw Exception('Error carregant els tests: ${response.statusCode}');
@@ -115,30 +114,28 @@ class GardenService {
     required int potNumber,
     required String productName,
   }) async {
-    /*
-    final url = Uri.parse(
-      '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/potion/',
-    );
-
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/use_product/');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'productName': productName}),
+      body: jsonEncode({
+        'pot_number': potNumber,
+        'product_name': productName,
+        'username': username,
+        'garden_name': gardenName,
+      }),
     );
-
-    print('STATUS: ${response.statusCode}');
-    print('BODY: ${response.body}');
-
     final data = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      return data['message'] ?? 'Poció aplicada correctament.';
+    if (response.statusCode != 200 || data['error'] != null) {
+      throw Exception(data['error'] ?? 'Error aplicant la poció');
+    }
+    final isInstant = data['isInstant'] == true;
+    final product = data['product'] ?? productName;
+    if (isInstant) {
+      return 'Poció $product aplicada correctament';
     } else {
-      throw Exception(
-        data['message'] ?? data['error'] ?? 'Error aplicant la poció.',
-      );
-    }*/
-    return 'Encara falta implementar aplicar poció.';
+      return 'Efecte $product activat';
+    }
   }
 
   Future<PlantingResult> plantSeed({
@@ -215,6 +212,32 @@ class GardenService {
       return data['message'] ?? 'Plant deleted successfully.';
     } else {
       throw Exception(data['error'] ?? 'Error deleting plant.');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchPlantDetails(
+    String scientificName,
+    String lang,
+  ) async {
+    final response = await http.get(
+      Uri.parse(
+        '${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName&lang=$lang',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return {
+        "scientificName": data['scientificName'],
+        "commonName": data['commonName'],
+        "family": data['family'],
+        "canFlower": data['canFlower'],
+        "minTemperature": data['minTemperature'],
+        "maxTemperature": data['maxTemperature'],
+        "description": data['description'],
+      };
+    } else {
+      throw Exception('plant_info_load_error');
     }
   }
 }

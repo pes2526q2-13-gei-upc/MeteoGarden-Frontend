@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/models/avatar_user.dart';
 import 'package:provider/provider.dart';
-import 'package:meteo_garden/screens/login_page.dart';
+import 'package:meteo_garden/screens/login_persistencia.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
+import 'package:flutter/services.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserModel()),
         ChangeNotifierProvider(create: (_) => PlantProvider()),
+        ChangeNotifierProvider(create: (_) => AvatarUser()),
       ],
       child: const MeteoGardenApp(),
     ),
@@ -44,7 +49,7 @@ class MeteoGardenApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [Locale('ca'), Locale('es'), Locale('en')],
-      home: const LoginPage(),
+      home: const SplashScreen(),
     );
   }
 }

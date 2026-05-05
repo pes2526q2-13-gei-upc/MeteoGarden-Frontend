@@ -7,6 +7,10 @@ import 'perfil_edit_page.dart';
 import 'login_page.dart';
 import 'package:http/http.dart' as http;
 import '../models/url.dart';
+import '../../models/avatar_stack.dart';
+import 'avatar_editor_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../models/avatar_user.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
@@ -124,6 +128,7 @@ class _GameHeader extends StatelessWidget {
     final displayCity = city.isEmpty ? l10n.profileCityNotDefined : city;
     final displayEmail = email.isEmpty ? '—' : email;
     final displayLanguage = language.isEmpty ? '—' : language;
+    final avatar = Provider.of<AvatarUser>(context);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
@@ -155,21 +160,68 @@ class _GameHeader extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        height: 74,
-                        width: 74,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withValues(alpha: 0.12),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.28),
-                            width: 2,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.person_rounded,
-                          size: 40,
-                          color: Colors.white,
+                      // --- CÍRCULO DEL AVATAR CLICKABLE ---
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const AvatarEditorPage(isNewUser: false),
+                            ),
+                          );
+                        },
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: [
+                            // círculo con el AvatarStack actual
+                            Container(
+                              height: 74,
+                              width: 74,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  width: 2,
+                                ),
+                              ),
+                              child: ClipOval(
+                                child: AvatarStack(
+                                  body: avatar.body,
+                                  eye: avatar.eye,
+                                  expression: avatar.expression,
+                                  hair: avatar.hair,
+                                  facialHair: avatar.facialHair,
+                                  clothing: avatar.clothing,
+                                  accessories: avatar.accessories,
+                                ),
+                              ),
+                            ),
+                            // Icono de edición flotante
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors
+                                    .white, // Fondo blanco para que destaque
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.edit_rounded,
+                                color: Color(
+                                  0xFF3E6B48,
+                                ), // Tu color verde oscuro
+                                size: 16,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -207,26 +259,6 @@ class _GameHeader extends StatelessWidget {
                               ],
                             ),
                           ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 18),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _MiniHeaderStat(
-                          icon: Icons.monetization_on,
-                          label: l10n.profileCoins,
-                          value: coins.toString(),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _MiniHeaderStat(
-                          icon: Icons.eco_rounded,
-                          label: l10n.profileDiscovered,
-                          value: plantsDiscovered.toString(),
                         ),
                       ),
                     ],
@@ -340,56 +372,6 @@ class _HeaderInfoRow extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _MiniHeaderStat extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-
-  const _MiniHeaderStat({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white, size: 22),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -519,9 +501,13 @@ class _GameStatCard extends StatelessWidget {
 
 class _ActionButtons extends StatelessWidget {
   const _ActionButtons();
+  final storage = const FlutterSecureStorage();
 
-  void _logout(BuildContext context) {
+  Future<void> _logout(BuildContext context) async {
     Provider.of<UserModel>(context, listen: false).logout();
+    await storage.delete(key: 'auth_token');
+
+    if (!context.mounted) return;
 
     Navigator.pushReplacement(
       context,
@@ -567,6 +553,10 @@ class _ActionButtons extends StatelessWidget {
 
               if (response.statusCode == 200) {
                 Provider.of<UserModel>(context, listen: false).logout();
+
+                await storage.delete(key: 'auth_token');
+
+                if (!context.mounted) return;
 
                 Navigator.pushReplacement(
                   context,

@@ -352,6 +352,12 @@ abstract class AppLocalizations {
   /// **'Error carregant la informació de la planta'**
   String get albumPlantInfoLoadError;
 
+  /// No description provided for @albumNumber.
+  ///
+  /// In ca, this message translates to:
+  /// **'plantes descobertes'**
+  String get albumNumber;
+
   /// No description provided for @shopTitle.
   ///
   /// In ca, this message translates to:
@@ -1322,6 +1328,180 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Eliminar planta'**
   String get deletePlant;
+
+  /// No description provided for @finalitza.
+  ///
+  /// In ca, this message translates to:
+  /// **'Finalitza el'**
+  String get finalitza;
+
+  /// No description provided for @avatarLoadError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant l\'avatar'**
+  String get avatarLoadError;
+
+  /// No description provided for @createYourAvatar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Crea el teu avatar'**
+  String get createYourAvatar;
+
+  /// No description provided for @editAvatar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Edita el teu avatar'**
+  String get editAvatar;
+
+  /// No description provided for @errorLoadingOptions.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant opcions'**
+  String get errorLoadingOptions;
+
+  /// No description provided for @errorConnectionOptions.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error de connexió carregant les opcions.'**
+  String get errorConnectionOptions;
+
+  /// No description provided for @errorConnectionAvatar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error de connexió carregant l\'avatar.'**
+  String get errorConnectionAvatar;
+
+  /// No description provided for @errorSavingAvatar.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error guardant l\'avatar'**
+  String get errorSavingAvatar;
+
+  /// No description provided for @errorConnectionSaving.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error de connexió guardant l\'avatar.'**
+  String get errorConnectionSaving;
+
+  /// No description provided for @noOptionsAvailable.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha opcions disponibles'**
+  String get noOptionsAvailable;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In ca, this message translates to:
+  /// **'Continuar'**
+  String get continueButton;
+
+  /// No description provided for @saveChangesButton.
+  ///
+  /// In ca, this message translates to:
+  /// **'Guardar canvis'**
+  String get saveChangesButton;
+
+  /// No description provided for @categoryBody.
+  ///
+  /// In ca, this message translates to:
+  /// **'Cos'**
+  String get categoryBody;
+
+  /// No description provided for @categoryEyes.
+  ///
+  /// In ca, this message translates to:
+  /// **'Ulls'**
+  String get categoryEyes;
+
+  /// No description provided for @categoryExpression.
+  ///
+  /// In ca, this message translates to:
+  /// **'Expressió'**
+  String get categoryExpression;
+
+  /// No description provided for @categoryHair.
+  ///
+  /// In ca, this message translates to:
+  /// **'Cabell'**
+  String get categoryHair;
+
+  /// No description provided for @categoryFacialHair.
+  ///
+  /// In ca, this message translates to:
+  /// **'Barba'**
+  String get categoryFacialHair;
+
+  /// No description provided for @categoryClothing.
+  ///
+  /// In ca, this message translates to:
+  /// **'Roba'**
+  String get categoryClothing;
+
+  /// No description provided for @categoryAccessories.
+  ///
+  /// In ca, this message translates to:
+  /// **'Accessoris'**
+  String get categoryAccessories;
+
+  /// No description provided for @errorMessageSession.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error iniciant sessió'**
+  String get errorMessageSession;
+
+  /// No description provided for @connectionError.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error de connexió'**
+  String get connectionError;
+
+  /// No description provided for @allCities.
+  ///
+  /// In ca, this message translates to:
+  /// **'Totes les ciutats'**
+  String get allCities;
+
+  /// No description provided for @noEventsToday.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha events aquest dia'**
+  String get noEventsToday;
+
+  /// No description provided for @phaseSeed.
+  ///
+  /// In ca, this message translates to:
+  /// **'Llavor'**
+  String get phaseSeed;
+
+  /// No description provided for @phaseGermination.
+  ///
+  /// In ca, this message translates to:
+  /// **'Germinació'**
+  String get phaseGermination;
+
+  /// No description provided for @phaseGrowth.
+  ///
+  /// In ca, this message translates to:
+  /// **'Creixement'**
+  String get phaseGrowth;
+
+  /// No description provided for @phaseMature.
+  ///
+  /// In ca, this message translates to:
+  /// **'Madura'**
+  String get phaseMature;
+
+  /// No description provided for @phaseFlowering.
+  ///
+  /// In ca, this message translates to:
+  /// **'Floració'**
+  String get phaseFlowering;
+
+  /// No description provided for @phaseDead.
+  ///
+  /// In ca, this message translates to:
+  /// **'Morta'**
+  String get phaseDead;
 
   /// No description provided for @missionsTitle.
   ///

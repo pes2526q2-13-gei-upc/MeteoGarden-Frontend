@@ -1,3 +1,25 @@
+class ActivePotion {
+  final String name;
+  final DateTime appliedAt;
+  final DateTime expiresAt;
+
+  ActivePotion({
+    required this.name,
+    required this.appliedAt,
+    required this.expiresAt,
+  });
+
+  bool get isActive => DateTime.now().isBefore(expiresAt);
+
+  factory ActivePotion.fromJson(Map<String, dynamic> json) {
+    return ActivePotion(
+      name: json['name'] as String,
+      appliedAt: DateTime.parse(json['applied_at']),
+      expiresAt: DateTime.parse(json['expires_at']),
+    );
+  }
+}
+
 class GardenPot {
   final int potNumber;
   final bool occupied;
@@ -8,6 +30,10 @@ class GardenPot {
   final DateTime? plantedAt;
   final DateTime? lastWateredAt;
 
+  final List<ActivePotion> activeProducts;
+
+  bool get hasBuff => activeProducts.any((p) => p.isActive);
+
   GardenPot({
     required this.potNumber,
     required this.occupied,
@@ -17,13 +43,16 @@ class GardenPot {
     required this.waterLevel,
     required this.plantedAt,
     required this.lastWateredAt,
+    this.activeProducts = const [],
   });
 
   factory GardenPot.fromJson(Map<String, dynamic> json) {
+    final plantJson = json['plant'] as Map<String, dynamic>?;
+    final rawProducts = plantJson?['active_products'] as List<dynamic>? ?? [];
     return GardenPot(
       potNumber: json['pot_number'],
       occupied: json['occupied'],
-      plant: json['plant'] != null ? PlantData.fromJson(json['plant']) : null,
+      plant: plantJson != null ? PlantData.fromJson(plantJson) : null,
       growthPhase: json['growth_phase'],
       healthLevel: json['health_level'] != null
           ? (json['health_level'] as num).toDouble()
@@ -37,6 +66,10 @@ class GardenPot {
       lastWateredAt: json['last_watered_at'] != null
           ? DateTime.parse(json['last_watered_at'])
           : null,
+      activeProducts: rawProducts
+          .map((e) => ActivePotion.fromJson(e as Map<String, dynamic>))
+          .where((p) => p.isActive)
+          .toList(),
     );
   }
 }
@@ -57,7 +90,7 @@ class PlantData {
     required this.canFlower,
     required this.minTemperature,
     required this.maxTemperature,
-    this.imageUrl, //de moment ho posem opcional
+    this.imageUrl,
   });
 
   factory PlantData.fromJson(Map<String, dynamic> json) {
@@ -68,7 +101,7 @@ class PlantData {
       canFlower: json['can_flower'],
       minTemperature: (json['min_temperature'] as num).toDouble(),
       maxTemperature: (json['max_temperature'] as num).toDouble(),
-      imageUrl: json['image_url'] as String?, //llegeix del json
+      imageUrl: json['image_url'] as String?,
     );
   }
 }
