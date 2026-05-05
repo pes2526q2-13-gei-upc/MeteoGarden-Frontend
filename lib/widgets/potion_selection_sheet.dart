@@ -304,9 +304,9 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(6),
-                  child: potion.imageUrl.isNotEmpty
+                  child: (potion.imageUrl?.isNotEmpty ?? false)
                       ? Image.network(
-                          potion.imageUrl,
+                          potion.imageUrl!,
                           fit: BoxFit.contain,
                           errorBuilder: (_, _, _) => const Icon(
                             Icons.local_drink,

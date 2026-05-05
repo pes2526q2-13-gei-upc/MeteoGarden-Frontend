@@ -130,10 +130,9 @@ class _InventoryPageState extends State<InventoryPage>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Image.network(
-                        seed.imageUrl,
+                      _PlantImage(
+                        imageUrl: seed.imageUrl,
                         height: 120,
-                        fit: BoxFit.contain,
                       ),
                       const SizedBox(height: 16),
 
@@ -223,15 +222,11 @@ class _InventoryPageState extends State<InventoryPage>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.network(
-                  product.imageUrl,
+                _PlantImage(
+                  imageUrl: product.imageUrl,
                   height: 120,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, _, _) => const Icon(
-                    Icons.science,
-                    size: 80,
-                    color: Color.fromARGB(255, 182, 194, 87),
-                  ),
+                  fallbackIcon: Icons.science,
+                  fallbackColor: Color.fromARGB(255, 182, 194, 87),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -591,25 +586,7 @@ class _SeedCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: Image.network(
-                  seed.imageUrl,
-                  fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    );
-                  },
-                  errorBuilder: (_, _, _) => const Icon(
-                    Icons.local_florist,
-                    size: 40,
-                    color: Color(0xFF66BB6A),
-                  ),
-                ),
+                child: _PlantImage(imageUrl: seed.imageUrl),
               ),
               const SizedBox(height: 6),
               Text(
@@ -667,24 +644,10 @@ class _ProductCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: Image.network(
-                  product.imageUrl,
-                  fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    );
-                  },
-                  errorBuilder: (_, _, _) => const Icon(
-                    Icons.science,
-                    size: 40,
-                    color: Color.fromARGB(255, 182, 194, 87),
-                  ),
+                child: _PlantImage(
+                  imageUrl: product.imageUrl,
+                  fallbackIcon: Icons.science,
+                  fallbackColor: Color.fromARGB(255, 182, 194, 87),
                 ),
               ),
               const SizedBox(height: 6),
@@ -707,6 +670,45 @@ class _ProductCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+// Widget helper que gestiona imageUrl nullable i errors de xarxa
+class _PlantImage extends StatelessWidget {
+  final String? imageUrl;
+  final double? height;
+  final IconData fallbackIcon;
+  final Color fallbackColor;
+
+  const _PlantImage({
+    this.imageUrl,
+    this.height,
+    this.fallbackIcon = Icons.local_florist,
+    this.fallbackColor = const Color(0xFF66BB6A),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (imageUrl == null || imageUrl!.isEmpty) {
+      return Icon(fallbackIcon, size: height != null ? height! * 0.65 : 40, color: fallbackColor);
+    }
+    return Image.network(
+      imageUrl!,
+      height: height,
+      fit: BoxFit.contain,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return const Center(
+          child: SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        );
+      },
+      errorBuilder: (_, _, _) =>
+          Icon(fallbackIcon, size: height != null ? height! * 0.65 : 40, color: fallbackColor),
     );
   }
 }

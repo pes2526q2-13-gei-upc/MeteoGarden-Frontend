@@ -243,28 +243,34 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                                   : Colors.white.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            child: Image.network(
-                              seed.imageUrl,
-                              fit: BoxFit.contain,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return const Center(
-                                      child: SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                              errorBuilder: (_, _, _) => const Icon(
-                                Icons.spa_rounded,
-                                color: Colors.greenAccent,
-                                size: 28,
-                              ),
-                            ),
+                            child: (seed.imageUrl?.isNotEmpty ?? false)
+                                ? Image.network(
+                                    seed.imageUrl!,
+                                    fit: BoxFit.contain,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                          if (loadingProgress == null) return child;
+                                          return const Center(
+                                            child: SizedBox(
+                                              width: 16,
+                                              height: 16,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                    errorBuilder: (_, _, _) => const Icon(
+                                      Icons.spa_rounded,
+                                      color: Colors.greenAccent,
+                                      size: 28,
+                                    ),
+                                  )
+                                : const Icon(
+                                    Icons.spa_rounded,
+                                    color: Colors.greenAccent,
+                                    size: 28,
+                                  ),
                           ),
                           const SizedBox(width: 14),
                           Expanded(
