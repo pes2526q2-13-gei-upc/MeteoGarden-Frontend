@@ -40,26 +40,31 @@ class _HomeShellState extends State<HomeShell> {
 
     final navItems = [
       _NavItem(
+        keyName: 'nav_garden',
         icon: Icons.local_florist_outlined,
         activeIcon: Icons.local_florist,
         label: l10n.navGarden,
       ),
       _NavItem(
+        keyName: 'nav_friends',
         icon: Icons.people_outline,
         activeIcon: Icons.people,
         label: l10n.navFriends,
       ),
       _NavItem(
+        keyName: 'nav_camera',
         icon: Icons.camera_alt_outlined,
         activeIcon: Icons.camera_alt,
         label: l10n.navCamera,
       ),
       _NavItem(
+        keyName: 'nav_missions',
         icon: Icons.flag_outlined,
         activeIcon: Icons.flag,
         label: l10n.navMissions,
       ),
       _NavItem(
+        keyName: 'nav_profile',
         icon: Icons.person_outline,
         activeIcon: Icons.person,
         label: l10n.navProfile,
@@ -81,11 +86,13 @@ class _NavItem {
   final IconData icon;
   final IconData activeIcon;
   final String label;
+  final String keyName;
 
   const _NavItem({
     required this.icon,
     required this.activeIcon,
     required this.label,
+    required this.keyName,
   });
 }
 
@@ -144,15 +151,18 @@ class _GameNavTile extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
+
   const _GameNavTile({
     required this.item,
     required this.isSelected,
     required this.onTap,
+    
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      key: Key(item.keyName),
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(

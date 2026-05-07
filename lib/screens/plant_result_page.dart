@@ -17,6 +17,7 @@ class PlantResultPage extends StatelessWidget {
     final imageUrl = result.image.url;
 
     return Scaffold(
+      key: const Key('plant_result_page'),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -33,6 +34,7 @@ class PlantResultPage extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
+                       key: const Key('plant_result_back_button'),
                       onPressed: () => Navigator.pop(context),
                       icon: const Icon(Icons.arrow_back),
                     ),
@@ -104,6 +106,7 @@ class PlantResultPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
+                        key: const Key('plant_result_common_name'),
                         commonName,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
@@ -114,6 +117,7 @@ class PlantResultPage extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         scientificName,
+                        key: const Key('plant_result_scientific_name'),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
@@ -171,6 +175,7 @@ class PlantResultPage extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
+                    key: const Key('plant_result_take_another_photo_button'),
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.camera_alt_outlined),
                     label: Text(l10n.plantResultTakeAnotherPhoto),

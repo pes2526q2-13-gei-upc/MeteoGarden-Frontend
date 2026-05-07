@@ -163,6 +163,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     );
 
     return Scaffold(
+      key: const Key('edit_profile_page'),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -246,6 +247,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                           const SizedBox(height: 24),
 
                           TextField(
+                            key: const Key('edit_profile_username_field'),
                             controller: usernameController,
                             decoration: defaultDecoration.copyWith(
                               labelText: l10n.loginUsernameLabel,
@@ -257,6 +259,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                           const SizedBox(height: 20),
 
                           DropdownMenu<City>(
+                            key: const Key('edit_profile_city_dropdown'),
                             initialSelection: selectedCity,
                             controller: ciutatSearchController,
                             requestFocusOnTap: true,
@@ -296,6 +299,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                           const SizedBox(height: 20),
 
                           DropdownButtonFormField<String>(
+                              key: const Key('edit_profile_language_dropdown'),
                             initialValue: language,
                             decoration: defaultDecoration.copyWith(
                               labelText: l10n.commonLanguage,
@@ -328,6 +332,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                           SizedBox(
                             width: double.infinity,
                             child: FilledButton.icon(
+                              key: const Key('save_profile_button'),
                               onPressed: _actualitzar,
                               icon: const Icon(Icons.save_rounded),
                               label: Text(

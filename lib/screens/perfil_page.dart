@@ -21,6 +21,7 @@ class PerfilPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      key: const Key('profile_page'),
       body: Stack(
         children: [
           Positioned.fill(
@@ -305,6 +306,7 @@ class _GameHeader extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
+                      key: const Key('edit_profile_button'),
                       onPressed: onEdit,
                       style: FilledButton.styleFrom(
                         backgroundColor: Colors.white,
