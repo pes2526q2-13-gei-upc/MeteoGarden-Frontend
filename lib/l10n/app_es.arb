@@ -57,6 +57,7 @@
   "albumDescriptionTitle": "Descripción",
   "albumEmptyState": "Todavía no has descubierto ninguna planta 🌱\n¡Sigue explorando!",
   "albumPlantInfoLoadError": "Error cargando la información de la planta",
+  "albumNumber": "plantas descubiertas",
 
   "shopTitle": "Tienda",
   "shopSeedsTab": "Semillas 🌱",
@@ -304,6 +305,37 @@
 "confirmDeletePlant": "¿Estás seguro de que quieres eliminar {plantName}?\nEsta acción no se puede deshacer.",
 "thisPlant": "esta planta",
 "deletePlant": "Eliminar planta",
-"finalitza": "Finaliza el"
+
+"avatarLoadError": "Error cargando el avatar",
+
+"createYourAvatar": "Create your Avatar",
+"editAvatar": "Editar avatar",
+"errorLoadingOptions": "Error cargando las opciones",
+"errorConnectionOptions": "Error de conexión cargando las opciones.",
+"errorConnectionAvatar": "Error de conexión cargando el avatar.",
+"errorSavingAvatar": "Error guardando el avatar",
+"errorConnectionSaving": "Error de conexión guardando el avatar.",
+"noOptionsAvailable": "No hay opciones disponibles",
+"continueButton": "Continuar",
+"saveChangesButton": "Guardar cambios",
+"categoryBody": "Cuerpo",
+"categoryEyes": "Ojos",
+"categoryExpression": "Expresión",
+"categoryHair": "Cabello",
+"categoryFacialHair": "Barba",
+"categoryClothing": "Ropa",
+"categoryAccessories": "Accesorios",
+
+"errorMessageSession": "Error iniciando sessión",
+"connectionError": "Error de connexión",
+"finalitza": "Finaliza el",
+"allCities": "Todas las ciudades",
+
+"phaseSeed": "Semilla",
+"phaseGermination": "Germinación",
+"phaseGrowth": "Crecimiento",
+"phaseMature": "Madura",
+"phaseFlowering": "Floración",
+"phaseDead": "Muerta"
 }
 

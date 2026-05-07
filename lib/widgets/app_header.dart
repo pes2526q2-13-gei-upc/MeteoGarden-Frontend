@@ -94,12 +94,6 @@ class AppHeader extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // ─── MENU ───
-              IconButton(
-                icon: const Icon(Icons.menu, color: Color(0xFF4CAF50)),
-                onPressed: onMenuPressed ?? () {},
-              ),
             ],
           ),
 

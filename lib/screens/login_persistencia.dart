@@ -7,7 +7,8 @@ import 'login_page.dart';
 import 'package:http/http.dart' as http;
 import '../models/url.dart';
 import 'dart:convert';
-import 'package:meteo_garden/l10n/app_localizations.dart';
+//import 'package:meteo_garden/l10n/app_localizations.dart';
+import 'package:meteo_garden/generated/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -48,45 +49,82 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _fetchAndSaveProfile(String token) async {
-    final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
+    final localizations = AppLocalizations.of(context);
+    try {
+      final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
 
-    final response = await http.get(
-      url,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Token $token",
-      },
-    );
-
-    if (!mounted) return;
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
-      // gardens és List, extreim només els noms
-      final List<String> gardenNames = (data['gardens'] as List<dynamic>)
-          .map((g) => g['gardenName'] as String)
-          .toList();
-
-      Provider.of<UserModel>(context, listen: false).setProfile(
-        newUsername: data['username'] ?? '',
-        newEmail: data['email'] ?? '',
-        newCity: data['city'] ?? '',
-        newLanguage: data['language'] ?? '',
-        newLastEntry: data['lastEntry'] ?? '',
-        newNumPlantsCollected: data['numPlantsCollected'] ?? 0,
-        newMonedes: data['numCoins'] ?? 0,
-        newGardens: gardenNames,
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Token $token",
+        },
       );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeShell()),
-      );
-    } else {
+      if (!mounted) return;
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        // gardens és List, extreim només els noms
+        final List<String> gardenNames = (data['gardens'] as List<dynamic>)
+            .map((g) => g['gardenName'] as String)
+            .toList();
+
+        Provider.of<UserModel>(context, listen: false).setProfile(
+          newUsername: data['username'] ?? '',
+          newEmail: data['email'] ?? '',
+          newCity: data['city'] ?? '',
+          newLanguage: data['language'] ?? '',
+          newLastEntry: data['lastEntry'] ?? '',
+          newNumPlantsCollected: data['numPlantsCollected'] ?? 0,
+          newMonedes: data['numCoins'] ?? 0,
+          newGardens: gardenNames,
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeShell()),
+        );
+      } else {
+        // ERROR 401 u otros: El token es inválido o expiró.
+        // 1. Borramos el token para evitar bucles infinitos en futuros arranques.
+        await storage.delete(key: 'auth_token');
+
+        if (mounted) {
+          // 2. Intentamos obtener las traducciones de forma segura sin forzar el nulo (!)
+
+          final errorMessageSession =
+              localizations?.profileLoadError ??
+              'Error de sesión. Vuelve a iniciar sesión.';
+
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(errorMessageSession)));
+
+          // 3. Redirigimos al Login
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const LoginPage()),
+          );
+        }
+      }
+    } catch (e) {
+      // Si falla la red (SocketException) o hay cualquier otro error inesperado
+      if (!mounted) return;
+
+      // Por seguridad, si no podemos validar, es mejor mandarlos al login
+      await storage.delete(key: 'auth_token');
+
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.profileLoadError)),
+        SnackBar(
+          // El '?' comprueba si es nulo. El '??' pone el texto alternativo si lo es.
+          content: Text(localizations?.connectionError ?? 'Error de conexión'),
+        ),
       );
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginPage()),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_garden/models/avatar_user.dart';
 import 'package:meteo_garden/screens/completar_nova_conta.dart';
 import 'package:meteo_garden/screens/home_shell.dart';
 import 'package:meteo_garden/screens/crea_nova_conta.dart';
@@ -11,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'avatar_editor_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -122,8 +124,9 @@ class _LoginPageState extends State<LoginPage> {
       Provider.of<UserModel>(context, listen: false).setToken(data['token']);
       await storage.write(key: 'auth_token', value: data['token']);
       await _fetchAndSaveProfile(data['token']);
-      if (!mounted) return;
-      _goToHome();
+      if (!context.mounted) return;
+      await _checkAvatar();
+      // el go to home es fa a la funcio de checkavatar, per que no es sobreposin el canvis de pantalla
     } else {
       debugPrint("Error: ${response.body}");
       ScaffoldMessenger.of(
@@ -185,7 +188,8 @@ class _LoginPageState extends State<LoginPage> {
           await storage.write(key: 'auth_token', value: data['token']);
           await _fetchAndSaveProfile(data['token']);
           if (!context.mounted) return;
-          _goToHome();
+          await _checkAvatar();
+          // el go to home es fa a la funcio de checkavatar, per que no es sobreposin el canvis de pantalla
         }
       } else {
         ScaffoldMessenger.of(
@@ -225,11 +229,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          Positioned(
-            top: 3,
-            right: 16,
-            child: SafeArea(child: _buildLanguageSelector()),
-          ),
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -240,137 +239,160 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 450),
-                  child: Container(
-                    padding: const EdgeInsets.all(28),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                          color: Colors.black.withValues(alpha: 0.08),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _LoginHeader(t: t),
-                        const SizedBox(height: 32),
-                        _InputField(
-                          controller: usernameController,
-                          label: t.loginUsernameLabel,
-                          hint: t.loginUsernameHint,
-                          icon: Icons.person_outline_rounded,
-                        ),
-                        const SizedBox(height: 16),
-                        _InputField(
-                          controller: passwordController,
-                          label: t.loginPasswordLabel,
-                          hint: t.loginPasswordHint,
-                          icon: Icons.lock_outline_rounded,
-                          obscureText: true,
-                        ),
-                        const SizedBox(height: 28),
-                        FilledButton.icon(
-                          onPressed: _login,
-                          icon: const Icon(Icons.login_rounded),
-                          label: Text(
-                            t.loginButton,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xFF166534),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            elevation: 0,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Divider(color: Colors.grey.shade300),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                              ),
-                              child: Text(
-                                t.loginContinueWith,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey.shade600,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Divider(color: Colors.grey.shade300),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      _buildLanguageSelector(),
+                      const SizedBox(height: 16),
+
+                      Container(
+                        padding: const EdgeInsets.all(28),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(28),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                              color: Colors.black.withValues(alpha: 0.08),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 24),
-                        OutlinedButton.icon(
-                          onPressed: () => loginWithGoogle(context),
-                          icon: const Icon(
-                            Icons.g_mobiledata,
-                            size: 28,
-                            color: Colors.black87,
-                          ),
-                          label: const Text(
-                            'Google',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            side: BorderSide(color: Colors.grey.shade300),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Text(
-                              t.loginNoAccount,
-                              style: TextStyle(color: Colors.grey.shade600),
+                            _LoginHeader(t: t),
+                            const SizedBox(height: 32),
+
+                            _InputField(
+                              controller: usernameController,
+                              label: t.loginUsernameLabel,
+                              hint: t.loginUsernameHint,
+                              icon: Icons.person_outline_rounded,
                             ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const CreaNovaConta(),
-                                  ),
-                                );
-                              },
-                              style: TextButton.styleFrom(
-                                foregroundColor: const Color(0xFF166534),
-                              ),
-                              child: Text(
-                                t.loginCreateAccount,
+
+                            const SizedBox(height: 16),
+
+                            _InputField(
+                              controller: passwordController,
+                              label: t.loginPasswordLabel,
+                              hint: t.loginPasswordHint,
+                              icon: Icons.lock_outline_rounded,
+                              obscureText: true,
+                            ),
+
+                            const SizedBox(height: 28),
+
+                            FilledButton.icon(
+                              onPressed: _login,
+                              icon: const Icon(Icons.login_rounded),
+                              label: Text(
+                                t.loginButton,
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: const Color(0xFF166534),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                elevation: 0,
+                              ),
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Divider(color: Colors.grey.shade300),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                  ),
+                                  child: Text(
+                                    t.loginContinueWith,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Divider(color: Colors.grey.shade300),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            OutlinedButton.icon(
+                              onPressed: () => loginWithGoogle(context),
+                              icon: const Icon(
+                                Icons.g_mobiledata,
+                                size: 28,
+                                color: Colors.black87,
+                              ),
+                              label: const Text(
+                                'Google',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                side: BorderSide(color: Colors.grey.shade300),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
                               ),
                             ),
+
+                            const SizedBox(height: 24),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  t.loginNoAccount,
+                                  style: TextStyle(color: Colors.grey.shade600),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const CreaNovaConta(),
+                                      ),
+                                    );
+                                  },
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: const Color(0xFF166534),
+                                  ),
+                                  child: Text(
+                                    t.loginCreateAccount,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -418,6 +440,42 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(_t.profileLoadError)));
+    }
+  }
+
+  Future<void> _checkAvatar() async {
+    final user = Provider.of<UserModel>(context, listen: false);
+    String username = user.username;
+
+    final avatarResponse = await http.get(
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar/'),
+    );
+
+    if (!mounted) return;
+
+    if (avatarResponse.statusCode == 200) {
+      final avatar = jsonDecode(avatarResponse.body);
+      Provider.of<AvatarUser>(context, listen: false).setAvatar(
+        newBody: avatar['body'],
+        newEye: avatar['eye'],
+        newExpression: avatar['expression'],
+        newHair: avatar['hair'],
+        newFacialHair: avatar['facial_hair'],
+        newClothing: avatar['clothing'],
+        newAccessories: avatar['accessories'],
+      );
+      _goToHome();
+    } else if (avatarResponse.statusCode == 404) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const AvatarEditorPage(isNewUser: true),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_t.avatarLoadError)));
     }
   }
 }

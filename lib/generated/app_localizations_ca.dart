@@ -140,6 +140,9 @@ class AppLocalizationsCa extends AppLocalizations {
       'Error carregant la informació de la planta';
 
   @override
+  String get albumNumber => 'plantes descobertes';
+
+  @override
   String get shopTitle => 'Botiga';
 
   @override
@@ -658,4 +661,89 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get finalitza => 'Finalitza el';
+
+  @override
+  String get avatarLoadError => 'Error carregant l\'avatar';
+
+  @override
+  String get createYourAvatar => 'Crea el teu avatar';
+
+  @override
+  String get editAvatar => 'Edita el teu avatar';
+
+  @override
+  String get errorLoadingOptions => 'Error carregant opcions';
+
+  @override
+  String get errorConnectionOptions =>
+      'Error de connexió carregant les opcions.';
+
+  @override
+  String get errorConnectionAvatar => 'Error de connexió carregant l\'avatar.';
+
+  @override
+  String get errorSavingAvatar => 'Error guardant l\'avatar';
+
+  @override
+  String get errorConnectionSaving => 'Error de connexió guardant l\'avatar.';
+
+  @override
+  String get noOptionsAvailable => 'No hi ha opcions disponibles';
+
+  @override
+  String get continueButton => 'Continuar';
+
+  @override
+  String get saveChangesButton => 'Guardar canvis';
+
+  @override
+  String get categoryBody => 'Cos';
+
+  @override
+  String get categoryEyes => 'Ulls';
+
+  @override
+  String get categoryExpression => 'Expressió';
+
+  @override
+  String get categoryHair => 'Cabell';
+
+  @override
+  String get categoryFacialHair => 'Barba';
+
+  @override
+  String get categoryClothing => 'Roba';
+
+  @override
+  String get categoryAccessories => 'Accessoris';
+
+  @override
+  String get errorMessageSession => 'Error iniciant sessió';
+
+  @override
+  String get connectionError => 'Error de connexió';
+
+  @override
+  String get allCities => 'Totes les ciutats';
+
+  @override
+  String get noEventsToday => 'No hi ha events aquest dia';
+
+  @override
+  String get phaseSeed => 'Llavor';
+
+  @override
+  String get phaseGermination => 'Germinació';
+
+  @override
+  String get phaseGrowth => 'Creixement';
+
+  @override
+  String get phaseMature => 'Madura';
+
+  @override
+  String get phaseFlowering => 'Floració';
+
+  @override
+  String get phaseDead => 'Morta';
 }
