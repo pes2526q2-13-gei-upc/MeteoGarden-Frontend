@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 
+enum CenteredMessageType {
+  success,
+  error,
+  warning,
+  info,
+}
+
 class CenteredMessage {
   static void show(
     BuildContext context,
     String message, {
-    IconData icon = Icons.check_circle,
+    CenteredMessageType type = CenteredMessageType.success,
+    IconData? icon,
     Duration duration = const Duration(seconds: 2),
   }) {
     final overlay = Overlay.of(context);
+    final config = _config(type);
 
     final overlayEntry = OverlayEntry(
       builder: (context) => Stack(
@@ -28,8 +37,8 @@ class CenteredMessage {
                   vertical: 14,
                 ),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF388E3C), Color(0xFF1B5E20)],
+                  gradient: LinearGradient(
+                    colors: config.gradientColors,
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -44,7 +53,11 @@ class CenteredMessage {
                 ),
                 child: Row(
                   children: [
-                    Icon(icon, color: Colors.white, size: 22),
+                    Icon(
+                      icon ?? config.icon,
+                      color: Colors.white,
+                      size: 22,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -53,6 +66,7 @@ class CenteredMessage {
                           color: Colors.white,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
+                          height: 1.3,
                         ),
                       ),
                     ),
@@ -73,4 +87,54 @@ class CenteredMessage {
       }
     });
   }
+
+  static _CenteredMessageConfig _config(CenteredMessageType type) {
+    switch (type) {
+      case CenteredMessageType.success:
+        return const _CenteredMessageConfig(
+          icon: Icons.check_circle_rounded,
+          gradientColors: [
+            Color(0xFF388E3C),
+            Color(0xFF1B5E20),
+          ],
+        );
+
+      case CenteredMessageType.error:
+        return const _CenteredMessageConfig(
+          icon: Icons.error_rounded,
+          gradientColors: [
+            Color(0xFFE53935),
+            Color(0xFFB71C1C),
+          ],
+        );
+
+      case CenteredMessageType.warning:
+        return const _CenteredMessageConfig(
+          icon: Icons.warning_amber_rounded,
+          gradientColors: [
+            Color(0xFFF59E0B),
+            Color(0xFFB45309),
+          ],
+        );
+
+      case CenteredMessageType.info:
+        return const _CenteredMessageConfig(
+          icon: Icons.info_rounded,
+          gradientColors: [
+            Color(0xFF2196F3),
+            Color(0xFF0D47A1),
+          ],
+        );
+    }
+  }
+}
+
+class _CenteredMessageConfig {
+  final IconData icon;
+  final List<Color> gradientColors;
+
+  const _CenteredMessageConfig({
+    required this.icon,
+    required this.gradientColors,
+  });
 }

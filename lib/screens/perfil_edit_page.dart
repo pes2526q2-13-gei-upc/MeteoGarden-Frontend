@@ -49,20 +49,41 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
   void initState() {
     super.initState();
     usernameController = TextEditingController(text: widget.profile.username);
-    const validLanguages = ['Català', 'Castellano', 'English'];
-    if (validLanguages.contains(widget.profile.language)) {
-      language = widget.profile.language;
-    } else {
-      language = null;
-    }
+    language = _normalizeLanguage(widget.profile.language);
     fetchCities();
   }
 
   @override
   void dispose() {
     usernameController.dispose();
+    ciutatSearchController.dispose();
     super.dispose();
   }
+
+  String? _normalizeLanguage(String? value) {
+  switch (value?.toLowerCase()) {
+    case 'català':
+    case 'catala':
+    case 'ca':
+      return 'ca';
+
+    case 'castellano':
+    case 'castellà':
+    case 'español':
+    case 'espanyol':
+    case 'es':
+      return 'es';
+
+    case 'english':
+    case 'anglès':
+    case 'angles':
+    case 'en':
+      return 'en';
+
+    default:
+      return null;
+  }
+}
 
   Future<void> fetchCities() async {
     try {
@@ -119,24 +140,22 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     if (!mounted) return;
 
     if (response.statusCode == 200) {
-      debugPrint("perfil actualitzat");
+          Provider.of<UserModel>(context, listen: false).updateProfile(
+            newUsername: usernameController.text,
+            newCity: selectedCity?.name,
+            newLanguage: language,
+          );
 
-      CenteredMessage.show(context, l10n.profileEditUpdated);
+          Navigator.pop(context, language);
+        } else {
+          debugPrint("Error: ${response.body}");
 
-      Provider.of<UserModel>(context, listen: false).updateProfile(
-        newUsername: usernameController.text,
-        newCity: selectedCity?.name,
-        newLanguage: language,
-      );
-
-      Navigator.pop(context);
-    } else {
-      debugPrint("Error: ${response.body}");
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.profileEditUpdateError)));
-    }
+          CenteredMessage.show(
+            context,
+            l10n.profileEditUpdateError,
+            type: CenteredMessageType.error,
+          );
+        }
   }
 
   @override
