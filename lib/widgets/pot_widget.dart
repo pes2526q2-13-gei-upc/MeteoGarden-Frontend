@@ -25,6 +25,9 @@ class PotWidget extends StatelessWidget {
         final shieldSize = (boxSize * 0.28).clamp(18.0, 30.0);
 
         return GestureDetector(
+           key: Key(
+            'garden_pot_${pot.potNumber}_${hasPlant ? 'occupied' : 'empty'}',
+          ),
           onTap: onTap,
           child: Stack(
             alignment: Alignment.center,
