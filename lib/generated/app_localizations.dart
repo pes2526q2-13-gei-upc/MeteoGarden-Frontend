@@ -1502,6 +1502,24 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Morta'**
   String get phaseDead;
+
+  /// No description provided for @filterByCity.
+  ///
+  /// In ca, this message translates to:
+  /// **'Filtra per ciutat'**
+  String get filterByCity;
+
+  /// No description provided for @writeCity.
+  ///
+  /// In ca, this message translates to:
+  /// **'Escriu una ciutat...'**
+  String get writeCity;
+
+  /// No description provided for @commonApply.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aplicar'**
+  String get commonApply;
 }
 
 class _AppLocalizationsDelegate

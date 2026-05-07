@@ -133,38 +133,38 @@ class EventsService {
   /// GET /api/events/city?city=&date=&lang=
   /// Retorna els events d'una ciutat concreta per a la data indicada.
   Future<List<EventSummary>> fetchEventsByCity({
-    required String city,
-    required DateTime date,
-    String lang = 'en',
-  }) async {
-    final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/city').replace(
-      queryParameters: {
-        'city': city.toLowerCase(),
-        'date': _formatDate(date),
-        'lang': lang,
-      },
+  required String city,
+  required DateTime date,
+  required String lang,
+}) async {
+  final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/city').replace(
+    queryParameters: {
+      'city': city.toLowerCase(),
+      'date': _formatDate(date),
+      'lang': lang,
+    },
+  );
+
+  final response = await http.get(uri);
+  if (response.statusCode != 200) {
+    throw Exception(
+      'Error carregant events de la ciutat: ${response.statusCode}',
     );
-
-    final response = await http.get(uri);
-    if (response.statusCode != 200) {
-      throw Exception(
-        'Error carregant events de la ciutat: ${response.statusCode}',
-      );
-    }
-
-    final body =
-        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-    final events = body['events'] as List<dynamic>;
-    return events
-        .map((e) => EventSummary.fromJson(e as Map<String, dynamic>))
-        .toList();
   }
+
+  final body =
+      jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+  final events = body['events'] as List<dynamic>;
+  return events
+      .map((e) => EventSummary.fromJson(e as Map<String, dynamic>))
+      .toList();
+}
 
   /// GET /api/events/?date=&lang=
   /// Retorna tots els events per a la data indicada (totes les ciutats).
   Future<List<EventSummary>> fetchAllEvents({
     required DateTime date,
-    String lang = 'en',
+    required String lang,
   }) async {
     final uri = Uri.parse(
       '${ApiConfig.baseUrl}/api/events/',
@@ -188,7 +188,7 @@ class EventsService {
   Future<EventDetail> fetchEventDetail({
     required String id,
     required DateTime date,
-    String lang = 'en',
+    required String lang,
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/detail').replace(
       queryParameters: {'id': id, 'date': _formatDate(date), 'lang': lang},

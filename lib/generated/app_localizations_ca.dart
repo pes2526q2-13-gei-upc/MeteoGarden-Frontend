@@ -746,4 +746,13 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get phaseDead => 'Morta';
+
+  @override
+  String get filterByCity => 'Filtra per ciutat';
+
+  @override
+  String get writeCity => 'Escriu una ciutat...';
+
+  @override
+  String get commonApply => 'Aplicar';
 }

@@ -333,6 +333,9 @@
 "phaseGrowth": "Growth",
 "phaseMature": "Mature",
 "phaseFlowering": "Flowering",
-"phaseDead": "Dead"
+"phaseDead": "Dead",
+"filterByCity": "Filter by city",
+"writeCity": "Enter a city...",
+"commonApply": "Apply"
 }
 

@@ -747,4 +747,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get phaseDead => 'Muerta';
+
+  @override
+  String get filterByCity => 'Filtrar por ciudad';
+
+  @override
+  String get writeCity => 'Escribe una ciudad...';
+
+  @override
+  String get commonApply => 'Aplicar';
 }

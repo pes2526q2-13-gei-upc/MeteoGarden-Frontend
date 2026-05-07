@@ -336,6 +336,9 @@
 "phaseGrowth": "Crecimiento",
 "phaseMature": "Madura",
 "phaseFlowering": "Floración",
-"phaseDead": "Muerta"
+"phaseDead": "Muerta",
+"filterByCity": "Filtrar por ciudad",
+"writeCity": "Escribe una ciudad...",
+"commonApply": "Aplicar"
 }
 
