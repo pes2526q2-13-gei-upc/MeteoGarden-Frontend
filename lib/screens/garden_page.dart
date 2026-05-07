@@ -98,7 +98,7 @@ class _GardenPageState extends State<GardenPage> {
         pot: pot,
         onWater: () async {
           try {
-            final missatge = await _gardenService.waterPlant(
+            await _gardenService.waterPlant(
               username: widget.username,
               gardenName: widget.gardenName,
               potNumber: pot.potNumber,
@@ -107,17 +107,21 @@ class _GardenPageState extends State<GardenPage> {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-            CenteredMessage.show(context, missatge);
+            CenteredMessage.show(
+              context,
+              t.plantWateredSuccess,
+              type: CenteredMessageType.success,
+            );
             _refreshGarden();
           } catch (e) {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(e.toString().replaceFirst('Exception: ', '')),
-              ),
-            );
+           CenteredMessage.show(
+            context,
+            t.plantActionError,
+            type: CenteredMessageType.error,
+          );
           }
         },
         onCollect: () async {
@@ -131,19 +135,20 @@ class _GardenPageState extends State<GardenPage> {
 
             if (!mounted) return;
 
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(
+            CenteredMessage.show(
               context,
-            ).showSnackBar(SnackBar(content: Text(missatge)));
+              t.plantCollectedSuccess,
+              type: CenteredMessageType.success,
+            );
             _refreshGarden();
           } catch (e) {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(e.toString().replaceFirst('Exception: ', '')),
-              ),
+            CenteredMessage.show(
+              context,
+              t.plantActionError,
+              type: CenteredMessageType.error,
             );
           }
         },
@@ -168,10 +173,10 @@ class _GardenPageState extends State<GardenPage> {
           } catch (e) {
             if (!mounted) return;
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(e.toString().replaceFirst('Exception: ', '')),
-              ),
+            CenteredMessage.show(
+              context,
+              t.plantActionError,
+              type: CenteredMessageType.error,
             );
           }
         },
@@ -298,7 +303,7 @@ class _GardenPageState extends State<GardenPage> {
           if (confirm != true) return;
 
           try {
-            final missatge = await _gardenService.deletePlant(
+            await _gardenService.deletePlant(
               username: widget.username,
               gardenName: widget.gardenName,
               potNumber: pot.potNumber,
@@ -307,17 +312,21 @@ class _GardenPageState extends State<GardenPage> {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(
+
+            CenteredMessage.show(
               context,
-            ).showSnackBar(SnackBar(content: Text(missatge)));
+              t.plantDeletedSuccess,
+              type: CenteredMessageType.success,
+            );
+
             _refreshGarden();
           } catch (e) {
             if (!mounted) return;
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(e.toString().replaceFirst('Exception: ', '')),
-              ),
+            CenteredMessage.show(
+              context,
+              t.plantActionError,
+              type: CenteredMessageType.error,
             );
           }
         },

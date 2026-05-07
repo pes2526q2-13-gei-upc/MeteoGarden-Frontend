@@ -339,6 +339,12 @@
 "phaseDead": "Muerta",
 "filterByCity": "Filtrar por ciudad",
 "writeCity": "Escribe una ciudad...",
-"commonApply": "Aplicar"
+"commonApply": "Aplicar",
+
+"plantWateredSuccess": "Planta regada correctamente",
+"plantCollectedSuccess": "Planta recolectada correctamente",
+"plantDeletedSuccess": "Planta eliminada correctamente",
+"plantActionError": "No se ha podido completar la acción",
+"plantLoadingSeedsError": "No se han podido cargar las semillas"
 }
 

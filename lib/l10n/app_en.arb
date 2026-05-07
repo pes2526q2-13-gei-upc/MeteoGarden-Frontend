@@ -336,6 +336,12 @@
 "phaseDead": "Dead",
 "filterByCity": "Filter by city",
 "writeCity": "Enter a city...",
-"commonApply": "Apply"
+"commonApply": "Apply",
+
+"plantWateredSuccess": "Plant watered successfully",
+"plantCollectedSuccess": "Plant collected successfully",
+"plantDeletedSuccess": "Plant deleted successfully",
+"plantActionError": "The action could not be completed",
+"plantLoadingSeedsError": "Seeds could not be loaded"
 }
 

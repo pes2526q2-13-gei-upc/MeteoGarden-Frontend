@@ -1520,6 +1520,36 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Aplicar'**
   String get commonApply;
+
+  /// No description provided for @plantWateredSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta regada correctament'**
+  String get plantWateredSuccess;
+
+  /// No description provided for @plantCollectedSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta recol·lectada correctament'**
+  String get plantCollectedSuccess;
+
+  /// No description provided for @plantDeletedSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta eliminada correctament'**
+  String get plantDeletedSuccess;
+
+  /// No description provided for @plantActionError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut completar l\'acció'**
+  String get plantActionError;
+
+  /// No description provided for @plantLoadingSeedsError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'han pogut carregar les llavors'**
+  String get plantLoadingSeedsError;
 }
 
 class _AppLocalizationsDelegate
