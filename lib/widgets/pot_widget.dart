@@ -15,23 +15,23 @@ class PotWidget extends StatelessWidget {
       builder: (context, constraints) {
         final boxSize = constraints.biggest.shortestSide;
 
-        final imageSize = boxSize * 0.42;
-        final plantTop = boxSize * 0.10;
+        final imageSize = boxSize * 0.62;
+        final plantTop = -boxSize * 0.38;
         final progressWidth = boxSize * 0.48;
         final progressHeight = boxSize * 0.05;
-        final nameFontSize = (boxSize * 0.10).clamp(8.0, 12.0);
         final iconSize = (boxSize * 0.28).clamp(20.0, 34.0);
-        final borderRadius = boxSize * 0.18;
         final shieldSize = (boxSize * 0.28).clamp(18.0, 30.0);
 
         return GestureDetector(
-           key: Key(
+          key: Key(
             'garden_pot_${pot.potNumber}_${hasPlant ? 'occupied' : 'empty'}',
           ),
           onTap: onTap,
           child: Stack(
             alignment: Alignment.center,
+            clipBehavior: Clip.none,
             children: [
+              // Test — igual de gran que abans
               Positioned.fill(
                 child: Image.asset(
                   'assets/images/test3.png',
@@ -49,53 +49,41 @@ class PotWidget extends StatelessWidget {
                     children: [
                       if (pot.plant!.imageUrl != null &&
                           pot.plant!.imageUrl!.isNotEmpty)
-                        Container(
+                        SizedBox(
                           width: imageSize,
                           height: imageSize,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(borderRadius),
-                            border: Border.all(
-                              color: Colors.green,
-                              width: (boxSize * 0.02).clamp(1.5, 3.0),
-                            ),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              borderRadius - 2,
-                            ),
-                            child: Image.network(
-                              pot.plant!.imageUrl!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Icon(
-                                  Icons.local_florist,
-                                  size: iconSize,
-                                  color: Colors.red,
-                                );
-                              },
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Center(
-                                      child: SizedBox(
-                                        width: iconSize * 0.7,
-                                        height: iconSize * 0.7,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          value:
-                                              loadingProgress
-                                                      .expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
-                                              : null,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                            ),
+                          child: Image.network(
+                            pot.plant!.imageUrl!,
+                            fit: BoxFit.contain,
+                            alignment: Alignment.bottomCenter,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Icon(
+                                Icons.local_florist,
+                                size: iconSize,
+                                color: Colors.red,
+                              );
+                            },
+                            loadingBuilder:
+                                (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: SizedBox(
+                                  width: iconSize * 0.7,
+                                  height: iconSize * 0.7,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    value:
+                                        loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress
+                                                .expectedTotalBytes!
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         )
                       else
@@ -104,32 +92,11 @@ class PotWidget extends StatelessWidget {
                           size: iconSize,
                           color: Colors.yellow,
                         ),
-
-                      SizedBox(height: boxSize * 0.03),
-
-                      Text(
-                        pot.plant!.commonName,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: nameFontSize,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          height: 1.0,
-                          shadows: const [
-                            Shadow(
-                              blurRadius: 3,
-                              color: Colors.black54,
-                              offset: Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   ),
                 ),
 
+              // Barra d'aigua
               if (hasPlant && pot.waterLevel != null)
                 Positioned(
                   bottom: boxSize * 0.10,
@@ -147,12 +114,13 @@ class PotWidget extends StatelessWidget {
                   ),
                 ),
 
+              // Escut / buff
               if (pot.hasBuff)
                 Positioned(
-                  top: boxSize * 0.04,
+                  top: boxSize * 0.12,
                   right: boxSize * 0.04,
                   child: Image.asset(
-                    'assets/images/escut.png', // canvia pel nom del teu fitxer
+                    'assets/images/escut.png',
                     width: shieldSize,
                     height: shieldSize,
                   ),
