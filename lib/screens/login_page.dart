@@ -12,7 +12,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'avatar_editor_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

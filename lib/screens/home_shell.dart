@@ -72,8 +72,9 @@ class _HomeShellState extends State<HomeShell> {
     ];
 
     return Scaffold(
+      extendBody: true,
       body: pages[_currentIndex],
-      bottomNavigationBar: _GameNavBar(
+      bottomNavigationBar: _FloatingNavBar(
         items: navItems,
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
@@ -96,12 +97,12 @@ class _NavItem {
   });
 }
 
-class _GameNavBar extends StatelessWidget {
+class _FloatingNavBar extends StatelessWidget {
   final List<_NavItem> items;
   final int currentIndex;
   final ValueChanged<int> onTap;
 
-  const _GameNavBar({
+  const _FloatingNavBar({
     required this.items,
     required this.currentIndex,
     required this.onTap,
@@ -109,54 +110,53 @@ class _GameNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF7FB77E),
-        border: Border(
-          top: BorderSide(color: Color(0xFF3E6B48), width: 3),
-          bottom: BorderSide(color: Color(0xFF3E6B48), width: 3),
-        ),
-      ),
-      child: SafeArea(
-        top: false,
-        child: IntrinsicHeight(
-          child: Row(
-            children: List.generate(items.length, (i) {
-              final isLast = i == items.length - 1;
-              return Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _GameNavTile(
-                        item: items[i],
-                        isSelected: i == currentIndex,
-                        onTap: () => onTap(i),
-                      ),
-                    ),
-                    if (!isLast)
-                      Container(width: 2, color: const Color(0xFF3E6B48)),
-                  ],
-                ),
-              );
-            }),
+      color: Colors.transparent,
+      padding: EdgeInsets.fromLTRB(16, 8, 16, 12 + bottomPadding),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color(0xFF7FB77E).withValues(alpha: 0.95),
+          borderRadius: BorderRadius.circular(40),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.50),
+            width: 2,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF3a7d1e).withValues(alpha: 0.30),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(items.length, (i) {
+            final isSelected = i == currentIndex;
+            return _FloatingNavTile(
+              item: items[i],
+              isSelected: isSelected,
+              onTap: () => onTap(i),
+            );
+          }),
         ),
       ),
     );
   }
 }
 
-class _GameNavTile extends StatelessWidget {
+class _FloatingNavTile extends StatelessWidget {
   final _NavItem item;
   final bool isSelected;
   final VoidCallback onTap;
 
-
-  const _GameNavTile({
+  const _FloatingNavTile({
     required this.item,
     required this.isSelected,
     required this.onTap,
-    
   });
 
   @override
@@ -165,34 +165,59 @@ class _GameNavTile extends StatelessWidget {
       key: Key(item.keyName),
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFCFE8CF) : const Color(0xFF9ED2A0),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOutCubic,
+            transform: Matrix4.translationValues(0, isSelected ? -6 : 0, 0),
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: isSelected ? Colors.white : Colors.transparent,
+              shape: BoxShape.circle,
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFF3a7d1e).withValues(alpha: 0.25),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : [],
+            ),
+            child: Icon(
               isSelected ? item.activeIcon : item.icon,
-              size: 20,
-              color: const Color(0xFF1E3D2B),
+              size: 22,
+              color: isSelected
+                  ? const Color(0xFF3a7d1e)
+                  : Colors.white.withValues(alpha: 0.75),
             ),
-            const SizedBox(height: 2),
-            Text(
-              item.label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                color: Color(0xFF1E3D2B),
-                letterSpacing: 0.5,
-              ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            item.label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+              color: isSelected
+                  ? Colors.white
+                  : Colors.white.withValues(alpha: 0.65),
+              letterSpacing: 0.3,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 2),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: isSelected ? 5 : 0,
+            height: isSelected ? 5 : 0,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -10,7 +10,7 @@ class SeedSelectionSheet extends StatefulWidget {
   final String username;
   final String gardenName;
   final GardenService gardenService;
-  final VoidCallback onPlantingSuccess;
+  final Future<void> Function(int potNumber) onPlantingSuccess;
 
   const SeedSelectionSheet({
     super.key,
@@ -126,27 +126,29 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
         ),
         const SizedBox(height: 20),
         SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {
-              widget.onPlantingSuccess();
-              Navigator.of(context).pop();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF16a34a),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 0,
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () async {
+            final navigator = Navigator.of(context);
+            await widget.onPlantingSuccess(widget.pot.potNumber);
+            if (!context.mounted) return;
+            navigator.pop();
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF16a34a),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: const Text(
-              'Tancar',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-            ),
+            elevation: 0,
+          ),
+          child: const Text(
+            'Tancar',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ),
+      ),
       ],
     );
   }

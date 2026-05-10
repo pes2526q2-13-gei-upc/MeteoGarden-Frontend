@@ -66,12 +66,26 @@ class _GardenPageState extends State<GardenPage> {
     });
   }
 
-  void _refreshGarden() {
+  Future<void> _refreshSinglePot(int potNumber) async {
+    final updatedPot = await _gardenService.fetchPotStatus(
+      username: widget.username,
+      gardenName: widget.gardenName,
+      potNumber: potNumber,
+    );
+
+    final currentPots = await _potsFuture;
+
+    final updatedPots = currentPots.map((pot) {
+      if (pot.potNumber == updatedPot.potNumber) {
+        return updatedPot;
+      }
+      return pot;
+    }).toList();
+
+    if (!mounted) return;
+
     setState(() {
-      _potsFuture = _gardenService.fetchGardenPlants(
-        username: widget.username,
-        gardenName: widget.gardenName,
-      );
+      _potsFuture = Future.value(updatedPots);
     });
   }
 
@@ -112,7 +126,7 @@ class _GardenPageState extends State<GardenPage> {
               t.plantWateredSuccess,
               type: CenteredMessageType.success,
             );
-            _refreshGarden();
+            await _refreshSinglePot(pot.potNumber);
           } catch (e) {
             if (!mounted) return;
 
@@ -126,7 +140,7 @@ class _GardenPageState extends State<GardenPage> {
         },
         onCollect: () async {
           try {
-            final missatge = await _gardenService.collectPlant(
+            await _gardenService.collectPlant(
               username: widget.username,
               gardenName: widget.gardenName,
               potNumber: pot.potNumber,
@@ -140,7 +154,7 @@ class _GardenPageState extends State<GardenPage> {
               t.plantCollectedSuccess,
               type: CenteredMessageType.success,
             );
-            _refreshGarden();
+            await _refreshSinglePot(pot.potNumber);
           } catch (e) {
             if (!mounted) return;
 
@@ -167,7 +181,7 @@ class _GardenPageState extends State<GardenPage> {
                 username: widget.username,
                 gardenName: widget.gardenName,
                 gardenService: _gardenService,
-                onPotionSuccess: _refreshGarden,
+                onPotionSuccess: _refreshSinglePot,
               ),
             );
           } catch (e) {
@@ -318,8 +332,7 @@ class _GardenPageState extends State<GardenPage> {
               t.plantDeletedSuccess,
               type: CenteredMessageType.success,
             );
-
-            _refreshGarden();
+            await _refreshSinglePot(pot.potNumber);
           } catch (e) {
             if (!mounted) return;
 
@@ -344,16 +357,14 @@ class _GardenPageState extends State<GardenPage> {
         context: context,
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
-        builder: (_) {
-          return SeedSelectionSheet(
-            pot: pot,
-            seeds: seeds,
-            username: widget.username,
-            gardenName: widget.gardenName,
-            gardenService: _gardenService,
-            onPlantingSuccess: _refreshGarden,
-          );
-        },
+        builder: (_) => SeedSelectionSheet(
+          pot: pot,
+          seeds: seeds,
+          username: widget.username,
+          gardenName: widget.gardenName,
+          gardenService: _gardenService,
+          onPlantingSuccess: _refreshSinglePot,
+        ),
       );
     } catch (e) {
       if (!mounted) return;

@@ -9,7 +9,7 @@ class PotionSelectionSheet extends StatefulWidget {
   final String username;
   final String gardenName;
   final GardenService gardenService;
-  final VoidCallback onPotionSuccess;
+  final Future<void> Function(int potNumber) onPotionSuccess;
 
   const PotionSelectionSheet({
     super.key,
@@ -134,9 +134,11 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {
-              widget.onPotionSuccess();
-              Navigator.of(context).pop();
+            onPressed: () async {
+              final navigator = Navigator.of(context);
+              await widget.onPotionSuccess(widget.pot.potNumber);
+              if (!context.mounted) return;
+              navigator.pop();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: potionYellow,
