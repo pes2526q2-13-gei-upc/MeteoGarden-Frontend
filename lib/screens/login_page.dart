@@ -450,21 +450,22 @@ class _LoginPageState extends State<LoginPage> {
     String username = user.username;
 
     final avatarResponse = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar/'),
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar'),
     );
 
     if (!mounted) return;
 
     if (avatarResponse.statusCode == 200) {
       final avatar = jsonDecode(avatarResponse.body);
+      debugPrint(avatar.toString());
       Provider.of<AvatarUser>(context, listen: false).setAvatar(
-        newBody: avatar['body'],
-        newEye: avatar['eye'],
-        newExpression: avatar['expression'],
-        newHair: avatar['hair'],
-        newFacialHair: avatar['facial_hair'],
-        newClothing: avatar['clothing'],
-        newAccessories: avatar['accessories'],
+        newBody: cleanAvatarUrl(avatar['body']),
+        newEye: cleanAvatarUrl(avatar['eye']),
+        newExpression: cleanAvatarUrl(avatar['expression']),
+        newHair: cleanAvatarUrl(avatar['hair'] ?? ''),
+        newFacialHair: cleanAvatarUrl(avatar['facial_hair'] ?? ''),
+        newClothing: cleanAvatarUrl(avatar['clothing']),
+        newAccessories: cleanAvatarUrl(avatar['accessories'] ?? ''),
       );
       _goToHome();
     } else if (avatarResponse.statusCode == 404) {
@@ -474,6 +475,11 @@ class _LoginPageState extends State<LoginPage> {
         context,
       ).showSnackBar(SnackBar(content: Text(_t.avatarLoadError)));
     }
+  }
+
+  String cleanAvatarUrl(String url) {
+    if (url.isEmpty) return url;
+    return url.replaceAll('.com//', '.com/');
   }
 }
 

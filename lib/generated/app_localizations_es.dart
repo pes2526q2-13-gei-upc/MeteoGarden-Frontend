@@ -749,6 +749,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get phaseDead => 'Muerta';
 
   @override
+  String get avatarLoadErrorPersist => 'Error cargando el avatar';
+
+  @override
   String get filterByCity => 'Filtrar por ciudad';
 
   @override

@@ -146,6 +146,7 @@ class _GameHeader extends StatelessWidget {
     final displayEmail = email.isEmpty ? '—' : email;
     final displayLanguage = language.isEmpty ? '—' : language;
     final avatar = Provider.of<AvatarUser>(context);
+    debugPrint(avatar.body.toString());
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),

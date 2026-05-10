@@ -337,6 +337,9 @@
 "phaseMature": "Madura",
 "phaseFlowering": "Floración",
 "phaseDead": "Muerta",
+
+"avatarLoadErrorPersist": "Error cargando el avatar",
+
 "filterByCity": "Filtrar por ciudad",
 "writeCity": "Escribe una ciudad...",
 "commonApply": "Aplicar",

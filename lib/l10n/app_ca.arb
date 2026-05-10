@@ -338,6 +338,9 @@
 "phaseMature": "Madura",
 "phaseFlowering": "Floració",
 "phaseDead": "Morta",
+
+"avatarLoadErrorPersist": "Error carregant l'avatar",
+
 "filterByCity": "Filtra per ciutat",
 "writeCity": "Escriu una ciutat...",
 "commonApply": "Aplicar",
