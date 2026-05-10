@@ -251,7 +251,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                                     fit: BoxFit.contain,
                                     loadingBuilder:
                                         (context, child, loadingProgress) {
-                                          if (loadingProgress == null){
+                                          if (loadingProgress == null) {
                                             return child;
                                           }
                                           return const Center(
