@@ -348,6 +348,14 @@
 "plantCollectedSuccess": "Planta recolectada correctamente",
 "plantDeletedSuccess": "Planta eliminada correctamente",
 "plantActionError": "No se ha podido completar la acción",
-"plantLoadingSeedsError": "No se han podido cargar las semillas"
+"plantLoadingSeedsError": "No se han podido cargar las semillas",
+
+"weatherDetailsTitle": "Detalles meterológicos",
+"weatherStationLabel": "Estación Metereológica",
+"temperatureLabel": "Temperatura",
+"humidityLabel": "Humidad",
+"windLabel": "Viento",
+"precipitationLabel": "Precipitación",
+"solarIrradianceLabel": "Irradiancia solar"
 }
 

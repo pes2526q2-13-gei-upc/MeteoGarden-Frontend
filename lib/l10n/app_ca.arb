@@ -349,6 +349,14 @@
 "plantCollectedSuccess": "Planta recol·lectada correctament",
 "plantDeletedSuccess": "Planta eliminada correctament",
 "plantActionError": "No s'ha pogut completar l'acció",
-"plantLoadingSeedsError": "No s'han pogut carregar les llavors"
+"plantLoadingSeedsError": "No s'han pogut carregar les llavors",
+
+"weatherDetailsTitle": "Detalls del temps",
+"weatherStationLabel": "Estació Meteorològica",
+"temperatureLabel": "Temperatura",
+"humidityLabel": "Humitat",
+"windLabel": "Vent",
+"precipitationLabel": "Precipitació",
+"solarIrradianceLabel": "Irradiació solar"
 }
 
