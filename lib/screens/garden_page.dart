@@ -66,12 +66,26 @@ class _GardenPageState extends State<GardenPage> {
     });
   }
 
-  void _refreshGarden() {
+  Future<void> _refreshSinglePot(int potNumber) async {
+    final updatedPot = await _gardenService.fetchPotStatus(
+      username: widget.username,
+      gardenName: widget.gardenName,
+      potNumber: potNumber,
+    );
+
+    final currentPots = await _potsFuture;
+
+    final updatedPots = currentPots.map((pot) {
+      if (pot.potNumber == updatedPot.potNumber) {
+        return updatedPot;
+      }
+      return pot;
+    }).toList();
+
+    if (!mounted) return;
+
     setState(() {
-      _potsFuture = _gardenService.fetchGardenPlants(
-        username: widget.username,
-        gardenName: widget.gardenName,
-      );
+      _potsFuture = Future.value(updatedPots);
     });
   }
 
@@ -98,7 +112,7 @@ class _GardenPageState extends State<GardenPage> {
         pot: pot,
         onWater: () async {
           try {
-            final missatge = await _gardenService.waterPlant(
+            await _gardenService.waterPlant(
               username: widget.username,
               gardenName: widget.gardenName,
               potNumber: pot.potNumber,
@@ -107,22 +121,26 @@ class _GardenPageState extends State<GardenPage> {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-            CenteredMessage.show(context, missatge);
-            _refreshGarden();
+            CenteredMessage.show(
+              context,
+              t.plantWateredSuccess,
+              type: CenteredMessageType.success,
+            );
+            await _refreshSinglePot(pot.potNumber);
           } catch (e) {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(e.toString().replaceFirst('Exception: ', '')),
-              ),
+            CenteredMessage.show(
+              context,
+              t.plantActionError,
+              type: CenteredMessageType.error,
             );
           }
         },
         onCollect: () async {
           try {
-            final missatge = await _gardenService.collectPlant(
+            await _gardenService.collectPlant(
               username: widget.username,
               gardenName: widget.gardenName,
               potNumber: pot.potNumber,
@@ -131,19 +149,20 @@ class _GardenPageState extends State<GardenPage> {
 
             if (!mounted) return;
 
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(
+            CenteredMessage.show(
               context,
-            ).showSnackBar(SnackBar(content: Text(missatge)));
-            _refreshGarden();
+              t.plantCollectedSuccess,
+              type: CenteredMessageType.success,
+            );
+            await _refreshSinglePot(pot.potNumber);
           } catch (e) {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(e.toString().replaceFirst('Exception: ', '')),
-              ),
+            CenteredMessage.show(
+              context,
+              t.plantActionError,
+              type: CenteredMessageType.error,
             );
           }
         },
@@ -162,16 +181,16 @@ class _GardenPageState extends State<GardenPage> {
                 username: widget.username,
                 gardenName: widget.gardenName,
                 gardenService: _gardenService,
-                onPotionSuccess: _refreshGarden,
+                onPotionSuccess: _refreshSinglePot,
               ),
             );
           } catch (e) {
             if (!mounted) return;
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(e.toString().replaceFirst('Exception: ', '')),
-              ),
+            CenteredMessage.show(
+              context,
+              t.plantActionError,
+              type: CenteredMessageType.error,
             );
           }
         },
@@ -298,7 +317,7 @@ class _GardenPageState extends State<GardenPage> {
           if (confirm != true) return;
 
           try {
-            final missatge = await _gardenService.deletePlant(
+            await _gardenService.deletePlant(
               username: widget.username,
               gardenName: widget.gardenName,
               potNumber: pot.potNumber,
@@ -307,17 +326,20 @@ class _GardenPageState extends State<GardenPage> {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(
+
+            CenteredMessage.show(
               context,
-            ).showSnackBar(SnackBar(content: Text(missatge)));
-            _refreshGarden();
+              t.plantDeletedSuccess,
+              type: CenteredMessageType.success,
+            );
+            await _refreshSinglePot(pot.potNumber);
           } catch (e) {
             if (!mounted) return;
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(e.toString().replaceFirst('Exception: ', '')),
-              ),
+            CenteredMessage.show(
+              context,
+              t.plantActionError,
+              type: CenteredMessageType.error,
             );
           }
         },
@@ -335,16 +357,14 @@ class _GardenPageState extends State<GardenPage> {
         context: context,
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
-        builder: (_) {
-          return SeedSelectionSheet(
-            pot: pot,
-            seeds: seeds,
-            username: widget.username,
-            gardenName: widget.gardenName,
-            gardenService: _gardenService,
-            onPlantingSuccess: _refreshGarden,
-          );
-        },
+        builder: (_) => SeedSelectionSheet(
+          pot: pot,
+          seeds: seeds,
+          username: widget.username,
+          gardenName: widget.gardenName,
+          gardenService: _gardenService,
+          onPlantingSuccess: _refreshSinglePot,
+        ),
       );
     } catch (e) {
       if (!mounted) return;

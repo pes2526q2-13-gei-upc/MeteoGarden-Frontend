@@ -750,4 +750,28 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get avatarLoadErrorPersist => 'Error cargando el avatar';
+
+  @override
+  String get filterByCity => 'Filtrar por ciudad';
+
+  @override
+  String get writeCity => 'Escribe una ciudad...';
+
+  @override
+  String get commonApply => 'Aplicar';
+
+  @override
+  String get plantWateredSuccess => 'Planta regada correctamente';
+
+  @override
+  String get plantCollectedSuccess => 'Planta recolectada correctamente';
+
+  @override
+  String get plantDeletedSuccess => 'Planta eliminada correctamente';
+
+  @override
+  String get plantActionError => 'No se ha podido completar la acción';
+
+  @override
+  String get plantLoadingSeedsError => 'No se han podido cargar las semillas';
 }

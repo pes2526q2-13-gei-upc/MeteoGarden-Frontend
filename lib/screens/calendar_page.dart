@@ -39,28 +39,44 @@ class _CalendarPageState extends State<CalendarPage> {
 
   String _langCode(BuildContext context) {
     final user = Provider.of<UserModel>(context, listen: false);
-    switch (user.language) {
-      case 'Català':
+
+    switch (user.language.toLowerCase()) {
+      case 'català':
+      case 'catala':
+      case 'ca':
         return 'ca';
-      case 'Castellano':
+
+      case 'castellano':
+      case 'castellà':
+      case 'español':
+      case 'espanyol':
+      case 'es':
         return 'es';
-      default:
+
+      case 'english':
+      case 'anglès':
+      case 'angles':
+      case 'en':
         return 'en';
+
+      default:
+        return Localizations.localeOf(context).languageCode;
     }
   }
 
   // ── City filter ─────────────────────────────────────────────────────────────
 
   Future<void> _showCityFilterDialog() async {
+    final l10n = AppLocalizations.of(context)!;
     final controller = TextEditingController(text: _filterCity);
 
     final result = await showDialog<String?>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          'Filtra per ciutat',
-          style: TextStyle(
+        title: Text(
+          l10n.filterByCity,
+          style: const TextStyle(
             color: Color(0xFF1B5E20),
             fontWeight: FontWeight.w700,
           ),
@@ -72,7 +88,7 @@ class _CalendarPageState extends State<CalendarPage> {
               controller: controller,
               autofocus: true,
               decoration: InputDecoration(
-                hintText: 'Escriu una ciutat...',
+                hintText: l10n.writeCity,
                 prefixIcon: const Icon(
                   Icons.location_on_outlined,
                   color: Color(0xFF4CAF50),
@@ -94,9 +110,9 @@ class _CalendarPageState extends State<CalendarPage> {
             TextButton.icon(
               onPressed: () => Navigator.pop(dialogContext, ''),
               icon: const Icon(Icons.public, color: Color(0xFF757575)),
-              label: const Text(
-                'Totes les ciutats',
-                style: TextStyle(color: Color(0xFF757575)),
+              label: Text(
+                l10n.allCities,
+                style: const TextStyle(color: Color(0xFF757575)),
               ),
             ),
           ],
@@ -104,9 +120,9 @@ class _CalendarPageState extends State<CalendarPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, null),
-            child: const Text(
-              'Cancel·lar',
-              style: TextStyle(color: Color(0xFF9E9E9E)),
+            child: Text(
+              l10n.commonCancel,
+              style: const TextStyle(color: Color(0xFF9E9E9E)),
             ),
           ),
           ElevatedButton(
@@ -119,13 +135,12 @@ class _CalendarPageState extends State<CalendarPage> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text('Aplicar'),
+            child: Text(l10n.commonApply),
           ),
         ],
       ),
     );
 
-    // null = cancel·lat, String = nova ciutat (pot ser buida)
     if (result == null) return;
 
     setState(() {
@@ -133,6 +148,7 @@ class _CalendarPageState extends State<CalendarPage> {
       _selectedDay = null;
       _selectedDayEvents = [];
     });
+
     _loadMonthCounts();
   }
 

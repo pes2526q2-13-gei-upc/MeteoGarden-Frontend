@@ -10,7 +10,7 @@ class SeedSelectionSheet extends StatefulWidget {
   final String username;
   final String gardenName;
   final GardenService gardenService;
-  final VoidCallback onPlantingSuccess;
+  final Future<void> Function(int potNumber) onPlantingSuccess;
 
   const SeedSelectionSheet({
     super.key,
@@ -128,9 +128,11 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {
-              widget.onPlantingSuccess();
-              Navigator.of(context).pop();
+            onPressed: () async {
+              final navigator = Navigator.of(context);
+              await widget.onPlantingSuccess(widget.pot.potNumber);
+              if (!context.mounted) return;
+              navigator.pop();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF16a34a),
@@ -249,8 +251,9 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                                     fit: BoxFit.contain,
                                     loadingBuilder:
                                         (context, child, loadingProgress) {
-                                          if (loadingProgress == null)
+                                          if (loadingProgress == null) {
                                             return child;
+                                          }
                                           return const Center(
                                             child: SizedBox(
                                               width: 16,
