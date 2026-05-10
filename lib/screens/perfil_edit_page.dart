@@ -61,29 +61,29 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
   }
 
   String? _normalizeLanguage(String? value) {
-  switch (value?.toLowerCase()) {
-    case 'català':
-    case 'catala':
-    case 'ca':
-      return 'ca';
+    switch (value?.toLowerCase()) {
+      case 'català':
+      case 'catala':
+      case 'ca':
+        return 'ca';
 
-    case 'castellano':
-    case 'castellà':
-    case 'español':
-    case 'espanyol':
-    case 'es':
-      return 'es';
+      case 'castellano':
+      case 'castellà':
+      case 'español':
+      case 'espanyol':
+      case 'es':
+        return 'es';
 
-    case 'english':
-    case 'anglès':
-    case 'angles':
-    case 'en':
-      return 'en';
+      case 'english':
+      case 'anglès':
+      case 'angles':
+      case 'en':
+        return 'en';
 
-    default:
-      return null;
+      default:
+        return null;
+    }
   }
-}
 
   Future<void> fetchCities() async {
     try {
@@ -140,22 +140,22 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     if (!mounted) return;
 
     if (response.statusCode == 200) {
-          Provider.of<UserModel>(context, listen: false).updateProfile(
-            newUsername: usernameController.text,
-            newCity: selectedCity?.name,
-            newLanguage: language,
-          );
+      Provider.of<UserModel>(context, listen: false).updateProfile(
+        newUsername: usernameController.text,
+        newCity: selectedCity?.name,
+        newLanguage: language,
+      );
 
-          Navigator.pop(context, language);
-        } else {
-          debugPrint("Error: ${response.body}");
+      Navigator.pop(context, language);
+    } else {
+      debugPrint("Error: ${response.body}");
 
-          CenteredMessage.show(
-            context,
-            l10n.profileEditUpdateError,
-            type: CenteredMessageType.error,
-          );
-        }
+      CenteredMessage.show(
+        context,
+        l10n.profileEditUpdateError,
+        type: CenteredMessageType.error,
+      );
+    }
   }
 
   @override
@@ -318,7 +318,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                           const SizedBox(height: 20),
 
                           DropdownButtonFormField<String>(
-                              key: const Key('edit_profile_language_dropdown'),
+                            key: const Key('edit_profile_language_dropdown'),
                             initialValue: language,
                             decoration: defaultDecoration.copyWith(
                               labelText: l10n.commonLanguage,

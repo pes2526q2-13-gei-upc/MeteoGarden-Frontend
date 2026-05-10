@@ -26,15 +26,9 @@ void main() {
     expect(find.byKey(const Key('login_button')), findsOneWidget);
 
     // Login amb usuari de prova.
-    await tester.enterText(
-      find.byKey(const Key('login_username_field')),
-      'j',
-    );
+    await tester.enterText(find.byKey(const Key('login_username_field')), 'j');
 
-    await tester.enterText(
-      find.byKey(const Key('login_password_field')),
-      'j',
-    );
+    await tester.enterText(find.byKey(const Key('login_password_field')), 'j');
 
     await tester.tap(find.byKey(const Key('login_button')));
 
@@ -55,7 +49,8 @@ void main() {
     expect(
       find.byKey(const Key('profile_page')),
       findsOneWidget,
-      reason: 'Profile page should be visible after tapping profile navigation.',
+      reason:
+          'Profile page should be visible after tapping profile navigation.',
     );
 
     // Obrim editar perfil.

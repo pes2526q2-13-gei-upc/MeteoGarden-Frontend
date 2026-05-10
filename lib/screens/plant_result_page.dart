@@ -34,7 +34,7 @@ class PlantResultPage extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
-                       key: const Key('plant_result_back_button'),
+                      key: const Key('plant_result_back_button'),
                       onPressed: () => Navigator.pop(context),
                       icon: const Icon(Icons.arrow_back),
                     ),

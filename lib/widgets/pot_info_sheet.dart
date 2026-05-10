@@ -44,7 +44,7 @@ class PotInfoSheet extends StatelessWidget {
                 child: Container(color: Colors.black.withValues(alpha: 0.65)),
               ),
               Container(
-                 key: const Key('pot_info_sheet'),
+                key: const Key('pot_info_sheet'),
                 width: double.infinity,
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
                 child: Column(
@@ -74,8 +74,10 @@ class PotInfoSheet extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              _PhaseBadge(phase: pot.growthPhase ?? '-',
-                              badgeKey: const Key('plant_phase_badge'),),
+                              _PhaseBadge(
+                                phase: pot.growthPhase ?? '-',
+                                badgeKey: const Key('plant_phase_badge'),
+                              ),
                             ],
                           ),
                         ),
@@ -161,7 +163,7 @@ class PotInfoSheet extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                           key: const Key('collect_mature_plant_button'),
+                          key: const Key('collect_mature_plant_button'),
                           onPressed: onCollect,
                           icon: const Icon(Icons.agriculture),
                           label: Text(t.recolectPlant),
@@ -364,7 +366,7 @@ class _PhaseBadge extends StatelessWidget {
   final String phase;
   final Key? badgeKey;
 
-  const _PhaseBadge({required this.phase, this.badgeKey,});
+  const _PhaseBadge({required this.phase, this.badgeKey});
 
   @override
   Widget build(BuildContext context) {

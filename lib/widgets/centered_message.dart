@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum CenteredMessageType {
-  success,
-  error,
-  warning,
-  info,
-}
+enum CenteredMessageType { success, error, warning, info }
 
 class CenteredMessage {
   static void show(
@@ -53,11 +48,7 @@ class CenteredMessage {
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      icon ?? config.icon,
-                      color: Colors.white,
-                      size: 22,
-                    ),
+                    Icon(icon ?? config.icon, color: Colors.white, size: 22),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -93,37 +84,25 @@ class CenteredMessage {
       case CenteredMessageType.success:
         return const _CenteredMessageConfig(
           icon: Icons.check_circle_rounded,
-          gradientColors: [
-            Color(0xFF388E3C),
-            Color(0xFF1B5E20),
-          ],
+          gradientColors: [Color(0xFF388E3C), Color(0xFF1B5E20)],
         );
 
       case CenteredMessageType.error:
         return const _CenteredMessageConfig(
           icon: Icons.error_rounded,
-          gradientColors: [
-            Color(0xFFE53935),
-            Color(0xFFB71C1C),
-          ],
+          gradientColors: [Color(0xFFE53935), Color(0xFFB71C1C)],
         );
 
       case CenteredMessageType.warning:
         return const _CenteredMessageConfig(
           icon: Icons.warning_amber_rounded,
-          gradientColors: [
-            Color(0xFFF59E0B),
-            Color(0xFFB45309),
-          ],
+          gradientColors: [Color(0xFFF59E0B), Color(0xFFB45309)],
         );
 
       case CenteredMessageType.info:
         return const _CenteredMessageConfig(
           icon: Icons.info_rounded,
-          gradientColors: [
-            Color(0xFF2196F3),
-            Color(0xFF0D47A1),
-          ],
+          gradientColors: [Color(0xFF2196F3), Color(0xFF0D47A1)],
         );
     }
   }

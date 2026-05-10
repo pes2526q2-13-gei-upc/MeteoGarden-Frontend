@@ -131,11 +131,11 @@ class _GardenPageState extends State<GardenPage> {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-           CenteredMessage.show(
-            context,
-            t.plantActionError,
-            type: CenteredMessageType.error,
-          );
+            CenteredMessage.show(
+              context,
+              t.plantActionError,
+              type: CenteredMessageType.error,
+            );
           }
         },
         onCollect: () async {

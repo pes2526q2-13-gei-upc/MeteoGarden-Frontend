@@ -520,7 +520,6 @@ class _InputField extends StatelessWidget {
   final bool obscureText;
   final Key? fieldKey;
 
-
   const _InputField({
     required this.controller,
     required this.label,

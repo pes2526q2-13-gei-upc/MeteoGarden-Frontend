@@ -63,8 +63,7 @@ class PotWidget extends StatelessWidget {
                                 color: Colors.red,
                               );
                             },
-                            loadingBuilder:
-                                (context, child, loadingProgress) {
+                            loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
                               return Center(
                                 child: SizedBox(
@@ -76,9 +75,9 @@ class PotWidget extends StatelessWidget {
                                         loadingProgress.expectedTotalBytes !=
                                             null
                                         ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress
-                                                .expectedTotalBytes!
+                                                  .cumulativeBytesLoaded /
+                                              loadingProgress
+                                                  .expectedTotalBytes!
                                         : null,
                                   ),
                                 ),

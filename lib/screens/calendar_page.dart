@@ -38,119 +38,119 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   String _langCode(BuildContext context) {
-  final user = Provider.of<UserModel>(context, listen: false);
+    final user = Provider.of<UserModel>(context, listen: false);
 
-  switch (user.language.toLowerCase()) {
-    case 'català':
-    case 'catala':
-    case 'ca':
-      return 'ca';
+    switch (user.language.toLowerCase()) {
+      case 'català':
+      case 'catala':
+      case 'ca':
+        return 'ca';
 
-    case 'castellano':
-    case 'castellà':
-    case 'español':
-    case 'espanyol':
-    case 'es':
-      return 'es';
+      case 'castellano':
+      case 'castellà':
+      case 'español':
+      case 'espanyol':
+      case 'es':
+        return 'es';
 
-    case 'english':
-    case 'anglès':
-    case 'angles':
-    case 'en':
-      return 'en';
+      case 'english':
+      case 'anglès':
+      case 'angles':
+      case 'en':
+        return 'en';
 
-    default:
-      return Localizations.localeOf(context).languageCode;
+      default:
+        return Localizations.localeOf(context).languageCode;
+    }
   }
-}
 
   // ── City filter ─────────────────────────────────────────────────────────────
 
   Future<void> _showCityFilterDialog() async {
-  final l10n = AppLocalizations.of(context)!;
-  final controller = TextEditingController(text: _filterCity);
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController(text: _filterCity);
 
-  final result = await showDialog<String?>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Text(
-        l10n.filterByCity,
-        style: const TextStyle(
-          color: Color(0xFF1B5E20),
-          fontWeight: FontWeight.w700,
+    final result = await showDialog<String?>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          l10n.filterByCity,
+          style: const TextStyle(
+            color: Color(0xFF1B5E20),
+            fontWeight: FontWeight.w700,
+          ),
         ),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: controller,
-            autofocus: true,
-            decoration: InputDecoration(
-              hintText: l10n.writeCity,
-              prefixIcon: const Icon(
-                Icons.location_on_outlined,
-                color: Color(0xFF4CAF50),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: Color(0xFF4CAF50)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: controller,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: l10n.writeCity,
+                prefixIcon: const Icon(
+                  Icons.location_on_outlined,
                   color: Color(0xFF4CAF50),
-                  width: 2,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(color: Color(0xFF4CAF50)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF4CAF50),
+                    width: 2,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          TextButton.icon(
-            onPressed: () => Navigator.pop(dialogContext, ''),
-            icon: const Icon(Icons.public, color: Color(0xFF757575)),
-            label: Text(
-              l10n.allCities,
-              style: const TextStyle(color: Color(0xFF757575)),
+            const SizedBox(height: 10),
+            TextButton.icon(
+              onPressed: () => Navigator.pop(dialogContext, ''),
+              icon: const Icon(Icons.public, color: Color(0xFF757575)),
+              label: Text(
+                l10n.allCities,
+                style: const TextStyle(color: Color(0xFF757575)),
+              ),
             ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, null),
+            child: Text(
+              l10n.commonCancel,
+              style: const TextStyle(color: Color(0xFF9E9E9E)),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () =>
+                Navigator.pop(dialogContext, controller.text.trim()),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF4CAF50),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: Text(l10n.commonApply),
           ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(dialogContext, null),
-          child: Text(
-            l10n.commonCancel,
-            style: const TextStyle(color: Color(0xFF9E9E9E)),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () =>
-              Navigator.pop(dialogContext, controller.text.trim()),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF4CAF50),
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: Text(l10n.commonApply),
-        ),
-      ],
-    ),
-  );
+    );
 
-  if (result == null) return;
+    if (result == null) return;
 
-  setState(() {
-    _filterCity = result;
-    _selectedDay = null;
-    _selectedDayEvents = [];
-  });
+    setState(() {
+      _filterCity = result;
+      _selectedDay = null;
+      _selectedDayEvents = [];
+    });
 
-  _loadMonthCounts();
-}
+    _loadMonthCounts();
+  }
 
   // ── Data loading ────────────────────────────────────────────────────────────
 

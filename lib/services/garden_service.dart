@@ -62,26 +62,26 @@ class GardenService {
   }
 
   Future<GardenPot> fetchPotStatus({
-  required String username,
-  required String gardenName,
-  required int potNumber,
-    }) async {
-      final response = await http.get(
-        Uri.parse(
-          '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/plant/',
-        ),
-      );
+    required String username,
+    required String gardenName,
+    required int potNumber,
+  }) async {
+    final response = await http.get(
+      Uri.parse(
+        '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/plant/',
+      ),
+    );
 
-      final data = jsonDecode(response.body);
+    final data = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
-        return GardenPot.fromJson(data);
-      }
-
-      throw Exception(
-        data['message'] ?? data['error'] ?? 'Error carregant el test.',
-      );
+    if (response.statusCode == 200) {
+      return GardenPot.fromJson(data);
     }
+
+    throw Exception(
+      data['message'] ?? data['error'] ?? 'Error carregant el test.',
+    );
+  }
 
   Future<String> waterPlant({
     required String username,

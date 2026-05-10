@@ -27,15 +27,9 @@ void main() {
     expect(find.byKey(const Key('login_button')), findsOneWidget);
 
     // Omplim el login.
-    await tester.enterText(
-      find.byKey(const Key('login_username_field')),
-      'j',
-    );
+    await tester.enterText(find.byKey(const Key('login_username_field')), 'j');
 
-    await tester.enterText(
-      find.byKey(const Key('login_password_field')),
-      'j',
-    );
+    await tester.enterText(find.byKey(const Key('login_password_field')), 'j');
 
     await tester.tap(find.byKey(const Key('login_button')));
 

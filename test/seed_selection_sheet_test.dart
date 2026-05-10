@@ -36,9 +36,7 @@ void main() {
       expect(find.text('Plantar'), findsNothing);
     });
 
-    testWidgets('mostra les llavors disponibles', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('mostra les llavors disponibles', (WidgetTester tester) async {
       final pot = _buildEmptyPot();
       final gardenService = TestGardenService();
 
@@ -183,9 +181,7 @@ void main() {
       expect(refreshedPotNumber, 1);
     });
 
-    testWidgets('mostra error si plantSeed falla', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('mostra error si plantSeed falla', (WidgetTester tester) async {
       final pot = _buildEmptyPot();
 
       final gardenService = TestGardenService()

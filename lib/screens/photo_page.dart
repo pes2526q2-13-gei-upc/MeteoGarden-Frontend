@@ -10,7 +10,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-
 class PlantCameraScreen extends StatefulWidget {
   const PlantCameraScreen({super.key});
 
@@ -294,9 +293,13 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                               padding: const EdgeInsets.only(top: 12),
                               child: ElevatedButton.icon(
                                 key: const Key('identify_test_image_button'),
-                                onPressed: _isProcessing ? null : _identifyTestImage,
+                                onPressed: _isProcessing
+                                    ? null
+                                    : _identifyTestImage,
                                 icon: const Icon(Icons.image_search),
-                                label: const Text('Identificar imatge de prova'),
+                                label: const Text(
+                                  'Identificar imatge de prova',
+                                ),
                               ),
                             ),
 
@@ -430,68 +433,69 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   }
 
   Future<void> _identifyTestImage() async {
-  final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
-  if (_isProcessing) return;
-
-  setState(() {
-    _isProcessing = true;
-    _errorMessage = null;
-  });
-
-  try {
-    final byteData = await rootBundle.load('assets/test_images/plant_test.jpeg');
-
-    final file = File('${Directory.systemTemp.path}/plant_test.jpg');
-    await file.writeAsBytes(byteData.buffer.asUint8List());
-
-    if (!mounted) return;
-
-    final user = Provider.of<UserModel>(context, listen: false);
-
-    final result = await PlantService.identifyPlant(
-      username: user.username,
-      imagePath: file.path,
-      organ: _selectedPlantType,
-    );
-
-    if (!mounted) return;
-
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => PlantResultPage(result: result)),
-    );
-
-    if (!mounted) return;
-
-    await context.read<PlantProvider>().loadPlants(user);
-  } on PlantIdentificationException catch (e) {
-    if (!mounted) return;
+    if (_isProcessing) return;
 
     setState(() {
-      _errorMessage = e.message;
+      _isProcessing = true;
+      _errorMessage = null;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(e.message)),
-    );
-  } catch (e) {
-    if (!mounted) return;
+    try {
+      final byteData = await rootBundle.load(
+        'assets/test_images/plant_test.jpeg',
+      );
 
-    setState(() {
-      _errorMessage = l10n.photoUnexpectedError;
-    });
+      final file = File('${Directory.systemTemp.path}/plant_test.jpg');
+      await file.writeAsBytes(byteData.buffer.asUint8List());
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.photoUnexpectedError)),
-    );
-  } finally {
-    if (mounted) {
+      if (!mounted) return;
+
+      final user = Provider.of<UserModel>(context, listen: false);
+
+      final result = await PlantService.identifyPlant(
+        username: user.username,
+        imagePath: file.path,
+        organ: _selectedPlantType,
+      );
+
+      if (!mounted) return;
+
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => PlantResultPage(result: result)),
+      );
+
+      if (!mounted) return;
+
+      await context.read<PlantProvider>().loadPlants(user);
+    } on PlantIdentificationException catch (e) {
+      if (!mounted) return;
+
       setState(() {
-        _isProcessing = false;
+        _errorMessage = e.message;
       });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _errorMessage = l10n.photoUnexpectedError;
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.photoUnexpectedError)));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
     }
   }
-}
-
 }

@@ -68,25 +68,26 @@ class PerfilPage extends StatelessWidget {
                         plantsDiscovered: user.numPlantsCollected,
                       );
 
-                      final updatedLanguage = await Navigator.of(context).push<String?>(
-                          MaterialPageRoute(
-                            builder: (_) => PerfilEditPage(profile: profile),
-                          ),
-                        );
+                      final updatedLanguage = await Navigator.of(context)
+                          .push<String?>(
+                            MaterialPageRoute(
+                              builder: (_) => PerfilEditPage(profile: profile),
+                            ),
+                          );
 
-                        if (updatedLanguage != null && context.mounted) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            if (!context.mounted) return;
+                      if (updatedLanguage != null && context.mounted) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (!context.mounted) return;
 
-                            final updatedL10n = AppLocalizations.of(context)!;
+                          final updatedL10n = AppLocalizations.of(context)!;
 
-                            CenteredMessage.show(
-                              context,
-                              updatedL10n.profileEditUpdated,
-                              type: CenteredMessageType.success,
-                            );
-                          });
-                        }
+                          CenteredMessage.show(
+                            context,
+                            updatedL10n.profileEditUpdated,
+                            type: CenteredMessageType.success,
+                          );
+                        });
+                      }
                     },
                   ),
                 ),

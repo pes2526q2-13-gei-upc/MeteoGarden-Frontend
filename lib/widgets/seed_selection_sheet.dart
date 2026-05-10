@@ -126,29 +126,29 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
         ),
         const SizedBox(height: 20),
         SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: () async {
-            final navigator = Navigator.of(context);
-            await widget.onPlantingSuccess(widget.pot.potNumber);
-            if (!context.mounted) return;
-            navigator.pop();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF16a34a),
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () async {
+              final navigator = Navigator.of(context);
+              await widget.onPlantingSuccess(widget.pot.potNumber);
+              if (!context.mounted) return;
+              navigator.pop();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF16a34a),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 0,
             ),
-            elevation: 0,
-          ),
-          child: const Text(
-            'Tancar',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            child: const Text(
+              'Tancar',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            ),
           ),
         ),
-      ),
       ],
     );
   }
@@ -251,7 +251,9 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
                                     fit: BoxFit.contain,
                                     loadingBuilder:
                                         (context, child, loadingProgress) {
-                                          if (loadingProgress == null) return child;
+                                          if (loadingProgress == null){
+                                            return child;
+                                          }
                                           return const Center(
                                             child: SizedBox(
                                               width: 16,
