@@ -3,7 +3,6 @@ import '../models/weather_info.dart';
 import '../services/weather_service.dart';
 
 class WeatherProvider extends ChangeNotifier {
-  // Aquí se guarda TODO el objeto con sus nuevos campos
   WeatherInfo? _currentWeather;
   bool _isLoading = false;
   String? _error;
