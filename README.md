@@ -65,3 +65,37 @@ git checkout -b feature/<nom>
 git add .
 git commit -m "feat: missatge"
 git push -u origin feature/<nom>
+
+---
+
+EXECUCIÓ DE TESTS
+
+Abans d’executar qualsevol test, cal instal·lar les dependències del projecte:
+
+flutter pub get
+
+
+TESTS UNITARIS
+
+Els tests unitaris serveixen per comprovar components o funcions de manera aïllada.
+
+Per executar tots els tests unitaris:
+
+flutter test
+
+Per executar un test unitari concret:
+
+flutter test test/<NOM_TEST_UNITARI>.dart
+
+TESTS D’INTEGRACIÓ
+
+Abans d’executar els tests d’integració, cal tenir el backend aixecat.
+
+Des del projecte del backend:
+
+docker compose up -d
+
+Després, des del projecte Flutter:
+
+flutter test integration_test/<NOM_TEST_INTEGRACIO>.dart
+

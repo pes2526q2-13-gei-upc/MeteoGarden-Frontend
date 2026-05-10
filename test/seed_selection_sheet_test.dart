@@ -22,7 +22,7 @@ void main() {
             username: 'jana',
             gardenName: 'Garden 1',
             gardenService: gardenService,
-            onPlantingSuccess: () {},
+            onPlantingSuccess: (potNumber) async {},
           ),
         ),
       );
@@ -39,6 +39,7 @@ void main() {
     testWidgets('mostra les llavors disponibles', (WidgetTester tester) async {
       final pot = _buildEmptyPot();
       final gardenService = TestGardenService();
+
       final seeds = [
         _buildSeed(
           scientificName: 'Rosa canina',
@@ -60,7 +61,7 @@ void main() {
             username: 'jana',
             gardenName: 'Garden 1',
             gardenService: gardenService,
-            onPlantingSuccess: () {},
+            onPlantingSuccess: (potNumber) async {},
           ),
         ),
       );
@@ -82,6 +83,7 @@ void main() {
     ) async {
       final pot = _buildEmptyPot();
       final gardenService = TestGardenService();
+
       final seeds = [
         _buildSeed(
           scientificName: 'Rosa canina',
@@ -98,7 +100,7 @@ void main() {
             username: 'jana',
             gardenName: 'Garden 1',
             gardenService: gardenService,
-            onPlantingSuccess: () {},
+            onPlantingSuccess: (potNumber) async {},
           ),
         ),
       );
@@ -117,6 +119,7 @@ void main() {
       WidgetTester tester,
     ) async {
       final pot = _buildEmptyPot();
+
       final gardenService = TestGardenService()
         ..plantSeedResult = PlantingResult(
           message: 'Plantada correctament',
@@ -139,6 +142,7 @@ void main() {
       ];
 
       bool plantingSuccessCalled = false;
+      int? refreshedPotNumber;
 
       await tester.pumpWidget(
         _wrapWithApp(
@@ -148,8 +152,9 @@ void main() {
             username: 'jana',
             gardenName: 'Garden 1',
             gardenService: gardenService,
-            onPlantingSuccess: () {
+            onPlantingSuccess: (potNumber) async {
               plantingSuccessCalled = true;
+              refreshedPotNumber = potNumber;
             },
           ),
         ),
@@ -173,10 +178,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(plantingSuccessCalled, true);
+      expect(refreshedPotNumber, 1);
     });
 
     testWidgets('mostra error si plantSeed falla', (WidgetTester tester) async {
       final pot = _buildEmptyPot();
+
       final gardenService = TestGardenService()
         ..plantSeedException = Exception('No queden llavors');
 
@@ -196,7 +203,7 @@ void main() {
             username: 'jana',
             gardenName: 'Garden 1',
             gardenService: gardenService,
-            onPlantingSuccess: () {},
+            onPlantingSuccess: (potNumber) async {},
           ),
         ),
       );
@@ -255,6 +262,10 @@ class TestGardenService implements GardenService {
   int? lastPlantSeedPotNumber;
   String? lastPlantSeedScientificName;
 
+  String? lastFetchPotStatusUsername;
+  String? lastFetchPotStatusGardenName;
+  int? lastFetchPotStatusPotNumber;
+
   @override
   Future<PlantingResult> plantSeed({
     required String username,
@@ -276,6 +287,19 @@ class TestGardenService implements GardenService {
     }
 
     throw Exception('No plantSeedResult configured');
+  }
+
+  @override
+  Future<GardenPot> fetchPotStatus({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+  }) async {
+    lastFetchPotStatusUsername = username;
+    lastFetchPotStatusGardenName = gardenName;
+    lastFetchPotStatusPotNumber = potNumber;
+
+    return _buildEmptyPot();
   }
 
   @override

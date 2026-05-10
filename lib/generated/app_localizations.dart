@@ -1502,6 +1502,54 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Morta'**
   String get phaseDead;
+
+  /// No description provided for @filterByCity.
+  ///
+  /// In ca, this message translates to:
+  /// **'Filtra per ciutat'**
+  String get filterByCity;
+
+  /// No description provided for @writeCity.
+  ///
+  /// In ca, this message translates to:
+  /// **'Escriu una ciutat...'**
+  String get writeCity;
+
+  /// No description provided for @commonApply.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aplicar'**
+  String get commonApply;
+
+  /// No description provided for @plantWateredSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta regada correctament'**
+  String get plantWateredSuccess;
+
+  /// No description provided for @plantCollectedSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta recol·lectada correctament'**
+  String get plantCollectedSuccess;
+
+  /// No description provided for @plantDeletedSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta eliminada correctament'**
+  String get plantDeletedSuccess;
+
+  /// No description provided for @plantActionError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut completar l\'acció'**
+  String get plantActionError;
+
+  /// No description provided for @plantLoadingSeedsError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'han pogut carregar les llavors'**
+  String get plantLoadingSeedsError;
 }
 
 class _AppLocalizationsDelegate

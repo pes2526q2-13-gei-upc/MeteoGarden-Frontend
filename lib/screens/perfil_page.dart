@@ -11,6 +11,7 @@ import '../../models/avatar_stack.dart';
 import 'avatar_editor_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../models/avatar_user.dart';
+import '../../widgets/centered_message.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
@@ -21,6 +22,7 @@ class PerfilPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      key: const Key('profile_page'),
       body: Stack(
         children: [
           Positioned.fill(
@@ -66,11 +68,26 @@ class PerfilPage extends StatelessWidget {
                         plantsDiscovered: user.numPlantsCollected,
                       );
 
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => PerfilEditPage(profile: profile),
-                        ),
-                      );
+                      final updatedLanguage = await Navigator.of(context)
+                          .push<String?>(
+                            MaterialPageRoute(
+                              builder: (_) => PerfilEditPage(profile: profile),
+                            ),
+                          );
+
+                      if (updatedLanguage != null && context.mounted) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (!context.mounted) return;
+
+                          final updatedL10n = AppLocalizations.of(context)!;
+
+                          CenteredMessage.show(
+                            context,
+                            updatedL10n.profileEditUpdated,
+                            type: CenteredMessageType.success,
+                          );
+                        });
+                      }
                     },
                   ),
                 ),
@@ -305,6 +322,7 @@ class _GameHeader extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
+                      key: const Key('edit_profile_button'),
                       onPressed: onEdit,
                       style: FilledButton.styleFrom(
                         backgroundColor: Colors.white,

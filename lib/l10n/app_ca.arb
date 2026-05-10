@@ -337,6 +337,15 @@
 "phaseGrowth": "Creixement",
 "phaseMature": "Madura",
 "phaseFlowering": "Floració",
-"phaseDead": "Morta"
+"phaseDead": "Morta",
+"filterByCity": "Filtra per ciutat",
+"writeCity": "Escriu una ciutat...",
+"commonApply": "Aplicar",
+
+"plantWateredSuccess": "Planta regada correctament",
+"plantCollectedSuccess": "Planta recol·lectada correctament",
+"plantDeletedSuccess": "Planta eliminada correctament",
+"plantActionError": "No s'ha pogut completar l'acció",
+"plantLoadingSeedsError": "No s'han pogut carregar les llavors"
 }
 
