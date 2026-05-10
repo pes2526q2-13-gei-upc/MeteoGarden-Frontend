@@ -774,4 +774,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get plantLoadingSeedsError => 'No se han podido cargar las semillas';
+
+  @override
+  String get weatherDetailsTitle => 'Detalles meterológicos';
+
+  @override
+  String get weatherStationLabel => 'Estación Metereológica';
+
+  @override
+  String get temperatureLabel => 'Temperatura';
+
+  @override
+  String get humidityLabel => 'Humidad';
+
+  @override
+  String get windLabel => 'Viento';
+
+  @override
+  String get precipitationLabel => 'Precipitación';
+
+  @override
+  String get solarIrradianceLabel => 'Irradiancia solar';
 }

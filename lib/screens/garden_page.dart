@@ -4,9 +4,8 @@ import 'package:meteo_garden/screens/album_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/garden.dart';
-import '../../models/weather_info.dart';
+//import '../../models/weather_info.dart';
 import '../../services/garden_service.dart';
-import '../../services/weather_service.dart';
 import '../../widgets/pot_info_sheet.dart';
 import '../../widgets/pot_widget.dart';
 import '../../widgets/potion_selection_sheet.dart';
@@ -17,6 +16,9 @@ import '../screens/botiga_page.dart';
 import 'calendar_page.dart';
 import 'inventory_page.dart';
 import '../../widgets/centered_message.dart';
+
+import '../models/weather_provider.dart';
+import 'weather_details_page.dart';
 
 class GardenPage extends StatefulWidget {
   final String username;
@@ -34,7 +36,6 @@ class GardenPage extends StatefulWidget {
 
 class _GardenPageState extends State<GardenPage> {
   late final GardenService _gardenService;
-  Future<WeatherInfo>? _weatherFuture;
   late Future<List<GardenPot>> _potsFuture;
 
   @override
@@ -53,17 +54,21 @@ class _GardenPageState extends State<GardenPage> {
 
       final user = Provider.of<UserModel>(context, listen: false);
 
-      setState(() {
-        _weatherFuture = WeatherService.fetchCurrent(city: user.city);
-      });
+      // Usamos el provider para obtener el tiempo
+      Provider.of<WeatherProvider>(
+        context,
+        listen: false,
+      ).fetchWeather(user.city);
     });
   }
 
   void _refreshWeather() {
     final user = Provider.of<UserModel>(context, listen: false);
-    setState(() {
-      _weatherFuture = WeatherService.fetchCurrent(city: user.city);
-    });
+    // Forzamos la recarga desde el provider
+    Provider.of<WeatherProvider>(
+      context,
+      listen: false,
+    ).fetchWeather(user.city, forceRefresh: true);
   }
 
   Future<void> _refreshSinglePot(int potNumber) async {
@@ -393,38 +398,55 @@ class _GardenPageState extends State<GardenPage> {
     return 14;
   }
 
+  // --- SECCIÓN DEL TIEMPO ACTUALIZADA ---
   Widget _buildWeatherSection() {
     final l10n = AppLocalizations.of(context)!;
 
-    return FutureBuilder<WeatherInfo>(
-      future: _weatherFuture,
-      builder: (context, snap) {
-        if (_weatherFuture == null ||
-            snap.connectionState == ConnectionState.waiting) {
+    return Consumer<WeatherProvider>(
+      builder: (context, weatherProvider, child) {
+        // 1. Estado de carga (mientras busca los datos)
+        if (weatherProvider.isLoading &&
+            weatherProvider.currentWeather == null) {
           return WeatherCard(
             nomEstacio: "",
             title: l10n.gardenLoadingWeather,
             subtitle: l10n.gardenWaitMoment,
             trailing: const SizedBox(
+              // 👈 trailing requerido
               height: 18,
               width: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
             ),
             onRefresh: _refreshWeather,
           );
         }
 
-        if (snap.hasError) {
+        // 2. Estado de error (si falla la llamada)
+        if (weatherProvider.error != null &&
+            weatherProvider.currentWeather == null) {
           return WeatherCard(
             nomEstacio: "",
             title: l10n.gardenWeatherLoadError,
             subtitle: l10n.gardenTapToRetry,
-            trailing: const Icon(Icons.warning_amber_rounded),
+            trailing: const Icon(
+              Icons.warning_amber_rounded,
+            ), // 👈 trailing requerido
             onRefresh: _refreshWeather,
           );
         }
 
-        final w = snap.data!;
+        // 3. ¡AQUÍ DECLARAMOS 'w'! Justo antes de usarla
+        final w = weatherProvider.currentWeather;
+
+        // Si 'w' todavía es null por alguna razón, no mostramos nada y evitamos errores
+        if (w == null) {
+          return const SizedBox.shrink();
+        }
+
+        // 4. Devolvemos la tarjeta con todos sus datos y parámetros
         return WeatherCard(
           nomEstacio: w.stationName,
           title: l10n.gardenWeatherSummary(
@@ -434,8 +456,16 @@ class _GardenPageState extends State<GardenPage> {
           subtitle: l10n.gardenWindSummary(w.wind.toStringAsFixed(1)),
           precipitation: double.tryParse(w.precipitation),
           wind: w.wind,
-          trailing: const Icon(Icons.refresh),
+          trailing: const Icon(
+            Icons.refresh,
+          ), // 👈 AQUÍ SOLUCIONAMOS EL ERROR DEL TRAILING
           onRefresh: _refreshWeather,
+          onTap: () {
+            // Navegación limpia al hacer clic en la tarjeta
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const WeatherDetailsPage()),
+            );
+          },
         );
       },
     );

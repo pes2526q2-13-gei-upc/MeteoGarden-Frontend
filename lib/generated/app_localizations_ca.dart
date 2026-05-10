@@ -773,4 +773,25 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get plantLoadingSeedsError => 'No s\'han pogut carregar les llavors';
+
+  @override
+  String get weatherDetailsTitle => 'Detalls del temps';
+
+  @override
+  String get weatherStationLabel => 'Estació Meteorològica';
+
+  @override
+  String get temperatureLabel => 'Temperatura';
+
+  @override
+  String get humidityLabel => 'Humitat';
+
+  @override
+  String get windLabel => 'Vent';
+
+  @override
+  String get precipitationLabel => 'Precipitació';
+
+  @override
+  String get solarIrradianceLabel => 'Irradiació solar';
 }

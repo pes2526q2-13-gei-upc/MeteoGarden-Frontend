@@ -6,6 +6,7 @@ class WeatherCard extends StatelessWidget {
   final String subtitle;
   final Widget trailing;
   final VoidCallback onRefresh;
+  final VoidCallback? onTap; // 👈 AÑADIMOS ESTO para la navegación
   final double? precipitation;
   final double? wind;
 
@@ -16,6 +17,7 @@ class WeatherCard extends StatelessWidget {
     required this.subtitle,
     required this.trailing,
     required this.onRefresh,
+    this.onTap, // 👈 Lo pedimos en el constructor
     this.precipitation,
     this.wind,
   });
@@ -38,7 +40,8 @@ class WeatherCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onRefresh,
+        onTap:
+            onTap, // 👈 CAMBIAMOS ESTO: Ahora la tarjeta entera navega a detalles
         borderRadius: BorderRadius.circular(16),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -92,10 +95,17 @@ class WeatherCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
+              // 👇 CAMBIAMOS ESTO: Envolvemos el icono en un IconButton para que refresque al pulsar solo el icono
               Center(
-                child: IconTheme(
-                  data: const IconThemeData(color: Colors.white, size: 24),
-                  child: trailing,
+                child: IconButton(
+                  icon: trailing,
+                  color: Colors.white,
+                  iconSize: 24,
+                  onPressed:
+                      onRefresh, // 👈 El botón de refrescar ahora hace el onRefresh
+                  padding: EdgeInsets.zero,
+                  constraints:
+                      const BoxConstraints(), // Minimiza el padding extra del botón
                 ),
               ),
             ],

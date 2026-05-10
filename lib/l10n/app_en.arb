@@ -345,6 +345,14 @@
 "plantCollectedSuccess": "Plant collected successfully",
 "plantDeletedSuccess": "Plant deleted successfully",
 "plantActionError": "The action could not be completed",
-"plantLoadingSeedsError": "Seeds could not be loaded"
+"plantLoadingSeedsError": "Seeds could not be loaded",
+
+"weatherDetailsTitle": "Weather details",
+"weatherStationLabel": "Meteorological Station",
+"temperatureLabel": "Temperature",
+"humidityLabel": "Humidity",
+"windLabel": "Wind",
+"precipitationLabel": "Precipitation",
+"solarIrradianceLabel": "Solar irradiance"
 }
 
