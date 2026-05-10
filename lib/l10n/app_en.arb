@@ -333,6 +333,8 @@
 "phaseGrowth": "Growth",
 "phaseMature": "Mature",
 "phaseFlowering": "Flowering",
-"phaseDead": "Dead"
+"phaseDead": "Dead",
+
+"avatarLoadErrorPersist": "Error loading the avatar"
 }
 

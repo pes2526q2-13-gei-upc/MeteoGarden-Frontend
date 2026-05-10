@@ -23,11 +23,7 @@ class ProductItem {
   final int amount;
   final String? imageUrl;
 
-  ProductItem({
-    required this.productName,
-    required this.amount,
-    this.imageUrl,
-  });
+  ProductItem({required this.productName, required this.amount, this.imageUrl});
 
   factory ProductItem.fromJson(Map<String, dynamic> json) => ProductItem(
     productName: json['productName'],

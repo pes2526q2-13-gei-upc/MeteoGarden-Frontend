@@ -1502,6 +1502,12 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Morta'**
   String get phaseDead;
+
+  /// No description provided for @avatarLoadErrorPersist.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant l\'avatar'**
+  String get avatarLoadErrorPersist;
 }
 
 class _AppLocalizationsDelegate

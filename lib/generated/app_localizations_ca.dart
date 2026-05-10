@@ -746,4 +746,7 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get phaseDead => 'Morta';
+
+  @override
+  String get avatarLoadErrorPersist => 'Error carregant l\'avatar';
 }

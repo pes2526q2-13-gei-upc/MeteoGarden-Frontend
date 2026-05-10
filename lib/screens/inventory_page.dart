@@ -130,10 +130,7 @@ class _InventoryPageState extends State<InventoryPage>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _PlantImage(
-                        imageUrl: seed.imageUrl,
-                        height: 120,
-                      ),
+                      _PlantImage(imageUrl: seed.imageUrl, height: 120),
                       const SizedBox(height: 16),
 
                       Text(
@@ -565,7 +562,7 @@ class _SeedCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return InkWell(
-       key: Key('seed_card_${seed.scientificName}'),
+      key: Key('seed_card_${seed.scientificName}'),
       borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Container(
@@ -585,9 +582,7 @@ class _SeedCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: _PlantImage(imageUrl: seed.imageUrl),
-              ),
+              Expanded(child: _PlantImage(imageUrl: seed.imageUrl)),
               const SizedBox(height: 6),
               Text(
                 seed.scientificName,
@@ -691,7 +686,11 @@ class _PlantImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (imageUrl == null || imageUrl!.isEmpty) {
-      return Icon(fallbackIcon, size: height != null ? height! * 0.65 : 40, color: fallbackColor);
+      return Icon(
+        fallbackIcon,
+        size: height != null ? height! * 0.65 : 40,
+        color: fallbackColor,
+      );
     }
     return Image.network(
       imageUrl!,
@@ -707,8 +706,11 @@ class _PlantImage extends StatelessWidget {
           ),
         );
       },
-      errorBuilder: (_, _, _) =>
-          Icon(fallbackIcon, size: height != null ? height! * 0.65 : 40, color: fallbackColor),
+      errorBuilder: (_, _, _) => Icon(
+        fallbackIcon,
+        size: height != null ? height! * 0.65 : 40,
+        color: fallbackColor,
+      ),
     );
   }
 }
