@@ -761,4 +761,23 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get missionsTagInProgress => 'En progrés';
+
+  @override
+  String get missionsEmpty => 'No hi ha missions disponibles';
+
+  @override
+  String get missionsClaimSuccess => 'Recompensa reclamada!';
+
+  @override
+  String get missionsErrorAlreadyClaimed =>
+      'Aquesta missió ja ha estat reclamada';
+
+  @override
+  String get missionsErrorInProgress => 'La missió encara no està completada';
+
+  @override
+  String get missionsErrorNotFound => 'Missió no trobada';
+
+  @override
+  String get missionsErrorGeneric => 'No s\'ha pogut reclamar la recompensa';
 }

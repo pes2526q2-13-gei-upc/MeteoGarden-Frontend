@@ -762,4 +762,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get missionsTagInProgress => 'En progreso';
+
+  @override
+  String get missionsEmpty => 'No hay misiones disponibles';
+
+  @override
+  String get missionsClaimSuccess => '¡Recompensa reclamada!';
+
+  @override
+  String get missionsErrorAlreadyClaimed => 'Esta misión ya fue reclamada';
+
+  @override
+  String get missionsErrorInProgress => 'La misión todavía no está completada';
+
+  @override
+  String get missionsErrorNotFound => 'Misión no encontrada';
+
+  @override
+  String get missionsErrorGeneric => 'No se pudo reclamar la recompensa';
 }

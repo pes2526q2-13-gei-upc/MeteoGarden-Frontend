@@ -1532,6 +1532,42 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'En progrés'**
   String get missionsTagInProgress;
+
+  /// No description provided for @missionsEmpty.
+  ///
+  /// In ca, this message translates to:
+  /// **'No hi ha missions disponibles'**
+  String get missionsEmpty;
+
+  /// No description provided for @missionsClaimSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Recompensa reclamada!'**
+  String get missionsClaimSuccess;
+
+  /// No description provided for @missionsErrorAlreadyClaimed.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aquesta missió ja ha estat reclamada'**
+  String get missionsErrorAlreadyClaimed;
+
+  /// No description provided for @missionsErrorInProgress.
+  ///
+  /// In ca, this message translates to:
+  /// **'La missió encara no està completada'**
+  String get missionsErrorInProgress;
+
+  /// No description provided for @missionsErrorNotFound.
+  ///
+  /// In ca, this message translates to:
+  /// **'Missió no trobada'**
+  String get missionsErrorNotFound;
+
+  /// No description provided for @missionsErrorGeneric.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut reclamar la recompensa'**
+  String get missionsErrorGeneric;
 }
 
 class _AppLocalizationsDelegate

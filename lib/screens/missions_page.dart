@@ -3,32 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../generated/app_localizations.dart';
 import '../models/url.dart';
-
-class MissionData {
-  final String name;
-  final String description;
-  final String action;
-  final int goal;
-  final int rewardCoins;
-
-  MissionData({
-    required this.name,
-    required this.description,
-    required this.action,
-    required this.goal,
-    required this.rewardCoins,
-  });
-
-  factory MissionData.fromJson(Map<String, dynamic> json) {
-    return MissionData(
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      action: json['action'] ?? '',
-      goal: json['goal'] ?? 0,
-      rewardCoins: json['rewardCoins'] ?? 0,
-    );
-  }
-}
+import '../models/missions.dart';
+import '../widgets/mission_card.dart';
+import 'package:provider/provider.dart';
+import 'package:meteo_garden/models/dades_usr.dart';
 
 class MissionsPage extends StatefulWidget {
   const MissionsPage({super.key});
@@ -38,7 +16,7 @@ class MissionsPage extends StatefulWidget {
 }
 
 class _MissionsPageState extends State<MissionsPage> {
-  List<MissionData> _missions = [];
+  List<Mission> _missions = [];
   bool _isLoading = true;
   String? _error;
 
@@ -53,16 +31,22 @@ class _MissionsPageState extends State<MissionsPage> {
       _isLoading = true;
       _error = null;
     });
+
     try {
+      final token = Provider.of<UserModel>(context, listen: false).token;
       final response = await http.get(
-        Uri.parse('${ApiConfig.baseUrl}/missions/'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('${ApiConfig.baseUrl}/api/user/missions/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token $token',
+        },
       );
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final List list = data['missions'];
         setState(() {
-          _missions = list.map((e) => MissionData.fromJson(e)).toList();
+          _missions = list.map((e) => Mission.fromJson(e)).toList();
           _isLoading = false;
         });
       } else {
@@ -79,6 +63,57 @@ class _MissionsPageState extends State<MissionsPage> {
     }
   }
 
+  Future<void> _claimMission(Mission mission) async {
+    try {
+        final token = Provider.of<UserModel>(context, listen: false).token;
+        final response = await http.post(
+          Uri.parse('${ApiConfig.baseUrl}/api/user/missions/claim/'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token $token',
+          },
+          body: jsonEncode({'mission': mission.name}),
+        );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(data['coins'] ?? '¡Recompensa reclamada!'),
+              backgroundColor: const Color(0xFF2F6B43),
+            ),
+          );
+          _fetchMissions(); // refresca la lista
+        }
+      } else {
+        final data = jsonDecode(response.body);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(data['error'] ?? 'No se pudo reclamar'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  int get _completedCount =>
+      _missions.where((m) => m.isCompleted || m.isClaimed).length;
+
+  int get _inProgressCount => _missions.where((m) => m.isInProgress).length;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,10 +129,12 @@ class _MissionsPageState extends State<MissionsPage> {
           child: SafeArea(
             child: Column(
               children: [
-                _MissionsHeader(total: _missions.length),
-                Expanded(
-                  child: _buildBody(),
+                _MissionsHeader(
+                  total: _missions.length,
+                  completed: _completedCount,
+                  inProgress: _inProgressCount,
                 ),
+                Expanded(child: _buildBody()),
               ],
             ),
           ),
@@ -106,46 +143,75 @@ class _MissionsPageState extends State<MissionsPage> {
     );
   }
 
-  Widget _buildBody() {
-    if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: Color(0xFF2F6B43)),
-      );
-    }
-    if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _error!,
-              style: const TextStyle(color: Colors.red, fontSize: 14),
+Widget _buildBody() {
+  if (_isLoading) {
+    return const Center(
+      child: CircularProgressIndicator(color: Color(0xFF2F6B43)),
+    );
+  }
+  if (_error != null) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.wifi_off_rounded, color: Colors.white54, size: 48),
+          const SizedBox(height: 12),
+          Text(
+            _error!,
+            style: const TextStyle(color: Colors.red, fontSize: 14),
+          ),
+          const SizedBox(height: 12),
+          ElevatedButton(
+            onPressed: _fetchMissions,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2F6B43),
             ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _fetchMissions,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2F6B43),
-              ),
-              child: Text(AppLocalizations.of(context)!.commonRetry),
+            child: Text(AppLocalizations.of(context)!.commonRetry),
+          ),
+        ],
+      ),
+    );
+  }
+  if (_missions.isEmpty) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.flag_outlined, color: Colors.white54, size: 56),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!.missionsEmpty,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
-      );
-    }
-    if (_missions.isEmpty) {
-      return const Center(
-        child: Text(
-          'No hi ha missions disponibles',
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-      );
-    }
+          ),
+        ],
+      ),
+    );
+  }
+  
+
+    // Ordenamos: completadas (reclamables) primero, luego en curso, luego reclamadas
+    final sorted = [..._missions]..sort((a, b) {
+        int priority(Mission m) {
+          if (m.isCompleted) return 0;
+          if (m.isInProgress) return 1;
+          return 2;
+        }
+        return priority(a).compareTo(priority(b));
+      });
+
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(18, 10, 18, 24),
-      itemCount: _missions.length,
+      itemCount: sorted.length,
       itemBuilder: (context, index) {
-        return _MissionCard(mission: _missions[index]);
+        final mission = sorted[index];
+        return MissionCard(
+          mission: mission,
+          onClaim: mission.isCompleted ? () => _claimMission(mission) : null,
+        );
       },
     );
   }
@@ -153,8 +219,14 @@ class _MissionsPageState extends State<MissionsPage> {
 
 class _MissionsHeader extends StatelessWidget {
   final int total;
+  final int completed;
+  final int inProgress;
 
-  const _MissionsHeader({required this.total});
+  const _MissionsHeader({
+    required this.total,
+    required this.completed,
+    required this.inProgress,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -211,11 +283,25 @@ class _MissionsHeader extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 18),
-          _HeaderStat(
-            icon: Icons.flag_outlined,
-            label: l10n.missionsCompleted,
-            value: '$total',
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: _HeaderStat(
+                  icon: Icons.check_circle_outline,
+                  label: 'Completadas',
+                  value: '$completed',
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _HeaderStat(
+                  icon: Icons.pending_outlined,
+                  label: 'En curso',
+                  value: '$inProgress',
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -237,7 +323,7 @@ class _HeaderStat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(18),
@@ -245,168 +331,28 @@ class _HeaderStat extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.white, size: 22),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(
-                    color: Color(0xFFDDEDDD),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
+          Icon(icon, color: Colors.white, size: 20),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Color(0xFFDDEDDD),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
                 ),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w900,
-                  ),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w900,
                 ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MissionCard extends StatelessWidget {
-  final MissionData mission;
-
-  const _MissionCard({required this.mission});
-
-  IconData get _icon {
-    switch (mission.action) {
-      case 'PLANT':
-        return Icons.local_florist;
-      case 'WATER':
-        return Icons.water_drop;
-      case 'COLLECT':
-        return Icons.eco;
-      case 'FLOWER':
-        return Icons.yard;
-      case 'DIE':
-        return Icons.sentiment_dissatisfied;
-      default:
-        return Icons.flag;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.94),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFCDE7C4), width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.10),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 62,
-            height: 62,
-            decoration: BoxDecoration(
-              color: const Color(0xFFDDF3D8),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Icon(_icon, color: const Color(0xFF237A3B), size: 34),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        mission.name,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFF163D25),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFF0C7),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        mission.action,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFFB77900),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  mission.description,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFF5F6F52),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.flag_outlined,
-                      color: Color(0xFF2F6B43),
-                      size: 16,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Meta: ${mission.goal}',
-                      style: const TextStyle(
-                        color: Color(0xFF2F6B43),
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    const Spacer(),
-                    const Icon(
-                      Icons.monetization_on,
-                      color: Color(0xFFE0A100),
-                      size: 18,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '+${mission.rewardCoins}',
-                      style: const TextStyle(
-                        color: Color(0xFFC28B00),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

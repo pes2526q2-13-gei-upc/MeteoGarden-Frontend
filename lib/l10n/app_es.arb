@@ -304,7 +304,7 @@
 "extraLlavor": "Cuando consigas, podrás plantarlas aquí.",
 "confirmDeletePlant": "¿Estás seguro de que quieres eliminar {plantName}?\nEsta acción no se puede deshacer.",
 "thisPlant": "esta planta",
-"deletePlant": "Eliminar planta"
+"deletePlant": "Eliminar planta",
 
 "avatarLoadError": "Error cargando el avatar",
 
@@ -336,11 +336,17 @@
 "phaseGrowth": "Crecimiento",
 "phaseMature": "Madura",
 "phaseFlowering": "Floración",
-"phaseDead": "Muerta"
+"phaseDead": "Muerta",
 
 "missionsTitle": "Misiones",
 "missionsSubtitle": "Completa retos y gana monedas",
 "missionsCompleted": "Completadas",
 "missionsTagCompleted": "Completada",
-"missionsTagInProgress": "En progreso"
+"missionsTagInProgress": "En progreso",
+"missionsEmpty": "No hay misiones disponibles",
+"missionsClaimSuccess": "¡Recompensa reclamada!",
+"missionsErrorAlreadyClaimed": "Esta misión ya fue reclamada",
+"missionsErrorInProgress": "La misión todavía no está completada",
+"missionsErrorNotFound": "Misión no encontrada",
+"missionsErrorGeneric": "No se pudo reclamar la recompensa"
 }

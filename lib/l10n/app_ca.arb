@@ -304,7 +304,7 @@
 "extraLlavor": "Quan n'aconsegueixis, les podràs plantar aquí.",
 "confirmDeletePlant": "Segur que vols eliminar {plantName}?\nAquesta acció no es pot desfer.",
 "thisPlant": "aquesta planta",
-"deletePlant": "Eliminar planta"
+"deletePlant": "Eliminar planta",
 
 "finalitza": "Finalitza el",
 
@@ -338,12 +338,18 @@
 "phaseGrowth": "Creixement",
 "phaseMature": "Madura",
 "phaseFlowering": "Floració",
-"phaseDead": "Morta"
+"phaseDead": "Morta",
 
 "missionsTitle": "Missions",
 "missionsSubtitle": "Completa reptes i guanya monedes",
 "missionsCompleted": "Completades",
 "missionsTagCompleted": "Completada",
-"missionsTagInProgress": "En progrés"
+"missionsTagInProgress": "En progrés",
+"missionsEmpty": "No hi ha missions disponibles",
+"missionsClaimSuccess": "Recompensa reclamada!",
+"missionsErrorAlreadyClaimed": "Aquesta missió ja ha estat reclamada",
+"missionsErrorInProgress": "La missió encara no està completada",
+"missionsErrorNotFound": "Missió no trobada",
+"missionsErrorGeneric": "No s'ha pogut reclamar la recompensa"
 }
 
