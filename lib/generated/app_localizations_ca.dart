@@ -780,4 +780,22 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get missionsErrorGeneric => 'No s\'ha pogut reclamar la recompensa';
+
+  @override
+  String get missionsClaim => 'Reclamar 🎁';
+
+  @override
+  String get missionsActiveSectionTitle => 'Missions actives';
+
+  @override
+  String get missionsClaimedSectionTitle => 'Ja reclamades';
+
+  @override
+  String get missionsTagClaimed => 'Reclamada';
+
+  @override
+  String get missionsInProgress => 'En curs';
+
+  @override
+  String get missionsRewardCoins => 'monedes';
 }

@@ -346,5 +346,11 @@
 "missionsErrorAlreadyClaimed": "This mission has already been claimed",
 "missionsErrorInProgress": "The mission is not completed yet",
 "missionsErrorNotFound": "Mission not found",
-"missionsErrorGeneric": "Could not claim the reward"
+"missionsErrorGeneric": "Could not claim the reward",
+"missionsClaim": "Claim 🎁",
+"missionsActiveSectionTitle": "Active missions",
+"missionsClaimedSectionTitle": "Already claimed",
+"missionsTagClaimed": "Claimed",
+"missionsInProgress": "In progress",
+"missionsRewardCoins": "coins"
 }

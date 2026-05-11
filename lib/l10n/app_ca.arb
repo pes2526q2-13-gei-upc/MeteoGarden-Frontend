@@ -350,6 +350,12 @@
 "missionsErrorAlreadyClaimed": "Aquesta missió ja ha estat reclamada",
 "missionsErrorInProgress": "La missió encara no està completada",
 "missionsErrorNotFound": "Missió no trobada",
-"missionsErrorGeneric": "No s'ha pogut reclamar la recompensa"
+"missionsErrorGeneric": "No s'ha pogut reclamar la recompensa",
+"missionsClaim": "Reclamar 🎁",
+"missionsActiveSectionTitle": "Missions actives",
+"missionsClaimedSectionTitle": "Ja reclamades",
+"missionsTagClaimed": "Reclamada",
+"missionsInProgress": "En curs",
+"missionsRewardCoins": "monedes"
 }
 

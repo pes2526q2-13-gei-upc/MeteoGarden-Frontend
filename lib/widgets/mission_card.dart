@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/missions.dart';
+import '../generated/app_localizations.dart';
 
 class MissionCard extends StatelessWidget {
   final Mission mission;
@@ -164,8 +165,9 @@ class MissionCard extends StatelessWidget {
               const Icon(Icons.monetization_on,
                   color: Color(0xFFE0A100), size: 18),
               const SizedBox(width: 4),
+              // En el Row del footer, reemplaza el Text de monedas:
               Text(
-                '+${mission.rewardCoins} monedas',
+                '+${mission.rewardCoins} ${AppLocalizations.of(context)!.missionsRewardCoins}',
                 style: const TextStyle(
                   color: Color(0xFFC28B00),
                   fontWeight: FontWeight.w900,
@@ -203,7 +205,7 @@ class MissionCard extends StatelessWidget {
                       fontSize: 13,
                     ),
                   ),
-                  child: const Text('Reclamar 🎁'),
+                  child: Text(AppLocalizations.of(context)!.missionsClaim),
                 ),
               if (mission.isClaimed)
                 const Icon(Icons.check_circle,
@@ -218,24 +220,25 @@ class MissionCard extends StatelessWidget {
 
 class _StateBadge extends StatelessWidget {
   final String state;
-
   const _StateBadge({required this.state});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final config = switch (state) {
       'COMPLETED' => (
-          label: 'Completada',
+          label: l10n.missionsTagCompleted,
           bg: const Color(0xFFDDF3D8),
           fg: const Color(0xFF237A3B),
         ),
       'CLAIMED' => (
-          label: 'Reclamada',
+          label: l10n.missionsTagClaimed,
           bg: Colors.grey.shade200,
           fg: Colors.grey.shade600,
         ),
       _ => (
-          label: 'En curso',
+          label: l10n.missionsInProgress,
           bg: const Color(0xFFFFF0C7),
           fg: const Color(0xFFB77900),
         ),

@@ -41,7 +41,7 @@ class Mission {
       plantRewardScientificName: json['Plant reward scientific name'],
       rewardCoins: json['Reward coins'] ?? 0,
       productReward: json['Product reward'],
-      missionState: json['Mission state'] ?? 'IN_PROGRESS',
+      missionState: (json['Mission state'] ?? 'IN_PROGRESS').toString().toUpperCase(),
       currentNumber: json['Current number'] ?? 0,
       acquiredAt: json['acquired at'] != null
           ? DateTime.tryParse(json['acquired at'])

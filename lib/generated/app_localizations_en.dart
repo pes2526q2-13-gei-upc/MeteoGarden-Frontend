@@ -782,4 +782,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get missionsErrorGeneric => 'Could not claim the reward';
+
+  @override
+  String get missionsClaim => 'Claim 🎁';
+
+  @override
+  String get missionsActiveSectionTitle => 'Active missions';
+
+  @override
+  String get missionsClaimedSectionTitle => 'Already claimed';
+
+  @override
+  String get missionsTagClaimed => 'Claimed';
+
+  @override
+  String get missionsInProgress => 'In progress';
+
+  @override
+  String get missionsRewardCoins => 'coins';
 }
