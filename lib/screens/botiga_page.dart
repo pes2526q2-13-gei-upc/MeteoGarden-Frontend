@@ -7,7 +7,9 @@ import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
 
 class ShopPage extends StatefulWidget {
-  const ShopPage({super.key});
+  final http.Client? httpClient; // per al test
+
+  const ShopPage({super.key, this.httpClient});
 
   @override
   State<ShopPage> createState() => _ShopPageState();
@@ -17,6 +19,7 @@ class _ShopPageState extends State<ShopPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool isLoading = true;
+  late final http.Client _client; // per al test
 
   List<dynamic> seeds = [];
   List<dynamic> products = [];
@@ -25,6 +28,7 @@ class _ShopPageState extends State<ShopPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _client = widget.httpClient ?? http.Client(); // per al test
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchShopItems();
     });
@@ -43,7 +47,7 @@ class _ShopPageState extends State<ShopPage>
     final url = Uri.parse('${ApiConfig.baseUrl}/api/shop/');
 
     try {
-      final response = await http.get(
+      final response = await _client.get(
         url,
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +101,7 @@ class _ShopPageState extends State<ShopPage>
     });
 
     try {
-      final response = await http.post(
+      final response = await _client.post(
         url,
         headers: {
           "Content-Type": "application/json",
