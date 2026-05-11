@@ -12,7 +12,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'avatar_editor_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -265,6 +264,7 @@ class _LoginPageState extends State<LoginPage> {
                             const SizedBox(height: 32),
 
                             _InputField(
+                              fieldKey: const Key('login_username_field'),
                               controller: usernameController,
                               label: t.loginUsernameLabel,
                               hint: t.loginUsernameHint,
@@ -274,6 +274,7 @@ class _LoginPageState extends State<LoginPage> {
                             const SizedBox(height: 16),
 
                             _InputField(
+                              fieldKey: const Key('login_password_field'),
                               controller: passwordController,
                               label: t.loginPasswordLabel,
                               hint: t.loginPasswordHint,
@@ -284,6 +285,7 @@ class _LoginPageState extends State<LoginPage> {
                             const SizedBox(height: 28),
 
                             FilledButton.icon(
+                              key: const Key('login_button'),
                               onPressed: _login,
                               icon: const Icon(Icons.login_rounded),
                               label: Text(
@@ -448,35 +450,36 @@ class _LoginPageState extends State<LoginPage> {
     String username = user.username;
 
     final avatarResponse = await http.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar/'),
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar'),
     );
 
     if (!mounted) return;
 
     if (avatarResponse.statusCode == 200) {
       final avatar = jsonDecode(avatarResponse.body);
+      debugPrint(avatar.toString());
       Provider.of<AvatarUser>(context, listen: false).setAvatar(
-        newBody: avatar['body'],
-        newEye: avatar['eye'],
-        newExpression: avatar['expression'],
-        newHair: avatar['hair'],
-        newFacialHair: avatar['facial_hair'],
-        newClothing: avatar['clothing'],
-        newAccessories: avatar['accessories'],
+        newBody: cleanAvatarUrl(avatar['body']),
+        newEye: cleanAvatarUrl(avatar['eye']),
+        newExpression: cleanAvatarUrl(avatar['expression']),
+        newHair: cleanAvatarUrl(avatar['hair'] ?? ''),
+        newFacialHair: cleanAvatarUrl(avatar['facial_hair'] ?? ''),
+        newClothing: cleanAvatarUrl(avatar['clothing']),
+        newAccessories: cleanAvatarUrl(avatar['accessories'] ?? ''),
       );
       _goToHome();
     } else if (avatarResponse.statusCode == 404) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const AvatarEditorPage(isNewUser: true),
-        ),
-      );
+      _goToHome();
     } else {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(_t.avatarLoadError)));
     }
+  }
+
+  String cleanAvatarUrl(String url) {
+    if (url.isEmpty) return url;
+    return url.replaceAll('.com//', '.com/');
   }
 }
 
@@ -521,6 +524,7 @@ class _InputField extends StatelessWidget {
   final String hint;
   final IconData icon;
   final bool obscureText;
+  final Key? fieldKey;
 
   const _InputField({
     required this.controller,
@@ -528,6 +532,7 @@ class _InputField extends StatelessWidget {
     required this.hint,
     required this.icon,
     this.obscureText = false,
+    this.fieldKey,
   });
 
   @override
@@ -545,6 +550,7 @@ class _InputField extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         TextField(
+          key: fieldKey,
           controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(

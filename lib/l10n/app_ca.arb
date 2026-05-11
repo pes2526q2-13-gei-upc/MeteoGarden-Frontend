@@ -340,6 +340,26 @@
 "phaseFlowering": "Floració",
 "phaseDead": "Morta",
 
+"avatarLoadErrorPersist": "Error carregant l'avatar",
+
+"filterByCity": "Filtra per ciutat",
+"writeCity": "Escriu una ciutat...",
+"commonApply": "Aplicar",
+
+"plantWateredSuccess": "Planta regada correctament",
+"plantCollectedSuccess": "Planta recol·lectada correctament",
+"plantDeletedSuccess": "Planta eliminada correctament",
+"plantActionError": "No s'ha pogut completar l'acció",
+"plantLoadingSeedsError": "No s'han pogut carregar les llavors",
+
+"weatherDetailsTitle": "Detalls del temps",
+"weatherStationLabel": "Estació Meteorològica",
+"temperatureLabel": "Temperatura",
+"humidityLabel": "Humitat",
+"windLabel": "Vent",
+"precipitationLabel": "Precipitació",
+"solarIrradianceLabel": "Irradiació solar",
+
 "missionsTitle": "Missions",
 "missionsSubtitle": "Completa reptes i guanya monedes",
 "missionsCompleted": "Completades",

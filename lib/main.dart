@@ -7,6 +7,7 @@ import 'package:meteo_garden/models/plantes_desbl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter/services.dart';
+import 'package:meteo_garden/models/weather_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +18,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserModel()),
         ChangeNotifierProvider(create: (_) => PlantProvider()),
         ChangeNotifierProvider(create: (_) => AvatarUser()),
+        ChangeNotifierProvider(create: (_) => WeatherProvider()),
       ],
       child: const MeteoGardenApp(),
     ),

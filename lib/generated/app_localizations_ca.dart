@@ -748,6 +748,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get phaseDead => 'Morta';
 
   @override
+<<<<<<< HEAD
   String get missionsTitle => 'Missions';
 
   @override
@@ -798,4 +799,52 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get missionsRewardCoins => 'monedes';
+=======
+  String get avatarLoadErrorPersist => 'Error carregant l\'avatar';
+
+  @override
+  String get filterByCity => 'Filtra per ciutat';
+
+  @override
+  String get writeCity => 'Escriu una ciutat...';
+
+  @override
+  String get commonApply => 'Aplicar';
+
+  @override
+  String get plantWateredSuccess => 'Planta regada correctament';
+
+  @override
+  String get plantCollectedSuccess => 'Planta recol·lectada correctament';
+
+  @override
+  String get plantDeletedSuccess => 'Planta eliminada correctament';
+
+  @override
+  String get plantActionError => 'No s\'ha pogut completar l\'acció';
+
+  @override
+  String get plantLoadingSeedsError => 'No s\'han pogut carregar les llavors';
+
+  @override
+  String get weatherDetailsTitle => 'Detalls del temps';
+
+  @override
+  String get weatherStationLabel => 'Estació Meteorològica';
+
+  @override
+  String get temperatureLabel => 'Temperatura';
+
+  @override
+  String get humidityLabel => 'Humitat';
+
+  @override
+  String get windLabel => 'Vent';
+
+  @override
+  String get precipitationLabel => 'Precipitació';
+
+  @override
+  String get solarIrradianceLabel => 'Irradiació solar';
+>>>>>>> origin/develop
 }

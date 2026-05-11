@@ -1503,6 +1503,7 @@ abstract class AppLocalizations {
   /// **'Morta'**
   String get phaseDead;
 
+<<<<<<< HEAD
   /// No description provided for @missionsTitle.
   ///
   /// In ca, this message translates to:
@@ -1604,6 +1605,103 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'monedes'**
   String get missionsRewardCoins;
+=======
+  /// No description provided for @avatarLoadErrorPersist.
+  ///
+  /// In ca, this message translates to:
+  /// **'Error carregant l\'avatar'**
+  String get avatarLoadErrorPersist;
+
+  /// No description provided for @filterByCity.
+  ///
+  /// In ca, this message translates to:
+  /// **'Filtra per ciutat'**
+  String get filterByCity;
+
+  /// No description provided for @writeCity.
+  ///
+  /// In ca, this message translates to:
+  /// **'Escriu una ciutat...'**
+  String get writeCity;
+
+  /// No description provided for @commonApply.
+  ///
+  /// In ca, this message translates to:
+  /// **'Aplicar'**
+  String get commonApply;
+
+  /// No description provided for @plantWateredSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta regada correctament'**
+  String get plantWateredSuccess;
+
+  /// No description provided for @plantCollectedSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta recol·lectada correctament'**
+  String get plantCollectedSuccess;
+
+  /// No description provided for @plantDeletedSuccess.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta eliminada correctament'**
+  String get plantDeletedSuccess;
+
+  /// No description provided for @plantActionError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut completar l\'acció'**
+  String get plantActionError;
+
+  /// No description provided for @plantLoadingSeedsError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'han pogut carregar les llavors'**
+  String get plantLoadingSeedsError;
+
+  /// No description provided for @weatherDetailsTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Detalls del temps'**
+  String get weatherDetailsTitle;
+
+  /// No description provided for @weatherStationLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Estació Meteorològica'**
+  String get weatherStationLabel;
+
+  /// No description provided for @temperatureLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Temperatura'**
+  String get temperatureLabel;
+
+  /// No description provided for @humidityLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Humitat'**
+  String get humidityLabel;
+
+  /// No description provided for @windLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Vent'**
+  String get windLabel;
+
+  /// No description provided for @precipitationLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Precipitació'**
+  String get precipitationLabel;
+
+  /// No description provided for @solarIrradianceLabel.
+  ///
+  /// In ca, this message translates to:
+  /// **'Irradiació solar'**
+  String get solarIrradianceLabel;
+>>>>>>> origin/develop
 }
 
 class _AppLocalizationsDelegate
