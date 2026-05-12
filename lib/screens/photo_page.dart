@@ -6,6 +6,9 @@ import '../services/plant_service.dart';
 import '../models/dades_usr.dart';
 import 'plant_result_page.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 class PlantCameraScreen extends StatefulWidget {
   const PlantCameraScreen({super.key});
@@ -194,6 +197,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
     final controller = _controller;
 
     return Scaffold(
+      key: const Key('plant_camera_screen'),
       backgroundColor: Colors.black,
       body: _errorMessage != null && controller == null
           ? Center(
@@ -284,6 +288,20 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                           ),
 
                           const SizedBox(height: 12),
+                          if (kDebugMode)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 12),
+                              child: ElevatedButton.icon(
+                                key: const Key('identify_test_image_button'),
+                                onPressed: _isProcessing
+                                    ? null
+                                    : _identifyTestImage,
+                                icon: const Icon(Icons.image_search),
+                                label: const Text(
+                                  'Identificar imatge de prova',
+                                ),
+                              ),
+                            ),
 
                           if (_isProcessing)
                             Padding(
@@ -355,6 +373,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                                   ),
                                 ),
                                 GestureDetector(
+                                  key: const Key('take_plant_picture_button'),
                                   onTap: _isProcessing ? null : _takePicture,
                                   child: Container(
                                     width: 78,
@@ -411,5 +430,72 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
               },
             ),
     );
+  }
+
+  Future<void> _identifyTestImage() async {
+    final l10n = AppLocalizations.of(context)!;
+
+    if (_isProcessing) return;
+
+    setState(() {
+      _isProcessing = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final byteData = await rootBundle.load(
+        'assets/test_images/plant_test.jpeg',
+      );
+
+      final file = File('${Directory.systemTemp.path}/plant_test.jpg');
+      await file.writeAsBytes(byteData.buffer.asUint8List());
+
+      if (!mounted) return;
+
+      final user = Provider.of<UserModel>(context, listen: false);
+
+      final result = await PlantService.identifyPlant(
+        username: user.username,
+        imagePath: file.path,
+        organ: _selectedPlantType,
+      );
+
+      if (!mounted) return;
+
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => PlantResultPage(result: result)),
+      );
+
+      if (!mounted) return;
+
+      await context.read<PlantProvider>().loadPlants(user);
+    } on PlantIdentificationException catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _errorMessage = e.message;
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _errorMessage = l10n.photoUnexpectedError;
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.photoUnexpectedError)));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
+    }
   }
 }

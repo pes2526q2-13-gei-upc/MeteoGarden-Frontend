@@ -748,4 +748,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get phaseDead => 'Dead';
+
+  @override
+  String get avatarLoadErrorPersist => 'Error loading the avatar';
+
+  @override
+  String get filterByCity => 'Filter by city';
+
+  @override
+  String get writeCity => 'Enter a city...';
+
+  @override
+  String get commonApply => 'Apply';
+
+  @override
+  String get plantWateredSuccess => 'Plant watered successfully';
+
+  @override
+  String get plantCollectedSuccess => 'Plant collected successfully';
+
+  @override
+  String get plantDeletedSuccess => 'Plant deleted successfully';
+
+  @override
+  String get plantActionError => 'The action could not be completed';
+
+  @override
+  String get plantLoadingSeedsError => 'Seeds could not be loaded';
+
+  @override
+  String get weatherDetailsTitle => 'Weather details';
+
+  @override
+  String get weatherStationLabel => 'Meteorological Station';
+
+  @override
+  String get temperatureLabel => 'Temperature';
+
+  @override
+  String get humidityLabel => 'Humidity';
+
+  @override
+  String get windLabel => 'Wind';
+
+  @override
+  String get precipitationLabel => 'Precipitation';
+
+  @override
+  String get solarIrradianceLabel => 'Solar irradiance';
 }

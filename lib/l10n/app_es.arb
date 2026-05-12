@@ -336,6 +336,26 @@
 "phaseGrowth": "Crecimiento",
 "phaseMature": "Madura",
 "phaseFlowering": "Floración",
-"phaseDead": "Muerta"
+"phaseDead": "Muerta",
+
+"avatarLoadErrorPersist": "Error cargando el avatar",
+
+"filterByCity": "Filtrar por ciudad",
+"writeCity": "Escribe una ciudad...",
+"commonApply": "Aplicar",
+
+"plantWateredSuccess": "Planta regada correctamente",
+"plantCollectedSuccess": "Planta recolectada correctamente",
+"plantDeletedSuccess": "Planta eliminada correctamente",
+"plantActionError": "No se ha podido completar la acción",
+"plantLoadingSeedsError": "No se han podido cargar las semillas",
+
+"weatherDetailsTitle": "Detalles meterológicos",
+"weatherStationLabel": "Estación Metereológica",
+"temperatureLabel": "Temperatura",
+"humidityLabel": "Humidad",
+"windLabel": "Viento",
+"precipitationLabel": "Precipitación",
+"solarIrradianceLabel": "Irradiancia solar"
 }
 

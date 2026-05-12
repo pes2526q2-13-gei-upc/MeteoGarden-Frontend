@@ -9,7 +9,7 @@ class PotionSelectionSheet extends StatefulWidget {
   final String username;
   final String gardenName;
   final GardenService gardenService;
-  final VoidCallback onPotionSuccess;
+  final Future<void> Function(int potNumber) onPotionSuccess;
 
   const PotionSelectionSheet({
     super.key,
@@ -134,9 +134,11 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {
-              widget.onPotionSuccess();
-              Navigator.of(context).pop();
+            onPressed: () async {
+              final navigator = Navigator.of(context);
+              await widget.onPotionSuccess(widget.pot.potNumber);
+              if (!context.mounted) return;
+              navigator.pop();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: potionYellow,
@@ -304,9 +306,9 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(6),
-                  child: potion.imageUrl.isNotEmpty
+                  child: (potion.imageUrl?.isNotEmpty ?? false)
                       ? Image.network(
-                          potion.imageUrl,
+                          potion.imageUrl!,
                           fit: BoxFit.contain,
                           errorBuilder: (_, _, _) => const Icon(
                             Icons.local_drink,

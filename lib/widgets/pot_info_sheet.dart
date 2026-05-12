@@ -44,6 +44,7 @@ class PotInfoSheet extends StatelessWidget {
                 child: Container(color: Colors.black.withValues(alpha: 0.65)),
               ),
               Container(
+                key: const Key('pot_info_sheet'),
                 width: double.infinity,
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
                 child: Column(
@@ -73,7 +74,10 @@ class PotInfoSheet extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              _PhaseBadge(phase: pot.growthPhase ?? '-'),
+                              _PhaseBadge(
+                                phase: pot.growthPhase ?? '-',
+                                badgeKey: const Key('plant_phase_badge'),
+                              ),
                             ],
                           ),
                         ),
@@ -81,6 +85,7 @@ class PotInfoSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 22),
                     _StatBar(
+                      statKey: const Key('plant_water_info'),
                       label: t.waterlabel,
                       value: waterValue,
                       percent: pot.waterLevel?.toStringAsFixed(0) ?? '0',
@@ -89,6 +94,7 @@ class PotInfoSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
                     _StatBar(
+                      statKey: const Key('plant_health_info'),
                       label: t.salut,
                       value: healthValue,
                       percent: pot.healthLevel?.toStringAsFixed(0) ?? '0',
@@ -133,6 +139,7 @@ class PotInfoSheet extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
+                          key: const Key('water_plant_button'),
                           onPressed: onWater,
                           icon: const Icon(Icons.water_drop),
                           label: Text(t.regar),
@@ -156,6 +163,7 @@ class PotInfoSheet extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
+                          key: const Key('collect_mature_plant_button'),
                           onPressed: onCollect,
                           icon: const Icon(Icons.agriculture),
                           label: Text(t.recolectPlant),
@@ -179,6 +187,7 @@ class PotInfoSheet extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
+                          key: const Key('open_potion_selection_button'),
                           onPressed: onPotion,
                           icon: const Icon(Icons.flash_on),
                           label: Text(t.aplyPotion),
@@ -202,6 +211,7 @@ class PotInfoSheet extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
+                          key: const Key('delete_plant_button'),
                           onPressed: onDeletePlant,
                           icon: const Icon(Icons.delete_outline),
                           label: Text(t.deletePlant),
@@ -298,6 +308,7 @@ class _StatBar extends StatelessWidget {
   final String percent;
   final Color color;
   final Color backgroundColor;
+  final Key? statKey;
 
   const _StatBar({
     required this.label,
@@ -305,11 +316,13 @@ class _StatBar extends StatelessWidget {
     required this.percent,
     required this.color,
     required this.backgroundColor,
+    this.statKey,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      key: statKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -351,8 +364,9 @@ class _StatBar extends StatelessWidget {
 
 class _PhaseBadge extends StatelessWidget {
   final String phase;
+  final Key? badgeKey;
 
-  const _PhaseBadge({required this.phase});
+  const _PhaseBadge({required this.phase, this.badgeKey});
 
   @override
   Widget build(BuildContext context) {
@@ -370,6 +384,7 @@ class _PhaseBadge extends StatelessWidget {
     final info = phaseInfo[phase] ?? ('❓ $phase', const Color(0xFF9ca3af));
 
     return Container(
+      key: badgeKey,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: info.$2.withValues(alpha: 0.25),

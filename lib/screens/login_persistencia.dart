@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import '../models/url.dart';
 import 'dart:convert';
 import 'package:meteo_garden/generated/app_localizations.dart';
+import '../models/avatar_user.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -83,10 +84,7 @@ class _SplashScreenState extends State<SplashScreen> {
           newGardens: gardenNames,
         );
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeShell()),
-        );
+        await _checkAvatar();
       } else {
         await storage.delete(key: 'auth_token');
         if (mounted) {
@@ -104,6 +102,55 @@ class _SplashScreenState extends State<SplashScreen> {
       );
       _navigateToLogin();
     }
+  }
+
+  Future<void> _checkAvatar() async {
+    final localizations = AppLocalizations.of(context);
+    final user = Provider.of<UserModel>(context, listen: false);
+    String username = user.username;
+
+    final avatarResponse = await http.get(
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar'),
+    );
+
+    if (!mounted) return;
+
+    if (avatarResponse.statusCode == 200) {
+      final avatar = jsonDecode(avatarResponse.body);
+      Provider.of<AvatarUser>(context, listen: false).setAvatar(
+        newBody: cleanAvatarUrl(avatar['body']),
+        newEye: cleanAvatarUrl(avatar['eye']),
+        newExpression: cleanAvatarUrl(avatar['expression']),
+        newHair: cleanAvatarUrl(avatar['hair'] ?? ''),
+        newFacialHair: cleanAvatarUrl(avatar['facial_hair'] ?? ''),
+        newClothing: cleanAvatarUrl(avatar['clothing']),
+        newAccessories: cleanAvatarUrl(avatar['accessories'] ?? ''),
+      );
+      _goToHome();
+    } else if (avatarResponse.statusCode == 404) {
+      _goToHome();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            localizations?.avatarLoadErrorPersist ??
+                'Error al cargar el avatar',
+          ),
+        ),
+      );
+    }
+  }
+
+  String cleanAvatarUrl(String url) {
+    if (url.isEmpty) return url;
+    return url.replaceAll('.com//', '.com/');
+  }
+
+  void _goToHome() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeShell()),
+    );
   }
 
   @override
