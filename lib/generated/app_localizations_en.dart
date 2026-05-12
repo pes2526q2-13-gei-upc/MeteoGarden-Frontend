@@ -796,4 +796,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get solarIrradianceLabel => 'Solar irradiance';
+
+  @override
+  String get missionsTitle => 'Missions';
+
+  @override
+  String get missionsSubtitle => 'Complete challenges and earn coins';
+
+  @override
+  String get missionsCompleted => 'Completed';
+
+  @override
+  String get missionsTagCompleted => 'Completed';
+
+  @override
+  String get missionsTagInProgress => 'In progress';
+
+  @override
+  String get missionsEmpty => 'No missions available';
+
+  @override
+  String get missionsClaimSuccess => 'Reward claimed!';
+
+  @override
+  String get missionsErrorAlreadyClaimed =>
+      'This mission has already been claimed';
+
+  @override
+  String get missionsErrorInProgress => 'The mission is not completed yet';
+
+  @override
+  String get missionsErrorNotFound => 'Mission not found';
+
+  @override
+  String get missionsErrorGeneric => 'Could not claim the reward';
+
+  @override
+  String get missionsClaim => 'Claim 🎁';
+
+  @override
+  String get missionsActiveSectionTitle => 'Active missions';
+
+  @override
+  String get missionsClaimedSectionTitle => 'Already claimed';
+
+  @override
+  String get missionsTagClaimed => 'Claimed';
+
+  @override
+  String get missionsInProgress => 'In progress';
+
+  @override
+  String get missionsRewardCoins => 'coins';
 }

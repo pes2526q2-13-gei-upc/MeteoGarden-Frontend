@@ -795,4 +795,55 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get solarIrradianceLabel => 'Irradiancia solar';
+
+  @override
+  String get missionsTitle => 'Misiones';
+
+  @override
+  String get missionsSubtitle => 'Completa retos y gana monedas';
+
+  @override
+  String get missionsCompleted => 'Completadas';
+
+  @override
+  String get missionsTagCompleted => 'Completada';
+
+  @override
+  String get missionsTagInProgress => 'En progreso';
+
+  @override
+  String get missionsEmpty => 'No hay misiones disponibles';
+
+  @override
+  String get missionsClaimSuccess => '¡Recompensa reclamada!';
+
+  @override
+  String get missionsErrorAlreadyClaimed => 'Esta misión ya fue reclamada';
+
+  @override
+  String get missionsErrorInProgress => 'La misión todavía no está completada';
+
+  @override
+  String get missionsErrorNotFound => 'Misión no encontrada';
+
+  @override
+  String get missionsErrorGeneric => 'No se pudo reclamar la recompensa';
+
+  @override
+  String get missionsClaim => 'Reclamar 🎁';
+
+  @override
+  String get missionsActiveSectionTitle => 'Misiones activas';
+
+  @override
+  String get missionsClaimedSectionTitle => 'Ya reclamadas';
+
+  @override
+  String get missionsTagClaimed => 'Reclamada';
+
+  @override
+  String get missionsInProgress => 'En curso';
+
+  @override
+  String get missionsRewardCoins => 'monedas';
 }

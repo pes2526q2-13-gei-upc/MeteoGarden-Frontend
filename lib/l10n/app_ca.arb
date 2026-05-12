@@ -305,6 +305,7 @@
 "confirmDeletePlant": "Segur que vols eliminar {plantName}?\nAquesta acció no es pot desfer.",
 "thisPlant": "aquesta planta",
 "deletePlant": "Eliminar planta",
+
 "finalitza": "Finalitza el",
 
 "avatarLoadError": "Error carregant l'avatar",
@@ -357,6 +358,24 @@
 "humidityLabel": "Humitat",
 "windLabel": "Vent",
 "precipitationLabel": "Precipitació",
-"solarIrradianceLabel": "Irradiació solar"
+"solarIrradianceLabel": "Irradiació solar",
+
+"missionsTitle": "Missions",
+"missionsSubtitle": "Completa reptes i guanya monedes",
+"missionsCompleted": "Completades",
+"missionsTagCompleted": "Completada",
+"missionsTagInProgress": "En progrés",
+"missionsEmpty": "No hi ha missions disponibles",
+"missionsClaimSuccess": "Recompensa reclamada!",
+"missionsErrorAlreadyClaimed": "Aquesta missió ja ha estat reclamada",
+"missionsErrorInProgress": "La missió encara no està completada",
+"missionsErrorNotFound": "Missió no trobada",
+"missionsErrorGeneric": "No s'ha pogut reclamar la recompensa",
+"missionsClaim": "Reclamar 🎁",
+"missionsActiveSectionTitle": "Missions actives",
+"missionsClaimedSectionTitle": "Ja reclamades",
+"missionsTagClaimed": "Reclamada",
+"missionsInProgress": "En curs",
+"missionsRewardCoins": "monedes"
 }
 

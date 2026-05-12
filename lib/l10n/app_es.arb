@@ -356,6 +356,23 @@
 "humidityLabel": "Humidad",
 "windLabel": "Viento",
 "precipitationLabel": "Precipitación",
-"solarIrradianceLabel": "Irradiancia solar"
-}
+"solarIrradianceLabel": "Irradiancia solar",
 
+"missionsTitle": "Misiones",
+"missionsSubtitle": "Completa retos y gana monedas",
+"missionsCompleted": "Completadas",
+"missionsTagCompleted": "Completada",
+"missionsTagInProgress": "En progreso",
+"missionsEmpty": "No hay misiones disponibles",
+"missionsClaimSuccess": "¡Recompensa reclamada!",
+"missionsErrorAlreadyClaimed": "Esta misión ya fue reclamada",
+"missionsErrorInProgress": "La misión todavía no está completada",
+"missionsErrorNotFound": "Misión no encontrada",
+"missionsErrorGeneric": "No se pudo reclamar la recompensa",
+"missionsClaim": "Reclamar 🎁",
+"missionsActiveSectionTitle": "Misiones activas",
+"missionsClaimedSectionTitle": "Ya reclamadas",
+"missionsTagClaimed": "Reclamada",
+"missionsInProgress": "En curso",
+"missionsRewardCoins": "monedas"
+}

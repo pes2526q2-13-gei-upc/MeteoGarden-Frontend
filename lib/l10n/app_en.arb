@@ -305,6 +305,7 @@
 "confirmDeletePlant": "Are you sure you want to delete {plantName}?\nThis action cannot be undone.",
 "thisPlant": "this plant",
 "deletePlant": "Delete plant",
+
 "avatarLoadError": "Error loading the avatar",
 "createYourAvatar": "Create your Avatar",
 "editAvatar": "Edit Avatar",
@@ -353,6 +354,23 @@
 "humidityLabel": "Humidity",
 "windLabel": "Wind",
 "precipitationLabel": "Precipitation",
-"solarIrradianceLabel": "Solar irradiance"
-}
+"solarIrradianceLabel": "Solar irradiance",
 
+"missionsTitle": "Missions",
+"missionsSubtitle": "Complete challenges and earn coins",
+"missionsCompleted": "Completed",
+"missionsTagCompleted": "Completed",
+"missionsTagInProgress": "In progress",
+"missionsEmpty": "No missions available",
+"missionsClaimSuccess": "Reward claimed!",
+"missionsErrorAlreadyClaimed": "This mission has already been claimed",
+"missionsErrorInProgress": "The mission is not completed yet",
+"missionsErrorNotFound": "Mission not found",
+"missionsErrorGeneric": "Could not claim the reward",
+"missionsClaim": "Claim 🎁",
+"missionsActiveSectionTitle": "Active missions",
+"missionsClaimedSectionTitle": "Already claimed",
+"missionsTagClaimed": "Claimed",
+"missionsInProgress": "In progress",
+"missionsRewardCoins": "coins"
+}

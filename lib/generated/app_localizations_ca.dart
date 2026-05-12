@@ -794,4 +794,56 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get solarIrradianceLabel => 'Irradiació solar';
+
+  @override
+  String get missionsTitle => 'Missions';
+
+  @override
+  String get missionsSubtitle => 'Completa reptes i guanya monedes';
+
+  @override
+  String get missionsCompleted => 'Completades';
+
+  @override
+  String get missionsTagCompleted => 'Completada';
+
+  @override
+  String get missionsTagInProgress => 'En progrés';
+
+  @override
+  String get missionsEmpty => 'No hi ha missions disponibles';
+
+  @override
+  String get missionsClaimSuccess => 'Recompensa reclamada!';
+
+  @override
+  String get missionsErrorAlreadyClaimed =>
+      'Aquesta missió ja ha estat reclamada';
+
+  @override
+  String get missionsErrorInProgress => 'La missió encara no està completada';
+
+  @override
+  String get missionsErrorNotFound => 'Missió no trobada';
+
+  @override
+  String get missionsErrorGeneric => 'No s\'ha pogut reclamar la recompensa';
+
+  @override
+  String get missionsClaim => 'Reclamar 🎁';
+
+  @override
+  String get missionsActiveSectionTitle => 'Missions actives';
+
+  @override
+  String get missionsClaimedSectionTitle => 'Ja reclamades';
+
+  @override
+  String get missionsTagClaimed => 'Reclamada';
+
+  @override
+  String get missionsInProgress => 'En curs';
+
+  @override
+  String get missionsRewardCoins => 'monedes';
 }
