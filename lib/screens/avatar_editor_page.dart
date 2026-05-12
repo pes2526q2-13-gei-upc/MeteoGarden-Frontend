@@ -211,53 +211,54 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
   // Función auxiliar para sacar el ID numérico de cualquier URL
   // Para hair: "MEDIA_URL/avatar/hair/{hair_color}/{hair_style}.png"
   String? _extractSecondToLastSegment(String? url) {
-  if (url == null || url.isEmpty || url == 'none') return '0';
-  try {
-    final parts = url.split('/');
-    // Buscar los últimos 2 segmentos no vacíos
-    final nonEmpty = parts
-        .map((p) => p.replaceAll('.png', ''))
-        .where((p) => p.isNotEmpty)
-        .toList();
-    
-    if (nonEmpty.length >= 2) {
-      return nonEmpty[nonEmpty.length - 2]; // penúltimo → "shivering" o "0"
+    if (url == null || url.isEmpty || url == 'none') return '0';
+    try {
+      final parts = url.split('/');
+      // Buscar los últimos 2 segmentos no vacíos
+      final nonEmpty = parts
+          .map((p) => p.replaceAll('.png', ''))
+          .where((p) => p.isNotEmpty)
+          .toList();
+
+      if (nonEmpty.length >= 2) {
+        return nonEmpty[nonEmpty.length - 2]; // penúltimo → "shivering" o "0"
+      }
+      return '0';
+    } catch (e) {
+      return '0';
     }
-    return '0';
-  } catch (e) {
-    return '0';
   }
-}
 
   String? _extractId(String? url) {
-  if (url == null || url.isEmpty || url == 'none') return '0';
-  try {
-    final parts = url.split('/');
-    for (var i = parts.length - 1; i >= 0; i--) {
-      final cleanPart = parts[i].replaceAll('.png', '');
-      if (cleanPart.isEmpty) continue; // 👈 saltar segmentos vacíos
-      if (int.tryParse(cleanPart) != null) {
-        return cleanPart;
+    if (url == null || url.isEmpty || url == 'none') return '0';
+    try {
+      final parts = url.split('/');
+      for (var i = parts.length - 1; i >= 0; i--) {
+        final cleanPart = parts[i].replaceAll('.png', '');
+        if (cleanPart.isEmpty) continue; // 👈 saltar segmentos vacíos
+        if (int.tryParse(cleanPart) != null) {
+          return cleanPart;
+        }
       }
+      return '0';
+    } catch (e) {
+      return '0';
     }
-    return '0';
-  } catch (e) {
-    return '0';
   }
-}
 
   String? _extractLastSegment(String? url) {
-  if (url == null || url.isEmpty || url == 'none') return '0';
-  try {
-    final nonEmpty = url.split('/')
-        .map((p) => p.replaceAll('.png', ''))
-        .where((p) => p.isNotEmpty)
-        .toList();
-    return nonEmpty.isNotEmpty ? nonEmpty.last : '0';
-  } catch (e) {
-    return '0';
+    if (url == null || url.isEmpty || url == 'none') return '0';
+    try {
+      final nonEmpty = url
+          .split('/')
+          .map((p) => p.replaceAll('.png', ''))
+          .where((p) => p.isNotEmpty)
+          .toList();
+      return nonEmpty.isNotEmpty ? nonEmpty.last : '0';
+    } catch (e) {
+      return '0';
+    }
   }
-}
 
   // ==========================================
   // GUARDAR EL AVATAR EN LA API
@@ -272,12 +273,12 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
       final payload = {
         'body': _extractId(currentBody),
         'eye': _extractId(currentEye),
-        'expression': _extractSecondToLastSegment(currentExpression),   // 4
-        'expression_variant': _extractId(currentExpression),       // 0
-        'hair_color': _extractSecondToLastSegment(currentHair),         // "" → '0'
-        'hair_style': _extractId(currentHair),                     // 0
-        'facial_hair': _extractSecondToLastSegment(currentFacialHair),  // 0
-        'facial_hair_color': _extractLastSegment(currentFacialHair),                 // "" → '0'
+        'expression': _extractSecondToLastSegment(currentExpression), // 4
+        'expression_variant': _extractId(currentExpression), // 0
+        'hair_color': _extractSecondToLastSegment(currentHair), // "" → '0'
+        'hair_style': _extractId(currentHair), // 0
+        'facial_hair': _extractSecondToLastSegment(currentFacialHair), // 0
+        'facial_hair_color': _extractLastSegment(currentFacialHair), // "" → '0'
         'clothing': _extractId(currentClothing),
         'accessories': _extractId(currentAccessories),
       };
