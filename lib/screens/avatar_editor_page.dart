@@ -8,6 +8,7 @@ import '../models/url.dart';
 import '../../models/avatar_stack.dart';
 import '../../models/dades_usr.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 //import '../widgets/app_header.dart';
 
 class AvatarEditorPage extends StatefulWidget {
@@ -20,6 +21,7 @@ class AvatarEditorPage extends StatefulWidget {
 }
 
 class _AvatarEditorPageState extends State<AvatarEditorPage> {
+  final storage = const FlutterSecureStorage();
   // --- ESTADOS DE CARGA ---
   bool isLoading = true;
   bool isSaving = false;
@@ -235,6 +237,12 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     final user = Provider.of<UserModel>(context, listen: false);
     final username = user.username;
 
+    String token = user.token;
+
+    if (token.isEmpty) {
+      token = await storage.read(key: 'auth_token') ?? '';
+    }
+
     try {
       final payload = {
         'body': _extractId(currentBody),
@@ -247,10 +255,10 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
       };
 
       final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/users/$username/save/avatar'),
+        Uri.parse('${ApiConfig.baseUrl}/api/users/$username/save/avatar/'),
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": "Token ${user.token}",
+          "Authorization": "Token $token",
         },
         body: json.encode(payload),
       );
@@ -277,7 +285,6 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
           Navigator.pop(context);
         }
       } else {
-        debugPrint('Error del backend: ${response.body}');
         if (!mounted) return;
         final l10n = AppLocalizations.of(context)!;
         _showError('${l10n.errorSavingAvatar}: ${response.statusCode}');
