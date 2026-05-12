@@ -7,7 +7,6 @@ import 'login_page.dart';
 import 'package:http/http.dart' as http;
 import '../models/url.dart';
 import 'dart:convert';
-//import 'package:meteo_garden/l10n/app_localizations.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -27,24 +26,28 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkLoginStatus() async {
-    // Leemos el token guardado
-    String? token = await storage.read(key: 'auth_token');
+    try {
+      String? token = await storage.read(key: 'auth_token');
 
-    if (token != null) {
-      if (mounted) {
-        Provider.of<UserModel>(context, listen: false).setToken(token);
+      if (token != null) {
+        if (mounted) {
+          Provider.of<UserModel>(context, listen: false).setToken(token);
+          await _fetchAndSaveProfile(token);
+        }
+      } else {
+        _navigateToLogin();
+      }
+    } catch (e) {
+      _navigateToLogin();
+    }
+  }
 
-        await _fetchAndSaveProfile(token);
-        // await and save profile el encarregat de la navegació
-      }
-    } else {
-      // No hay token, vamos al Login
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const LoginPage()),
-        );
-      }
+  void _navigateToLogin() {
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+      );
     }
   }
 
@@ -59,14 +62,12 @@ class _SplashScreenState extends State<SplashScreen> {
           "Content-Type": "application/json",
           "Authorization": "Token $token",
         },
-      );
+      ).timeout(const Duration(seconds: 10)); // Added timeout to prevent infinite loading
 
       if (!mounted) return;
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
-        // gardens és List, extreim només els noms
         final List<String> gardenNames = (data['gardens'] as List<dynamic>)
             .map((g) => g['gardenName'] as String)
             .toList();
@@ -87,56 +88,28 @@ class _SplashScreenState extends State<SplashScreen> {
           MaterialPageRoute(builder: (_) => const HomeShell()),
         );
       } else {
-        // ERROR 401 u otros: El token es inválido o expiró.
-        // 1. Borramos el token para evitar bucles infinitos en futuros arranques.
         await storage.delete(key: 'auth_token');
-
         if (mounted) {
-          // 2. Intentamos obtener las traducciones de forma segura sin forzar el nulo (!)
-
-          final errorMessageSession =
-              localizations?.profileLoadError ??
-              'Error de sesión. Vuelve a iniciar sesión.';
-
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(errorMessageSession)));
-
-          // 3. Redirigimos al Login
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const LoginPage()),
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(localizations?.profileLoadError ?? 'Error de sesión')),
           );
+          _navigateToLogin();
         }
       }
     } catch (e) {
-      // Si falla la red (SocketException) o hay cualquier otro error inesperado
       if (!mounted) return;
-
-      // Por seguridad, si no podemos validar, es mejor mandarlos al login
       await storage.delete(key: 'auth_token');
-
-      if (!mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          // El '?' comprueba si es nulo. El '??' pone el texto alternativo si lo es.
-          content: Text(localizations?.connectionError ?? 'Error de conexión'),
-        ),
+        SnackBar(content: Text(localizations?.connectionError ?? 'Error de conexión')),
       );
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginPage()),
-      );
+      _navigateToLogin();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Mientras piensa, mostramos un logo o un indicador de carga
     return const Scaffold(
-      backgroundColor: Color(0xFF166534), // Tu verde principal
+      backgroundColor: Color(0xFF166534),
       body: Center(child: CircularProgressIndicator(color: Colors.white)),
     );
   }
