@@ -57,13 +57,17 @@ class _SplashScreenState extends State<SplashScreen> {
     try {
       final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
 
-      final response = await http.get(
-        url,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Token $token",
-        },
-      ).timeout(const Duration(seconds: 10)); // Added timeout to prevent infinite loading
+      final response = await http
+          .get(
+            url,
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Token $token",
+            },
+          )
+          .timeout(
+            const Duration(seconds: 10),
+          ); // Added timeout to prevent infinite loading
 
       if (!mounted) return;
 
@@ -89,17 +93,26 @@ class _SplashScreenState extends State<SplashScreen> {
         await storage.delete(key: 'auth_token');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(localizations?.profileLoadError ?? 'Error de sesión')),
+            SnackBar(
+              content: Text(
+                localizations?.profileLoadError ?? 'Error de sesión',
+              ),
+            ),
           );
           _navigateToLogin();
         }
       }
     } catch (e) {
-      if (!mounted) return;
       await storage.delete(key: 'auth_token');
+
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(localizations?.connectionError ?? 'Error de conexión')),
+        SnackBar(
+          content: Text(localizations?.connectionError ?? 'Error de conexión'),
+        ),
       );
+
       _navigateToLogin();
     }
   }

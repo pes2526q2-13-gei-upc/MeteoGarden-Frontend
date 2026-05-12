@@ -8,8 +8,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:meteo_garden/models/weather_provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
