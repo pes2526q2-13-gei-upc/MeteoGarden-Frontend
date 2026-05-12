@@ -135,7 +135,7 @@ class EventsService {
   Future<List<EventSummary>> fetchEventsByCity({
     required String city,
     required DateTime date,
-    String lang = 'en',
+    required String lang,
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/city').replace(
       queryParameters: {
@@ -164,7 +164,7 @@ class EventsService {
   /// Retorna tots els events per a la data indicada (totes les ciutats).
   Future<List<EventSummary>> fetchAllEvents({
     required DateTime date,
-    String lang = 'en',
+    required String lang,
   }) async {
     final uri = Uri.parse(
       '${ApiConfig.baseUrl}/api/events/',
@@ -188,7 +188,7 @@ class EventsService {
   Future<EventDetail> fetchEventDetail({
     required String id,
     required DateTime date,
-    String lang = 'en',
+    required String lang,
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/detail').replace(
       queryParameters: {'id': id, 'date': _formatDate(date), 'lang': lang},

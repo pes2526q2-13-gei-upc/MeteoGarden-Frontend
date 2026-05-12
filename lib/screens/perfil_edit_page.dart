@@ -49,19 +49,40 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
   void initState() {
     super.initState();
     usernameController = TextEditingController(text: widget.profile.username);
-    const validLanguages = ['Català', 'Castellano', 'English'];
-    if (validLanguages.contains(widget.profile.language)) {
-      language = widget.profile.language;
-    } else {
-      language = null;
-    }
+    language = _normalizeLanguage(widget.profile.language);
     fetchCities();
   }
 
   @override
   void dispose() {
     usernameController.dispose();
+    ciutatSearchController.dispose();
     super.dispose();
+  }
+
+  String? _normalizeLanguage(String? value) {
+    switch (value?.toLowerCase()) {
+      case 'català':
+      case 'catala':
+      case 'ca':
+        return 'ca';
+
+      case 'castellano':
+      case 'castellà':
+      case 'español':
+      case 'espanyol':
+      case 'es':
+        return 'es';
+
+      case 'english':
+      case 'anglès':
+      case 'angles':
+      case 'en':
+        return 'en';
+
+      default:
+        return null;
+    }
   }
 
   Future<void> fetchCities() async {
@@ -119,23 +140,21 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     if (!mounted) return;
 
     if (response.statusCode == 200) {
-      debugPrint("perfil actualitzat");
-
-      CenteredMessage.show(context, l10n.profileEditUpdated);
-
       Provider.of<UserModel>(context, listen: false).updateProfile(
         newUsername: usernameController.text,
         newCity: selectedCity?.name,
         newLanguage: language,
       );
 
-      Navigator.pop(context);
+      Navigator.pop(context, language);
     } else {
       debugPrint("Error: ${response.body}");
 
-      ScaffoldMessenger.of(
+      CenteredMessage.show(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.profileEditUpdateError)));
+        l10n.profileEditUpdateError,
+        type: CenteredMessageType.error,
+      );
     }
   }
 
@@ -163,6 +182,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     );
 
     return Scaffold(
+      key: const Key('edit_profile_page'),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -246,6 +266,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                           const SizedBox(height: 24),
 
                           TextField(
+                            key: const Key('edit_profile_username_field'),
                             controller: usernameController,
                             decoration: defaultDecoration.copyWith(
                               labelText: l10n.loginUsernameLabel,
@@ -257,6 +278,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                           const SizedBox(height: 20),
 
                           DropdownMenu<City>(
+                            key: const Key('edit_profile_city_dropdown'),
                             initialSelection: selectedCity,
                             controller: ciutatSearchController,
                             requestFocusOnTap: true,
@@ -296,6 +318,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                           const SizedBox(height: 20),
 
                           DropdownButtonFormField<String>(
+                            key: const Key('edit_profile_language_dropdown'),
                             initialValue: language,
                             decoration: defaultDecoration.copyWith(
                               labelText: l10n.commonLanguage,
@@ -328,6 +351,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                           SizedBox(
                             width: double.infinity,
                             child: FilledButton.icon(
+                              key: const Key('save_profile_button'),
                               onPressed: _actualitzar,
                               icon: const Icon(Icons.save_rounded),
                               label: Text(
