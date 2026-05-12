@@ -25,53 +25,64 @@ class _MissionsPageState extends State<MissionsPage> {
   }
 
   Future<void> _fetchMissions() async {
-  setState(() { _isLoading = true; _error = null; });
-  try {
-    final token = Provider.of<UserModel>(context, listen: false).token;
-    final missions = await MissionService.fetchMissions(token: token);
-    setState(() { _missions = missions; _isLoading = false; });
-  } on MissionException catch (e) {
-    setState(() { _error = e.message; _isLoading = false; });
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+    try {
+      final token = Provider.of<UserModel>(context, listen: false).token;
+      final missions = await MissionService.fetchMissions(token: token);
+      setState(() {
+        _missions = missions;
+        _isLoading = false;
+      });
+    } on MissionException catch (e) {
+      setState(() {
+        _error = e.message;
+        _isLoading = false;
+      });
+    }
   }
-}
 
   Future<void> _claimMission(Mission mission) async {
-  final l10n = AppLocalizations.of(context)!;
-  try {
-    final token = Provider.of<UserModel>(context, listen: false).token;
-    final coinsEarned = await MissionService.claimMission(
-      token: token,
-      mission: mission,
-    );
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      final token = Provider.of<UserModel>(context, listen: false).token;
+      final coinsEarned = await MissionService.claimMission(
+        token: token,
+        mission: mission,
+      );
 
-    if (coinsEarned > 0 && mounted) {
-      final userModel = Provider.of<UserModel>(context, listen: false);
-      userModel.setCoins(userModel.monedes + coinsEarned);
-    }
+      if (coinsEarned > 0 && mounted) {
+        final userModel = Provider.of<UserModel>(context, listen: false);
+        userModel.setCoins(userModel.monedes + coinsEarned);
+      }
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(l10n.missionsClaimSuccess),
-        backgroundColor: const Color(0xFF2F6B43),
-      ));
-      _fetchMissions();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.missionsClaimSuccess),
+            backgroundColor: const Color(0xFF2F6B43),
+          ),
+        );
+        _fetchMissions();
+      }
+    } on MissionException catch (e) {
+      if (!mounted) return;
+      final errorMsg = switch (e.message) {
+        'Mission already claimed' => l10n.missionsErrorAlreadyClaimed,
+        'Mission in progress' => l10n.missionsErrorInProgress,
+        'Mission not found' => l10n.missionsErrorNotFound,
+        _ => l10n.missionsErrorGeneric,
+      };
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMsg), backgroundColor: Colors.red),
+      );
     }
-  } on MissionException catch (e) {
-    if (!mounted) return;
-    final errorMsg = switch (e.message) {
-      'Mission already claimed' => l10n.missionsErrorAlreadyClaimed,
-      'Mission in progress'     => l10n.missionsErrorInProgress,
-      'Mission not found'       => l10n.missionsErrorNotFound,
-      _                         => l10n.missionsErrorGeneric,
-    };
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(errorMsg),
-      backgroundColor: Colors.red,
-    ));
   }
-}
+
   int get _completedCount =>
-    _missions.where((m) => m.isCompleted || m.isClaimed).length;
+      _missions.where((m) => m.isCompleted || m.isClaimed).length;
 
   int get _inProgressCount => _missions.where((m) => m.isInProgress).length;
 
@@ -191,12 +202,7 @@ class _MissionsPageState extends State<MissionsPage> {
             backgroundColor: Colors.white.withValues(alpha: 0.72),
           ),
           const SizedBox(height: 12),
-          ...claimed.map(
-            (m) => MissionCard(
-              mission: m,
-              onClaim: null,
-            ),
-          ),
+          ...claimed.map((m) => MissionCard(mission: m, onClaim: null)),
         ],
       ],
     );

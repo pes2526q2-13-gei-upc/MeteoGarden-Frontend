@@ -149,8 +149,8 @@ class MissionCard extends StatelessWidget {
                     mission.isClaimed
                         ? Colors.grey.shade400
                         : mission.isCompleted
-                            ? const Color(0xFF2F6B43)
-                            : const Color(0xFF5BAF78),
+                        ? const Color(0xFF2F6B43)
+                        : const Color(0xFF5BAF78),
                   ),
                 ),
               ),
@@ -162,8 +162,11 @@ class MissionCard extends StatelessWidget {
           // Footer: recompensa + botón claim
           Row(
             children: [
-              const Icon(Icons.monetization_on,
-                  color: Color(0xFFE0A100), size: 18),
+              const Icon(
+                Icons.monetization_on,
+                color: Color(0xFFE0A100),
+                size: 18,
+              ),
               const SizedBox(width: 4),
               // En el Row del footer, reemplaza el Text de monedas:
               Text(
@@ -176,8 +179,11 @@ class MissionCard extends StatelessWidget {
               ),
               if (mission.plantRewardCommonName != null) ...[
                 const SizedBox(width: 8),
-                const Icon(Icons.local_florist,
-                    color: Color(0xFF2F6B43), size: 16),
+                const Icon(
+                  Icons.local_florist,
+                  color: Color(0xFF2F6B43),
+                  size: 16,
+                ),
                 const SizedBox(width: 3),
                 Text(
                   mission.plantRewardCommonName!,
@@ -196,7 +202,9 @@ class MissionCard extends StatelessWidget {
                     backgroundColor: const Color(0xFF2F6B43),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -208,8 +216,11 @@ class MissionCard extends StatelessWidget {
                   child: Text(AppLocalizations.of(context)!.missionsClaim),
                 ),
               if (mission.isClaimed)
-                const Icon(Icons.check_circle,
-                    color: Color(0xFF9E9E9E), size: 22),
+                const Icon(
+                  Icons.check_circle,
+                  color: Color(0xFF9E9E9E),
+                  size: 22,
+                ),
             ],
           ),
         ],
@@ -228,20 +239,20 @@ class _StateBadge extends StatelessWidget {
 
     final config = switch (state) {
       'COMPLETED' => (
-          label: l10n.missionsTagCompleted,
-          bg: const Color(0xFFDDF3D8),
-          fg: const Color(0xFF237A3B),
-        ),
+        label: l10n.missionsTagCompleted,
+        bg: const Color(0xFFDDF3D8),
+        fg: const Color(0xFF237A3B),
+      ),
       'CLAIMED' => (
-          label: l10n.missionsTagClaimed,
-          bg: Colors.grey.shade200,
-          fg: Colors.grey.shade600,
-        ),
+        label: l10n.missionsTagClaimed,
+        bg: Colors.grey.shade200,
+        fg: Colors.grey.shade600,
+      ),
       _ => (
-          label: l10n.missionsInProgress,
-          bg: const Color(0xFFFFF0C7),
-          fg: const Color(0xFFB77900),
-        ),
+        label: l10n.missionsInProgress,
+        bg: const Color(0xFFFFF0C7),
+        fg: const Color(0xFFB77900),
+      ),
     };
 
     return Container(

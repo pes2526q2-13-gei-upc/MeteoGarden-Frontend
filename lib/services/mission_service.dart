@@ -16,9 +16,7 @@ class MissionException implements Exception {
 }
 
 class MissionService {
-  static Future<List<Mission>> fetchMissions({
-    required String token,
-  }) async {
+  static Future<List<Mission>> fetchMissions({required String token}) async {
     try {
       final response = await http.get(
         Uri.parse('${ApiConfig.baseUrl}/api/user/missions/'),
