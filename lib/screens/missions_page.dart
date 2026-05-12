@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import '../generated/app_localizations.dart';
-import '../models/url.dart';
 import '../models/missions.dart';
 import '../widgets/mission_card.dart';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
+import '../services/mission_service.dart';
 
 class MissionsPage extends StatefulWidget {
   const MissionsPage({super.key});
@@ -27,102 +25,51 @@ class _MissionsPageState extends State<MissionsPage> {
   }
 
   Future<void> _fetchMissions() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final token = Provider.of<UserModel>(context, listen: false).token;
-      final response = await http.get(
-        Uri.parse('${ApiConfig.baseUrl}/api/user/missions/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Token $token',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final List list = data['missions'];
-        setState(() {
-          _missions = list.map((e) => Mission.fromJson(e)).toList();
-          _isLoading = false;
-        });
-      } else {
-        setState(() {
-          _error = 'Error ${response.statusCode}';
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
+  setState(() { _isLoading = true; _error = null; });
+  try {
+    final token = Provider.of<UserModel>(context, listen: false).token;
+    final missions = await MissionService.fetchMissions(token: token);
+    setState(() { _missions = missions; _isLoading = false; });
+  } on MissionException catch (e) {
+    setState(() { _error = e.message; _isLoading = false; });
   }
+}
 
   Future<void> _claimMission(Mission mission) async {
-    final l10n = AppLocalizations.of(context)!;
-    try {
-      final token = Provider.of<UserModel>(context, listen: false).token;
-      final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/user/missions/claim/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Token $token',
-        },
-        body: jsonEncode({'mission': mission.name}),
-      );
+  final l10n = AppLocalizations.of(context)!;
+  try {
+    final token = Provider.of<UserModel>(context, listen: false).token;
+    final coinsEarned = await MissionService.claimMission(
+      token: token,
+      mission: mission,
+    );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body); 
-        final coinsEarned = ((data['monedes'] ?? 0) as num).toInt();
-
-      if (mission.rewardCoins > 0 && mounted) {
-        final userModel = Provider.of<UserModel>(context, listen: false);
-        userModel.setCoins(userModel.monedes + mission.rewardCoins.toInt());
-      }
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10n.missionsClaimSuccess),
-              backgroundColor: const Color(0xFF2F6B43),
-            ),
-          );
-          _fetchMissions();
-        }
-      } else {
-        final data = jsonDecode(response.body);
-        final errorKey = data['error'] ?? '';
-        final errorMsg = switch (errorKey) {
-          'Mission already claimed' => l10n.missionsErrorAlreadyClaimed,
-          'Mission in progress' => l10n.missionsErrorInProgress,
-          'Mission not found' => l10n.missionsErrorNotFound,
-          _ => l10n.missionsErrorGeneric,
-        };
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(errorMsg),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.missionsErrorGeneric),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+    if (coinsEarned > 0 && mounted) {
+      final userModel = Provider.of<UserModel>(context, listen: false);
+      userModel.setCoins(userModel.monedes + coinsEarned);
     }
-  }
 
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(l10n.missionsClaimSuccess),
+        backgroundColor: const Color(0xFF2F6B43),
+      ));
+      _fetchMissions();
+    }
+  } on MissionException catch (e) {
+    if (!mounted) return;
+    final errorMsg = switch (e.message) {
+      'Mission already claimed' => l10n.missionsErrorAlreadyClaimed,
+      'Mission in progress'     => l10n.missionsErrorInProgress,
+      'Mission not found'       => l10n.missionsErrorNotFound,
+      _                         => l10n.missionsErrorGeneric,
+    };
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(errorMsg),
+      backgroundColor: Colors.red,
+    ));
+  }
+}
   int get _completedCount =>
     _missions.where((m) => m.isCompleted || m.isClaimed).length;
 
