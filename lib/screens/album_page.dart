@@ -12,7 +12,9 @@ import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:meteo_garden/widgets/app_header.dart';
 
 class AlbumPage extends StatefulWidget {
-  const AlbumPage({super.key});
+  final http.Client? httpClient; // per al test
+
+  const AlbumPage({super.key, this.httpClient});
 
   @override
   State<AlbumPage> createState() => _AlbumPageState();
@@ -32,9 +34,12 @@ class _AlbumPageState extends State<AlbumPage> {
     }
   }
 
+  late final http.Client _client; // per a tests
+
   @override
   void initState() {
     super.initState();
+    _client = widget.httpClient ?? http.Client(); // per a tests
     Future.microtask(() {
       if (mounted) {
         context.read<PlantProvider>().loadPlants(
@@ -48,7 +53,7 @@ class _AlbumPageState extends State<AlbumPage> {
     String scientificName,
     String lang,
   ) async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse(
         '${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName&lang=$lang',
       ),
