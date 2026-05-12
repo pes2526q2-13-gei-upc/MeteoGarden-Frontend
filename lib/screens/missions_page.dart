@@ -77,6 +77,13 @@ class _MissionsPageState extends State<MissionsPage> {
       );
 
       if (response.statusCode == 200) {
+        final data = jsonDecode(response.body); 
+        final coinsEarned = ((data['monedes'] ?? 0) as num).toInt();
+
+      if (mission.rewardCoins > 0 && mounted) {
+        final userModel = Provider.of<UserModel>(context, listen: false);
+        userModel.setCoins(userModel.monedes + mission.rewardCoins.toInt());
+      }
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
