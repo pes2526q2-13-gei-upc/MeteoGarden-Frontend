@@ -135,7 +135,7 @@ class _SplashScreenState extends State<SplashScreen> {
         newEye: cleanAvatarUrl(avatar['eye']),
         newExpression: cleanAvatarUrl(avatar['expression']),
         newHair: cleanAvatarUrl(avatar['hair'] ?? ''),
-        newFacialHair: cleanAvatarUrl(avatar['facial_hair'] ?? ''),
+        newFacialHair: cleanAvatarUrl(avatar['facialHair'] ?? ''),
         newClothing: cleanAvatarUrl(avatar['clothing']),
         newAccessories: cleanAvatarUrl(avatar['accessories'] ?? ''),
       );
