@@ -795,4 +795,117 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get solarIrradianceLabel => 'Irradiancia solar';
+
+  @override
+  String get friends => 'Amigos';
+
+  @override
+  String get sent => 'Enviadas';
+
+  @override
+  String get received => 'Recibidas';
+
+  @override
+  String get sendFriendRequestTooltip => 'Enviar solicitud de amistad';
+
+  @override
+  String friendsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count amigos',
+      one: '1 amigo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String friendsCountWithRequests(int friends, int requests) {
+    String _temp0 = intl.Intl.pluralLogic(
+      friends,
+      locale: localeName,
+      other: '$friends amigos',
+      one: '1 amigo',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      requests,
+      locale: localeName,
+      other: '$requests solicitudes',
+      one: '1 solicitud',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get noFriendsYet =>
+      'Todavía no tienes amigos.\n¡Añade uno con el botón superior!';
+
+  @override
+  String get noSentRequests => 'No tienes ninguna solicitud enviada pendiente.';
+
+  @override
+  String get noReceivedRequests =>
+      'No tienes ninguna solicitud de amistad pendiente.';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get accept => 'Aceptar';
+
+  @override
+  String get reject => 'Rechazar';
+
+  @override
+  String get addFriend => 'Añadir amigo';
+
+  @override
+  String get addFriendSubtitle => 'Busca un usuario y envíale una solicitud.';
+
+  @override
+  String get usernameHint => 'Nombre de usuario...';
+
+  @override
+  String get visitGarden => 'Visita su jardín';
+
+  @override
+  String get sendRequest => 'Enviar solicitud';
+
+  @override
+  String get tryAgain => 'Volver a intentarlo';
+
+  @override
+  String get gardenLoadError => 'No se ha podido cargar el jardín.';
+
+  @override
+  String get emptyFriendGarden => 'Este jardín no tiene macetas.';
+
+  @override
+  String get likeGarden => 'Dar me gusta';
+
+  @override
+  String get likedGarden => 'Me gusta enviado';
+
+  @override
+  String get close => 'Cerrar';
+
+  @override
+  String get friendOptions => 'Opciones del amigo';
+
+  @override
+  String get deleteFriend => 'Eliminar amigo';
+
+  @override
+  String get deleteFriendTitle => 'Eliminar amigo';
+
+  @override
+  String deleteFriendMessage(String username) {
+    return '¿Seguro que quieres eliminar a @$username de tu lista de amigos?';
+  }
+
+  @override
+  String get delete => 'Eliminar';
+
+  @override
+  String get friendRequestSentSuccessfully => 'Solicitud enviada correctamente';
 }

@@ -356,6 +356,54 @@
 "humidityLabel": "Humidad",
 "windLabel": "Viento",
 "precipitationLabel": "Precipitación",
-"solarIrradianceLabel": "Irradiancia solar"
+"solarIrradianceLabel": "Irradiancia solar",
+
+"friends": "Amigos",
+"sent": "Enviadas",
+"received": "Recibidas",
+"sendFriendRequestTooltip": "Enviar solicitud de amistad",
+"friendsCount": "{count, plural, =1{1 amigo} other{{count} amigos}}",
+"@friendsCount": {
+  "placeholders": {
+    "count": { "type": "int" }
+  }
+},
+"friendsCountWithRequests": "{friends, plural, =1{1 amigo} other{{friends} amigos}} · {requests, plural, =1{1 solicitud} other{{requests} solicitudes}}",
+"@friendsCountWithRequests": {
+  "placeholders": {
+    "friends": { "type": "int" },
+    "requests": { "type": "int" }
+  }
+},
+"noFriendsYet": "Todavía no tienes amigos.\n¡Añade uno con el botón superior!",
+"noSentRequests": "No tienes ninguna solicitud enviada pendiente.",
+"noReceivedRequests": "No tienes ninguna solicitud de amistad pendiente.",
+"cancel": "Cancelar",
+"accept": "Aceptar",
+"reject": "Rechazar",
+"addFriend": "Añadir amigo",
+"addFriendSubtitle": "Busca un usuario y envíale una solicitud.",
+"usernameHint": "Nombre de usuario...",
+"visitGarden": "Visita su jardín",
+"sendRequest": "Enviar solicitud",
+"tryAgain": "Volver a intentarlo",
+"gardenLoadError": "No se ha podido cargar el jardín.",
+"emptyFriendGarden": "Este jardín no tiene macetas.",
+"likeGarden": "Dar me gusta",
+"likedGarden": "Me gusta enviado",
+"close": "Cerrar",
+"friendOptions": "Opciones del amigo",
+"deleteFriend": "Eliminar amigo",
+"deleteFriendTitle": "Eliminar amigo",
+"deleteFriendMessage": "¿Seguro que quieres eliminar a @{username} de tu lista de amigos?",
+"@deleteFriendMessage": {
+  "placeholders": {
+    "username": {
+      "type": "String"
+    }
+  }
+},
+"delete": "Eliminar",
+"friendRequestSentSuccessfully": "Solicitud enviada correctamente"
 }
 

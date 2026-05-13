@@ -247,7 +247,7 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
       };
 
       final response = await http.post(
-        Uri.parse('${ApiConfig.baseUrl}/api/users/$username/save/avatar'),
+        Uri.parse('${ApiConfig.baseUrl}/api/users/$username/save/avatar/'),
         headers: {
           'Content-Type': 'application/json',
           "Authorization": "Token ${user.token}",
