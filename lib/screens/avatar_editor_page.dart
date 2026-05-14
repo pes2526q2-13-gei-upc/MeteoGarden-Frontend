@@ -279,17 +279,21 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
 
     try {
       final payload = {
-        'body': _extractId(currentBody),
-        'eye': _extractId(currentEye),
-        'expression': _extractSecondToLastSegment(currentExpression), // 4
-        'expression_variant': _extractId(currentExpression), // 0
-        'hair_color': _extractSecondToLastSegment(currentHair), // "" → '0'
-        'hair_style': _extractId(currentHair), // 0
-        'facial_hair': _extractSecondToLastSegment(currentFacialHair), // 0
-        'facial_hair_color': _extractLastSegment(currentFacialHair), // "" → '0'
-        'clothing': _extractId(currentClothing),
-        'accessories': _extractId(currentAccessories),
-      };
+  'body': _extractId(currentBody),
+  'eye': _extractId(currentEye),
+
+  'expression': _extractSecondToLastSegment(currentExpression),
+  'expression_variant': _extractId(currentExpression),
+
+  'hair_color': _extractSecondToLastSegment(currentHair),
+  'hair_style': _extractId(currentHair),
+
+  'facial_hair': _extractId(currentFacialHair),
+  'facial_hair_color': _extractLastSegment(currentFacialHair),
+
+  'clothing': _extractId(currentClothing),
+  'accessories': _extractId(currentAccessories),
+};
 
       final response = await http.post(
         Uri.parse('${ApiConfig.baseUrl}/api/users/$username/save/avatar/'),
