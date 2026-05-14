@@ -138,7 +138,7 @@ class _GardenPageState extends State<GardenPage> {
             Navigator.of(context).pop();
             CenteredMessage.show(
               context,
-              t.plantActionError,
+              e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
             );
           }
@@ -166,7 +166,7 @@ class _GardenPageState extends State<GardenPage> {
             Navigator.of(context).pop();
             CenteredMessage.show(
               context,
-              t.plantActionError,
+              e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
             );
           }
@@ -194,7 +194,7 @@ class _GardenPageState extends State<GardenPage> {
 
             CenteredMessage.show(
               context,
-              t.plantActionError,
+              e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
             );
           }
@@ -343,7 +343,7 @@ class _GardenPageState extends State<GardenPage> {
 
             CenteredMessage.show(
               context,
-              t.plantActionError,
+              e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
             );
           }

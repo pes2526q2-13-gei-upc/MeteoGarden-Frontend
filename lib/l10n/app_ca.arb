@@ -376,6 +376,56 @@
 "missionsClaimedSectionTitle": "Ja reclamades",
 "missionsTagClaimed": "Reclamada",
 "missionsInProgress": "En curs",
-"missionsRewardCoins": "monedes"
+"missionsRewardCoins": "monedes",
+"solarIrradianceLabel": "Irradiació solar",
+
+
+"friends": "Amics",
+"sent": "Enviades",
+"received": "Rebudes",
+"sendFriendRequestTooltip": "Enviar sol·licitud d'amistat",
+"friendsCount": "{count, plural, =1{1 amic} other{{count} amics}}",
+"@friendsCount": {
+  "placeholders": {
+    "count": { "type": "int" }
+  }
+},
+"friendsCountWithRequests": "{friends, plural, =1{1 amic} other{{friends} amics}} · {requests, plural, =1{1 sol·licitud} other{{requests} sol·licituds}}",
+"@friendsCountWithRequests": {
+  "placeholders": {
+    "friends": { "type": "int" },
+    "requests": { "type": "int" }
+  }
+},
+"noFriendsYet": "Encara no tens amics.\nAfegeix-ne amb el botó superior!",
+"noSentRequests": "No tens cap sol·licitud enviada pendent.",
+"noReceivedRequests": "No tens cap sol·licitud d'amistat pendent.",
+"cancel": "Cancel·lar",
+"accept": "Acceptar",
+"reject": "Rebutjar",
+"addFriend": "Afegir amic",
+"addFriendSubtitle": "Busca un usuari i envia-li una sol·licitud.",
+"usernameHint": "Nom d'usuari...",
+"visitGarden": "Visita el seu jardí",
+"sendRequest": "Enviar sol·licitud",
+"tryAgain": "Tornar a intentar",
+"gardenLoadError": "No s'ha pogut carregar el jardí.",
+"emptyFriendGarden": "Aquest jardí no té testos.",
+"likeGarden": "Fer m'agrada",
+"likedGarden": "M'agrada fet",
+"close": "Tancar",
+"friendOptions": "Opcions de l'amic",
+"deleteFriend": "Eliminar amic",
+"deleteFriendTitle": "Eliminar amic",
+"deleteFriendMessage": "Segur que vols eliminar @{username} de la teva llista d'amics?",
+"@deleteFriendMessage": {
+  "placeholders": {
+    "username": {
+      "type": "String"
+    }
+  }
+},
+"delete": "Eliminar",
+"friendRequestSentSuccessfully": "Sol·licitud enviada correctament"
 }
 
