@@ -389,13 +389,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photoTakePlantPicture => 'Take a picture of the plant';
 
   @override
-  String get photoTreeMode => 'Tree';
+  String get photoTreeMode => 'Leaf';
 
   @override
   String get photoFlowerMode => 'Flower';
 
   @override
-  String get photoTreeModeSelected => 'Tree mode selected';
+  String get photoTreeModeSelected => 'Leaf mode selected';
 
   @override
   String get photoFlowerModeSelected => 'Flower mode selected';

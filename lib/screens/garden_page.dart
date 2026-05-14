@@ -54,7 +54,6 @@ class _GardenPageState extends State<GardenPage> {
 
       final user = Provider.of<UserModel>(context, listen: false);
 
-      // Usamos el provider para obtener el tiempo
       Provider.of<WeatherProvider>(
         context,
         listen: false,

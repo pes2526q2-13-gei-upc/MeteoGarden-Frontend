@@ -390,13 +390,13 @@ class AppLocalizationsCa extends AppLocalizations {
   String get photoTakePlantPicture => 'Fotografia la planta';
 
   @override
-  String get photoTreeMode => 'Arbre';
+  String get photoTreeMode => 'Fulla';
 
   @override
   String get photoFlowerMode => 'Flor';
 
   @override
-  String get photoTreeModeSelected => 'Mode arbre seleccionat';
+  String get photoTreeModeSelected => 'Mode fulla seleccionat';
 
   @override
   String get photoFlowerModeSelected => 'Mode flor seleccionat';

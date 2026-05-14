@@ -816,7 +816,7 @@ abstract class AppLocalizations {
   /// No description provided for @photoTreeMode.
   ///
   /// In ca, this message translates to:
-  /// **'Arbre'**
+  /// **'Fulla'**
   String get photoTreeMode;
 
   /// No description provided for @photoFlowerMode.
@@ -828,7 +828,7 @@ abstract class AppLocalizations {
   /// No description provided for @photoTreeModeSelected.
   ///
   /// In ca, this message translates to:
-  /// **'Mode arbre seleccionat'**
+  /// **'Mode fulla seleccionat'**
   String get photoTreeModeSelected;
 
   /// No description provided for @photoFlowerModeSelected.

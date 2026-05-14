@@ -12,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../models/weather_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -420,9 +421,6 @@ class _LoginPageState extends State<LoginPage> {
 
     if (!mounted) return;
 
-    debugPrint("PROFILE STATUS: ${response.statusCode}");
-    debugPrint("PROFILE BODY: ${response.body}");
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
@@ -440,6 +438,15 @@ class _LoginPageState extends State<LoginPage> {
         newMonedes: data['numCoins'] ?? 0,
         newGardens: gardenNames,
       );
+
+      final city = data['city'] ?? '';
+
+      if (city.toString().trim().isNotEmpty) {
+        Provider.of<WeatherProvider>(
+          context,
+          listen: false,
+        ).fetchWeather(city, forceRefresh: true);
+      }
     } else {
       ScaffoldMessenger.of(
         context,

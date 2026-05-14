@@ -288,21 +288,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                           ),
 
                           const SizedBox(height: 12),
-                          if (kDebugMode)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 12),
-                              child: ElevatedButton.icon(
-                                key: const Key('identify_test_image_button'),
-                                onPressed: _isProcessing
-                                    ? null
-                                    : _identifyTestImage,
-                                icon: const Icon(Icons.image_search),
-                                label: const Text(
-                                  'Identificar imatge de prova',
-                                ),
-                              ),
-                            ),
-
+                        
                           if (_isProcessing)
                             Padding(
                               padding: const EdgeInsets.only(top: 12),
