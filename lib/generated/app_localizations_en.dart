@@ -962,4 +962,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get friendRequestSentSuccessfully =>
       'Friend request sent successfully';
+
+  @override
+  String get loginEmptyFields => 'Enter your username and password.';
+
+  @override
+  String get loginInvalidCredentials => 'Incorrect username or password.';
+
+  @override
+  String get loginServerError => 'Could not log in. Please try again later.';
+
+  @override
+  String get loginConnectionError => 'Could not connect to the server.';
 }

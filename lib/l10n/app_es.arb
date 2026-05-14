@@ -424,6 +424,10 @@
   }
 },
 "delete": "Eliminar",
-"friendRequestSentSuccessfully": "Solicitud enviada correctamente"
+"friendRequestSentSuccessfully": "Solicitud enviada correctamente",
+"loginEmptyFields": "Introduce el nombre de usuario y la contraseña.",
+"loginInvalidCredentials": "Nombre de usuario o contraseña incorrectos.",
+"loginServerError": "No se ha podido iniciar sesión. Inténtalo de nuevo más tarde.",
+"loginConnectionError": "No se ha podido conectar con el servidor."
 }
 

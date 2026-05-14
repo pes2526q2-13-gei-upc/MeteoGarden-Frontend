@@ -960,4 +960,20 @@ class AppLocalizationsCa extends AppLocalizations {
   @override
   String get friendRequestSentSuccessfully =>
       'Sol·licitud enviada correctament';
+
+  @override
+  String get loginEmptyFields =>
+      'Introdueix el nom d\'usuari i la contrasenya.';
+
+  @override
+  String get loginInvalidCredentials =>
+      'Nom d\'usuari o contrasenya incorrectes.';
+
+  @override
+  String get loginServerError =>
+      'No s\'ha pogut iniciar sessió. Torna-ho a provar més tard.';
+
+  @override
+  String get loginConnectionError =>
+      'No s\'ha pogut connectar amb el servidor.';
 }

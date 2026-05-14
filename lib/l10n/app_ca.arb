@@ -426,6 +426,11 @@
   }
 },
 "delete": "Eliminar",
-"friendRequestSentSuccessfully": "Sol·licitud enviada correctament"
+"friendRequestSentSuccessfully": "Sol·licitud enviada correctament",
+
+"loginEmptyFields": "Introdueix el nom d'usuari i la contrasenya.",
+"loginInvalidCredentials": "Nom d'usuari o contrasenya incorrectes.",
+"loginServerError": "No s'ha pogut iniciar sessió. Torna-ho a provar més tard.",
+"loginConnectionError": "No s'ha pogut connectar amb el servidor."
 }
 

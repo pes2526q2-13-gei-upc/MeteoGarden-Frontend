@@ -959,4 +959,20 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get friendRequestSentSuccessfully => 'Solicitud enviada correctamente';
+
+  @override
+  String get loginEmptyFields =>
+      'Introduce el nombre de usuario y la contraseña.';
+
+  @override
+  String get loginInvalidCredentials =>
+      'Nombre de usuario o contraseña incorrectos.';
+
+  @override
+  String get loginServerError =>
+      'No se ha podido iniciar sesión. Inténtalo de nuevo más tarde.';
+
+  @override
+  String get loginConnectionError =>
+      'No se ha podido conectar con el servidor.';
 }

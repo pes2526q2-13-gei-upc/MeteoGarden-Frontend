@@ -1874,6 +1874,30 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Sol·licitud enviada correctament'**
   String get friendRequestSentSuccessfully;
+
+  /// No description provided for @loginEmptyFields.
+  ///
+  /// In ca, this message translates to:
+  /// **'Introdueix el nom d\'usuari i la contrasenya.'**
+  String get loginEmptyFields;
+
+  /// No description provided for @loginInvalidCredentials.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nom d\'usuari o contrasenya incorrectes.'**
+  String get loginInvalidCredentials;
+
+  /// No description provided for @loginServerError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut iniciar sessió. Torna-ho a provar més tard.'**
+  String get loginServerError;
+
+  /// No description provided for @loginConnectionError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut connectar amb el servidor.'**
+  String get loginConnectionError;
 }
 
 class _AppLocalizationsDelegate
