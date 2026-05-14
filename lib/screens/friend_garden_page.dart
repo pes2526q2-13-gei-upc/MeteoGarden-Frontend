@@ -131,17 +131,11 @@ class _FriendGardenPageState extends State<FriendGardenPage> {
                         ),
                       ),
 
-                      const Expanded(
-                        flex: 42,
-                        child: SizedBox.shrink(),
-                      ),
+                      const Expanded(flex: 42, child: SizedBox.shrink()),
 
                       SizedBox(height: height * 0.02),
 
-                      Expanded(
-                        flex: 50,
-                        child: _buildPotsGrid(width),
-                      ),
+                      Expanded(flex: 50, child: _buildPotsGrid(width)),
                     ],
                   ),
                 ),
@@ -158,161 +152,149 @@ class _FriendGardenPageState extends State<FriendGardenPage> {
   // ---------------------------------------------------------------------------
 
   Widget _buildHeader(double width) {
-  final t = AppLocalizations.of(context)!;
-  final avatarSize = width < 360 ? 56.0 : 64.0;
+    final t = AppLocalizations.of(context)!;
+    final avatarSize = width < 360 ? 56.0 : 64.0;
 
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-    decoration: BoxDecoration(
-      color: Colors.white.withValues(alpha: 0.42),
-      borderRadius: BorderRadius.circular(22),
-      border: Border.all(
-        color: Colors.white.withValues(alpha: 0.50),
-        width: 1.1,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.42),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.50),
+          width: 1.1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.07),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.07),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-      ],
-    ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.45),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.60),
-                width: 1,
-              ),
-            ),
-            child: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              size: 17,
-              color: Color(0xFF2E7D32),
-            ),
-          ),
-        ),
-
-        const SizedBox(width: 10),
-
-        _FriendAvatarCircle(
-          username: widget.friendUsername,
-          avatarParts: widget.avatarParts,
-          size: avatarSize,
-        ),
-
-        const SizedBox(width: 12),
-
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                widget.friendUsername,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  color: Color(0xFF1B5E20),
-                  shadows: [
-                    Shadow(
-                      color: Colors.white,
-                      blurRadius: 5,
-                    ),
-                  ],
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.45),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.60),
+                  width: 1,
                 ),
               ),
-              const SizedBox(height: 1),
-              Text(
-                widget.gardenName,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF2E7D32),
-                  shadows: [
-                    Shadow(
-                      color: Colors.white,
-                      blurRadius: 5,
-                    ),
-                  ],
+              child: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 17,
+                color: Color(0xFF2E7D32),
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 10),
+
+          _FriendAvatarCircle(
+            username: widget.friendUsername,
+            avatarParts: widget.avatarParts,
+            size: avatarSize,
+          ),
+
+          const SizedBox(width: 12),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  widget.friendUsername,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF1B5E20),
+                    shadows: [Shadow(color: Colors.white, blurRadius: 5)],
+                  ),
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  widget.gardenName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF2E7D32),
+                    shadows: [Shadow(color: Colors.white, blurRadius: 5)],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 8),
+
+          Tooltip(
+            message: _liked ? t.likedGarden : t.likeGarden,
+            child: GestureDetector(
+              onTap: _likeSending ? null : _giveLike,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: _liked
+                      ? const Color(0xFF4CAF50)
+                      : Colors.white.withValues(alpha: 0.20),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFF4CAF50), width: 2),
+                  boxShadow: _liked
+                      ? [
+                          BoxShadow(
+                            color: const Color(
+                              0xFF2E7D32,
+                            ).withValues(alpha: 0.22),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ]
+                      : [],
+                ),
+                child: Center(
+                  child: _likeSending
+                      ? SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: _liked
+                                ? Colors.white
+                                : const Color(0xFF4CAF50),
+                          ),
+                        )
+                      : Icon(
+                          _liked
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_border_rounded,
+                          color: _liked
+                              ? Colors.white
+                              : const Color(0xFF4CAF50),
+                          size: 22,
+                        ),
                 ),
               ),
-            ],
-          ),
-        ),
-
-        const SizedBox(width: 8),
-
-        Tooltip(
-          message: _liked ? t.likedGarden : t.likeGarden,
-          child: GestureDetector(
-            onTap: _likeSending ? null : _giveLike,
-            child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: _liked
-                  ? const Color(0xFF4CAF50)
-                  : Colors.white.withValues(alpha: 0.20),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFF4CAF50),
-                width: 2,
-              ),
-              boxShadow: _liked
-                  ? [
-                      BoxShadow(
-                        color: const Color(0xFF2E7D32)
-                            .withValues(alpha: 0.22),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      ),
-                    ]
-                  : [],
-            ),
-            child: Center(
-              child: _likeSending
-                  ? SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: _liked
-                            ? Colors.white
-                            : const Color(0xFF4CAF50),
-                      ),
-                    )
-                  : Icon(
-                      _liked
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_border_rounded,
-                      color: _liked
-                          ? Colors.white
-                          : const Color(0xFF4CAF50),
-                      size: 22,
-                    ),
             ),
           ),
-        ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   // ---------------------------------------------------------------------------
   // GRAELLA DE TESTOS (read-only, sense onTap)
@@ -340,8 +322,11 @@ class _FriendGardenPageState extends State<FriendGardenPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.error_outline,
-                      color: Colors.white70, size: 48),
+                  const Icon(
+                    Icons.error_outline,
+                    color: Colors.white70,
+                    size: 48,
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     '${t.gardenLoadError}\n${snap.error}',
@@ -379,8 +364,7 @@ class _FriendGardenPageState extends State<FriendGardenPage> {
                 crossAxisCount;
             final itemHeight =
                 (totalHeight - (spacing * (rowCount - 1))) / rowCount;
-            final aspectRatio =
-                itemHeight > 0 ? itemWidth / itemHeight : 1.0;
+            final aspectRatio = itemHeight > 0 ? itemWidth / itemHeight : 1.0;
 
             return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -403,7 +387,6 @@ class _FriendGardenPageState extends State<FriendGardenPage> {
       },
     );
   }
-
 }
 
 class _FriendAvatarCircle extends StatelessWidget {

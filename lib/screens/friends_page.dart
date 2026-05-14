@@ -8,7 +8,6 @@ import '../../models/avatar_stack.dart';
 import 'friend_garden_page.dart';
 import '../widgets/centered_message.dart';
 
-
 const Color _pageBackground = Color(0xFFF5F9F0);
 const Color _primaryGreen = Color(0xFF4CAF50);
 const Color _darkGreen = Color(0xFF2E7D32);
@@ -48,64 +47,64 @@ class _FriendsPageState extends State<FriendsPage>
   }
 
   Future<void> _loadAll() async {
-  final token = Provider.of<UserModel>(context, listen: false).token;
+    final token = Provider.of<UserModel>(context, listen: false).token;
 
-  setState(() {
-    _loading = true;
-    _error = null;
-  });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
 
-  try {
-    final results = await Future.wait([
-      _amicsService.fetchFriends(token: token),
-      _amicsService.fetchFriendRequests(action: 'sent', token: token),
-      _amicsService.fetchFriendRequests(action: 'received', token: token),
-    ]);
+    try {
+      final results = await Future.wait([
+        _amicsService.fetchFriends(token: token),
+        _amicsService.fetchFriendRequests(action: 'sent', token: token),
+        _amicsService.fetchFriendRequests(action: 'received', token: token),
+      ]);
 
-    final friends = results[0] as List<Map<String, dynamic>>;
-    final sentRequests = results[1] as List<String>;
-    final receivedRequests = results[2] as List<String>;
+      final friends = results[0] as List<Map<String, dynamic>>;
+      final sentRequests = results[1] as List<String>;
+      final receivedRequests = results[2] as List<String>;
 
-    final usernames = <String>{};
+      final usernames = <String>{};
 
-    for (final friend in friends) {
-      final username = friend['username'] as String?;
-      if (username != null && username.isNotEmpty) {
-        usernames.add(username);
-      }
-    }
-
-    usernames.addAll(sentRequests);
-    usernames.addAll(receivedRequests);
-
-    await Future.wait(
-      usernames.map((username) async {
-        if (!_avatarCache.containsKey(username)) {
-          _avatarCache[username] = await _amicsService.fetchAvatar(
-            username: username,
-            token: token,
-          );
+      for (final friend in friends) {
+        final username = friend['username'] as String?;
+        if (username != null && username.isNotEmpty) {
+          usernames.add(username);
         }
-      }),
-    );
+      }
 
-    if (!mounted) return;
+      usernames.addAll(sentRequests);
+      usernames.addAll(receivedRequests);
 
-    setState(() {
-      _friends = friends;
-      _sentRequests = sentRequests;
-      _receivedRequests = receivedRequests;
-      _loading = false;
-    });
-  } catch (e) {
-    if (!mounted) return;
+      await Future.wait(
+        usernames.map((username) async {
+          if (!_avatarCache.containsKey(username)) {
+            _avatarCache[username] = await _amicsService.fetchAvatar(
+              username: username,
+              token: token,
+            );
+          }
+        }),
+      );
 
-    setState(() {
-      _error = e.toString().replaceFirst('Exception: ', '');
-      _loading = false;
-    });
+      if (!mounted) return;
+
+      setState(() {
+        _friends = friends;
+        _sentRequests = sentRequests;
+        _receivedRequests = receivedRequests;
+        _loading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _error = e.toString().replaceFirst('Exception: ', '');
+        _loading = false;
+      });
+    }
   }
-}
 
   void _openAddFriendSheet() {
     showDialog(
@@ -125,7 +124,7 @@ class _FriendsPageState extends State<FriendsPage>
   Future<void> _answerRequest(String requester, String action) async {
     final token = Provider.of<UserModel>(context, listen: false).token;
     try {
-      final msg = await _amicsService.answerFriendRequest(
+      await _amicsService.answerFriendRequest(
         requesterUsername: requester,
         action: action,
         token: token,
@@ -146,7 +145,7 @@ class _FriendsPageState extends State<FriendsPage>
     final token = Provider.of<UserModel>(context, listen: false).token;
 
     try {
-      final msg = await _amicsService.cancelFriendRequest(
+      await _amicsService.cancelFriendRequest(
         requestedUsername: requested,
         token: token,
       );
@@ -170,9 +169,7 @@ class _FriendsPageState extends State<FriendsPage>
       barrierColor: Colors.black.withValues(alpha: 0.35),
       builder: (dialogContext) => AlertDialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         titlePadding: const EdgeInsets.fromLTRB(22, 22, 22, 0),
         contentPadding: const EdgeInsets.fromLTRB(22, 14, 22, 4),
         actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
@@ -185,10 +182,7 @@ class _FriendsPageState extends State<FriendsPage>
                 color: Colors.red.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(
-                Icons.person_remove_rounded,
-                color: Colors.red[700],
-              ),
+              child: Icon(Icons.person_remove_rounded, color: Colors.red[700]),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -248,10 +242,7 @@ class _FriendsPageState extends State<FriendsPage>
     final token = Provider.of<UserModel>(context, listen: false).token;
 
     try {
-      final msg = await _amicsService.deleteFriend(
-        username: username,
-        token: token,
-      );
+      await _amicsService.deleteFriend(username: username, token: token);
 
       if (!mounted) return;
 
@@ -259,7 +250,6 @@ class _FriendsPageState extends State<FriendsPage>
         _friends.removeWhere((friend) => friend['username'] == username);
         _avatarCache.remove(username);
       });
-
     } catch (e) {
       if (!mounted) return;
       CenteredMessage.show(
@@ -271,18 +261,18 @@ class _FriendsPageState extends State<FriendsPage>
   }
 
   void _openFriendGarden(Map<String, dynamic> friend) {
-  final username = friend['username'] as String;
+    final username = friend['username'] as String;
 
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (_) => FriendGardenPage(
-        friendUsername: username,
-        gardenName: friend['garden_name'] as String? ?? username,
-        avatarParts: _avatarCache[username],
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => FriendGardenPage(
+          friendUsername: username,
+          gardenName: friend['garden_name'] as String? ?? username,
+          avatarParts: _avatarCache[username],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -420,69 +410,69 @@ class _FriendsPageState extends State<FriendsPage>
   }
 
   Widget _buildTabBar() {
-  final t = AppLocalizations.of(context)!;
+    final t = AppLocalizations.of(context)!;
 
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: AnimatedBuilder(
+          animation: _tabController,
+          builder: (context, _) {
+            return TabBar(
+              controller: _tabController,
+              indicator: BoxDecoration(
+                color: _primaryGreen,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelColor: Colors.white,
+              unselectedLabelColor: _primaryGreen,
+              labelPadding: const EdgeInsets.symmetric(horizontal: 4),
+              labelStyle: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+              ),
+              unselectedLabelStyle: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+              dividerColor: Colors.transparent,
+              tabs: [
+                _FriendTab(
+                  icon: Icons.people_alt_rounded,
+                  label: t.friends,
+                  selected: _tabController.index == 0,
+                ),
+                _FriendTab(
+                  icon: Icons.outbox_rounded,
+                  label: t.sent,
+                  count: _sentRequests.length,
+                  selected: _tabController.index == 1,
+                ),
+                _FriendTab(
+                  icon: Icons.mark_email_unread_rounded,
+                  label: t.received,
+                  count: _receivedRequests.length,
+                  selected: _tabController.index == 2,
+                ),
+              ],
+            );
+          },
+        ),
       ),
-      child: AnimatedBuilder(
-        animation: _tabController,
-        builder: (context, _) {
-          return TabBar(
-            controller: _tabController,
-            indicator: BoxDecoration(
-              color: _primaryGreen,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            indicatorSize: TabBarIndicatorSize.tab,
-            labelColor: Colors.white,
-            unselectedLabelColor: _primaryGreen,
-            labelPadding: const EdgeInsets.symmetric(horizontal: 4),
-            labelStyle: const TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 13,
-            ),
-            unselectedLabelStyle: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
-            ),
-            dividerColor: Colors.transparent,
-            tabs: [
-              _FriendTab(
-                icon: Icons.people_alt_rounded,
-                label: t.friends,
-                selected: _tabController.index == 0,
-              ),
-              _FriendTab(
-                icon: Icons.outbox_rounded,
-                label: t.sent,
-                count: _sentRequests.length,
-                selected: _tabController.index == 1,
-              ),
-              _FriendTab(
-                icon: Icons.mark_email_unread_rounded,
-                label: t.received,
-                count: _receivedRequests.length,
-                selected: _tabController.index == 2,
-              ),
-            ],
-          );
-        },
-      ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildBody() {
     if (_loading) {
@@ -497,11 +487,7 @@ class _FriendsPageState extends State<FriendsPage>
 
     return TabBarView(
       controller: _tabController,
-      children: [
-        _buildFriendsList(),
-        _buildSentList(),
-        _buildReceivedList(),
-      ],
+      children: [_buildFriendsList(), _buildSentList(), _buildReceivedList()],
     );
   }
 
@@ -510,122 +496,116 @@ class _FriendsPageState extends State<FriendsPage>
   // ---------------------------------------------------------------------------
 
   Widget _buildFriendsList() {
-  final t = AppLocalizations.of(context)!;
+    final t = AppLocalizations.of(context)!;
 
-  if (_friends.isEmpty) {
-    return _EmptyState(
-      icon: Icons.people_outline,
-      message: t.noFriendsYet,
+    if (_friends.isEmpty) {
+      return _EmptyState(icon: Icons.people_outline, message: t.noFriendsYet);
+    }
+
+    return RefreshIndicator(
+      color: const Color(0xFF388E3C),
+      onRefresh: _loadAll,
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+        itemCount: _friends.length,
+        itemBuilder: (context, i) {
+          final friend = _friends[i];
+          final username = friend['username'] as String;
+
+          return _FriendTile(
+            username: username,
+            avatarParts: _avatarCache[username],
+            onTap: () => _openFriendGarden(friend),
+            onDelete: () => _confirmDeleteFriend(username),
+          );
+        },
+      ),
     );
   }
-
-  return RefreshIndicator(
-    color: const Color(0xFF388E3C),
-    onRefresh: _loadAll,
-    child: ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-      itemCount: _friends.length,
-      itemBuilder: (context, i) {
-        final friend = _friends[i];
-        final username = friend['username'] as String;
-
-        return _FriendTile(
-          username: username,
-          avatarParts: _avatarCache[username],
-          onTap: () => _openFriendGarden(friend),
-          onDelete: () => _confirmDeleteFriend(username),
-        );
-      },
-    ),
-  );
-}
 
   // ---------------------------------------------------------------------------
   // TAB: ENVIADES
   // ---------------------------------------------------------------------------
 
   Widget _buildSentList() {
-  final t = AppLocalizations.of(context)!;
+    final t = AppLocalizations.of(context)!;
 
-  if (_sentRequests.isEmpty) {
-    return _EmptyState(
-      icon: Icons.send_outlined,
-      message: t.noSentRequests,
+    if (_sentRequests.isEmpty) {
+      return _EmptyState(icon: Icons.send_outlined, message: t.noSentRequests);
+    }
+
+    return RefreshIndicator(
+      color: const Color(0xFF388E3C),
+      onRefresh: _loadAll,
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+        itemCount: _sentRequests.length,
+        itemBuilder: (context, i) {
+          final username = _sentRequests[i];
+
+          return _RequestTile(
+            username: username,
+            avatarParts: _avatarCache[username],
+            trailing: TextButton.icon(
+              onPressed: () => _cancelRequest(username),
+              icon: const Icon(Icons.cancel_outlined, size: 18),
+              label: Text(t.cancel),
+              style: TextButton.styleFrom(foregroundColor: Colors.red[600]),
+            ),
+          );
+        },
+      ),
     );
   }
-
-  return RefreshIndicator(
-    color: const Color(0xFF388E3C),
-    onRefresh: _loadAll,
-    child: ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-      itemCount: _sentRequests.length,
-      itemBuilder: (context, i) {
-        final username = _sentRequests[i];
-
-        return _RequestTile(
-          username: username,
-          avatarParts: _avatarCache[username],
-          trailing: TextButton.icon(
-            onPressed: () => _cancelRequest(username),
-            icon: const Icon(Icons.cancel_outlined, size: 18),
-            label: Text(t.cancel),
-            style: TextButton.styleFrom(foregroundColor: Colors.red[600]),
-          ),
-        );
-      },
-    ),
-  );
-}
 
   // ---------------------------------------------------------------------------
   // TAB: REBUDES
   // ---------------------------------------------------------------------------
 
   Widget _buildReceivedList() {
-  final t = AppLocalizations.of(context)!;
+    final t = AppLocalizations.of(context)!;
 
-  if (_receivedRequests.isEmpty) {
-    return _EmptyState(
-      icon: Icons.inbox_outlined,
-      message: t.noReceivedRequests,
+    if (_receivedRequests.isEmpty) {
+      return _EmptyState(
+        icon: Icons.inbox_outlined,
+        message: t.noReceivedRequests,
+      );
+    }
+
+    return RefreshIndicator(
+      color: const Color(0xFF388E3C),
+      onRefresh: _loadAll,
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+        itemCount: _receivedRequests.length,
+        itemBuilder: (context, i) {
+          final username = _receivedRequests[i];
+
+          return _RequestTile(
+            username: username,
+            avatarParts: _avatarCache[username],
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.check_circle_outline),
+                  color: const Color(0xFF388E3C),
+                  tooltip: t.accept,
+                  onPressed: () => _answerRequest(username, 'accept'),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.cancel_outlined),
+                  color: Colors.red[400],
+                  tooltip: t.reject,
+                  onPressed: () => _answerRequest(username, 'reject'),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
-
-  return RefreshIndicator(
-    color: const Color(0xFF388E3C),
-    onRefresh: _loadAll,
-    child: ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-      itemCount: _receivedRequests.length,
-      itemBuilder: (context, i) {
-        final username = _receivedRequests[i];
-
-        return _RequestTile(
-          username: username,
-          avatarParts: _avatarCache[username],
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.check_circle_outline),
-                color: const Color(0xFF388E3C),
-                tooltip: t.accept,
-                onPressed: () => _answerRequest(username, 'accept'),
-              ),
-              IconButton(
-                icon: const Icon(Icons.cancel_outlined),
-                color: Colors.red[400],
-                tooltip: t.reject,
-                onPressed: () => _answerRequest(username, 'reject'),
-              ),
-            ],
-          ),
-        );
-      },
-    ),
-  );
-}
 }
 
 // =============================================================================
@@ -699,37 +679,36 @@ class _AddFriendSheetState extends State<_AddFriendSheet> {
   }
 
   Future<void> _sendRequest(String username) async {
-  final t = AppLocalizations.of(context)!;
-  final token = Provider.of<UserModel>(context, listen: false).token;
-
-  setState(() {
-    _resultMessage = null;
-  });
-
-  try {
-    final msg = await widget.amicsService.sendFriendRequest(
-      requestedUsername: username,
-      token: token,
-    );
-
-    if (!mounted) return;
+    final t = AppLocalizations.of(context)!;
+    final token = Provider.of<UserModel>(context, listen: false).token;
 
     setState(() {
-      _resultMessage =
-          msg.isNotEmpty ? msg : t.friendRequestSentSuccessfully;
-      _resultSuccess = true;
+      _resultMessage = null;
     });
 
-    widget.onRequestSent();
-  } catch (e) {
-    if (!mounted) return;
+    try {
+      final msg = await widget.amicsService.sendFriendRequest(
+        requestedUsername: username,
+        token: token,
+      );
 
-    setState(() {
-      _resultMessage = e.toString().replaceFirst('Exception: ', '');
-      _resultSuccess = false;
-    });
+      if (!mounted) return;
+
+      setState(() {
+        _resultMessage = msg.isNotEmpty ? msg : t.friendRequestSentSuccessfully;
+        _resultSuccess = true;
+      });
+
+      widget.onRequestSent();
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _resultMessage = e.toString().replaceFirst('Exception: ', '');
+        _resultSuccess = false;
+      });
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -859,7 +838,9 @@ class _AddFriendSheetState extends State<_AddFriendSheet> {
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 14),
                         child: Center(
-                          child: CircularProgressIndicator(color: _primaryGreen),
+                          child: CircularProgressIndicator(
+                            color: _primaryGreen,
+                          ),
                         ),
                       ),
                     if (_resultMessage != null)
@@ -1055,24 +1036,27 @@ class _FriendTile extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE8F5E9),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: const Color(0xFF4CAF50).withValues(alpha: 0.25),
-                    width: 1,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE8F5E9),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: const Color(0xFF4CAF50).withValues(alpha: 0.25),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    t.visitGarden,
+                    style: const TextStyle(
+                      color: Color(0xFF2E7D32),
+                      fontWeight: FontWeight.w800,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
-                child: Text(
-                  t.visitGarden,
-                  style: const TextStyle(
-                    color: Color(0xFF2E7D32),
-                    fontWeight: FontWeight.w800,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
                 const SizedBox(width: 4),
                 PopupMenuButton<String>(
                   tooltip: t.friendOptions,
@@ -1241,10 +1225,7 @@ class _Badge extends StatelessWidget {
   final int count;
   final bool selected;
 
-  const _Badge({
-    required this.count,
-    required this.selected,
-  });
+  const _Badge({required this.count, required this.selected});
 
   @override
   Widget build(BuildContext context) {
@@ -1293,10 +1274,7 @@ class _FriendTab extends StatelessWidget {
             Text(label),
             if (count > 0) ...[
               const SizedBox(width: 4),
-              _Badge(
-                count: count,
-                selected: selected,
-              ),
+              _Badge(count: count, selected: selected),
             ],
           ],
         ),

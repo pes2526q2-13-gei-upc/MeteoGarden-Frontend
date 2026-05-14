@@ -22,37 +22,37 @@ class AlbumPage extends StatefulWidget {
 
 class _AlbumPageState extends State<AlbumPage> {
   String mapLanguage(String language) {
-  final normalized = language.trim().toLowerCase();
+    final normalized = language.trim().toLowerCase();
 
-  switch (normalized) {
-    case 'ca':
-    case 'cat':
-    case 'català':
-    case 'catala':
-    case 'catalan':
-      return 'ca';
+    switch (normalized) {
+      case 'ca':
+      case 'cat':
+      case 'català':
+      case 'catala':
+      case 'catalan':
+        return 'ca';
 
-    case 'es':
-    case 'esp':
-    case 'castellà':
-    case 'castella':
-    case 'castellano':
-    case 'spanish':
-    case 'español':
-    case 'espanyol':
-      return 'es';
+      case 'es':
+      case 'esp':
+      case 'castellà':
+      case 'castella':
+      case 'castellano':
+      case 'spanish':
+      case 'español':
+      case 'espanyol':
+        return 'es';
 
-    case 'en':
-    case 'eng':
-    case 'english':
-    case 'anglès':
-    case 'angles':
-      return 'en';
+      case 'en':
+      case 'eng':
+      case 'english':
+      case 'anglès':
+      case 'angles':
+        return 'en';
 
-    default:
-      return 'ca';
+      default:
+        return 'ca';
+    }
   }
-}
 
   late final http.Client _client; // per a tests
 

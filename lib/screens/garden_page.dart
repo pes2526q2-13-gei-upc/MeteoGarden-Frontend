@@ -136,7 +136,7 @@ class _GardenPageState extends State<GardenPage> {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-             CenteredMessage.show(
+            CenteredMessage.show(
               context,
               e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
@@ -164,7 +164,7 @@ class _GardenPageState extends State<GardenPage> {
             if (!mounted) return;
 
             Navigator.of(context).pop();
-             CenteredMessage.show(
+            CenteredMessage.show(
               context,
               e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
@@ -193,10 +193,10 @@ class _GardenPageState extends State<GardenPage> {
             if (!mounted) return;
 
             CenteredMessage.show(
-            context,
-            e.toString().replaceFirst('Exception: ', ''),
-            type: CenteredMessageType.error,
-          );
+              context,
+              e.toString().replaceFirst('Exception: ', ''),
+              type: CenteredMessageType.error,
+            );
           }
         },
         onDeletePlant: () async {
@@ -341,7 +341,7 @@ class _GardenPageState extends State<GardenPage> {
           } catch (e) {
             if (!mounted) return;
 
-             CenteredMessage.show(
+            CenteredMessage.show(
               context,
               e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
