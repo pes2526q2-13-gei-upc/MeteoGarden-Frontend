@@ -60,8 +60,8 @@
   "albumNumber": "plantas descubiertas",
 
   "shopTitle": "Tienda",
-  "shopSeedsTab": "Semillas 🌱",
-  "shopOtherTab": "Otros 🛒",
+  "shopSeedsTab": "Semillas",
+  "shopOtherTab": "Otros",
   "shopLoadError": "No se han podido cargar los productos.",
   "shopConnectionError": "Error de conexión o procesando los datos.",
   "shopPurchaseProcessingError": "Error al procesar la compra.",

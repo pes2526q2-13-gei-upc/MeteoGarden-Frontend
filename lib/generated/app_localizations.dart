@@ -367,13 +367,13 @@ abstract class AppLocalizations {
   /// No description provided for @shopSeedsTab.
   ///
   /// In ca, this message translates to:
-  /// **'Llavors 🌱'**
+  /// **'Llavors'**
   String get shopSeedsTab;
 
   /// No description provided for @shopOtherTab.
   ///
   /// In ca, this message translates to:
-  /// **'Altres 🛒'**
+  /// **'Altres'**
   String get shopOtherTab;
 
   /// No description provided for @shopLoadError.

@@ -9,6 +9,7 @@ import 'package:meteo_garden/models/plantes_desbl.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:image/image.dart' as img;
 
 class PlantCameraScreen extends StatefulWidget {
   const PlantCameraScreen({super.key});
@@ -91,14 +92,14 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
     try {
       await _initializeControllerFuture!;
       final image = await _controller!.takePicture();
-
+      final croppedImagePath = await _cropCenterSquare(image.path);
       if (!mounted) return;
 
       final user = Provider.of<UserModel>(context, listen: false);
 
       final result = await PlantService.identifyPlant(
         username: user.username,
-        imagePath: image.path,
+        imagePath: croppedImagePath,
         organ: _selectedPlantType,
       );
 
@@ -484,4 +485,38 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
       }
     }
   }
+
+  Future<String> _cropCenterSquare(String imagePath) async {
+  final bytes = await File(imagePath).readAsBytes();
+  final originalImage = img.decodeImage(bytes);
+
+  if (originalImage == null) {
+    throw Exception('Could not decode image');
+  }
+
+  final width = originalImage.width;
+  final height = originalImage.height;
+
+  final squareSize = width < height ? width : height;
+
+  final x = (width - squareSize) ~/ 2;
+  final y = (height - squareSize) ~/ 2;
+
+  final croppedImage = img.copyCrop(
+    originalImage,
+    x: x,
+    y: y,
+    width: squareSize,
+    height: squareSize,
+  );
+
+  final croppedFile = File(
+    '${Directory.systemTemp.path}/cropped_plant_${DateTime.now().millisecondsSinceEpoch}.jpg',
+  );
+
+  await croppedFile.writeAsBytes(img.encodeJpg(croppedImage, quality: 90));
+
+  return croppedFile.path;
+}
+
 }

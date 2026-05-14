@@ -146,10 +146,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shopTitle => 'Tienda';
 
   @override
-  String get shopSeedsTab => 'Semillas 🌱';
+  String get shopSeedsTab => 'Semillas';
 
   @override
-  String get shopOtherTab => 'Otros 🛒';
+  String get shopOtherTab => 'Otros';
 
   @override
   String get shopLoadError => 'No se han podido cargar los productos.';

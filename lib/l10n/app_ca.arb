@@ -60,8 +60,8 @@
   "albumNumber": "plantes descobertes",
 
 "shopTitle": "Botiga",
-"shopSeedsTab": "Llavors 🌱",
-"shopOtherTab": "Altres 🛒",
+"shopSeedsTab": "Llavors",
+"shopOtherTab": "Altres",
 "shopLoadError": "No s'han pogut carregar els productes.",
 "shopConnectionError": "Error de connexió o processant les dades.",
 "shopPurchaseProcessingError": "Error en processar la compra.",

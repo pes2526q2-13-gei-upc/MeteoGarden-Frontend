@@ -311,7 +311,7 @@ class _AlbumPageState extends State<AlbumPage> {
                         final planta = plantProvider.plants[index];
                         final imageUrl = planta.image;
                         final nombreCientifico = planta.name;
-
+                      
                         return InkWell(
                           borderRadius: BorderRadius.circular(16),
                           onTap: () {

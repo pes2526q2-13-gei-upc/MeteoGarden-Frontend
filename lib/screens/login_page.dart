@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/weather_provider.dart';
+import 'package:meteo_garden/models/plantes_desbl.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -424,6 +425,8 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
+      final userProvider = Provider.of<UserModel>(context, listen: false);
+
       final List<String> gardenNames = (data['gardens'] as List<dynamic>)
           .map((g) => g['gardenName'] as String)
           .toList();
@@ -438,6 +441,11 @@ class _LoginPageState extends State<LoginPage> {
         newMonedes: data['numCoins'] ?? 0,
         newGardens: gardenNames,
       );
+
+      await Provider.of<PlantProvider>(
+        context,
+        listen: false,
+      ).loadPlants(userProvider);
 
       final city = data['city'] ?? '';
 
