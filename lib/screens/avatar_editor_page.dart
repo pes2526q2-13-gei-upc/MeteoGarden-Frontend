@@ -8,6 +8,7 @@ import '../models/url.dart';
 import '../../models/avatar_stack.dart';
 import '../../models/dades_usr.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 //import '../widgets/app_header.dart';
 
 class AvatarEditorPage extends StatefulWidget {
@@ -20,6 +21,7 @@ class AvatarEditorPage extends StatefulWidget {
 }
 
 class _AvatarEditorPageState extends State<AvatarEditorPage> {
+  final storage = const FlutterSecureStorage();
   // --- ESTADOS DE CARGA ---
   bool isLoading = true;
   bool isSaving = false;
@@ -82,11 +84,6 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
       final response = await http.get(
         Uri.parse('${ApiConfig.baseUrl}/api/avatar/'),
       );
-
-      debugPrint('--- DEBUG FETCH OPTIONS ---');
-      debugPrint('Status Code: ${response.statusCode}');
-      debugPrint('Body: ${response.body}');
-      debugPrint('---------------------------');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
@@ -207,20 +204,59 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     currentFacialHair = avatar.facialHair;
     currentClothing = avatar.clothing;
     currentAccessories = avatar.accessories;
+
+    debugPrint('DEBUG facialHair: $currentFacialHair');
+    debugPrint('DEBUG hair: $currentHair');
+    debugPrint('DEBUG expression: $currentExpression');
   }
 
   // Función auxiliar para sacar el ID numérico de cualquier URL
+  // Para hair: "MEDIA_URL/avatar/hair/{hair_color}/{hair_style}.png"
+  String? _extractSecondToLastSegment(String? url) {
+    if (url == null || url.isEmpty || url == 'none') return '0';
+    try {
+      final parts = url.split('/');
+      // Buscar los últimos 2 segmentos no vacíos
+      final nonEmpty = parts
+          .map((p) => p.replaceAll('.png', ''))
+          .where((p) => p.isNotEmpty)
+          .toList();
+
+      if (nonEmpty.length >= 2) {
+        return nonEmpty[nonEmpty.length - 2]; // penúltimo → "shivering" o "0"
+      }
+      return '0';
+    } catch (e) {
+      return '0';
+    }
+  }
+
   String? _extractId(String? url) {
     if (url == null || url.isEmpty || url == 'none') return '0';
     try {
       final parts = url.split('/');
       for (var i = parts.length - 1; i >= 0; i--) {
         final cleanPart = parts[i].replaceAll('.png', '');
+        if (cleanPart.isEmpty) continue; // 👈 saltar segmentos vacíos
         if (int.tryParse(cleanPart) != null) {
           return cleanPart;
         }
       }
       return '0';
+    } catch (e) {
+      return '0';
+    }
+  }
+
+  String? _extractLastSegment(String? url) {
+    if (url == null || url.isEmpty || url == 'none') return '0';
+    try {
+      final nonEmpty = url
+          .split('/')
+          .map((p) => p.replaceAll('.png', ''))
+          .where((p) => p.isNotEmpty)
+          .toList();
+      return nonEmpty.isNotEmpty ? nonEmpty.last : '0';
     } catch (e) {
       return '0';
     }
@@ -235,13 +271,22 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     final user = Provider.of<UserModel>(context, listen: false);
     final username = user.username;
 
+    String token = user.token;
+
+    if (token.isEmpty) {
+      token = await storage.read(key: 'auth_token') ?? '';
+    }
+
     try {
       final payload = {
         'body': _extractId(currentBody),
         'eye': _extractId(currentEye),
-        'expression': _extractId(currentExpression),
-        'hair': _extractId(currentHair),
-        'facial_hair': _extractId(currentFacialHair),
+        'expression': _extractSecondToLastSegment(currentExpression), // 4
+        'expression_variant': _extractId(currentExpression), // 0
+        'hair_color': _extractSecondToLastSegment(currentHair), // "" → '0'
+        'hair_style': _extractId(currentHair), // 0
+        'facial_hair': _extractSecondToLastSegment(currentFacialHair), // 0
+        'facial_hair_color': _extractLastSegment(currentFacialHair), // "" → '0'
         'clothing': _extractId(currentClothing),
         'accessories': _extractId(currentAccessories),
       };
@@ -250,7 +295,7 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
         Uri.parse('${ApiConfig.baseUrl}/api/users/$username/save/avatar/'),
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": "Token ${user.token}",
+          "Authorization": "Token $token",
         },
         body: json.encode(payload),
       );
@@ -268,6 +313,8 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
           newAccessories: currentAccessories,
         );
 
+        debugPrint(currentFacialHair);
+
         if (widget.isNewUser) {
           Navigator.pushReplacement(
             context,
@@ -277,7 +324,6 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
           Navigator.pop(context);
         }
       } else {
-        debugPrint('Error del backend: ${response.body}');
         if (!mounted) return;
         final l10n = AppLocalizations.of(context)!;
         _showError('${l10n.errorSavingAvatar}: ${response.statusCode}');

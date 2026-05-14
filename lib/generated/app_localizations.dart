@@ -1599,179 +1599,107 @@ abstract class AppLocalizations {
   /// **'Irradiació solar'**
   String get solarIrradianceLabel;
 
-  /// No description provided for @friends.
+  /// No description provided for @missionsTitle.
   ///
   /// In ca, this message translates to:
-  /// **'Amics'**
-  String get friends;
+  /// **'Missions'**
+  String get missionsTitle;
 
-  /// No description provided for @sent.
+  /// No description provided for @missionsSubtitle.
   ///
   /// In ca, this message translates to:
-  /// **'Enviades'**
-  String get sent;
+  /// **'Completa reptes i guanya monedes'**
+  String get missionsSubtitle;
 
-  /// No description provided for @received.
+  /// No description provided for @missionsCompleted.
   ///
   /// In ca, this message translates to:
-  /// **'Rebudes'**
-  String get received;
+  /// **'Completades'**
+  String get missionsCompleted;
 
-  /// No description provided for @sendFriendRequestTooltip.
+  /// No description provided for @missionsTagCompleted.
   ///
   /// In ca, this message translates to:
-  /// **'Enviar sol·licitud d\'amistat'**
-  String get sendFriendRequestTooltip;
+  /// **'Completada'**
+  String get missionsTagCompleted;
 
-  /// No description provided for @friendsCount.
+  /// No description provided for @missionsTagInProgress.
   ///
   /// In ca, this message translates to:
-  /// **'{count, plural, =1{1 amic} other{{count} amics}}'**
-  String friendsCount(int count);
+  /// **'En progrés'**
+  String get missionsTagInProgress;
 
-  /// No description provided for @friendsCountWithRequests.
+  /// No description provided for @missionsEmpty.
   ///
   /// In ca, this message translates to:
-  /// **'{friends, plural, =1{1 amic} other{{friends} amics}} · {requests, plural, =1{1 sol·licitud} other{{requests} sol·licituds}}'**
-  String friendsCountWithRequests(int friends, int requests);
+  /// **'No hi ha missions disponibles'**
+  String get missionsEmpty;
 
-  /// No description provided for @noFriendsYet.
+  /// No description provided for @missionsClaimSuccess.
   ///
   /// In ca, this message translates to:
-  /// **'Encara no tens amics.\nAfegeix-ne amb el botó superior!'**
-  String get noFriendsYet;
+  /// **'Recompensa reclamada!'**
+  String get missionsClaimSuccess;
 
-  /// No description provided for @noSentRequests.
+  /// No description provided for @missionsErrorAlreadyClaimed.
   ///
   /// In ca, this message translates to:
-  /// **'No tens cap sol·licitud enviada pendent.'**
-  String get noSentRequests;
+  /// **'Aquesta missió ja ha estat reclamada'**
+  String get missionsErrorAlreadyClaimed;
 
-  /// No description provided for @noReceivedRequests.
+  /// No description provided for @missionsErrorInProgress.
   ///
   /// In ca, this message translates to:
-  /// **'No tens cap sol·licitud d\'amistat pendent.'**
-  String get noReceivedRequests;
+  /// **'La missió encara no està completada'**
+  String get missionsErrorInProgress;
 
-  /// No description provided for @cancel.
+  /// No description provided for @missionsErrorNotFound.
   ///
   /// In ca, this message translates to:
-  /// **'Cancel·lar'**
-  String get cancel;
+  /// **'Missió no trobada'**
+  String get missionsErrorNotFound;
 
-  /// No description provided for @accept.
+  /// No description provided for @missionsErrorGeneric.
   ///
   /// In ca, this message translates to:
-  /// **'Acceptar'**
-  String get accept;
+  /// **'No s\'ha pogut reclamar la recompensa'**
+  String get missionsErrorGeneric;
 
-  /// No description provided for @reject.
+  /// No description provided for @missionsClaim.
   ///
   /// In ca, this message translates to:
-  /// **'Rebutjar'**
-  String get reject;
+  /// **'Reclamar 🎁'**
+  String get missionsClaim;
 
-  /// No description provided for @addFriend.
+  /// No description provided for @missionsActiveSectionTitle.
   ///
   /// In ca, this message translates to:
-  /// **'Afegir amic'**
-  String get addFriend;
+  /// **'Missions actives'**
+  String get missionsActiveSectionTitle;
 
-  /// No description provided for @addFriendSubtitle.
+  /// No description provided for @missionsClaimedSectionTitle.
   ///
   /// In ca, this message translates to:
-  /// **'Busca un usuari i envia-li una sol·licitud.'**
-  String get addFriendSubtitle;
+  /// **'Ja reclamades'**
+  String get missionsClaimedSectionTitle;
 
-  /// No description provided for @usernameHint.
+  /// No description provided for @missionsTagClaimed.
   ///
   /// In ca, this message translates to:
-  /// **'Nom d\'usuari...'**
-  String get usernameHint;
+  /// **'Reclamada'**
+  String get missionsTagClaimed;
 
-  /// No description provided for @visitGarden.
+  /// No description provided for @missionsInProgress.
   ///
   /// In ca, this message translates to:
-  /// **'Visita el seu jardí'**
-  String get visitGarden;
+  /// **'En curs'**
+  String get missionsInProgress;
 
-  /// No description provided for @sendRequest.
+  /// No description provided for @missionsRewardCoins.
   ///
   /// In ca, this message translates to:
-  /// **'Enviar sol·licitud'**
-  String get sendRequest;
-
-  /// No description provided for @tryAgain.
-  ///
-  /// In ca, this message translates to:
-  /// **'Tornar a intentar'**
-  String get tryAgain;
-
-  /// No description provided for @gardenLoadError.
-  ///
-  /// In ca, this message translates to:
-  /// **'No s\'ha pogut carregar el jardí.'**
-  String get gardenLoadError;
-
-  /// No description provided for @emptyFriendGarden.
-  ///
-  /// In ca, this message translates to:
-  /// **'Aquest jardí no té testos.'**
-  String get emptyFriendGarden;
-
-  /// No description provided for @likeGarden.
-  ///
-  /// In ca, this message translates to:
-  /// **'Fer m\'agrada'**
-  String get likeGarden;
-
-  /// No description provided for @likedGarden.
-  ///
-  /// In ca, this message translates to:
-  /// **'M\'agrada fet'**
-  String get likedGarden;
-
-  /// No description provided for @close.
-  ///
-  /// In ca, this message translates to:
-  /// **'Tancar'**
-  String get close;
-
-  /// No description provided for @friendOptions.
-  ///
-  /// In ca, this message translates to:
-  /// **'Opcions de l\'amic'**
-  String get friendOptions;
-
-  /// No description provided for @deleteFriend.
-  ///
-  /// In ca, this message translates to:
-  /// **'Eliminar amic'**
-  String get deleteFriend;
-
-  /// No description provided for @deleteFriendTitle.
-  ///
-  /// In ca, this message translates to:
-  /// **'Eliminar amic'**
-  String get deleteFriendTitle;
-
-  /// No description provided for @deleteFriendMessage.
-  ///
-  /// In ca, this message translates to:
-  /// **'Segur que vols eliminar @{username} de la teva llista d\'amics?'**
-  String deleteFriendMessage(String username);
-
-  /// No description provided for @delete.
-  ///
-  /// In ca, this message translates to:
-  /// **'Eliminar'**
-  String get delete;
-
-  /// No description provided for @friendRequestSentSuccessfully.
-  ///
-  /// In ca, this message translates to:
-  /// **'Sol·licitud enviada correctament'**
-  String get friendRequestSentSuccessfully;
+  /// **'monedes'**
+  String get missionsRewardCoins;
 }
 
 class _AppLocalizationsDelegate

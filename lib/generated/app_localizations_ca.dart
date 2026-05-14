@@ -796,116 +796,54 @@ class AppLocalizationsCa extends AppLocalizations {
   String get solarIrradianceLabel => 'Irradiació solar';
 
   @override
-  String get friends => 'Amics';
+  String get missionsTitle => 'Missions';
 
   @override
-  String get sent => 'Enviades';
+  String get missionsSubtitle => 'Completa reptes i guanya monedes';
 
   @override
-  String get received => 'Rebudes';
+  String get missionsCompleted => 'Completades';
 
   @override
-  String get sendFriendRequestTooltip => 'Enviar sol·licitud d\'amistat';
+  String get missionsTagCompleted => 'Completada';
 
   @override
-  String friendsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count amics',
-      one: '1 amic',
-    );
-    return '$_temp0';
-  }
+  String get missionsTagInProgress => 'En progrés';
 
   @override
-  String friendsCountWithRequests(int friends, int requests) {
-    String _temp0 = intl.Intl.pluralLogic(
-      friends,
-      locale: localeName,
-      other: '$friends amics',
-      one: '1 amic',
-    );
-    String _temp1 = intl.Intl.pluralLogic(
-      requests,
-      locale: localeName,
-      other: '$requests sol·licituds',
-      one: '1 sol·licitud',
-    );
-    return '$_temp0 · $_temp1';
-  }
+  String get missionsEmpty => 'No hi ha missions disponibles';
 
   @override
-  String get noFriendsYet =>
-      'Encara no tens amics.\nAfegeix-ne amb el botó superior!';
+  String get missionsClaimSuccess => 'Recompensa reclamada!';
 
   @override
-  String get noSentRequests => 'No tens cap sol·licitud enviada pendent.';
+  String get missionsErrorAlreadyClaimed =>
+      'Aquesta missió ja ha estat reclamada';
 
   @override
-  String get noReceivedRequests =>
-      'No tens cap sol·licitud d\'amistat pendent.';
+  String get missionsErrorInProgress => 'La missió encara no està completada';
 
   @override
-  String get cancel => 'Cancel·lar';
+  String get missionsErrorNotFound => 'Missió no trobada';
 
   @override
-  String get accept => 'Acceptar';
+  String get missionsErrorGeneric => 'No s\'ha pogut reclamar la recompensa';
 
   @override
-  String get reject => 'Rebutjar';
+  String get missionsClaim => 'Reclamar 🎁';
 
   @override
-  String get addFriend => 'Afegir amic';
+  String get missionsActiveSectionTitle => 'Missions actives';
 
   @override
-  String get addFriendSubtitle => 'Busca un usuari i envia-li una sol·licitud.';
+  String get missionsClaimedSectionTitle => 'Ja reclamades';
 
   @override
-  String get usernameHint => 'Nom d\'usuari...';
+  String get missionsTagClaimed => 'Reclamada';
 
   @override
-  String get visitGarden => 'Visita el seu jardí';
+  String get missionsInProgress => 'En curs';
 
   @override
-  String get sendRequest => 'Enviar sol·licitud';
-
-  @override
-  String get tryAgain => 'Tornar a intentar';
-
-  @override
-  String get gardenLoadError => 'No s\'ha pogut carregar el jardí.';
-
-  @override
-  String get emptyFriendGarden => 'Aquest jardí no té testos.';
-
-  @override
-  String get likeGarden => 'Fer m\'agrada';
-
-  @override
-  String get likedGarden => 'M\'agrada fet';
-
-  @override
-  String get close => 'Tancar';
-
-  @override
-  String get friendOptions => 'Opcions de l\'amic';
-
-  @override
-  String get deleteFriend => 'Eliminar amic';
-
-  @override
-  String get deleteFriendTitle => 'Eliminar amic';
-
-  @override
-  String deleteFriendMessage(String username) {
-    return 'Segur que vols eliminar @$username de la teva llista d\'amics?';
-  }
-
-  @override
-  String get delete => 'Eliminar';
-
-  @override
-  String get friendRequestSentSuccessfully =>
-      'Sol·licitud enviada correctament';
+  String get missionsRewardCoins => 'monedes';
 }

@@ -798,116 +798,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get solarIrradianceLabel => 'Solar irradiance';
 
   @override
-  String get friends => 'Friends';
+  String get missionsTitle => 'Missions';
 
   @override
-  String get sent => 'Sent';
+  String get missionsSubtitle => 'Complete challenges and earn coins';
 
   @override
-  String get received => 'Received';
+  String get missionsCompleted => 'Completed';
 
   @override
-  String get sendFriendRequestTooltip => 'Send friend request';
+  String get missionsTagCompleted => 'Completed';
 
   @override
-  String friendsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count friends',
-      one: '1 friend',
-    );
-    return '$_temp0';
-  }
+  String get missionsTagInProgress => 'In progress';
 
   @override
-  String friendsCountWithRequests(int friends, int requests) {
-    String _temp0 = intl.Intl.pluralLogic(
-      friends,
-      locale: localeName,
-      other: '$friends friends',
-      one: '1 friend',
-    );
-    String _temp1 = intl.Intl.pluralLogic(
-      requests,
-      locale: localeName,
-      other: '$requests requests',
-      one: '1 request',
-    );
-    return '$_temp0 · $_temp1';
-  }
+  String get missionsEmpty => 'No missions available';
 
   @override
-  String get noFriendsYet =>
-      'You don\'t have any friends yet.\nAdd one using the button above!';
+  String get missionsClaimSuccess => 'Reward claimed!';
 
   @override
-  String get noSentRequests => 'You don\'t have any pending sent requests.';
+  String get missionsErrorAlreadyClaimed =>
+      'This mission has already been claimed';
 
   @override
-  String get noReceivedRequests =>
-      'You don\'t have any pending friend requests.';
+  String get missionsErrorInProgress => 'The mission is not completed yet';
 
   @override
-  String get cancel => 'Cancel';
+  String get missionsErrorNotFound => 'Mission not found';
 
   @override
-  String get accept => 'Accept';
+  String get missionsErrorGeneric => 'Could not claim the reward';
 
   @override
-  String get reject => 'Reject';
+  String get missionsClaim => 'Claim 🎁';
 
   @override
-  String get addFriend => 'Add friend';
+  String get missionsActiveSectionTitle => 'Active missions';
 
   @override
-  String get addFriendSubtitle => 'Search for a user and send them a request.';
+  String get missionsClaimedSectionTitle => 'Already claimed';
 
   @override
-  String get usernameHint => 'Username...';
+  String get missionsTagClaimed => 'Claimed';
 
   @override
-  String get visitGarden => 'Visit their garden';
+  String get missionsInProgress => 'In progress';
 
   @override
-  String get sendRequest => 'Send request';
-
-  @override
-  String get tryAgain => 'Try again';
-
-  @override
-  String get gardenLoadError => 'The garden could not be loaded.';
-
-  @override
-  String get emptyFriendGarden => 'This garden has no pots.';
-
-  @override
-  String get likeGarden => 'Like garden';
-
-  @override
-  String get likedGarden => 'Garden liked';
-
-  @override
-  String get close => 'Close';
-
-  @override
-  String get friendOptions => 'Friend options';
-
-  @override
-  String get deleteFriend => 'Remove friend';
-
-  @override
-  String get deleteFriendTitle => 'Remove friend';
-
-  @override
-  String deleteFriendMessage(String username) {
-    return 'Are you sure you want to remove @$username from your friends list?';
-  }
-
-  @override
-  String get delete => 'Remove';
-
-  @override
-  String get friendRequestSentSuccessfully =>
-      'Friend request sent successfully';
+  String get missionsRewardCoins => 'coins';
 }

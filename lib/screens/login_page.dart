@@ -136,6 +136,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> loginWithGoogle(BuildContext context) async {
     try {
+      await _googleSignIn.signOut(); // we force account selector
+
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
@@ -463,7 +465,7 @@ class _LoginPageState extends State<LoginPage> {
         newEye: cleanAvatarUrl(avatar['eye']),
         newExpression: cleanAvatarUrl(avatar['expression']),
         newHair: cleanAvatarUrl(avatar['hair'] ?? ''),
-        newFacialHair: cleanAvatarUrl(avatar['facial_hair'] ?? ''),
+        newFacialHair: cleanAvatarUrl(avatar['facialHair'] ?? ''),
         newClothing: cleanAvatarUrl(avatar['clothing']),
         newAccessories: cleanAvatarUrl(avatar['accessories'] ?? ''),
       );
