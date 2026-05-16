@@ -367,13 +367,13 @@ abstract class AppLocalizations {
   /// No description provided for @shopSeedsTab.
   ///
   /// In ca, this message translates to:
-  /// **'Llavors 🌱'**
+  /// **'Llavors'**
   String get shopSeedsTab;
 
   /// No description provided for @shopOtherTab.
   ///
   /// In ca, this message translates to:
-  /// **'Altres 🛒'**
+  /// **'Altres'**
   String get shopOtherTab;
 
   /// No description provided for @shopLoadError.
@@ -816,7 +816,7 @@ abstract class AppLocalizations {
   /// No description provided for @photoTreeMode.
   ///
   /// In ca, this message translates to:
-  /// **'Arbre'**
+  /// **'Fulla'**
   String get photoTreeMode;
 
   /// No description provided for @photoFlowerMode.
@@ -828,7 +828,7 @@ abstract class AppLocalizations {
   /// No description provided for @photoTreeModeSelected.
   ///
   /// In ca, this message translates to:
-  /// **'Mode arbre seleccionat'**
+  /// **'Mode fulla seleccionat'**
   String get photoTreeModeSelected;
 
   /// No description provided for @photoFlowerModeSelected.
@@ -1874,6 +1874,72 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Sol·licitud enviada correctament'**
   String get friendRequestSentSuccessfully;
+
+  /// No description provided for @loginEmptyFields.
+  ///
+  /// In ca, this message translates to:
+  /// **'Introdueix el nom d\'usuari i la contrasenya.'**
+  String get loginEmptyFields;
+
+  /// No description provided for @loginInvalidCredentials.
+  ///
+  /// In ca, this message translates to:
+  /// **'Nom d\'usuari o contrasenya incorrectes.'**
+  String get loginInvalidCredentials;
+
+  /// No description provided for @loginServerError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut iniciar sessió. Torna-ho a provar més tard.'**
+  String get loginServerError;
+
+  /// No description provided for @loginConnectionError.
+  ///
+  /// In ca, this message translates to:
+  /// **'No s\'ha pogut connectar amb el servidor.'**
+  String get loginConnectionError;
+
+  /// No description provided for @calendarAllCategories.
+  ///
+  /// In ca, this message translates to:
+  /// **'Totes les categories'**
+  String get calendarAllCategories;
+
+  /// No description provided for @calendarFilters.
+  ///
+  /// In ca, this message translates to:
+  /// **'Filtres'**
+  String get calendarFilters;
+
+  /// No description provided for @calendarCategory.
+  ///
+  /// In ca, this message translates to:
+  /// **'Categoria'**
+  String get calendarCategory;
+
+  /// No description provided for @calendarAll.
+  ///
+  /// In ca, this message translates to:
+  /// **'Totes'**
+  String get calendarAll;
+
+  /// No description provided for @calendarClear.
+  ///
+  /// In ca, this message translates to:
+  /// **'Netejar'**
+  String get calendarClear;
+
+  /// No description provided for @calendarDayTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dia {day} — {month}'**
+  String calendarDayTitle(int day, String month);
+
+  /// No description provided for @calendarFiltersTooltip.
+  ///
+  /// In ca, this message translates to:
+  /// **'Filtres'**
+  String get calendarFiltersTooltip;
 }
 
 class _AppLocalizationsDelegate

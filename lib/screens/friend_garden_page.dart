@@ -37,6 +37,26 @@ class _FriendGardenPageState extends State<FriendGardenPage> {
   void initState() {
     super.initState();
     _loadGarden();
+    _loadLikeState();
+  }
+
+  Future<void> _loadLikeState() async {
+    final token = Provider.of<UserModel>(context, listen: false).token;
+
+    try {
+      final liked = await _amicsService.getGardenLikeState(
+        username: widget.friendUsername,
+        token: token,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _liked = liked;
+      });
+    } catch (_) {
+      // No bloquegem la pantalla si falla carregar l'estat del like.
+    }
   }
 
   void _loadGarden() {
@@ -48,21 +68,30 @@ class _FriendGardenPageState extends State<FriendGardenPage> {
 
   Future<void> _giveLike() async {
     if (_likeSending) return;
+
     final token = Provider.of<UserModel>(context, listen: false).token;
+
     setState(() => _likeSending = true);
+
     try {
-      final msg = await _amicsService.likeGarden(
+      final newLikeState = await _amicsService.likeGarden(
         username: widget.friendUsername,
         token: token,
       );
+
       if (!mounted) return;
-      setState(() => _liked = true);
-      _showSnack(msg, success: true);
+
+      setState(() {
+        _liked = newLikeState;
+      });
     } catch (e) {
       if (!mounted) return;
+
       _showSnack(e.toString().replaceFirst('Exception: ', ''), success: false);
     } finally {
-      if (mounted) setState(() => _likeSending = false);
+      if (mounted) {
+        setState(() => _likeSending = false);
+      }
     }
   }
 

@@ -146,10 +146,10 @@ class AppLocalizationsCa extends AppLocalizations {
   String get shopTitle => 'Botiga';
 
   @override
-  String get shopSeedsTab => 'Llavors 🌱';
+  String get shopSeedsTab => 'Llavors';
 
   @override
-  String get shopOtherTab => 'Altres 🛒';
+  String get shopOtherTab => 'Altres';
 
   @override
   String get shopLoadError => 'No s\'han pogut carregar els productes.';
@@ -390,13 +390,13 @@ class AppLocalizationsCa extends AppLocalizations {
   String get photoTakePlantPicture => 'Fotografia la planta';
 
   @override
-  String get photoTreeMode => 'Arbre';
+  String get photoTreeMode => 'Fulla';
 
   @override
   String get photoFlowerMode => 'Flor';
 
   @override
-  String get photoTreeModeSelected => 'Mode arbre seleccionat';
+  String get photoTreeModeSelected => 'Mode fulla seleccionat';
 
   @override
   String get photoFlowerModeSelected => 'Mode flor seleccionat';
@@ -960,4 +960,43 @@ class AppLocalizationsCa extends AppLocalizations {
   @override
   String get friendRequestSentSuccessfully =>
       'Sol·licitud enviada correctament';
+
+  @override
+  String get loginEmptyFields =>
+      'Introdueix el nom d\'usuari i la contrasenya.';
+
+  @override
+  String get loginInvalidCredentials =>
+      'Nom d\'usuari o contrasenya incorrectes.';
+
+  @override
+  String get loginServerError =>
+      'No s\'ha pogut iniciar sessió. Torna-ho a provar més tard.';
+
+  @override
+  String get loginConnectionError =>
+      'No s\'ha pogut connectar amb el servidor.';
+
+  @override
+  String get calendarAllCategories => 'Totes les categories';
+
+  @override
+  String get calendarFilters => 'Filtres';
+
+  @override
+  String get calendarCategory => 'Categoria';
+
+  @override
+  String get calendarAll => 'Totes';
+
+  @override
+  String get calendarClear => 'Netejar';
+
+  @override
+  String calendarDayTitle(int day, String month) {
+    return 'Dia $day — $month';
+  }
+
+  @override
+  String get calendarFiltersTooltip => 'Filtres';
 }

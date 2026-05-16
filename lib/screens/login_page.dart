@@ -12,6 +12,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../models/weather_provider.dart';
+import 'package:meteo_garden/models/plantes_desbl.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   final storage = const FlutterSecureStorage();
 
   Locale _loginLocale = const Locale('ca');
+  String? _loginErrorMessage;
 
   AppLocalizations get _t => lookupAppLocalizations(_loginLocale);
 
@@ -104,33 +107,57 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _login() async {
+  Future<void> _login() async {
+    final t = _t;
+
+    _clearLoginError();
+
+    final username = usernameController.text.trim();
+    final password = passwordController.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      _showLoginError(t.loginEmptyFields);
+      return;
+    }
+
     final url = Uri.parse('${ApiConfig.baseUrl}/api/login/');
 
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "username": usernameController.text,
-        "password": passwordController.text,
-      }),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"username": username, "password": password}),
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      Provider.of<UserModel>(context, listen: false).setToken(data['token']);
-      await storage.write(key: 'auth_token', value: data['token']);
-      await _fetchAndSaveProfile(data['token']);
-      if (!context.mounted) return;
-      await _checkAvatar();
-      // el go to home es fa a la funcio de checkavatar, per que no es sobreposin el canvis de pantalla
-    } else {
-      debugPrint("Error: ${response.body}");
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(_t.loginError)));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        Provider.of<UserModel>(context, listen: false).setToken(data['token']);
+        await storage.write(key: 'auth_token', value: data['token']);
+
+        await _fetchAndSaveProfile(data['token']);
+
+        if (!context.mounted) return;
+
+        await _checkAvatar();
+        return;
+      }
+
+      if (response.statusCode == 400 || response.statusCode == 401) {
+        _showLoginError(t.loginInvalidCredentials);
+        return;
+      }
+
+      debugPrint("Login error ${response.statusCode}: ${response.body}");
+      _showLoginError(t.loginServerError);
+    } catch (e) {
+      debugPrint("Login connection error: $e");
+
+      if (!mounted) return;
+
+      _showLoginError(t.loginConnectionError);
     }
   }
 
@@ -284,7 +311,48 @@ class _LoginPageState extends State<LoginPage> {
                               obscureText: true,
                             ),
 
-                            const SizedBox(height: 28),
+                            const SizedBox(height: 20),
+
+                            if (_loginErrorMessage != null) ...[
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.red.withValues(alpha: 0.08),
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: Colors.red.withValues(alpha: 0.35),
+                                  ),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Icon(
+                                      Icons.error_outline_rounded,
+                                      color: Colors.red,
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        _loginErrorMessage!,
+                                        style: const TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 13.5,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.3,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 14),
+                            ] else
+                              const SizedBox(height: 8),
 
                             FilledButton.icon(
                               key: const Key('login_button'),
@@ -410,6 +478,14 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _fetchAndSaveProfile(String token) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
 
+    final userProvider = Provider.of<UserModel>(context, listen: false);
+    final plantProvider = Provider.of<PlantProvider>(context, listen: false);
+    final weatherProvider = Provider.of<WeatherProvider>(
+      context,
+      listen: false,
+    );
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     final response = await http.get(
       url,
       headers: {
@@ -420,9 +496,6 @@ class _LoginPageState extends State<LoginPage> {
 
     if (!mounted) return;
 
-    debugPrint("PROFILE STATUS: ${response.statusCode}");
-    debugPrint("PROFILE BODY: ${response.body}");
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
@@ -430,7 +503,7 @@ class _LoginPageState extends State<LoginPage> {
           .map((g) => g['gardenName'] as String)
           .toList();
 
-      Provider.of<UserModel>(context, listen: false).setProfile(
+      userProvider.setProfile(
         newUsername: data['username'] ?? '',
         newEmail: data['email'] ?? '',
         newCity: data['city'] ?? '',
@@ -440,10 +513,20 @@ class _LoginPageState extends State<LoginPage> {
         newMonedes: data['numCoins'] ?? 0,
         newGardens: gardenNames,
       );
+
+      await plantProvider.loadPlants(userProvider);
+
+      if (!mounted) return;
+
+      final city = data['city'] ?? '';
+
+      if (city.toString().trim().isNotEmpty) {
+        weatherProvider.fetchWeather(city, forceRefresh: true);
+      }
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(_t.profileLoadError)));
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text(_t.profileLoadError)),
+      );
     }
   }
 
@@ -482,6 +565,24 @@ class _LoginPageState extends State<LoginPage> {
   String cleanAvatarUrl(String url) {
     if (url.isEmpty) return url;
     return url.replaceAll('.com//', '.com/');
+  }
+
+  void _showLoginError(String message) {
+    if (!mounted) return;
+
+    setState(() {
+      _loginErrorMessage = message;
+    });
+  }
+
+  void _clearLoginError() {
+    if (!mounted) return;
+
+    if (_loginErrorMessage != null) {
+      setState(() {
+        _loginErrorMessage = null;
+      });
+    }
   }
 }
 

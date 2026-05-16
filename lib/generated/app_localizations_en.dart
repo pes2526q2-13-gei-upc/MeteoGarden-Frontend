@@ -145,10 +145,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shopTitle => 'Shop';
 
   @override
-  String get shopSeedsTab => 'Seeds 🌱';
+  String get shopSeedsTab => 'Seeds';
 
   @override
-  String get shopOtherTab => 'Other 🛒';
+  String get shopOtherTab => 'Other';
 
   @override
   String get shopLoadError => 'Could not load products.';
@@ -389,13 +389,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photoTakePlantPicture => 'Take a picture of the plant';
 
   @override
-  String get photoTreeMode => 'Tree';
+  String get photoTreeMode => 'Leaf';
 
   @override
   String get photoFlowerMode => 'Flower';
 
   @override
-  String get photoTreeModeSelected => 'Tree mode selected';
+  String get photoTreeModeSelected => 'Leaf mode selected';
 
   @override
   String get photoFlowerModeSelected => 'Flower mode selected';
@@ -962,4 +962,39 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get friendRequestSentSuccessfully =>
       'Friend request sent successfully';
+
+  @override
+  String get loginEmptyFields => 'Enter your username and password.';
+
+  @override
+  String get loginInvalidCredentials => 'Incorrect username or password.';
+
+  @override
+  String get loginServerError => 'Could not log in. Please try again later.';
+
+  @override
+  String get loginConnectionError => 'Could not connect to the server.';
+
+  @override
+  String get calendarAllCategories => 'All categories';
+
+  @override
+  String get calendarFilters => 'Filters';
+
+  @override
+  String get calendarCategory => 'Category';
+
+  @override
+  String get calendarAll => 'All';
+
+  @override
+  String get calendarClear => 'Clear';
+
+  @override
+  String calendarDayTitle(int day, String month) {
+    return 'Day $day — $month';
+  }
+
+  @override
+  String get calendarFiltersTooltip => 'Filters';
 }

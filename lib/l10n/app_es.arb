@@ -60,8 +60,8 @@
   "albumNumber": "plantas descubiertas",
 
   "shopTitle": "Tienda",
-  "shopSeedsTab": "Semillas 🌱",
-  "shopOtherTab": "Otros 🛒",
+  "shopSeedsTab": "Semillas",
+  "shopOtherTab": "Otros",
   "shopLoadError": "No se han podido cargar los productos.",
   "shopConnectionError": "Error de conexión o procesando los datos.",
   "shopPurchaseProcessingError": "Error al procesar la compra.",
@@ -190,9 +190,9 @@
   "photoCameraInitError": "No se ha podido inicializar la cámara.",
   "photoUnexpectedError": "Se ha producido un error inesperado.",
   "photoTakePlantPicture": "Fotografía la planta",
-  "photoTreeMode": "Árbol",
+  "photoTreeMode": "Hoja",
   "photoFlowerMode": "Flor",
-  "photoTreeModeSelected": "Modo árbol seleccionado",
+  "photoTreeModeSelected": "Modo hoja seleccionado",
   "photoFlowerModeSelected": "Modo flor seleccionado",
   "photoIdentifyingPlant": "Identificando planta...",
   "photoCenterPlantInFrame": "Centra la planta dentro del marco",
@@ -424,6 +424,28 @@
   }
 },
 "delete": "Eliminar",
-"friendRequestSentSuccessfully": "Solicitud enviada correctamente"
+"friendRequestSentSuccessfully": "Solicitud enviada correctamente",
+"loginEmptyFields": "Introduce el nombre de usuario y la contraseña.",
+"loginInvalidCredentials": "Nombre de usuario o contraseña incorrectos.",
+"loginServerError": "No se ha podido iniciar sesión. Inténtalo de nuevo más tarde.",
+"loginConnectionError": "No se ha podido conectar con el servidor.",
+
+"calendarAllCategories": "Todas las categorías",
+  "calendarFilters": "Filtros",
+  "calendarCategory": "Categoría",
+  "calendarAll": "Todas",
+  "calendarClear": "Limpiar",
+  "calendarDayTitle": "Día {day} — {month}",
+  "@calendarDayTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarFiltersTooltip": "Filtros"
 }
 

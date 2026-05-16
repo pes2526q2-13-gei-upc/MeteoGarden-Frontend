@@ -60,8 +60,8 @@
   "albumNumber": "plantes descobertes",
 
 "shopTitle": "Botiga",
-"shopSeedsTab": "Llavors 🌱",
-"shopOtherTab": "Altres 🛒",
+"shopSeedsTab": "Llavors",
+"shopOtherTab": "Altres",
 "shopLoadError": "No s'han pogut carregar els productes.",
 "shopConnectionError": "Error de connexió o processant les dades.",
 "shopPurchaseProcessingError": "Error en processar la compra.",
@@ -190,9 +190,9 @@
 "photoCameraInitError": "No s’ha pogut inicialitzar la càmera.",
 "photoUnexpectedError": "S’ha produït un error inesperat.",
 "photoTakePlantPicture": "Fotografia la planta",
-"photoTreeMode": "Arbre",
+"photoTreeMode": "Fulla",
 "photoFlowerMode": "Flor",
-"photoTreeModeSelected": "Mode arbre seleccionat",
+"photoTreeModeSelected": "Mode fulla seleccionat",
 "photoFlowerModeSelected": "Mode flor seleccionat",
 "photoIdentifyingPlant": "Identificant planta...",
 "photoCenterPlantInFrame": "Centra la planta dins el marc",
@@ -426,6 +426,29 @@
   }
 },
 "delete": "Eliminar",
-"friendRequestSentSuccessfully": "Sol·licitud enviada correctament"
+"friendRequestSentSuccessfully": "Sol·licitud enviada correctament",
+
+"loginEmptyFields": "Introdueix el nom d'usuari i la contrasenya.",
+"loginInvalidCredentials": "Nom d'usuari o contrasenya incorrectes.",
+"loginServerError": "No s'ha pogut iniciar sessió. Torna-ho a provar més tard.",
+"loginConnectionError": "No s'ha pogut connectar amb el servidor.",
+
+"calendarAllCategories": "Totes les categories",
+  "calendarFilters": "Filtres",
+  "calendarCategory": "Categoria",
+  "calendarAll": "Totes",
+  "calendarClear": "Netejar",
+  "calendarDayTitle": "Dia {day} — {month}",
+  "@calendarDayTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarFiltersTooltip": "Filtres"
 }
 

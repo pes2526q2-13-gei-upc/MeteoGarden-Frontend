@@ -146,10 +146,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shopTitle => 'Tienda';
 
   @override
-  String get shopSeedsTab => 'Semillas 🌱';
+  String get shopSeedsTab => 'Semillas';
 
   @override
-  String get shopOtherTab => 'Otros 🛒';
+  String get shopOtherTab => 'Otros';
 
   @override
   String get shopLoadError => 'No se han podido cargar los productos.';
@@ -391,13 +391,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get photoTakePlantPicture => 'Fotografía la planta';
 
   @override
-  String get photoTreeMode => 'Árbol';
+  String get photoTreeMode => 'Hoja';
 
   @override
   String get photoFlowerMode => 'Flor';
 
   @override
-  String get photoTreeModeSelected => 'Modo árbol seleccionado';
+  String get photoTreeModeSelected => 'Modo hoja seleccionado';
 
   @override
   String get photoFlowerModeSelected => 'Modo flor seleccionado';
@@ -959,4 +959,43 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get friendRequestSentSuccessfully => 'Solicitud enviada correctamente';
+
+  @override
+  String get loginEmptyFields =>
+      'Introduce el nombre de usuario y la contraseña.';
+
+  @override
+  String get loginInvalidCredentials =>
+      'Nombre de usuario o contraseña incorrectos.';
+
+  @override
+  String get loginServerError =>
+      'No se ha podido iniciar sesión. Inténtalo de nuevo más tarde.';
+
+  @override
+  String get loginConnectionError =>
+      'No se ha podido conectar con el servidor.';
+
+  @override
+  String get calendarAllCategories => 'Todas las categorías';
+
+  @override
+  String get calendarFilters => 'Filtros';
+
+  @override
+  String get calendarCategory => 'Categoría';
+
+  @override
+  String get calendarAll => 'Todas';
+
+  @override
+  String get calendarClear => 'Limpiar';
+
+  @override
+  String calendarDayTitle(int day, String month) {
+    return 'Día $day — $month';
+  }
+
+  @override
+  String get calendarFiltersTooltip => 'Filtros';
 }

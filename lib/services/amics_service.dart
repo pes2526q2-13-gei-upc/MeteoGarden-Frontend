@@ -27,8 +27,28 @@ class AmicsService {
     final response = await http.get(uri, headers: _headers(token));
 
     _checkStatus(response);
-    final List<dynamic> data = jsonDecode(response.body);
-    return data.cast<Map<String, dynamic>>();
+
+    final decoded = jsonDecode(response.body);
+
+    List<dynamic> rawFriends;
+
+    if (decoded is Map<String, dynamic>) {
+      rawFriends = decoded['friends'] as List<dynamic>? ?? [];
+    } else if (decoded is List) {
+      rawFriends = decoded;
+    } else {
+      rawFriends = [];
+    }
+
+    return rawFriends.map<Map<String, dynamic>>((item) {
+      final friend = Map<String, dynamic>.from(item as Map);
+
+      return {
+        'username': friend['username'],
+        'garden_name':
+            friend['garden_name'] ?? friend['garden'] ?? friend['username'],
+      };
+    }).toList();
   }
 
   /// Envia una sol·licitud d'amistat a [requestedUsername].
@@ -199,9 +219,9 @@ class AmicsService {
     throw Exception(body['error'] ?? 'Error desconegut');
   }
 
-  // LIKES
-  /// Dona un "like" al jardí de l'amic [username].
-  Future<String> likeGarden({
+  /// Dona o treu un "like" al jardí de l'amic [username].
+  /// Retorna l'estat final del like: true = like posat, false = like tret.
+  Future<bool> likeGarden({
     required String username,
     required String token,
   }) async {
@@ -209,9 +229,28 @@ class AmicsService {
     final response = await http.post(uri, headers: _headers(token));
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
+
     if (response.statusCode == 200) {
-      return body['success'] as String;
+      return body['state'] == true;
     }
+
+    throw Exception(body['error'] ?? 'Error desconegut');
+  }
+
+  /// Consulta si l'usuari autenticat ja ha fet like al jardí de [username].
+  Future<bool> getGardenLikeState({
+    required String username,
+    required String token,
+  }) async {
+    final uri = Uri.parse('${ApiConfig.baseUrl}/api/friends/likes/$username/');
+    final response = await http.get(uri, headers: _headers(token));
+
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+
+    if (response.statusCode == 200) {
+      return body['state'] == true;
+    }
+
     throw Exception(body['error'] ?? 'Error desconegut');
   }
 
