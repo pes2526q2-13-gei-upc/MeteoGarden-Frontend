@@ -11,10 +11,7 @@ void main() {
       final result = PlantingResult.fromJson({
         'message': 'Plantada correctament',
         'pot_number': 1,
-        'plant': {
-          'scientificName': 'Mentha spicata',
-          'commonName': 'Menta',
-        },
+        'plant': {'scientificName': 'Mentha spicata', 'commonName': 'Menta'},
         'growthPhase': 'Seedling',
         'healthLevel': 90,
         'waterLevel': 70.5,
@@ -51,7 +48,8 @@ void main() {
         'water_level': occupied ? 60 : null,
         'planted_at': occupied ? '2026-05-10T09:00:00' : null,
         'last_watered_at': occupied ? '2026-05-15T12:30:00' : null,
-        'plant': plant ??
+        'plant':
+            plant ??
             (occupied
                 ? {
                     'scientific_name': 'Mentha spicata',
@@ -131,10 +129,7 @@ void main() {
             contains('/api/users/jana/gardens/Jardi%20principal/pots/1/plant/'),
           );
 
-          return http.Response(
-            jsonEncode(potJson(potNumber: 1)),
-            200,
-          );
+          return http.Response(jsonEncode(potJson(potNumber: 1)), 200);
         }),
       );
 
@@ -152,10 +147,7 @@ void main() {
     test('fetchPotStatus llença message si statusCode no és 200', () async {
       final service = GardenService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'message': 'Test no trobat'}),
-            404,
-          );
+          return http.Response(jsonEncode({'message': 'Test no trobat'}), 404);
         }),
       );
 
@@ -182,10 +174,7 @@ void main() {
             contains('/api/users/jana/gardens/Jardi%20principal/pots/1/water/'),
           );
 
-          return http.Response(
-            jsonEncode({'message': 'Planta regada'}),
-            200,
-          );
+          return http.Response(jsonEncode({'message': 'Planta regada'}), 200);
         }),
       );
 
@@ -198,29 +187,29 @@ void main() {
       expect(message, 'Planta regada');
     });
 
-    test('waterPlant retorna missatge per defecte si no hi ha message', () async {
-      final service = GardenService(
-        client: MockClient((request) async {
-          return http.Response(jsonEncode({}), 200);
-        }),
-      );
+    test(
+      'waterPlant retorna missatge per defecte si no hi ha message',
+      () async {
+        final service = GardenService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode({}), 200);
+          }),
+        );
 
-      final message = await service.waterPlant(
-        username: username,
-        gardenName: gardenName,
-        potNumber: 1,
-      );
+        final message = await service.waterPlant(
+          username: username,
+          gardenName: gardenName,
+          potNumber: 1,
+        );
 
-      expect(message, 'Plant watered successfully.');
-    });
+        expect(message, 'Plant watered successfully.');
+      },
+    );
 
     test('waterPlant llença error si statusCode no és 200', () async {
       final service = GardenService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'error': 'No es pot regar'}),
-            400,
-          );
+          return http.Response(jsonEncode({'error': 'No es pot regar'}), 400);
         }),
       );
 
@@ -360,10 +349,7 @@ void main() {
           expect(body['garden_name'], gardenName);
 
           return http.Response(
-            jsonEncode({
-              'isInstant': true,
-              'product': 'Fertilitzant',
-            }),
+            jsonEncode({'isInstant': true, 'product': 'Fertilitzant'}),
             200,
           );
         }),
@@ -383,10 +369,7 @@ void main() {
       final service = GardenService(
         client: MockClient((request) async {
           return http.Response(
-            jsonEncode({
-              'isInstant': false,
-              'product': 'Escut',
-            }),
+            jsonEncode({'isInstant': false, 'product': 'Escut'}),
             200,
           );
         }),
@@ -405,10 +388,7 @@ void main() {
     test('applyPotion usa productName si product no ve al body', () async {
       final service = GardenService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'isInstant': true}),
-            200,
-          );
+          return http.Response(jsonEncode({'isInstant': true}), 200);
         }),
       );
 
@@ -449,30 +429,30 @@ void main() {
       );
     });
 
-    test('applyPotion llença error si body conté error encara que statusCode sigui 200', () async {
-      final service = GardenService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'error': 'Error aplicant'}),
-            200,
-          );
-        }),
-      );
+    test(
+      'applyPotion llença error si body conté error encara que statusCode sigui 200',
+      () async {
+        final service = GardenService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode({'error': 'Error aplicant'}), 200);
+          }),
+        );
 
-      expect(
-        () => service.applyPotion(
-          username: username,
-          gardenName: gardenName,
-          potNumber: 1,
-          productName: 'Fertilitzant',
-        ),
-        throwsA(
-          predicate(
-            (e) => e is Exception && e.toString().contains('Error aplicant'),
+        expect(
+          () => service.applyPotion(
+            username: username,
+            gardenName: gardenName,
+            potNumber: 1,
+            productName: 'Fertilitzant',
           ),
-        ),
-      );
-    });
+          throwsA(
+            predicate(
+              (e) => e is Exception && e.toString().contains('Error aplicant'),
+            ),
+          ),
+        );
+      },
+    );
 
     test('plantSeed retorna PlantingResult amb statusCode 200', () async {
       final service = GardenService(
@@ -480,7 +460,9 @@ void main() {
           expect(request.method, 'POST');
           expect(
             request.url.path,
-            contains('/api/users/jana/gardens/Jardi%20principal/pots/1/planting/'),
+            contains(
+              '/api/users/jana/gardens/Jardi%20principal/pots/1/planting/',
+            ),
           );
 
           final body = jsonDecode(request.body) as Map<String, dynamic>;
@@ -559,10 +541,7 @@ void main() {
     test('plantSeed llença error si statusCode no és 200 ni 201', () async {
       final service = GardenService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'message': 'No tens llavors'}),
-            400,
-          );
+          return http.Response(jsonEncode({'message': 'No tens llavors'}), 400);
         }),
       );
 
@@ -587,7 +566,9 @@ void main() {
           expect(request.method, 'POST');
           expect(
             request.url.path,
-            contains('/api/users/jana/gardens/Jardi%20principal/pots/1/collect/'),
+            contains(
+              '/api/users/jana/gardens/Jardi%20principal/pots/1/collect/',
+            ),
           );
 
           final body = jsonDecode(request.body) as Map<String, dynamic>;
@@ -610,22 +591,25 @@ void main() {
       expect(message, 'Planta recollida');
     });
 
-    test('collectPlant retorna missatge per defecte si no hi ha message', () async {
-      final service = GardenService(
-        client: MockClient((request) async {
-          return http.Response(jsonEncode({}), 200);
-        }),
-      );
+    test(
+      'collectPlant retorna missatge per defecte si no hi ha message',
+      () async {
+        final service = GardenService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode({}), 200);
+          }),
+        );
 
-      final message = await service.collectPlant(
-        username: username,
-        gardenName: gardenName,
-        potNumber: 1,
-        scientificName: 'Mentha spicata',
-      );
+        final message = await service.collectPlant(
+          username: username,
+          gardenName: gardenName,
+          potNumber: 1,
+          scientificName: 'Mentha spicata',
+        );
 
-      expect(message, 'Planta recollida correctament.');
-    });
+        expect(message, 'Planta recollida correctament.');
+      },
+    );
 
     test('collectPlant llença error si statusCode no és 200', () async {
       final service = GardenService(
@@ -659,7 +643,9 @@ void main() {
           expect(request.method, 'DELETE');
           expect(
             request.url.path,
-            contains('/api/users/jana/gardens/Jardi%20principal/pots/1/delete/'),
+            contains(
+              '/api/users/jana/gardens/Jardi%20principal/pots/1/delete/',
+            ),
           );
 
           return http.Response(
@@ -678,21 +664,24 @@ void main() {
       expect(message, 'Planta eliminada');
     });
 
-    test('deletePlant retorna missatge per defecte si no hi ha message', () async {
-      final service = GardenService(
-        client: MockClient((request) async {
-          return http.Response(jsonEncode({}), 200);
-        }),
-      );
+    test(
+      'deletePlant retorna missatge per defecte si no hi ha message',
+      () async {
+        final service = GardenService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode({}), 200);
+          }),
+        );
 
-      final message = await service.deletePlant(
-        username: username,
-        gardenName: gardenName,
-        potNumber: 1,
-      );
+        final message = await service.deletePlant(
+          username: username,
+          gardenName: gardenName,
+          potNumber: 1,
+        );
 
-      expect(message, 'Plant deleted successfully.');
-    });
+        expect(message, 'Plant deleted successfully.');
+      },
+    );
 
     test('deletePlant llença error si statusCode no és 200', () async {
       final service = GardenService(

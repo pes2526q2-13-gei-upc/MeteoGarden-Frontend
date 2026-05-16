@@ -35,10 +35,7 @@ Map<String, List<String>> fakeAvatarOptions() {
       'https://example.com/avatar/clothing/1.png',
       'https://example.com/avatar/clothing/2.png',
     ],
-    'Accessories': [
-      'none',
-      'https://example.com/avatar/accessories/1.png',
-    ],
+    'Accessories': ['none', 'https://example.com/avatar/accessories/1.png'],
   };
 }
 
@@ -111,13 +108,10 @@ Future<void> pumpAvatarEditorPage(
 }
 
 void main() {
-  testWidgets('mostra loading inicial si no es passen opcions fake',
-      (tester) async {
-    await tester.pumpWidget(
-      makeTestableWidget(
-        initialOptions: null,
-      ),
-    );
+  testWidgets('mostra loading inicial si no es passen opcions fake', (
+    tester,
+  ) async {
+    await tester.pumpWidget(makeTestableWidget(initialOptions: null));
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
@@ -137,8 +131,9 @@ void main() {
     expect(find.byType(DefaultTabController), findsOneWidget);
   });
 
-  testWidgets('mostra editor d’avatar per editar usuari existent',
-      (tester) async {
+  testWidgets('mostra editor d’avatar per editar usuari existent', (
+    tester,
+  ) async {
     await pumpAvatarEditorPage(
       tester,
       isNewUser: false,
@@ -153,10 +148,7 @@ void main() {
   });
 
   testWidgets('mostra les pestanyes principals', (tester) async {
-    await pumpAvatarEditorPage(
-      tester,
-      initialOptions: fakeAvatarOptions(),
-    );
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
     final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
@@ -170,20 +162,14 @@ void main() {
   });
 
   testWidgets('mostra opcions de body a la primera pestanya', (tester) async {
-    await pumpAvatarEditorPage(
-      tester,
-      initialOptions: fakeAvatarOptions(),
-    );
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
     expect(find.byType(GridView), findsOneWidget);
     expect(find.byIcon(Icons.broken_image), findsWidgets);
   });
 
   testWidgets('pot seleccionar una opció de body', (tester) async {
-    await pumpAvatarEditorPage(
-      tester,
-      initialOptions: fakeAvatarOptions(),
-    );
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
     final firstOption = find.byType(GestureDetector).last;
 
@@ -194,10 +180,7 @@ void main() {
   });
 
   testWidgets('mostra menú de colors a la pestanya Hair', (tester) async {
-    await pumpAvatarEditorPage(
-      tester,
-      initialOptions: fakeAvatarOptions(),
-    );
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
     final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
@@ -209,10 +192,7 @@ void main() {
   });
 
   testWidgets('pot canviar color de cabell', (tester) async {
-    await pumpAvatarEditorPage(
-      tester,
-      initialOptions: fakeAvatarOptions(),
-    );
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
     final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
@@ -227,12 +207,10 @@ void main() {
     expect(find.byType(AvatarEditorPage), findsOneWidget);
   });
 
-  testWidgets('mostra none com icona block a hair/facial/accessories',
-      (tester) async {
-    await pumpAvatarEditorPage(
-      tester,
-      initialOptions: fakeAvatarOptions(),
-    );
+  testWidgets('mostra none com icona block a hair/facial/accessories', (
+    tester,
+  ) async {
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
     final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
@@ -242,15 +220,13 @@ void main() {
     expect(find.byIcon(Icons.block), findsOneWidget);
   });
 
-  testWidgets('mostra missatge quan una categoria no té opcions',
-      (tester) async {
+  testWidgets('mostra missatge quan una categoria no té opcions', (
+    tester,
+  ) async {
     final options = fakeAvatarOptions();
     options['Body'] = [];
 
-    await pumpAvatarEditorPage(
-      tester,
-      initialOptions: options,
-    );
+    await pumpAvatarEditorPage(tester, initialOptions: options);
 
     final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
@@ -311,10 +287,7 @@ void main() {
   });
 
   testWidgets('prem guardar i mostra error si falla HTTP', (tester) async {
-    await pumpAvatarEditorPage(
-      tester,
-      initialOptions: fakeAvatarOptions(),
-    );
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
     final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
@@ -324,212 +297,191 @@ void main() {
     expect(find.byType(AvatarEditorPage), findsOneWidget);
   });
 
-  testWidgets('parseAvatarData neteja urls duplicades amb doble slash',
-    (tester) async {
-  await pumpAvatarEditorPage(
+  testWidgets('parseAvatarData neteja urls duplicades amb doble slash', (
     tester,
-    initialOptions: fakeAvatarOptions(),
-  );
+  ) async {
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
-  final state = tester.state(find.byType(AvatarEditorPage)) as dynamic;
+    final state = tester.state(find.byType(AvatarEditorPage)) as dynamic;
 
-  final parsed = state.parseAvatarData({
-    'body': [
-      {'url': 'https://example.com//avatar/body/1.png'},
-    ],
-    'eye': [
-      {'url': 'https://example.com/avatar/eye/1.png'},
-    ],
-    'expression': {
-      'smile': [
-        {'url': 'https://example.com/avatar/expression/smile/1.png'},
+    final parsed = state.parseAvatarData({
+      'body': [
+        {'url': 'https://example.com//avatar/body/1.png'},
       ],
-    },
-    'hair': {
-      'blond': [
-        {'url': 'https://example.com/avatar/hair/blond/1.png'},
+      'eye': [
+        {'url': 'https://example.com/avatar/eye/1.png'},
       ],
-    },
-    'facialHair': [
-      {'url': 'https://example.com/avatar/facial_hair/1/blond.png'},
-    ],
-    'clothing': [
-      {'url': 'https://example.com/avatar/clothing/1.png'},
-    ],
-    'accessories': [
-      {'url': 'https://example.com/avatar/accessories/1.png'},
-    ],
+      'expression': {
+        'smile': [
+          {'url': 'https://example.com/avatar/expression/smile/1.png'},
+        ],
+      },
+      'hair': {
+        'blond': [
+          {'url': 'https://example.com/avatar/hair/blond/1.png'},
+        ],
+      },
+      'facialHair': [
+        {'url': 'https://example.com/avatar/facial_hair/1/blond.png'},
+      ],
+      'clothing': [
+        {'url': 'https://example.com/avatar/clothing/1.png'},
+      ],
+      'accessories': [
+        {'url': 'https://example.com/avatar/accessories/1.png'},
+      ],
+    });
+
+    expect(parsed['Body'], contains('https://example.com/avatar/body/1.png'));
+    expect(parsed['Eyes'], contains('https://example.com/avatar/eye/1.png'));
+    expect(
+      parsed['Expression'],
+      contains('https://example.com/avatar/expression/smile/1.png'),
+    );
+    expect(parsed['Hair']!.first, 'none');
+    expect(parsed['Facial Hair']!.first, 'none');
+    expect(parsed['Accessories']!.first, 'none');
   });
 
-  expect(parsed['Body'], contains('https://example.com/avatar/body/1.png'));
-  expect(parsed['Eyes'], contains('https://example.com/avatar/eye/1.png'));
-  expect(parsed['Expression'], contains('https://example.com/avatar/expression/smile/1.png'));
-  expect(parsed['Hair']!.first, 'none');
-  expect(parsed['Facial Hair']!.first, 'none');
-  expect(parsed['Accessories']!.first, 'none');
-});
-
-testWidgets('en mode editar carrega avatar existent del provider',
-    (tester) async {
-  final avatar = AvatarUser();
-
-  avatar.setAvatar(
-    newBody: 'https://example.com/avatar/body/2.png',
-    newEye: 'https://example.com/avatar/eye/2.png',
-    newExpression: 'https://example.com/avatar/expression/sad/2.png',
-    newHair: 'https://example.com/avatar/hair/brown/2.png',
-    newFacialHair: 'https://example.com/avatar/facial_hair/1/blond.png',
-    newClothing: 'https://example.com/avatar/clothing/2.png',
-    newAccessories: 'https://example.com/avatar/accessories/1.png',
-  );
-
-  await pumpAvatarEditorPage(
+  testWidgets('en mode editar carrega avatar existent del provider', (
     tester,
-    isNewUser: false,
-    initialOptions: fakeAvatarOptions(),
-    avatarUser: avatar,
-  );
+  ) async {
+    final avatar = AvatarUser();
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+    avatar.setAvatar(
+      newBody: 'https://example.com/avatar/body/2.png',
+      newEye: 'https://example.com/avatar/eye/2.png',
+      newExpression: 'https://example.com/avatar/expression/sad/2.png',
+      newHair: 'https://example.com/avatar/hair/brown/2.png',
+      newFacialHair: 'https://example.com/avatar/facial_hair/1/blond.png',
+      newClothing: 'https://example.com/avatar/clothing/2.png',
+      newAccessories: 'https://example.com/avatar/accessories/1.png',
+    );
 
-  expect(find.text(l10n.editAvatar), findsOneWidget);
-  expect(find.text(l10n.saveChangesButton), findsOneWidget);
-  expect(find.byType(AvatarEditorPage), findsOneWidget);
-});
+    await pumpAvatarEditorPage(
+      tester,
+      isNewUser: false,
+      initialOptions: fakeAvatarOptions(),
+      avatarUser: avatar,
+    );
 
-testWidgets('pot obrir la pestanya Facial Hair i mostra opció none',
-    (tester) async {
-  await pumpAvatarEditorPage(
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+
+    expect(find.text(l10n.editAvatar), findsOneWidget);
+    expect(find.text(l10n.saveChangesButton), findsOneWidget);
+    expect(find.byType(AvatarEditorPage), findsOneWidget);
+  });
+
+  testWidgets('pot obrir la pestanya Facial Hair i mostra opció none', (
     tester,
-    initialOptions: fakeAvatarOptions(),
-  );
+  ) async {
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-  await tester.tap(find.text(l10n.categoryFacialHair));
-  await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.categoryFacialHair));
+    await tester.pumpAndSettle();
 
-  expect(find.byIcon(Icons.block), findsOneWidget);
-  expect(find.byType(GridView), findsOneWidget);
-});
+    expect(find.byIcon(Icons.block), findsOneWidget);
+    expect(find.byType(GridView), findsOneWidget);
+  });
 
-testWidgets('pot obrir la pestanya Accessories i mostra opció none',
-    (tester) async {
-  await pumpAvatarEditorPage(
+  testWidgets('pot obrir la pestanya Accessories i mostra opció none', (
     tester,
-    initialOptions: fakeAvatarOptions(),
-  );
+  ) async {
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-  await tester.tap(find.text(l10n.categoryAccessories));
-  await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.categoryAccessories));
+    await tester.pumpAndSettle();
 
-  expect(find.byIcon(Icons.block), findsOneWidget);
-  expect(find.byType(GridView), findsOneWidget);
-});
+    expect(find.byIcon(Icons.block), findsOneWidget);
+    expect(find.byType(GridView), findsOneWidget);
+  });
 
-testWidgets('pot obrir la pestanya Clothing', (tester) async {
-  await pumpAvatarEditorPage(
+  testWidgets('pot obrir la pestanya Clothing', (tester) async {
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
+
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+
+    await tester.tap(find.text(l10n.categoryClothing));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(GridView), findsOneWidget);
+    expect(find.byIcon(Icons.broken_image), findsWidgets);
+  });
+
+  testWidgets('pot obrir la pestanya Expression', (tester) async {
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
+
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+
+    await tester.tap(find.text(l10n.categoryExpression));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(GridView), findsOneWidget);
+    expect(find.byIcon(Icons.broken_image), findsWidgets);
+  });
+
+  testWidgets('mostra sense opcions si Eyes està buit', (tester) async {
+    final options = fakeAvatarOptions();
+    options['Eyes'] = [];
+
+    await pumpAvatarEditorPage(tester, initialOptions: options);
+
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+
+    await tester.tap(find.text(l10n.categoryEyes));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.noOptionsAvailable), findsOneWidget);
+  });
+
+  testWidgets('mostra grid buit si Hair no té opcions del color seleccionat', (
     tester,
-    initialOptions: fakeAvatarOptions(),
-  );
+  ) async {
+    final options = fakeAvatarOptions();
+    options['Hair'] = ['https://example.com/avatar/hair/red/1.png'];
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+    await pumpAvatarEditorPage(tester, initialOptions: options);
 
-  await tester.tap(find.text(l10n.categoryClothing));
-  await tester.pumpAndSettle();
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-  expect(find.byType(GridView), findsOneWidget);
-  expect(find.byIcon(Icons.broken_image), findsWidgets);
-});
+    await tester.tap(find.text(l10n.categoryHair));
+    await tester.pumpAndSettle();
 
-testWidgets('pot obrir la pestanya Expression', (tester) async {
-  await pumpAvatarEditorPage(
-    tester,
-    initialOptions: fakeAvatarOptions(),
-  );
+    expect(find.byType(GridView), findsOneWidget);
+    expect(find.byIcon(Icons.block), findsNothing);
+    expect(find.text(l10n.noOptionsAvailable), findsNothing);
+  });
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+  testWidgets('pot seleccionar una opció a la pestanya Eyes', (tester) async {
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
-  await tester.tap(find.text(l10n.categoryExpression));
-  await tester.pumpAndSettle();
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-  expect(find.byType(GridView), findsOneWidget);
-  expect(find.byIcon(Icons.broken_image), findsWidgets);
-});
+    await tester.tap(find.text(l10n.categoryEyes));
+    await tester.pumpAndSettle();
 
-testWidgets('mostra sense opcions si Eyes està buit', (tester) async {
-  final options = fakeAvatarOptions();
-  options['Eyes'] = [];
+    final options = find.byType(GestureDetector);
+    await tester.tap(options.last);
+    await tester.pump();
 
-  await pumpAvatarEditorPage(
-    tester,
-    initialOptions: options,
-  );
+    expect(find.byType(AvatarEditorPage), findsOneWidget);
+  });
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+  testWidgets('pot seleccionar none a Accessories', (tester) async {
+    await pumpAvatarEditorPage(tester, initialOptions: fakeAvatarOptions());
 
-  await tester.tap(find.text(l10n.categoryEyes));
-  await tester.pumpAndSettle();
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-  expect(find.text(l10n.noOptionsAvailable), findsOneWidget);
-});
+    await tester.tap(find.text(l10n.categoryAccessories));
+    await tester.pumpAndSettle();
 
-testWidgets('mostra grid buit si Hair no té opcions del color seleccionat',
-    (tester) async {
-  final options = fakeAvatarOptions();
-  options['Hair'] = [
-    'https://example.com/avatar/hair/red/1.png',
-  ];
+    await tester.tap(find.byIcon(Icons.block));
+    await tester.pump();
 
-  await pumpAvatarEditorPage(
-    tester,
-    initialOptions: options,
-  );
-
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
-
-  await tester.tap(find.text(l10n.categoryHair));
-  await tester.pumpAndSettle();
-
-  expect(find.byType(GridView), findsOneWidget);
-  expect(find.byIcon(Icons.block), findsNothing);
-  expect(find.text(l10n.noOptionsAvailable), findsNothing);
-});
-
-testWidgets('pot seleccionar una opció a la pestanya Eyes', (tester) async {
-  await pumpAvatarEditorPage(
-    tester,
-    initialOptions: fakeAvatarOptions(),
-  );
-
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
-
-  await tester.tap(find.text(l10n.categoryEyes));
-  await tester.pumpAndSettle();
-
-  final options = find.byType(GestureDetector);
-  await tester.tap(options.last);
-  await tester.pump();
-
-  expect(find.byType(AvatarEditorPage), findsOneWidget);
-});
-
-testWidgets('pot seleccionar none a Accessories', (tester) async {
-  await pumpAvatarEditorPage(
-    tester,
-    initialOptions: fakeAvatarOptions(),
-  );
-
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
-
-  await tester.tap(find.text(l10n.categoryAccessories));
-  await tester.pumpAndSettle();
-
-  await tester.tap(find.byIcon(Icons.block));
-  await tester.pump();
-
-  expect(find.byType(AvatarEditorPage), findsOneWidget);
-});
+    expect(find.byType(AvatarEditorPage), findsOneWidget);
+  });
 }

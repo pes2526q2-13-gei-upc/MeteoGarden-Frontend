@@ -70,10 +70,7 @@ void main() {
     test('fetchCurrent llença excepció si statusCode no és 200', () async {
       final service = WeatherService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'error': 'No trobat'}),
-            404,
-          );
+          return http.Response(jsonEncode({'error': 'No trobat'}), 404);
         }),
       );
 
@@ -82,8 +79,7 @@ void main() {
         throwsA(
           predicate(
             (e) =>
-                e is Exception &&
-                e.toString().contains('Error backend: 404'),
+                e is Exception && e.toString().contains('Error backend: 404'),
           ),
         ),
       );

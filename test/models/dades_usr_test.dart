@@ -60,36 +60,39 @@ void main() {
       expect(notifyCount, 1);
     });
 
-    test('setProfile actualitza totes les dades del perfil i notifica listeners', () {
-      final user = UserModel();
-      var notifyCount = 0;
+    test(
+      'setProfile actualitza totes les dades del perfil i notifica listeners',
+      () {
+        final user = UserModel();
+        var notifyCount = 0;
 
-      user.addListener(() {
-        notifyCount++;
-      });
+        user.addListener(() {
+          notifyCount++;
+        });
 
-      user.setProfile(
-        newUsername: 'jana',
-        newEmail: 'jana@example.com',
-        newCity: 'Barcelona',
-        newLanguage: 'ca',
-        newLastEntry: '2026-05-16',
-        newNumPlantsCollected: 8,
-        newMonedes: 120,
-        newGardens: ['Jardi principal', 'Jardi secundari'],
-      );
+        user.setProfile(
+          newUsername: 'jana',
+          newEmail: 'jana@example.com',
+          newCity: 'Barcelona',
+          newLanguage: 'ca',
+          newLastEntry: '2026-05-16',
+          newNumPlantsCollected: 8,
+          newMonedes: 120,
+          newGardens: ['Jardi principal', 'Jardi secundari'],
+        );
 
-      expect(user.username, 'jana');
-      expect(user.email, 'jana@example.com');
-      expect(user.city, 'Barcelona');
-      expect(user.language, 'ca');
-      expect(user.lastEntry, '2026-05-16');
-      expect(user.numPlantsCollected, 8);
-      expect(user.monedes, 120);
-      expect(user.gardens, ['Jardi principal', 'Jardi secundari']);
-      expect(user.gardenName, 'Jardi principal');
-      expect(notifyCount, 1);
-    });
+        expect(user.username, 'jana');
+        expect(user.email, 'jana@example.com');
+        expect(user.city, 'Barcelona');
+        expect(user.language, 'ca');
+        expect(user.lastEntry, '2026-05-16');
+        expect(user.numPlantsCollected, 8);
+        expect(user.monedes, 120);
+        expect(user.gardens, ['Jardi principal', 'Jardi secundari']);
+        expect(user.gardenName, 'Jardi principal');
+        expect(notifyCount, 1);
+      },
+    );
 
     test('gardenName retorna buit si no hi ha jardins', () {
       final user = UserModel();
@@ -129,10 +132,7 @@ void main() {
         newGardens: ['Jardi principal'],
       );
 
-      user.updateProfile(
-        newUsername: 'laia',
-        newCity: 'Vic',
-      );
+      user.updateProfile(newUsername: 'laia', newCity: 'Vic');
 
       expect(user.username, 'laia');
       expect(user.city, 'Vic');

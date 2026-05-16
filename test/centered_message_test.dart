@@ -3,11 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:meteo_garden/widgets/centered_message.dart';
 
 Widget makeTestableWidget({required Widget child}) {
-  return MaterialApp(
-    home: Scaffold(
-      body: child,
-    ),
-  );
+  return MaterialApp(home: Scaffold(body: child));
 }
 
 Future<void> showCenteredMessage(
@@ -64,8 +60,9 @@ void main() {
     expect(find.text('Operació correcta'), findsNothing);
   });
 
-  testWidgets('mostra un missatge d’error amb la icona correcta',
-      (tester) async {
+  testWidgets('mostra un missatge d’error amb la icona correcta', (
+    tester,
+  ) async {
     await showCenteredMessage(
       tester,
       buttonText: 'Mostrar error',
@@ -80,8 +77,9 @@ void main() {
     expect(find.text('Hi ha hagut un error'), findsNothing);
   });
 
-  testWidgets('mostra un missatge de warning amb la icona correcta',
-      (tester) async {
+  testWidgets('mostra un missatge de warning amb la icona correcta', (
+    tester,
+  ) async {
     await showCenteredMessage(
       tester,
       buttonText: 'Mostrar warning',
@@ -96,8 +94,9 @@ void main() {
     expect(find.text('Atenció'), findsNothing);
   });
 
-  testWidgets('mostra un missatge informatiu amb la icona correcta',
-      (tester) async {
+  testWidgets('mostra un missatge informatiu amb la icona correcta', (
+    tester,
+  ) async {
     await showCenteredMessage(
       tester,
       buttonText: 'Mostrar info',
@@ -128,8 +127,9 @@ void main() {
     expect(find.text('Missatge amb icona custom'), findsNothing);
   });
 
-  testWidgets('el missatge desapareix després de la duració indicada',
-      (tester) async {
+  testWidgets('el missatge desapareix després de la duració indicada', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       makeTestableWidget(
         child: Builder(

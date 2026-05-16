@@ -70,9 +70,7 @@ class FakeAmicsService extends AmicsService {
   }
 }
 
-Widget makeTestableWidget({
-  required Widget child,
-}) {
+Widget makeTestableWidget({required Widget child}) {
   final userModel = UserModel();
 
   userModel.setToken('fake-token');
@@ -319,8 +317,9 @@ void main() {
     expect(find.text('Error enviant like fake'), findsOneWidget);
   });
 
-  testWidgets('si falla carregar estat del like, la pantalla no es bloqueja',
-      (tester) async {
+  testWidgets('si falla carregar estat del like, la pantalla no es bloqueja', (
+    tester,
+  ) async {
     final gardenService = FakeGardenService();
     final amicsService = FakeAmicsService()..throwOnLikeState = true;
 

@@ -20,24 +20,15 @@ void main() {
 
           return http.Response(
             jsonEncode([
-              {
-                'username': 'jana',
-                'avatar': 'avatar1.png',
-              },
-              {
-                'username': 'janet',
-                'avatar': 'avatar2.png',
-              },
+              {'username': 'jana', 'avatar': 'avatar1.png'},
+              {'username': 'janet', 'avatar': 'avatar2.png'},
             ]),
             200,
           );
         }),
       );
 
-      final result = await service.searchUsers(
-        query: 'jan',
-        token: token,
-      );
+      final result = await service.searchUsers(query: 'jan', token: token);
 
       expect(result.length, 2);
       expect(result[0]['username'], 'jana');
@@ -49,10 +40,7 @@ void main() {
     test('searchUsers llença excepció si la resposta no és 200', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'error': 'No autoritzat'}),
-            401,
-          );
+          return http.Response(jsonEncode({'error': 'No autoritzat'}), 401);
         }),
       );
 
@@ -62,76 +50,74 @@ void main() {
       );
     });
 
-    test('fetchFriends retorna friends quan la resposta és un map amb friends', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          expect(request.method, 'GET');
-          expect(request.url.path, contains('/api/friends/'));
+    test(
+      'fetchFriends retorna friends quan la resposta és un map amb friends',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            expect(request.method, 'GET');
+            expect(request.url.path, contains('/api/friends/'));
 
-          return http.Response(
-            jsonEncode({
-              'friends': [
-                {
-                  'username': 'laia',
-                  'garden_name': 'Jardí Laia',
-                },
-                {
-                  'username': 'oriol',
-                  'garden': 'Jardí Oriol',
-                },
-              ],
-            }),
-            200,
-          );
-        }),
-      );
+            return http.Response(
+              jsonEncode({
+                'friends': [
+                  {'username': 'laia', 'garden_name': 'Jardí Laia'},
+                  {'username': 'oriol', 'garden': 'Jardí Oriol'},
+                ],
+              }),
+              200,
+            );
+          }),
+        );
 
-      final result = await service.fetchFriends(token: token);
+        final result = await service.fetchFriends(token: token);
 
-      expect(result.length, 2);
+        expect(result.length, 2);
 
-      expect(result[0]['username'], 'laia');
-      expect(result[0]['garden_name'], 'Jardí Laia');
+        expect(result[0]['username'], 'laia');
+        expect(result[0]['garden_name'], 'Jardí Laia');
 
-      expect(result[1]['username'], 'oriol');
-      expect(result[1]['garden_name'], 'Jardí Oriol');
-    });
+        expect(result[1]['username'], 'oriol');
+        expect(result[1]['garden_name'], 'Jardí Oriol');
+      },
+    );
 
-    test('fetchFriends retorna friends quan la resposta és una llista', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode([
-              {
-                'username': 'albert',
-              },
-            ]),
-            200,
-          );
-        }),
-      );
+    test(
+      'fetchFriends retorna friends quan la resposta és una llista',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(
+              jsonEncode([
+                {'username': 'albert'},
+              ]),
+              200,
+            );
+          }),
+        );
 
-      final result = await service.fetchFriends(token: token);
+        final result = await service.fetchFriends(token: token);
 
-      expect(result.length, 1);
-      expect(result[0]['username'], 'albert');
-      expect(result[0]['garden_name'], 'albert');
-    });
+        expect(result.length, 1);
+        expect(result[0]['username'], 'albert');
+        expect(result[0]['garden_name'], 'albert');
+      },
+    );
 
-    test('fetchFriends retorna llista buida si la resposta no és map ni llista', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode('resposta incorrecta'),
-            200,
-          );
-        }),
-      );
+    test(
+      'fetchFriends retorna llista buida si la resposta no és map ni llista',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode('resposta incorrecta'), 200);
+          }),
+        );
 
-      final result = await service.fetchFriends(token: token);
+        final result = await service.fetchFriends(token: token);
 
-      expect(result, isEmpty);
-    });
+        expect(result, isEmpty);
+      },
+    );
 
     test('fetchFriends llença excepció si la resposta no és 200', () async {
       final service = AmicsService(
@@ -143,10 +129,7 @@ void main() {
         }),
       );
 
-      expect(
-        () => service.fetchFriends(token: token),
-        throwsException,
-      );
+      expect(() => service.fetchFriends(token: token), throwsException);
     });
 
     test('sendFriendRequest retorna missatge si statusCode és 200', () async {
@@ -173,39 +156,34 @@ void main() {
       expect(result, 'Sol·licitud enviada');
     });
 
-    test('sendFriendRequest retorna string buit si statusCode és 200 però body no és map', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode(['ok']),
-            200,
-          );
-        }),
-      );
+    test(
+      'sendFriendRequest retorna string buit si statusCode és 200 però body no és map',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode(['ok']), 200);
+          }),
+        );
 
-      final result = await service.sendFriendRequest(
-        requestedUsername: 'laia',
-        token: token,
-      );
+        final result = await service.sendFriendRequest(
+          requestedUsername: 'laia',
+          token: token,
+        );
 
-      expect(result, '');
-    });
+        expect(result, '');
+      },
+    );
 
     test('sendFriendRequest llença error del camp error', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'error': 'Ja sou amics'}),
-            400,
-          );
+          return http.Response(jsonEncode({'error': 'Ja sou amics'}), 400);
         }),
       );
 
       expect(
-        () => service.sendFriendRequest(
-          requestedUsername: 'laia',
-          token: token,
-        ),
+        () =>
+            service.sendFriendRequest(requestedUsername: 'laia', token: token),
         throwsA(
           predicate(
             (e) => e is Exception && e.toString().contains('Ja sou amics'),
@@ -217,18 +195,13 @@ void main() {
     test('sendFriendRequest llença error del camp detail', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'detail': 'Token invàlid'}),
-            401,
-          );
+          return http.Response(jsonEncode({'detail': 'Token invàlid'}), 401);
         }),
       );
 
       expect(
-        () => service.sendFriendRequest(
-          requestedUsername: 'laia',
-          token: token,
-        ),
+        () =>
+            service.sendFriendRequest(requestedUsername: 'laia', token: token),
         throwsA(
           predicate(
             (e) => e is Exception && e.toString().contains('Token invàlid'),
@@ -240,23 +213,17 @@ void main() {
     test('sendFriendRequest llença error si el body és una llista', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode(['Error de validació']),
-            400,
-          );
+          return http.Response(jsonEncode(['Error de validació']), 400);
         }),
       );
 
       expect(
-        () => service.sendFriendRequest(
-          requestedUsername: 'laia',
-          token: token,
-        ),
+        () =>
+            service.sendFriendRequest(requestedUsername: 'laia', token: token),
         throwsA(
           predicate(
             (e) =>
-                e is Exception &&
-                e.toString().contains('Error de validació'),
+                e is Exception && e.toString().contains('Error de validació'),
           ),
         ),
       );
@@ -265,18 +232,13 @@ void main() {
     test('sendFriendRequest llença error si el body és string', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode('Error textual'),
-            400,
-          );
+          return http.Response(jsonEncode('Error textual'), 400);
         }),
       );
 
       expect(
-        () => service.sendFriendRequest(
-          requestedUsername: 'laia',
-          token: token,
-        ),
+        () =>
+            service.sendFriendRequest(requestedUsername: 'laia', token: token),
         throwsA(
           predicate(
             (e) => e is Exception && e.toString().contains('Error textual'),
@@ -302,8 +264,7 @@ void main() {
         ),
         throwsA(
           predicate(
-            (e) =>
-                e is Exception && e.toString().contains('Usuari no trobat'),
+            (e) => e is Exception && e.toString().contains('Usuari no trobat'),
           ),
         ),
       );
@@ -335,89 +296,90 @@ void main() {
       expect(result, 'Sol·licitud acceptada');
     });
 
-    test('answerFriendRequest retorna missatge per defecte si el body no és map', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode(['ok']),
-            200,
-          );
-        }),
-      );
+    test(
+      'answerFriendRequest retorna missatge per defecte si el body no és map',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode(['ok']), 200);
+          }),
+        );
 
-      final result = await service.answerFriendRequest(
-        requesterUsername: 'laia',
-        action: 'reject',
-        token: token,
-      );
+        final result = await service.answerFriendRequest(
+          requesterUsername: 'laia',
+          action: 'reject',
+          token: token,
+        );
 
-      expect(result, 'Sol·licitud resposta correctament');
-    });
+        expect(result, 'Sol·licitud resposta correctament');
+      },
+    );
 
-    test('answerFriendRequest retorna missatge per defecte si map no té message', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'ok': true}),
-            200,
-          );
-        }),
-      );
+    test(
+      'answerFriendRequest retorna missatge per defecte si map no té message',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode({'ok': true}), 200);
+          }),
+        );
 
-      final result = await service.answerFriendRequest(
-        requesterUsername: 'laia',
-        action: 'accept',
-        token: token,
-      );
-
-      expect(result, 'Sol·licitud resposta correctament');
-    });
-
-    test('answerFriendRequest llença excepció si statusCode no és 200', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'error': 'Sol·licitud no trobada'}),
-            404,
-          );
-        }),
-      );
-
-      expect(
-        () => service.answerFriendRequest(
+        final result = await service.answerFriendRequest(
           requesterUsername: 'laia',
           action: 'accept',
           token: token,
-        ),
-        throwsException,
-      );
-    });
+        );
 
-    test('answerFriendRequest llença excepció genèrica si error body no és map', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode(['error']),
-            500,
-          );
-        }),
-      );
+        expect(result, 'Sol·licitud resposta correctament');
+      },
+    );
 
-      expect(
-        () => service.answerFriendRequest(
-          requesterUsername: 'laia',
-          action: 'accept',
-          token: token,
-        ),
-        throwsA(
-          predicate(
-            (e) =>
-                e is Exception &&
-                e.toString().contains('Error 500'),
+    test(
+      'answerFriendRequest llença excepció si statusCode no és 200',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(
+              jsonEncode({'error': 'Sol·licitud no trobada'}),
+              404,
+            );
+          }),
+        );
+
+        expect(
+          () => service.answerFriendRequest(
+            requesterUsername: 'laia',
+            action: 'accept',
+            token: token,
           ),
-        ),
-      );
-    });
+          throwsException,
+        );
+      },
+    );
+
+    test(
+      'answerFriendRequest llença excepció genèrica si error body no és map',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode(['error']), 500);
+          }),
+        );
+
+        expect(
+          () => service.answerFriendRequest(
+            requesterUsername: 'laia',
+            action: 'accept',
+            token: token,
+          ),
+          throwsA(
+            predicate(
+              (e) => e is Exception && e.toString().contains('Error 500'),
+            ),
+          ),
+        );
+      },
+    );
 
     test('cancelFriendRequest retorna missatge si statusCode és 200', () async {
       final service = AmicsService(
@@ -443,85 +405,86 @@ void main() {
       expect(result, 'Sol·licitud cancel·lada');
     });
 
-    test('cancelFriendRequest retorna missatge per defecte si el body no és map', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode(['ok']),
-            200,
-          );
-        }),
-      );
+    test(
+      'cancelFriendRequest retorna missatge per defecte si el body no és map',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode(['ok']), 200);
+          }),
+        );
 
-      final result = await service.cancelFriendRequest(
-        requestedUsername: 'laia',
-        token: token,
-      );
-
-      expect(result, 'Sol·licitud cancel·lada correctament');
-    });
-
-    test('cancelFriendRequest retorna missatge per defecte si map no té message', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'ok': true}),
-            200,
-          );
-        }),
-      );
-
-      final result = await service.cancelFriendRequest(
-        requestedUsername: 'laia',
-        token: token,
-      );
-
-      expect(result, 'Sol·licitud cancel·lada correctament');
-    });
-
-    test('cancelFriendRequest llença excepció si statusCode no és 200', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'detail': 'No existeix la sol·licitud'}),
-            400,
-          );
-        }),
-      );
-
-      expect(
-        () => service.cancelFriendRequest(
+        final result = await service.cancelFriendRequest(
           requestedUsername: 'laia',
           token: token,
-        ),
-        throwsException,
-      );
-    });
+        );
 
-    test('cancelFriendRequest llença excepció genèrica si error body no és map', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode(['error']),
-            500,
-          );
-        }),
-      );
+        expect(result, 'Sol·licitud cancel·lada correctament');
+      },
+    );
 
-      expect(
-        () => service.cancelFriendRequest(
+    test(
+      'cancelFriendRequest retorna missatge per defecte si map no té message',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode({'ok': true}), 200);
+          }),
+        );
+
+        final result = await service.cancelFriendRequest(
           requestedUsername: 'laia',
           token: token,
-        ),
-        throwsA(
-          predicate(
-            (e) =>
-                e is Exception &&
-                e.toString().contains('Error 500'),
+        );
+
+        expect(result, 'Sol·licitud cancel·lada correctament');
+      },
+    );
+
+    test(
+      'cancelFriendRequest llença excepció si statusCode no és 200',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(
+              jsonEncode({'detail': 'No existeix la sol·licitud'}),
+              400,
+            );
+          }),
+        );
+
+        expect(
+          () => service.cancelFriendRequest(
+            requestedUsername: 'laia',
+            token: token,
           ),
-        ),
-      );
-    });
+          throwsException,
+        );
+      },
+    );
+
+    test(
+      'cancelFriendRequest llença excepció genèrica si error body no és map',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode(['error']), 500);
+          }),
+        );
+
+        expect(
+          () => service.cancelFriendRequest(
+            requestedUsername: 'laia',
+            token: token,
+          ),
+          throwsA(
+            predicate(
+              (e) => e is Exception && e.toString().contains('Error 500'),
+            ),
+          ),
+        );
+      },
+    );
 
     test('fetchFriendRequests retorna sol·licituds enviades', () async {
       final service = AmicsService(
@@ -575,84 +538,88 @@ void main() {
       expect(result, ['albert']);
     });
 
-    test('fetchFriendRequests accepta claus antigues amb espai per sent', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({
-              'requests_sent to': ['jana'],
-            }),
-            200,
-          );
-        }),
-      );
+    test(
+      'fetchFriendRequests accepta claus antigues amb espai per sent',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(
+              jsonEncode({
+                'requests_sent to': ['jana'],
+              }),
+              200,
+            );
+          }),
+        );
 
-      final result = await service.fetchFriendRequests(
-        action: 'sent',
-        token: token,
-      );
-
-      expect(result, ['jana']);
-    });
-
-    test('fetchFriendRequests accepta claus antigues amb espai per received', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({
-              'requests_received from': ['martina'],
-            }),
-            200,
-          );
-        }),
-      );
-
-      final result = await service.fetchFriendRequests(
-        action: 'received',
-        token: token,
-      );
-
-      expect(result, ['martina']);
-    });
-
-    test('fetchFriendRequests retorna llista buida si no troba cap clau', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({}),
-            200,
-          );
-        }),
-      );
-
-      final result = await service.fetchFriendRequests(
-        action: 'sent',
-        token: token,
-      );
-
-      expect(result, isEmpty);
-    });
-
-    test('fetchFriendRequests llença excepció si statusCode no és 200', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({
-              'error': 'Error obtenint sol·licituds',
-            }),
-            500,
-          );
-        }),
-      );
-
-      expect(
-        () => service.fetchFriendRequests(
+        final result = await service.fetchFriendRequests(
           action: 'sent',
           token: token,
-        ),
-        throwsException,
-      );
-    });
+        );
+
+        expect(result, ['jana']);
+      },
+    );
+
+    test(
+      'fetchFriendRequests accepta claus antigues amb espai per received',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(
+              jsonEncode({
+                'requests_received from': ['martina'],
+              }),
+              200,
+            );
+          }),
+        );
+
+        final result = await service.fetchFriendRequests(
+          action: 'received',
+          token: token,
+        );
+
+        expect(result, ['martina']);
+      },
+    );
+
+    test(
+      'fetchFriendRequests retorna llista buida si no troba cap clau',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(jsonEncode({}), 200);
+          }),
+        );
+
+        final result = await service.fetchFriendRequests(
+          action: 'sent',
+          token: token,
+        );
+
+        expect(result, isEmpty);
+      },
+    );
+
+    test(
+      'fetchFriendRequests llença excepció si statusCode no és 200',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(
+              jsonEncode({'error': 'Error obtenint sol·licituds'}),
+              500,
+            );
+          }),
+        );
+
+        expect(
+          () => service.fetchFriendRequests(action: 'sent', token: token),
+          throwsException,
+        );
+      },
+    );
 
     test('deleteFriend retorna success si statusCode és 200', () async {
       final service = AmicsService(
@@ -660,17 +627,11 @@ void main() {
           expect(request.method, 'DELETE');
           expect(request.url.path, contains('/api/friends/laia'));
 
-          return http.Response(
-            jsonEncode({'success': 'Amic eliminat'}),
-            200,
-          );
+          return http.Response(jsonEncode({'success': 'Amic eliminat'}), 200);
         }),
       );
 
-      final result = await service.deleteFriend(
-        username: 'laia',
-        token: token,
-      );
+      final result = await service.deleteFriend(username: 'laia', token: token);
 
       expect(result, 'Amic eliminat');
     });
@@ -678,10 +639,7 @@ void main() {
     test('deleteFriend llença excepció si statusCode no és 200', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'error': 'No sou amics'}),
-            404,
-          );
+          return http.Response(jsonEncode({'error': 'No sou amics'}), 404);
         }),
       );
 
@@ -697,17 +655,11 @@ void main() {
           expect(request.method, 'POST');
           expect(request.url.path, contains('/api/friends/likes/laia/'));
 
-          return http.Response(
-            jsonEncode({'state': true}),
-            200,
-          );
+          return http.Response(jsonEncode({'state': true}), 200);
         }),
       );
 
-      final result = await service.likeGarden(
-        username: 'laia',
-        token: token,
-      );
+      final result = await service.likeGarden(username: 'laia', token: token);
 
       expect(result, isTrue);
     });
@@ -715,17 +667,11 @@ void main() {
     test('likeGarden retorna false si state és false', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'state': false}),
-            200,
-          );
+          return http.Response(jsonEncode({'state': false}), 200);
         }),
       );
 
-      final result = await service.likeGarden(
-        username: 'laia',
-        token: token,
-      );
+      final result = await service.likeGarden(username: 'laia', token: token);
 
       expect(result, isFalse);
     });
@@ -733,17 +679,11 @@ void main() {
     test('likeGarden retorna false si state no és true', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'state': 'true'}),
-            200,
-          );
+          return http.Response(jsonEncode({'state': 'true'}), 200);
         }),
       );
 
-      final result = await service.likeGarden(
-        username: 'laia',
-        token: token,
-      );
+      final result = await service.likeGarden(username: 'laia', token: token);
 
       expect(result, isFalse);
     });
@@ -770,10 +710,7 @@ void main() {
           expect(request.method, 'GET');
           expect(request.url.path, contains('/api/friends/likes/laia/'));
 
-          return http.Response(
-            jsonEncode({'state': true}),
-            200,
-          );
+          return http.Response(jsonEncode({'state': true}), 200);
         }),
       );
 
@@ -788,10 +725,7 @@ void main() {
     test('getGardenLikeState retorna false si state és false', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'state': false}),
-            200,
-          );
+          return http.Response(jsonEncode({'state': false}), 200);
         }),
       );
 
@@ -806,10 +740,7 @@ void main() {
     test('getGardenLikeState retorna false si state no és true', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'state': 'true'}),
-            200,
-          );
+          return http.Response(jsonEncode({'state': 'true'}), 200);
         }),
       );
 
@@ -821,21 +752,24 @@ void main() {
       expect(result, isFalse);
     });
 
-    test('getGardenLikeState llença excepció si statusCode no és 200', () async {
-      final service = AmicsService(
-        client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'error': 'Error obtenint like'}),
-            500,
-          );
-        }),
-      );
+    test(
+      'getGardenLikeState llença excepció si statusCode no és 200',
+      () async {
+        final service = AmicsService(
+          client: MockClient((request) async {
+            return http.Response(
+              jsonEncode({'error': 'Error obtenint like'}),
+              500,
+            );
+          }),
+        );
 
-      expect(
-        () => service.getGardenLikeState(username: 'laia', token: token),
-        throwsException,
-      );
-    });
+        expect(
+          () => service.getGardenLikeState(username: 'laia', token: token),
+          throwsException,
+        );
+      },
+    );
 
     test('fetchAvatar retorna map si statusCode és 200', () async {
       final service = AmicsService(
@@ -858,10 +792,7 @@ void main() {
         }),
       );
 
-      final result = await service.fetchAvatar(
-        username: 'laia',
-        token: token,
-      );
+      final result = await service.fetchAvatar(username: 'laia', token: token);
 
       expect(result, isNotNull);
       expect(result!['body'], 'body1');
@@ -876,17 +807,11 @@ void main() {
     test('fetchAvatar retorna null si statusCode no és 200', () async {
       final service = AmicsService(
         client: MockClient((request) async {
-          return http.Response(
-            jsonEncode({'error': 'Avatar no trobat'}),
-            404,
-          );
+          return http.Response(jsonEncode({'error': 'Avatar no trobat'}), 404);
         }),
       );
 
-      final result = await service.fetchAvatar(
-        username: 'laia',
-        token: token,
-      );
+      final result = await service.fetchAvatar(username: 'laia', token: token);
 
       expect(result, isNull);
     });

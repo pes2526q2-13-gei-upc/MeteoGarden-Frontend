@@ -341,28 +341,31 @@ void main() {
       expect(pot.hasBuff, isTrue);
     });
 
-    test('fromJson deixa activeProducts buit si la planta no té active_products', () {
-      final pot = GardenPot.fromJson({
-        'pot_number': 1,
-        'occupied': true,
-        'growth_phase': 'Growing',
-        'health_level': 80,
-        'water_level': 70,
-        'planted_at': '2026-05-10T09:00:00',
-        'last_watered_at': '2026-05-15T12:30:00',
-        'plant': {
-          'scientific_name': 'Mentha spicata',
-          'common_name': 'Menta',
-          'family': 'Lamiaceae',
-          'can_flower': true,
-          'min_temperature': 8,
-          'max_temperature': 28,
-          'image_url': null,
-        },
-      });
+    test(
+      'fromJson deixa activeProducts buit si la planta no té active_products',
+      () {
+        final pot = GardenPot.fromJson({
+          'pot_number': 1,
+          'occupied': true,
+          'growth_phase': 'Growing',
+          'health_level': 80,
+          'water_level': 70,
+          'planted_at': '2026-05-10T09:00:00',
+          'last_watered_at': '2026-05-15T12:30:00',
+          'plant': {
+            'scientific_name': 'Mentha spicata',
+            'common_name': 'Menta',
+            'family': 'Lamiaceae',
+            'can_flower': true,
+            'min_temperature': 8,
+            'max_temperature': 28,
+            'image_url': null,
+          },
+        });
 
-      expect(pot.activeProducts, isEmpty);
-      expect(pot.hasBuff, isFalse);
-    });
+        expect(pot.activeProducts, isEmpty);
+        expect(pot.hasBuff, isFalse);
+      },
+    );
   });
 }

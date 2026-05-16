@@ -8,10 +8,7 @@ import 'package:meteo_garden/services/events_api_service.dart';
 void main() {
   group('EventCount', () {
     test('fromJson converteix correctament el JSON', () {
-      final count = EventCount.fromJson({
-        'day': '2026-05-16',
-        'total': 4,
-      });
+      final count = EventCount.fromJson({'day': '2026-05-16', 'total': 4});
 
       expect(count.day, DateTime.parse('2026-05-16'));
       expect(count.total, 4);
@@ -52,10 +49,7 @@ void main() {
     });
 
     test('fromJson usa name com displayName si no hi ha display_name', () {
-      final category = EventCategory.fromJson({
-        'id': 3,
-        'name': 'sports',
-      });
+      final category = EventCategory.fromJson({'id': 3, 'name': 'sports'});
 
       expect(category.id, 3);
       expect(category.name, 'sports');
@@ -72,9 +66,7 @@ void main() {
         'city': 'Barcelona',
         'end_date': '2026-05-16T20:00:00',
         'price': '0',
-        'image': {
-          'url': 'https://example.com/concert.png',
-        },
+        'image': {'url': 'https://example.com/concert.png'},
       });
 
       expect(event.id, '12');
@@ -158,14 +150,24 @@ void main() {
       final result = EventDetail.asDateTime(null);
       final after = DateTime.now();
 
-      expect(result.isAfter(before.subtract(const Duration(seconds: 1))), isTrue);
+      expect(
+        result.isAfter(before.subtract(const Duration(seconds: 1))),
+        isTrue,
+      );
       expect(result.isBefore(after.add(const Duration(seconds: 1))), isTrue);
     });
 
     test('asStringList gestiona null, list, string i altres valors', () {
       expect(EventDetail.asStringList(null), isEmpty);
       expect(EventDetail.asStringList(['a', 'b']), ['a', 'b']);
-      expect(EventDetail.asStringList(['a', null, {'name': 'b'}]), ['a', 'b']);
+      expect(
+        EventDetail.asStringList([
+          'a',
+          null,
+          {'name': 'b'},
+        ]),
+        ['a', 'b'],
+      );
       expect(EventDetail.asStringList('tag'), ['tag']);
       expect(EventDetail.asStringList(''), isEmpty);
       expect(EventDetail.asStringList(123), isEmpty);
@@ -181,14 +183,13 @@ void main() {
         'description': 'Descripció de l event',
         'start_date': '2026-05-16T18:00:00',
         'end_date': '2026-05-16T20:00:00',
-        'category': {
-          'name': 'theatre',
-        },
+        'category': {'name': 'theatre'},
         'price': '0',
-        'tags': ['cultura', {'name': 'familiar'}],
-        'image': {
-          'src': 'https://example.com/teatre.png',
-        },
+        'tags': [
+          'cultura',
+          {'name': 'familiar'},
+        ],
+        'image': {'src': 'https://example.com/teatre.png'},
         'city': 'Vic',
         'street': 'Carrer Major',
       });
@@ -232,84 +233,76 @@ void main() {
   group('EventsService fetchCategories', () {
     const token = 'token123';
 
-    test('fetchCategories retorna categories quan el body és una llista', () async {
-      final service = EventsService(
-        client: MockClient((request) async {
-          expect(request.method, 'GET');
-          expect(request.url.path, contains('/api/events/categories'));
-          expect(request.headers['Authorization'], 'Token token123');
+    test(
+      'fetchCategories retorna categories quan el body és una llista',
+      () async {
+        final service = EventsService(
+          client: MockClient((request) async {
+            expect(request.method, 'GET');
+            expect(request.url.path, contains('/api/events/categories'));
+            expect(request.headers['Authorization'], 'Token token123');
 
-          return http.Response.bytes(
-            utf8.encode(jsonEncode([
-              {
-                'id': 1,
-                'name': 'music',
-                'display_name': 'Música',
-              },
-              {
-                'id': 2,
-                'name': 'theatre',
-                'display_name': 'Teatre',
-              },
-            ])),
-            200,
-          );
-        }),
-      );
+            return http.Response.bytes(
+              utf8.encode(
+                jsonEncode([
+                  {'id': 1, 'name': 'music', 'display_name': 'Música'},
+                  {'id': 2, 'name': 'theatre', 'display_name': 'Teatre'},
+                ]),
+              ),
+              200,
+            );
+          }),
+        );
 
-      final categories = await service.fetchCategories(token: token);
+        final categories = await service.fetchCategories(token: token);
 
-      expect(categories.length, 2);
-      expect(categories[0].id, 1);
-      expect(categories[0].name, 'music');
-      expect(categories[0].displayName, 'Música');
-      expect(categories[1].id, 2);
-      expect(categories[1].name, 'theatre');
-      expect(categories[1].displayName, 'Teatre');
-    });
+        expect(categories.length, 2);
+        expect(categories[0].id, 1);
+        expect(categories[0].name, 'music');
+        expect(categories[0].displayName, 'Música');
+        expect(categories[1].id, 2);
+        expect(categories[1].name, 'theatre');
+        expect(categories[1].displayName, 'Teatre');
+      },
+    );
 
-    test('fetchCategories retorna categories quan el body és un map amb categories', () async {
-      final service = EventsService(
-        client: MockClient((request) async {
-          return http.Response.bytes(
-            utf8.encode(jsonEncode({
-              'categories': [
-                {
-                  'id': '3',
-                  'name': 'sports',
-                  'display_name': 'Esports',
-                },
-              ],
-            })),
-            200,
-          );
-        }),
-      );
+    test(
+      'fetchCategories retorna categories quan el body és un map amb categories',
+      () async {
+        final service = EventsService(
+          client: MockClient((request) async {
+            return http.Response.bytes(
+              utf8.encode(
+                jsonEncode({
+                  'categories': [
+                    {'id': '3', 'name': 'sports', 'display_name': 'Esports'},
+                  ],
+                }),
+              ),
+              200,
+            );
+          }),
+        );
 
-      final categories = await service.fetchCategories(token: token);
+        final categories = await service.fetchCategories(token: token);
 
-      expect(categories.length, 1);
-      expect(categories.first.id, 3);
-      expect(categories.first.name, 'sports');
-      expect(categories.first.displayName, 'Esports');
-    });
+        expect(categories.length, 1);
+        expect(categories.first.id, 3);
+        expect(categories.first.name, 'sports');
+        expect(categories.first.displayName, 'Esports');
+      },
+    );
 
     test('fetchCategories filtra categories sense name', () async {
       final service = EventsService(
         client: MockClient((request) async {
           return http.Response.bytes(
-            utf8.encode(jsonEncode([
-              {
-                'id': 1,
-                'name': '',
-                'display_name': 'Buida',
-              },
-              {
-                'id': 2,
-                'name': 'music',
-                'display_name': 'Música',
-              },
-            ])),
+            utf8.encode(
+              jsonEncode([
+                {'id': 1, 'name': '', 'display_name': 'Buida'},
+                {'id': 2, 'name': 'music', 'display_name': 'Música'},
+              ]),
+            ),
             200,
           );
         }),
@@ -321,20 +314,20 @@ void main() {
       expect(categories.first.name, 'music');
     });
 
-    test('fetchCategories retorna llista buida si el body no és list ni map', () async {
-      final service = EventsService(
-        client: MockClient((request) async {
-          return http.Response.bytes(
-            utf8.encode(jsonEncode('invalid')),
-            200,
-          );
-        }),
-      );
+    test(
+      'fetchCategories retorna llista buida si el body no és list ni map',
+      () async {
+        final service = EventsService(
+          client: MockClient((request) async {
+            return http.Response.bytes(utf8.encode(jsonEncode('invalid')), 200);
+          }),
+        );
 
-      final categories = await service.fetchCategories(token: token);
+        final categories = await service.fetchCategories(token: token);
 
-      expect(categories, isEmpty);
-    });
+        expect(categories, isEmpty);
+      },
+    );
 
     test('fetchCategories llença excepció si statusCode no és 200', () async {
       final service = EventsService(
@@ -371,58 +364,49 @@ void main() {
           expect(request.url.queryParameters.containsKey('category'), isFalse);
 
           return http.Response.bytes(
-            utf8.encode(jsonEncode({
-              'events': [
-                {
-                  'day': '2026-05-01',
-                  'total': 2,
-                },
-                {
-                  'day': '2026-05-16',
-                  'total': 5,
-                },
-              ],
-            })),
+            utf8.encode(
+              jsonEncode({
+                'events': [
+                  {'day': '2026-05-01', 'total': 2},
+                  {'day': '2026-05-16', 'total': 5},
+                ],
+              }),
+            ),
             200,
           );
         }),
       );
 
-      final result = await service.fetchEventCountByDay(
-        year: 2026,
-        month: 5,
-      );
+      final result = await service.fetchEventCountByDay(year: 2026, month: 5);
 
-      expect(result, {
-        1: 2,
-        16: 5,
-      });
+      expect(result, {1: 2, 16: 5});
     });
 
-    test('fetchEventCountByDay afegeix city i category si no són buits', () async {
-      final service = EventsService(
-        client: MockClient((request) async {
-          expect(request.url.queryParameters['city'], 'Barcelona');
-          expect(request.url.queryParameters['category'], 'music');
+    test(
+      'fetchEventCountByDay afegeix city i category si no són buits',
+      () async {
+        final service = EventsService(
+          client: MockClient((request) async {
+            expect(request.url.queryParameters['city'], 'Barcelona');
+            expect(request.url.queryParameters['category'], 'music');
 
-          return http.Response.bytes(
-            utf8.encode(jsonEncode({
-              'events': [],
-            })),
-            200,
-          );
-        }),
-      );
+            return http.Response.bytes(
+              utf8.encode(jsonEncode({'events': []})),
+              200,
+            );
+          }),
+        );
 
-      final result = await service.fetchEventCountByDay(
-        year: 2026,
-        month: 5,
-        city: ' Barcelona ',
-        category: ' music ',
-      );
+        final result = await service.fetchEventCountByDay(
+          year: 2026,
+          month: 5,
+          city: ' Barcelona ',
+          category: ' music ',
+        );
 
-      expect(result, isEmpty);
-    });
+        expect(result, isEmpty);
+      },
+    );
 
     test('fetchEventCountByDay ignora city i category si són buits', () async {
       final service = EventsService(
@@ -431,9 +415,7 @@ void main() {
           expect(request.url.queryParameters.containsKey('category'), isFalse);
 
           return http.Response.bytes(
-            utf8.encode(jsonEncode({
-              'events': [],
-            })),
+            utf8.encode(jsonEncode({'events': []})),
             200,
           );
         }),
@@ -449,27 +431,30 @@ void main() {
       expect(result, isEmpty);
     });
 
-    test('fetchEventCountByDay llença excepció si statusCode no és 200', () async {
-      final service = EventsService(
-        client: MockClient((request) async {
-          return http.Response.bytes(
-            utf8.encode(jsonEncode({'error': 'Server error'})),
-            500,
-          );
-        }),
-      );
+    test(
+      'fetchEventCountByDay llença excepció si statusCode no és 200',
+      () async {
+        final service = EventsService(
+          client: MockClient((request) async {
+            return http.Response.bytes(
+              utf8.encode(jsonEncode({'error': 'Server error'})),
+              500,
+            );
+          }),
+        );
 
-      expect(
-        () => service.fetchEventCountByDay(year: 2026, month: 5),
-        throwsA(
-          predicate(
-            (e) =>
-                e is Exception &&
-                e.toString().contains('Error carregant recompte: 500'),
+        expect(
+          () => service.fetchEventCountByDay(year: 2026, month: 5),
+          throwsA(
+            predicate(
+              (e) =>
+                  e is Exception &&
+                  e.toString().contains('Error carregant recompte: 500'),
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   });
 
   group('EventsService fetchEvents', () {
@@ -482,30 +467,30 @@ void main() {
           expect(request.url.queryParameters['lang'], 'ca');
 
           return http.Response.bytes(
-            utf8.encode(jsonEncode({
-              'events': [
-                {
-                  'id': 'evt1',
-                  'title': 'Concert',
-                  'subtitle': 'Concert local',
-                  'city': 'Barcelona',
-                  'end_date': '2026-05-16T21:00:00',
-                  'price': 0,
-                  'image': 'concert.png',
-                },
-                {
-                  'id': 2,
-                  'title': 'Fira',
-                  'subtitle': 'Fira artesanal',
-                  'city': 'Vic',
-                  'end_date': '2026-05-16T18:00:00',
-                  'price': '5.5',
-                  'image': {
-                    'url': 'fira.png',
+            utf8.encode(
+              jsonEncode({
+                'events': [
+                  {
+                    'id': 'evt1',
+                    'title': 'Concert',
+                    'subtitle': 'Concert local',
+                    'city': 'Barcelona',
+                    'end_date': '2026-05-16T21:00:00',
+                    'price': 0,
+                    'image': 'concert.png',
                   },
-                },
-              ],
-            })),
+                  {
+                    'id': 2,
+                    'title': 'Fira',
+                    'subtitle': 'Fira artesanal',
+                    'city': 'Vic',
+                    'end_date': '2026-05-16T18:00:00',
+                    'price': '5.5',
+                    'image': {'url': 'fira.png'},
+                  },
+                ],
+              }),
+            ),
             200,
           );
         }),
@@ -536,9 +521,7 @@ void main() {
           expect(request.url.queryParameters['category'], 'theatre');
 
           return http.Response.bytes(
-            utf8.encode(jsonEncode({
-              'events': [],
-            })),
+            utf8.encode(jsonEncode({'events': []})),
             200,
           );
         }),
@@ -561,9 +544,7 @@ void main() {
           expect(request.url.queryParameters.containsKey('category'), isFalse);
 
           return http.Response.bytes(
-            utf8.encode(jsonEncode({
-              'events': [],
-            })),
+            utf8.encode(jsonEncode({'events': []})),
             200,
           );
         }),
@@ -590,10 +571,7 @@ void main() {
       );
 
       expect(
-        () => service.fetchEvents(
-          date: DateTime(2026, 5, 16),
-          lang: 'ca',
-        ),
+        () => service.fetchEvents(date: DateTime(2026, 5, 16), lang: 'ca'),
         throwsA(
           predicate(
             (e) =>
@@ -616,26 +594,24 @@ void main() {
           expect(request.url.queryParameters['lang'], 'ca');
 
           return http.Response.bytes(
-            utf8.encode(jsonEncode({
-              'events': {
-                'id': 'evt1',
-                'title': 'Concert detallat',
-                'subtitle': 'Subtítol',
-                'description': 'Descripció',
-                'start_date': '2026-05-16T18:00:00',
-                'end_date': '2026-05-16T20:00:00',
-                'category': {
-                  'name': 'music',
+            utf8.encode(
+              jsonEncode({
+                'events': {
+                  'id': 'evt1',
+                  'title': 'Concert detallat',
+                  'subtitle': 'Subtítol',
+                  'description': 'Descripció',
+                  'start_date': '2026-05-16T18:00:00',
+                  'end_date': '2026-05-16T20:00:00',
+                  'category': {'name': 'music'},
+                  'price': 0,
+                  'tags': ['music', 'outdoor'],
+                  'image': {'url': 'concert.png'},
+                  'city': 'Barcelona',
+                  'street': 'Carrer Major',
                 },
-                'price': 0,
-                'tags': ['music', 'outdoor'],
-                'image': {
-                  'url': 'concert.png',
-                },
-                'city': 'Barcelona',
-                'street': 'Carrer Major',
-              },
-            })),
+              }),
+            ),
             200,
           );
         }),

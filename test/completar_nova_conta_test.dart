@@ -45,8 +45,9 @@ Future<void> pumpCompleteGoogleProfilePage(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('mostra la pantalla de completar perfil de Google',
-      (tester) async {
+  testWidgets('mostra la pantalla de completar perfil de Google', (
+    tester,
+  ) async {
     await pumpCompleteGoogleProfilePage(tester);
 
     expect(find.byType(CompleteGoogleProfilePage), findsOneWidget);
@@ -74,8 +75,9 @@ void main() {
     expect(find.text(l10n.createAccountGardenNameLabel), findsOneWidget);
   });
 
-  testWidgets('permet escriure username, password i nom del jardí',
-      (tester) async {
+  testWidgets('permet escriure username, password i nom del jardí', (
+    tester,
+  ) async {
     await pumpCompleteGoogleProfilePage(tester);
 
     final textFields = find.byType(TextField);
@@ -158,10 +160,7 @@ void main() {
   });
 
   testWidgets('City.fromJson crea una ciutat correctament', (tester) async {
-    final city = City.fromJson({
-      'code': '08019',
-      'name': 'Barcelona',
-    });
+    final city = City.fromJson({'code': '08019', 'name': 'Barcelona'});
 
     expect(city.code, '08019');
     expect(city.name, 'Barcelona');
@@ -178,85 +177,90 @@ void main() {
   });
 
   testWidgets('mostra loading inicial mentre carrega ciutats', (tester) async {
-  tester.view.physicalSize = const Size(1200, 2200);
-  tester.view.devicePixelRatio = 1.0;
+    tester.view.physicalSize = const Size(1200, 2200);
+    tester.view.devicePixelRatio = 1.0;
 
-  addTearDown(() {
-    tester.view.resetPhysicalSize();
-    tester.view.resetDevicePixelRatio();
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(makeTestableWidget());
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  await tester.pumpWidget(makeTestableWidget());
+  testWidgets('mostra AppBar amb el títol de completar perfil', (tester) async {
+    await pumpCompleteGoogleProfilePage(tester);
 
-  expect(find.byType(CircularProgressIndicator), findsOneWidget);
-});
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-testWidgets('mostra AppBar amb el títol de completar perfil', (tester) async {
-  await pumpCompleteGoogleProfilePage(tester);
+    expect(find.byType(AppBar), findsOneWidget);
+    expect(find.text(l10n.completeProfileTitle), findsOneWidget);
+  });
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+  testWidgets('mostra les icones dels camps del formulari', (tester) async {
+    await pumpCompleteGoogleProfilePage(tester);
 
-  expect(find.byType(AppBar), findsOneWidget);
-  expect(find.text(l10n.completeProfileTitle), findsOneWidget);
-});
+    expect(find.byIcon(Icons.person_outline_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.location_city_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.language_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.local_florist_outlined), findsOneWidget);
+  });
 
-testWidgets('mostra les icones dels camps del formulari', (tester) async {
-  await pumpCompleteGoogleProfilePage(tester);
+  testWidgets('permet seleccionar llengua anglesa', (tester) async {
+    await pumpCompleteGoogleProfilePage(tester);
 
-  expect(find.byIcon(Icons.person_outline_rounded), findsOneWidget);
-  expect(find.byIcon(Icons.location_city_rounded), findsOneWidget);
-  expect(find.byIcon(Icons.lock_outline_rounded), findsOneWidget);
-  expect(find.byIcon(Icons.language_rounded), findsOneWidget);
-  expect(find.byIcon(Icons.local_florist_outlined), findsOneWidget);
-});
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-testWidgets('permet seleccionar llengua anglesa', (tester) async {
-  await pumpCompleteGoogleProfilePage(tester);
+    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    await tester.pumpAndSettle();
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+    await tester.tap(find.text(l10n.languageEnglish).last);
+    await tester.pumpAndSettle();
 
-  await tester.tap(find.byType(DropdownButtonFormField<String>));
-  await tester.pumpAndSettle();
+    expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
+  });
 
-  await tester.tap(find.text(l10n.languageEnglish).last);
-  await tester.pumpAndSettle();
+  testWidgets('el dropdown de ciutat existeix després de carregar', (
+    tester,
+  ) async {
+    await pumpCompleteGoogleProfilePage(tester);
 
-  expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
-});
+    expect(find.byType(DropdownMenu<City>), findsOneWidget);
+    expect(find.byIcon(Icons.location_city_rounded), findsOneWidget);
+  });
 
-testWidgets('el dropdown de ciutat existeix després de carregar', (tester) async {
-  await pumpCompleteGoogleProfilePage(tester);
-
-  expect(find.byType(DropdownMenu<City>), findsOneWidget);
-  expect(find.byIcon(Icons.location_city_rounded), findsOneWidget);
-});
-
-testWidgets('pot prémer continuar i mantenir-se a la pantalla si falla HTTP',
+  testWidgets(
+    'pot prémer continuar i mantenir-se a la pantalla si falla HTTP',
     (tester) async {
-  await pumpCompleteGoogleProfilePage(tester);
+      await pumpCompleteGoogleProfilePage(tester);
 
-  await tester.enterText(find.byType(TextField).at(0), 'jana');
-  await tester.enterText(find.byType(TextField).at(2), '123456');
-  await tester.enterText(find.byType(TextField).at(3), 'JardiJana');
+      await tester.enterText(find.byType(TextField).at(0), 'jana');
+      await tester.enterText(find.byType(TextField).at(2), '123456');
+      await tester.enterText(find.byType(TextField).at(3), 'JardiJana');
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+      final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-  await tester.tap(find.text(l10n.commonContinue));
-  await tester.pump();
+      await tester.tap(find.text(l10n.commonContinue));
+      await tester.pump();
 
-  expect(find.byType(CompleteGoogleProfilePage), findsOneWidget);
-});
+      expect(find.byType(CompleteGoogleProfilePage), findsOneWidget);
+    },
+  );
 
-testWidgets('mostra SnackBar d’error si el registre amb Google falla',
-    (tester) async {
-  await pumpCompleteGoogleProfilePage(tester);
+  testWidgets('mostra SnackBar d’error si el registre amb Google falla', (
+    tester,
+  ) async {
+    await pumpCompleteGoogleProfilePage(tester);
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-  await tester.tap(find.text(l10n.commonContinue));
-  await tester.pump();
-  await tester.pump(const Duration(milliseconds: 300));
+    await tester.tap(find.text(l10n.commonContinue));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
-  expect(find.text(l10n.completeProfileError), findsOneWidget);
-});
+    expect(find.text(l10n.completeProfileError), findsOneWidget);
+  });
 }

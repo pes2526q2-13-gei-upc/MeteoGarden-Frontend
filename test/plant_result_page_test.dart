@@ -18,18 +18,12 @@ PlantIdentification fakePlantResult({
       'scientificName': scientificName,
       'family': family,
     },
-    'plantnet': {
-      'score': score,
-    },
-    'image': {
-      'url': imageUrl,
-    },
+    'plantnet': {'score': score},
+    'image': {'url': imageUrl},
   });
 }
 
-Widget makeTestableWidget({
-  required PlantIdentification result,
-}) {
+Widget makeTestableWidget({required PlantIdentification result}) {
   return MaterialApp(
     locale: const Locale('ca'),
     localizationsDelegates: const [
@@ -55,9 +49,7 @@ Future<void> pumpPlantResultPage(
     tester.view.resetDevicePixelRatio();
   });
 
-  await tester.pumpWidget(
-    makeTestableWidget(result: result),
-  );
+  await tester.pumpWidget(makeTestableWidget(result: result));
 
   await tester.pumpAndSettle();
 }
@@ -80,16 +72,17 @@ void main() {
     await pumpPlantResultPage(tester, result: result);
 
     expect(find.byKey(const Key('plant_result_common_name')), findsOneWidget);
-    expect(find.byKey(const Key('plant_result_scientific_name')), findsOneWidget);
+    expect(
+      find.byKey(const Key('plant_result_scientific_name')),
+      findsOneWidget,
+    );
 
     expect(find.text('Menta'), findsOneWidget);
     expect(find.text('Mentha spicata'), findsWidgets);
   });
 
   testWidgets('mostra la família de la planta', (tester) async {
-    final result = fakePlantResult(
-      family: 'Lamiaceae',
-    );
+    final result = fakePlantResult(family: 'Lamiaceae');
 
     await pumpPlantResultPage(tester, result: result);
 
@@ -98,9 +91,7 @@ void main() {
   });
 
   testWidgets('mostra el percentatge de confiança formatat', (tester) async {
-    final result = fakePlantResult(
-      score: 0.873,
-    );
+    final result = fakePlantResult(score: 0.873);
 
     await pumpPlantResultPage(tester, result: result);
 
@@ -109,9 +100,7 @@ void main() {
   });
 
   testWidgets('mostra guió quan el score és null', (tester) async {
-    final result = fakePlantResult(
-      score: null,
-    );
+    final result = fakePlantResult(score: null);
 
     await pumpPlantResultPage(tester, result: result);
 
@@ -119,9 +108,7 @@ void main() {
   });
 
   testWidgets('mostra la icona fallback quan no hi ha imatge', (tester) async {
-    final result = fakePlantResult(
-      imageUrl: '',
-    );
+    final result = fakePlantResult(imageUrl: '');
 
     await pumpPlantResultPage(tester, result: result);
 

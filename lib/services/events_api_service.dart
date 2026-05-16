@@ -198,6 +198,7 @@ class EventsService {
   EventsService({http.Client? client}) : _client = client ?? http.Client();
 
   final http.Client _client;
+
   /// GET /api/events/categories
   /// Retorna les categories disponibles.
   Future<List<EventCategory>> fetchCategories({required String token}) async {

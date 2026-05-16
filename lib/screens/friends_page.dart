@@ -37,11 +37,11 @@ class _FriendsPageState extends State<FriendsPage>
 
   @override
   void initState() {
-  super.initState();
-  _amicsService = widget.amicsService ?? AmicsService();
-  _tabController = TabController(length: 3, vsync: this);
-  WidgetsBinding.instance.addPostFrameCallback((_) => _loadAll());
-}
+    super.initState();
+    _amicsService = widget.amicsService ?? AmicsService();
+    _tabController = TabController(length: 3, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadAll());
+  }
 
   @override
   void dispose() {

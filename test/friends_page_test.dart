@@ -9,10 +9,7 @@ import 'package:provider/provider.dart';
 
 class FakeAmicsService extends AmicsService {
   List<Map<String, dynamic>> friends = [
-    {
-      'username': 'laia',
-      'garden_name': 'JardiLaia',
-    },
+    {'username': 'laia', 'garden_name': 'JardiLaia'},
   ];
 
   List<String> sentRequests = ['oriol'];
@@ -116,9 +113,7 @@ class FakeAmicsService extends AmicsService {
   }
 }
 
-Widget makeTestableWidget({
-  required Widget child,
-}) {
+Widget makeTestableWidget({required Widget child}) {
   final userModel = UserModel();
 
   userModel.setToken('fake-token');
@@ -154,9 +149,7 @@ void main() {
     final fakeService = FakeAmicsService();
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -166,14 +159,13 @@ void main() {
     expect(find.text('albert'), findsNothing);
   });
 
-  testWidgets('mostra les sol·licituds enviades en la pestanya corresponent',
-      (tester) async {
+  testWidgets('mostra les sol·licituds enviades en la pestanya corresponent', (
+    tester,
+  ) async {
     final fakeService = FakeAmicsService();
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -184,14 +176,13 @@ void main() {
     expect(find.text('oriol'), findsOneWidget);
   });
 
-  testWidgets('mostra les sol·licituds rebudes en la pestanya corresponent',
-      (tester) async {
+  testWidgets('mostra les sol·licituds rebudes en la pestanya corresponent', (
+    tester,
+  ) async {
     final fakeService = FakeAmicsService();
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -206,9 +197,7 @@ void main() {
     final fakeService = FakeAmicsService();
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -229,9 +218,7 @@ void main() {
     final fakeService = FakeAmicsService();
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -253,9 +240,7 @@ void main() {
     final fakeService = FakeAmicsService();
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -273,14 +258,13 @@ void main() {
     expect(find.text('albert'), findsNothing);
   });
 
-  testWidgets('pot eliminar un amic després de confirmar el diàleg',
-      (tester) async {
+  testWidgets('pot eliminar un amic després de confirmar el diàleg', (
+    tester,
+  ) async {
     final fakeService = FakeAmicsService();
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -307,9 +291,7 @@ void main() {
       ..receivedRequests = [];
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -317,15 +299,13 @@ void main() {
     expect(find.byIcon(Icons.people_outline), findsOneWidget);
   });
 
-  testWidgets('mostra estat buit quan no hi ha sol·licituds enviades',
-      (tester) async {
-    final fakeService = FakeAmicsService()
-      ..sentRequests = [];
+  testWidgets('mostra estat buit quan no hi ha sol·licituds enviades', (
+    tester,
+  ) async {
+    final fakeService = FakeAmicsService()..sentRequests = [];
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -336,15 +316,13 @@ void main() {
     expect(find.byIcon(Icons.send_outlined), findsOneWidget);
   });
 
-  testWidgets('mostra estat buit quan no hi ha sol·licituds rebudes',
-      (tester) async {
-    final fakeService = FakeAmicsService()
-      ..receivedRequests = [];
+  testWidgets('mostra estat buit quan no hi ha sol·licituds rebudes', (
+    tester,
+  ) async {
+    final fakeService = FakeAmicsService()..receivedRequests = [];
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -359,9 +337,7 @@ void main() {
     final fakeService = FakeAmicsService()..throwOnLoad = true;
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -374,9 +350,7 @@ void main() {
     final fakeService = FakeAmicsService();
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -387,14 +361,13 @@ void main() {
     expect(find.byIcon(Icons.search), findsOneWidget);
   });
 
-  testWidgets('cerca usuaris i amaga l’usuari actual dels resultats',
-      (tester) async {
+  testWidgets('cerca usuaris i amaga l’usuari actual dels resultats', (
+    tester,
+  ) async {
     final fakeService = FakeAmicsService();
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();
@@ -410,14 +383,13 @@ void main() {
     expect(find.text('jana'), findsNothing);
   });
 
-  testWidgets('pot enviar una sol·licitud des del diàleg d’afegir amic',
-      (tester) async {
+  testWidgets('pot enviar una sol·licitud des del diàleg d’afegir amic', (
+    tester,
+  ) async {
     final fakeService = FakeAmicsService();
 
     await tester.pumpWidget(
-      makeTestableWidget(
-        child: FriendsPage(amicsService: fakeService),
-      ),
+      makeTestableWidget(child: FriendsPage(amicsService: fakeService)),
     );
 
     await tester.pumpAndSettle();

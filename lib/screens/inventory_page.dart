@@ -7,11 +7,7 @@ class InventoryPage extends StatefulWidget {
   final String username;
   final GardenService? gardenService;
 
-  const InventoryPage({
-    super.key,
-    required this.username,
-    this.gardenService,
-  });
+  const InventoryPage({super.key, required this.username, this.gardenService});
 
   @override
   State<InventoryPage> createState() => _InventoryPageState();

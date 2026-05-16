@@ -9,20 +9,12 @@ import 'package:provider/provider.dart';
 class FakePage extends StatelessWidget {
   final String title;
 
-  const FakePage({
-    super.key,
-    required this.title,
-  });
+  const FakePage({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(
-          title,
-          key: Key('fake_page_$title'),
-        ),
-      ),
+      body: Center(child: Text(title, key: Key('fake_page_$title'))),
     );
   }
 }
@@ -81,18 +73,16 @@ Future<void> pumpHomeShell(WidgetTester tester) async {
   await tester.pump();
 }
 
-Future<void> tapNav(
-  WidgetTester tester,
-  String keyName,
-) async {
+Future<void> tapNav(WidgetTester tester, String keyName) async {
   await tester.tap(find.byKey(Key(keyName)));
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 250));
 }
 
 void main() {
-  testWidgets('mostra HomeShell amb la pàgina de jardí per defecte',
-      (tester) async {
+  testWidgets('mostra HomeShell amb la pàgina de jardí per defecte', (
+    tester,
+  ) async {
     await pumpHomeShell(tester);
 
     expect(find.byType(HomeShell), findsOneWidget);
@@ -183,8 +173,9 @@ void main() {
     expect(find.byIcon(Icons.local_florist), findsOneWidget);
   });
 
-  testWidgets('canvia les icones actives i inactives quan es navega',
-      (tester) async {
+  testWidgets('canvia les icones actives i inactives quan es navega', (
+    tester,
+  ) async {
     await pumpHomeShell(tester);
 
     expect(find.byIcon(Icons.local_florist), findsOneWidget);
@@ -196,8 +187,9 @@ void main() {
     expect(find.byIcon(Icons.local_florist_outlined), findsOneWidget);
   });
 
-  testWidgets('manté visible la barra de navegació en canviar de pàgina',
-      (tester) async {
+  testWidgets('manté visible la barra de navegació en canviar de pàgina', (
+    tester,
+  ) async {
     await pumpHomeShell(tester);
 
     await tapNav(tester, 'nav_camera');
@@ -209,8 +201,9 @@ void main() {
     expect(find.byKey(const Key('nav_profile')), findsOneWidget);
   });
 
-  testWidgets('tocar la pestanya actual manté la mateixa pàgina',
-      (tester) async {
+  testWidgets('tocar la pestanya actual manté la mateixa pàgina', (
+    tester,
+  ) async {
     await pumpHomeShell(tester);
 
     expect(find.byKey(const Key('fake_page_garden')), findsOneWidget);

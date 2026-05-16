@@ -18,29 +18,13 @@ class FakeGardenService extends GardenService {
   String? fetchedPlantLanguage;
 
   List<SeedOption> seeds = [
-    SeedOption(
-      scientificName: 'Aloe vera',
-      amount: 2,
-      imageUrl: '',
-    ),
-    SeedOption(
-      scientificName: 'Basilicum',
-      amount: 5,
-      imageUrl: '',
-    ),
+    SeedOption(scientificName: 'Aloe vera', amount: 2, imageUrl: ''),
+    SeedOption(scientificName: 'Basilicum', amount: 5, imageUrl: ''),
   ];
 
   List<ProductItem> products = [
-    ProductItem(
-      productName: 'Pocio de creixement',
-      amount: 3,
-      imageUrl: '',
-    ),
-    ProductItem(
-      productName: 'Fertilitzant',
-      amount: 1,
-      imageUrl: '',
-    ),
+    ProductItem(productName: 'Pocio de creixement', amount: 3, imageUrl: ''),
+    ProductItem(productName: 'Fertilitzant', amount: 1, imageUrl: ''),
   ];
 
   @override
@@ -87,9 +71,7 @@ class FakeGardenService extends GardenService {
   }
 }
 
-Widget makeTestableWidget({
-  required Widget child,
-}) {
+Widget makeTestableWidget({required Widget child}) {
   return MaterialApp(
     locale: const Locale('ca'),
     localizationsDelegates: const [
@@ -117,10 +99,7 @@ Future<void> pumpInventoryPage(
 
   await tester.pumpWidget(
     makeTestableWidget(
-      child: InventoryPage(
-        username: 'jana',
-        gardenService: gardenService,
-      ),
+      child: InventoryPage(username: 'jana', gardenService: gardenService),
     ),
   );
 
@@ -128,8 +107,9 @@ Future<void> pumpInventoryPage(
 }
 
 void main() {
-  testWidgets('carrega inventari i crida fetchSeeds i fetchProducts',
-      (tester) async {
+  testWidgets('carrega inventari i crida fetchSeeds i fetchProducts', (
+    tester,
+  ) async {
     final gardenService = FakeGardenService();
 
     await pumpInventoryPage(tester, gardenService: gardenService);
@@ -222,8 +202,9 @@ void main() {
     expect(find.byKey(const Key('inventory_products_grid')), findsNothing);
   });
 
-  testWidgets('mostra error si falla la càrrega de l’inventari',
-      (tester) async {
+  testWidgets('mostra error si falla la càrrega de l’inventari', (
+    tester,
+  ) async {
     final gardenService = FakeGardenService()..throwOnLoad = true;
 
     await pumpInventoryPage(tester, gardenService: gardenService);
@@ -269,8 +250,9 @@ void main() {
     expect(find.text('Descripcio fake de la planta.'), findsOneWidget);
   });
 
-  testWidgets('obre i tanca el diàleg d’informació d’un producte',
-      (tester) async {
+  testWidgets('obre i tanca el diàleg d’informació d’un producte', (
+    tester,
+  ) async {
     final gardenService = FakeGardenService();
 
     await pumpInventoryPage(tester, gardenService: gardenService);

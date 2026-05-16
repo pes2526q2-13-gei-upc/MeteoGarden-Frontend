@@ -52,8 +52,9 @@ void main() {
     expect(find.text(l10n.createAccountSubtitle), findsOneWidget);
   });
 
-  testWidgets('mostra el selector d’idioma superior en català per defecte',
-      (tester) async {
+  testWidgets('mostra el selector d’idioma superior en català per defecte', (
+    tester,
+  ) async {
     await pumpCreateAccountPage(tester);
 
     expect(find.text('CA'), findsOneWidget);
@@ -108,8 +109,9 @@ void main() {
     expect(find.text(l10n.commonLanguage), findsOneWidget);
   });
 
-  testWidgets('permet escriure username, email, password i nom del jardí',
-      (tester) async {
+  testWidgets('permet escriure username, email, password i nom del jardí', (
+    tester,
+  ) async {
     await pumpCreateAccountPage(tester);
 
     final textFields = find.byType(TextField);
@@ -145,16 +147,16 @@ void main() {
   });
 
   testWidgets('els camps username i email no són obscureText', (tester) async {
-  await pumpCreateAccountPage(tester);
+    await pumpCreateAccountPage(tester);
 
-  final textFields = find.byType(TextField);
+    final textFields = find.byType(TextField);
 
-  final usernameTextField = tester.widget<TextField>(textFields.at(0));
-  final emailTextField = tester.widget<TextField>(textFields.at(1));
+    final usernameTextField = tester.widget<TextField>(textFields.at(0));
+    final emailTextField = tester.widget<TextField>(textFields.at(1));
 
-  expect(usernameTextField.obscureText, false);
-  expect(emailTextField.obscureText, false);
-});
+    expect(usernameTextField.obscureText, false);
+    expect(emailTextField.obscureText, false);
+  });
 
   testWidgets('mostra el dropdown de llengua del formulari', (tester) async {
     await pumpCreateAccountPage(tester);
@@ -163,19 +165,20 @@ void main() {
     expect(find.text('Català'), findsWidgets);
   });
 
-  testWidgets('permet canviar la llengua del formulari a espanyol',
-    (tester) async {
-  await pumpCreateAccountPage(tester);
+  testWidgets('permet canviar la llengua del formulari a espanyol', (
+    tester,
+  ) async {
+    await pumpCreateAccountPage(tester);
 
-  final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+    final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-  await tester.tap(find.byType(DropdownButtonFormField<String>));
-  await tester.pumpAndSettle();
+    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    await tester.pumpAndSettle();
 
-  await tester.tap(find.text(l10n.languageSpanish).last);
-  await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.languageSpanish).last);
+    await tester.pumpAndSettle();
 
-  expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
+    expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
   });
 
   testWidgets('mostra el botó de crear compte', (tester) async {
@@ -188,10 +191,7 @@ void main() {
   });
 
   testWidgets('City.fromJson crea una ciutat correctament', (tester) async {
-    final city = City.fromJson({
-      'code': '08019',
-      'name': 'Barcelona',
-    });
+    final city = City.fromJson({'code': '08019', 'name': 'Barcelona'});
 
     expect(city.code, '08019');
     expect(city.name, 'Barcelona');

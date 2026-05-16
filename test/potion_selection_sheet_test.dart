@@ -18,16 +18,8 @@ class FakeGardenService extends GardenService {
   String? appliedProductName;
 
   List<ProductItem> products = [
-    ProductItem(
-      productName: 'Poció de creixement',
-      amount: 2,
-      imageUrl: '',
-    ),
-    ProductItem(
-      productName: 'Poció màgica',
-      amount: 1,
-      imageUrl: '',
-    ),
+    ProductItem(productName: 'Poció de creixement', amount: 2, imageUrl: ''),
+    ProductItem(productName: 'Poció màgica', amount: 1, imageUrl: ''),
   ];
 
   @override
@@ -152,18 +144,20 @@ void main() {
     expect(find.text('x1'), findsOneWidget);
   });
 
-  testWidgets('el botó aplicar està desactivat si no hi ha poció seleccionada',
-      (tester) async {
-    final gardenService = FakeGardenService();
+  testWidgets(
+    'el botó aplicar està desactivat si no hi ha poció seleccionada',
+    (tester) async {
+      final gardenService = FakeGardenService();
 
-    await openPotionSheet(tester, gardenService: gardenService);
+      await openPotionSheet(tester, gardenService: gardenService);
 
-    final elevatedButton = tester.widget<ElevatedButton>(
-      find.byType(ElevatedButton).last,
-    );
+      final elevatedButton = tester.widget<ElevatedButton>(
+        find.byType(ElevatedButton).last,
+      );
 
-    expect(elevatedButton.onPressed, isNull);
-  });
+      expect(elevatedButton.onPressed, isNull);
+    },
+  );
 
   testWidgets('selecciona una poció i activa el botó aplicar', (tester) async {
     final gardenService = FakeGardenService();
@@ -182,8 +176,9 @@ void main() {
     expect(elevatedButton.onPressed, isNotNull);
   });
 
-  testWidgets('aplica una poció correctament i mostra vista d’èxit',
-      (tester) async {
+  testWidgets('aplica una poció correctament i mostra vista d’èxit', (
+    tester,
+  ) async {
     final gardenService = FakeGardenService();
 
     await openPotionSheet(tester, gardenService: gardenService);
@@ -267,8 +262,9 @@ void main() {
     expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
   });
 
-  testWidgets('mostra icona per defecte si la poció no té imatge',
-      (tester) async {
+  testWidgets('mostra icona per defecte si la poció no té imatge', (
+    tester,
+  ) async {
     final gardenService = FakeGardenService();
 
     await openPotionSheet(tester, gardenService: gardenService);

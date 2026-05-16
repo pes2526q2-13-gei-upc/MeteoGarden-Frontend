@@ -15,10 +15,7 @@ import '../models/dades_usr.dart';
 class HomeShell extends StatefulWidget {
   final List<Widget>? pagesForTests;
 
-  const HomeShell({
-    super.key,
-    this.pagesForTests,
-  });
+  const HomeShell({super.key, this.pagesForTests});
 
   @override
   State<HomeShell> createState() => _HomeShellState();
@@ -33,17 +30,17 @@ class _HomeShellState extends State<HomeShell> {
     final gardenName = Provider.of<UserModel>(context).gardenName;
     final l10n = AppLocalizations.of(context)!;
 
-   final List<Widget> pages =
-    widget.pagesForTests ??
-    [
-      GardenPage(username: username, gardenName: gardenName),
-      FriendsPage(),
-      PlantCameraScreen(),
-      MissionsPage(),
-      PerfilPage(),
-      InventoryPage(username: username),
-      AlbumPage(),
-    ];
+    final List<Widget> pages =
+        widget.pagesForTests ??
+        [
+          GardenPage(username: username, gardenName: gardenName),
+          FriendsPage(),
+          PlantCameraScreen(),
+          MissionsPage(),
+          PerfilPage(),
+          InventoryPage(username: username),
+          AlbumPage(),
+        ];
 
     final navItems = [
       _NavItem(

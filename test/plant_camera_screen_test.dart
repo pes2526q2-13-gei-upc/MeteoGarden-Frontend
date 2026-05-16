@@ -61,17 +61,20 @@ void main() {
     expect(find.byKey(const Key('plant_camera_screen')), findsOneWidget);
   });
 
-  testWidgets('mostra loading quan la càmera no està inicialitzada',
-      (tester) async {
+  testWidgets('mostra loading quan la càmera no està inicialitzada', (
+    tester,
+  ) async {
     await pumpPlantCameraScreen(tester);
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  testWidgets('no mostra el botó de fer foto si la càmera no està inicialitzada',
-      (tester) async {
-    await pumpPlantCameraScreen(tester);
+  testWidgets(
+    'no mostra el botó de fer foto si la càmera no està inicialitzada',
+    (tester) async {
+      await pumpPlantCameraScreen(tester);
 
-    expect(find.byKey(const Key('take_plant_picture_button')), findsNothing);
-  });
+      expect(find.byKey(const Key('take_plant_picture_button')), findsNothing);
+    },
+  );
 }

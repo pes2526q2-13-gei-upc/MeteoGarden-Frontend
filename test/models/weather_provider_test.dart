@@ -81,66 +81,75 @@ void main() {
       expect(provider.error, contains('Error API'));
     });
 
-    test('fetchWeather neteja error anterior quan torna a carregar correctament', () async {
-      var shouldFail = true;
+    test(
+      'fetchWeather neteja error anterior quan torna a carregar correctament',
+      () async {
+        var shouldFail = true;
 
-      final provider = WeatherProvider(
-        fetchWeatherFunction: ({required String city}) async {
-          if (shouldFail) {
-            throw Exception('Error inicial');
-          }
+        final provider = WeatherProvider(
+          fetchWeatherFunction: ({required String city}) async {
+            if (shouldFail) {
+              throw Exception('Error inicial');
+            }
 
-          return fakeWeather;
-        },
-      );
+            return fakeWeather;
+          },
+        );
 
-      await provider.fetchWeather('Barcelona');
+        await provider.fetchWeather('Barcelona');
 
-      expect(provider.error, contains('Error inicial'));
-      expect(provider.currentWeather, isNull);
+        expect(provider.error, contains('Error inicial'));
+        expect(provider.currentWeather, isNull);
 
-      shouldFail = false;
+        shouldFail = false;
 
-      await provider.fetchWeather('Barcelona', forceRefresh: true);
+        await provider.fetchWeather('Barcelona', forceRefresh: true);
 
-      expect(provider.error, isNull);
-      expect(provider.currentWeather, fakeWeather);
-      expect(provider.isLoading, isFalse);
-    });
+        expect(provider.error, isNull);
+        expect(provider.currentWeather, fakeWeather);
+        expect(provider.isLoading, isFalse);
+      },
+    );
 
-    test('si ja té dades i forceRefresh és false, no torna a cridar el servei', () async {
-      var callCount = 0;
+    test(
+      'si ja té dades i forceRefresh és false, no torna a cridar el servei',
+      () async {
+        var callCount = 0;
 
-      final provider = WeatherProvider(
-        fetchWeatherFunction: ({required String city}) async {
-          callCount++;
-          return fakeWeather;
-        },
-      );
+        final provider = WeatherProvider(
+          fetchWeatherFunction: ({required String city}) async {
+            callCount++;
+            return fakeWeather;
+          },
+        );
 
-      await provider.fetchWeather('Barcelona');
-      await provider.fetchWeather('Barcelona');
+        await provider.fetchWeather('Barcelona');
+        await provider.fetchWeather('Barcelona');
 
-      expect(callCount, 1);
-      expect(provider.currentWeather, fakeWeather);
-    });
+        expect(callCount, 1);
+        expect(provider.currentWeather, fakeWeather);
+      },
+    );
 
-    test('si forceRefresh és true, torna a cridar el servei encara que ja tingui dades', () async {
-      var callCount = 0;
+    test(
+      'si forceRefresh és true, torna a cridar el servei encara que ja tingui dades',
+      () async {
+        var callCount = 0;
 
-      final provider = WeatherProvider(
-        fetchWeatherFunction: ({required String city}) async {
-          callCount++;
-          return fakeWeather;
-        },
-      );
+        final provider = WeatherProvider(
+          fetchWeatherFunction: ({required String city}) async {
+            callCount++;
+            return fakeWeather;
+          },
+        );
 
-      await provider.fetchWeather('Barcelona');
-      await provider.fetchWeather('Barcelona', forceRefresh: true);
+        await provider.fetchWeather('Barcelona');
+        await provider.fetchWeather('Barcelona', forceRefresh: true);
 
-      expect(callCount, 2);
-      expect(provider.currentWeather, fakeWeather);
-    });
+        expect(callCount, 2);
+        expect(provider.currentWeather, fakeWeather);
+      },
+    );
 
     test('notifica els listeners quan comença i acaba la càrrega', () async {
       final provider = WeatherProvider(

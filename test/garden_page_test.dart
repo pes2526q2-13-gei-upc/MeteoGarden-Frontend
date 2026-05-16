@@ -47,16 +47,8 @@ class FakeGardenService extends GardenService {
     }
 
     return [
-      SeedOption(
-        scientificName: 'Aloe vera',
-        amount: 2,
-        imageUrl: '',
-      ),
-      SeedOption(
-        scientificName: 'Mentha spicata',
-        amount: 1,
-        imageUrl: '',
-      ),
+      SeedOption(scientificName: 'Aloe vera', amount: 2, imageUrl: ''),
+      SeedOption(scientificName: 'Mentha spicata', amount: 1, imageUrl: ''),
     ];
   }
 
@@ -158,9 +150,7 @@ Widget makeTestableWidget({
     ],
     child: MaterialApp(
       locale: const Locale('ca'),
-      navigatorObservers: [
-        if (navigatorObserver != null) navigatorObserver,
-      ],
+      navigatorObservers: [?navigatorObserver],
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -246,8 +236,9 @@ void main() {
     expect(find.text('25'), findsOneWidget);
   });
 
-  testWidgets('mostra missatge quan no hi ha testos disponibles',
-      (tester) async {
+  testWidgets('mostra missatge quan no hi ha testos disponibles', (
+    tester,
+  ) async {
     final gardenService = FakeGardenService();
     final weatherProvider = FakeWeatherProvider();
 
@@ -359,8 +350,9 @@ void main() {
     expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
   });
 
-  testWidgets('no mostra WeatherCard si no hi ha temps, ni loading ni error',
-      (tester) async {
+  testWidgets('no mostra WeatherCard si no hi ha temps, ni loading ni error', (
+    tester,
+  ) async {
     final gardenService = FakeGardenService();
     final weatherProvider = FakeWeatherProvider()
       ..fakeWeather = null
@@ -455,10 +447,7 @@ void main() {
 
   testWidgets('mostra correctament molts testos en graella', (tester) async {
     final gardenService = FakeGardenService()
-      ..pots = List.generate(
-        8,
-        (index) => fakeEmptyPot(potNumber: index + 1),
-      );
+      ..pots = List.generate(8, (index) => fakeEmptyPot(potNumber: index + 1));
 
     final weatherProvider = FakeWeatherProvider()
       ..fakeWeather = fakeWeatherInfo();
@@ -475,9 +464,7 @@ void main() {
 
   testWidgets('tocar un test buit obre el selector de llavors', (tester) async {
     final gardenService = FakeGardenService()
-      ..pots = [
-        fakeEmptyPot(potNumber: 1),
-      ];
+      ..pots = [fakeEmptyPot(potNumber: 1)];
 
     final weatherProvider = FakeWeatherProvider()
       ..fakeWeather = fakeWeatherInfo();
@@ -496,13 +483,12 @@ void main() {
     expect(find.text('Mentha spicata'), findsOneWidget);
   });
 
-  testWidgets('mostra SnackBar si falla carregar llavors en tocar test buit',
-      (tester) async {
+  testWidgets('mostra SnackBar si falla carregar llavors en tocar test buit', (
+    tester,
+  ) async {
     final gardenService = FakeGardenService()
       ..throwOnFetchSeeds = true
-      ..pots = [
-        fakeEmptyPot(potNumber: 1),
-      ];
+      ..pots = [fakeEmptyPot(potNumber: 1)];
 
     final weatherProvider = FakeWeatherProvider()
       ..fakeWeather = fakeWeatherInfo();
@@ -585,10 +571,7 @@ void main() {
 
   testWidgets('funciona amb layout petit', (tester) async {
     final gardenService = FakeGardenService()
-      ..pots = [
-        fakeEmptyPot(potNumber: 1),
-        fakeEmptyPot(potNumber: 2),
-      ];
+      ..pots = [fakeEmptyPot(potNumber: 1), fakeEmptyPot(potNumber: 2)];
 
     final weatherProvider = FakeWeatherProvider()
       ..fakeWeather = fakeWeatherInfo();
@@ -606,10 +589,7 @@ void main() {
 
   testWidgets('funciona amb layout mitjà', (tester) async {
     final gardenService = FakeGardenService()
-      ..pots = [
-        fakeEmptyPot(potNumber: 1),
-        fakeEmptyPot(potNumber: 2),
-      ];
+      ..pots = [fakeEmptyPot(potNumber: 1), fakeEmptyPot(potNumber: 2)];
 
     final weatherProvider = FakeWeatherProvider()
       ..fakeWeather = fakeWeatherInfo();

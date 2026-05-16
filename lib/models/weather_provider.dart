@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import '../models/weather_info.dart';
 import '../services/weather_service.dart';
 
-typedef FetchWeatherFunction = Future<WeatherInfo> Function({required String city});
+typedef FetchWeatherFunction =
+    Future<WeatherInfo> Function({required String city});
 
 class WeatherProvider extends ChangeNotifier {
-  WeatherProvider({
-    FetchWeatherFunction? fetchWeatherFunction,
-  }) : _fetchWeatherFunction =
-            fetchWeatherFunction ?? WeatherService().fetchCurrent;
+  WeatherProvider({FetchWeatherFunction? fetchWeatherFunction})
+    : _fetchWeatherFunction =
+          fetchWeatherFunction ?? WeatherService().fetchCurrent;
 
   final FetchWeatherFunction _fetchWeatherFunction;
 

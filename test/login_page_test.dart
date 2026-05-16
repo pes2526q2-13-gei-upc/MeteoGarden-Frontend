@@ -80,22 +80,31 @@ void main() {
     expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
   });
 
-  testWidgets('si hi ha credencials intenta fer login i pot mostrar error HTTP',
-      (tester) async {
-    await pumpLoginPage(tester);
+  testWidgets(
+    'si hi ha credencials intenta fer login i pot mostrar error HTTP',
+    (tester) async {
+      await pumpLoginPage(tester);
 
-    await tester.enterText(find.byKey(const Key('login_username_field')), 'jana');
-    await tester.enterText(find.byKey(const Key('login_password_field')), '1234');
-    await tester.pump();
+      await tester.enterText(
+        find.byKey(const Key('login_username_field')),
+        'jana',
+      );
+      await tester.enterText(
+        find.byKey(const Key('login_password_field')),
+        '1234',
+      );
+      await tester.pump();
 
-    await tester.tap(find.byKey(const Key('login_button')));
-    await tester.pump();
+      await tester.tap(find.byKey(const Key('login_button')));
+      await tester.pump();
 
-    expect(find.byType(LoginPage), findsOneWidget);
-  });
+      expect(find.byType(LoginPage), findsOneWidget);
+    },
+  );
 
-  testWidgets('mostra el selector d’idioma en català per defecte',
-      (tester) async {
+  testWidgets('mostra el selector d’idioma en català per defecte', (
+    tester,
+  ) async {
     await pumpLoginPage(tester);
 
     expect(find.text('CA'), findsOneWidget);

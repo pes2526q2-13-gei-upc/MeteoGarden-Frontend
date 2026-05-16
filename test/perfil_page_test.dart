@@ -101,10 +101,7 @@ void main() {
   });
 
   testWidgets('mostra les monedes de l’usuari', (tester) async {
-    await pumpPerfilPage(
-      tester,
-      coins: 25,
-    );
+    await pumpPerfilPage(tester, coins: 25);
 
     expect(find.text('25'), findsOneWidget);
     expect(find.byIcon(Icons.monetization_on_rounded), findsOneWidget);
@@ -136,8 +133,9 @@ void main() {
     expect(find.byIcon(Icons.delete_forever), findsOneWidget);
   });
 
-  testWidgets('obre el diàleg de confirmació per eliminar compte',
-      (tester) async {
+  testWidgets('obre el diàleg de confirmació per eliminar compte', (
+    tester,
+  ) async {
     await pumpPerfilPage(tester);
 
     await tester.tap(find.byIcon(Icons.delete_forever));
@@ -161,8 +159,9 @@ void main() {
     expect(find.byType(AlertDialog), findsNothing);
   });
 
-  testWidgets('mostra valors per defecte si falten dades del perfil',
-      (tester) async {
+  testWidgets('mostra valors per defecte si falten dades del perfil', (
+    tester,
+  ) async {
     await pumpPerfilPage(
       tester,
       username: '',

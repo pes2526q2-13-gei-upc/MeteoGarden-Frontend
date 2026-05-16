@@ -33,9 +33,9 @@ class PlantService {
         ..fields['organ'] = organ
         ..files.add(await http.MultipartFile.fromPath('image', imagePath));
 
-      final streamedResponse = await _client.send(request).timeout(
-            const Duration(seconds: 40),
-          );
+      final streamedResponse = await _client
+          .send(request)
+          .timeout(const Duration(seconds: 40));
 
       final response = await http.Response.fromStream(streamedResponse);
       final body = _decodeJsonSafely(response.body);

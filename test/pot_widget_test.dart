@@ -369,7 +369,9 @@ void main() {
           .toList();
 
       expect(
-        assetImages.any((image) => image.assetName == 'assets/images/escut.png'),
+        assetImages.any(
+          (image) => image.assetName == 'assets/images/escut.png',
+        ),
         isTrue,
       );
     });
@@ -410,7 +412,9 @@ void main() {
           .toList();
 
       expect(
-        assetImages.any((image) => image.assetName == 'assets/images/escut.png'),
+        assetImages.any(
+          (image) => image.assetName == 'assets/images/escut.png',
+        ),
         isFalse,
       );
     });

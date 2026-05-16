@@ -39,13 +39,13 @@ class _FriendGardenPageState extends State<FriendGardenPage> {
 
   @override
   @override
-void initState() {
-  super.initState();
-  _gardenService = widget.gardenService ?? GardenService();
-  _amicsService = widget.amicsService ?? AmicsService();
-  _loadGarden();
-  _loadLikeState();
-}
+  void initState() {
+    super.initState();
+    _gardenService = widget.gardenService ?? GardenService();
+    _amicsService = widget.amicsService ?? AmicsService();
+    _loadGarden();
+    _loadLikeState();
+  }
 
   Future<void> _loadLikeState() async {
     final token = Provider.of<UserModel>(context, listen: false).token;

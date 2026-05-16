@@ -59,10 +59,26 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     _initializeData();
   }
 
-
   Future<void> _initializeData() async {
-  if (widget.initialOptionsForTests != null) {
-    options = widget.initialOptionsForTests!;
+    if (widget.initialOptionsForTests != null) {
+      options = widget.initialOptionsForTests!;
+
+      if (widget.isNewUser) {
+        _setDefaultsFromOptions();
+      } else {
+        await _fetchUserAvatar();
+      }
+
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+
+      return;
+    }
+
+    await _fetchAvatarOptions();
+
+    if (!mounted) return;
 
     if (widget.isNewUser) {
       _setDefaultsFromOptions();
@@ -73,25 +89,7 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     if (mounted) {
       setState(() => isLoading = false);
     }
-
-    return;
   }
-
-  await _fetchAvatarOptions();
-
-  if (!mounted) return;
-
-  if (widget.isNewUser) {
-    _setDefaultsFromOptions();
-  } else {
-    await _fetchUserAvatar();
-  }
-
-  if (mounted) {
-    setState(() => isLoading = false);
-  }
-}
-
 
   Future<void> _fetchAvatarOptions() async {
     try {

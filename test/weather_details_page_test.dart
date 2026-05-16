@@ -14,9 +14,7 @@ class FakeWeatherProvider extends WeatherProvider {
   WeatherInfo? get currentWeather => fakeWeather;
 }
 
-Widget makeTestableWidget({
-  required FakeWeatherProvider weatherProvider,
-}) {
+Widget makeTestableWidget({required FakeWeatherProvider weatherProvider}) {
   return ChangeNotifierProvider<WeatherProvider>.value(
     value: weatherProvider,
     child: MaterialApp(
@@ -33,9 +31,7 @@ Widget makeTestableWidget({
   );
 }
 
-WeatherInfo fakeWeatherInfo({
-  String stationName = 'Estació Barcelona',
-}) {
+WeatherInfo fakeWeatherInfo({String stationName = 'Estació Barcelona'}) {
   return WeatherInfo(
     temp: 22.5,
     relativeHumidity: 65,
@@ -47,8 +43,9 @@ WeatherInfo fakeWeatherInfo({
 }
 
 void main() {
-  testWidgets('mostra loading quan no hi ha dades meteorològiques',
-      (tester) async {
+  testWidgets('mostra loading quan no hi ha dades meteorològiques', (
+    tester,
+  ) async {
     final weatherProvider = FakeWeatherProvider()..fakeWeather = null;
 
     await tester.pumpWidget(
@@ -85,8 +82,9 @@ void main() {
     expect(find.byIcon(Icons.location_on), findsOneWidget);
   });
 
-  testWidgets('mostra Desconeguda si el nom de l’estació és buit',
-      (tester) async {
+  testWidgets('mostra Desconeguda si el nom de l’estació és buit', (
+    tester,
+  ) async {
     final weatherProvider = FakeWeatherProvider()
       ..fakeWeather = fakeWeatherInfo(stationName: '');
 

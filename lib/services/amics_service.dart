@@ -6,6 +6,7 @@ class AmicsService {
   AmicsService({http.Client? client}) : _client = client ?? http.Client();
 
   final http.Client _client;
+
   /// Cerca usuaris que continguin [query] al seu nom d'usuari.
   /// Retorna una llista de maps amb 'username' i 'avatar'.
   Future<List<Map<String, dynamic>>> searchUsers({
