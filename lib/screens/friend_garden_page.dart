@@ -13,12 +13,16 @@ class FriendGardenPage extends StatefulWidget {
   final String friendUsername;
   final String gardenName;
   final Map<String, dynamic>? avatarParts;
+  final GardenService? gardenService;
+  final AmicsService? amicsService;
 
   const FriendGardenPage({
     super.key,
     required this.friendUsername,
     required this.gardenName,
     this.avatarParts,
+    this.gardenService,
+    this.amicsService,
   });
 
   @override
@@ -26,16 +30,19 @@ class FriendGardenPage extends StatefulWidget {
 }
 
 class _FriendGardenPageState extends State<FriendGardenPage> {
-  final GardenService _gardenService = GardenService();
-  final AmicsService _amicsService = AmicsService();
+  late final GardenService _gardenService;
+  late final AmicsService _amicsService;
 
   late Future<List<GardenPot>> _potsFuture;
   bool _likeSending = false;
   bool _liked = false;
 
   @override
+  @override
   void initState() {
     super.initState();
+    _gardenService = widget.gardenService ?? GardenService();
+    _amicsService = widget.amicsService ?? AmicsService();
     _loadGarden();
     _loadLikeState();
   }
