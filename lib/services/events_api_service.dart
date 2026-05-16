@@ -195,12 +195,15 @@ class EventDetail {
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 class EventsService {
+  EventsService({http.Client? client}) : _client = client ?? http.Client();
+
+  final http.Client _client;
   /// GET /api/events/categories
   /// Retorna les categories disponibles.
   Future<List<EventCategory>> fetchCategories({required String token}) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/categories');
 
-    final response = await http.get(
+    final response = await _client.get(
       uri,
       headers: {'Authorization': 'Token $token'},
     );
@@ -246,7 +249,7 @@ class EventsService {
       '${ApiConfig.baseUrl}/api/events/count',
     ).replace(queryParameters: queryParams);
 
-    final response = await http.get(uri);
+    final response = await _client.get(uri);
     if (response.statusCode != 200) {
       throw Exception('Error carregant recompte: ${response.statusCode}');
     }
@@ -283,7 +286,7 @@ class EventsService {
       '${ApiConfig.baseUrl}/api/events/',
     ).replace(queryParameters: queryParams);
 
-    final response = await http.get(uri);
+    final response = await _client.get(uri);
     if (response.statusCode != 200) {
       throw Exception('Error carregant events: ${response.statusCode}');
     }
@@ -307,7 +310,7 @@ class EventsService {
       queryParameters: {'id': id, 'date': _formatDate(date), 'lang': lang},
     );
 
-    final response = await http.get(uri);
+    final response = await _client.get(uri);
     if (response.statusCode != 200) {
       throw Exception('Error carregant detall: ${response.statusCode}');
     }

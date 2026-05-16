@@ -16,8 +16,11 @@ class Plant {
 }
 
 class PlantProvider extends ChangeNotifier {
+  PlantProvider({http.Client? client}) : _client = client ?? http.Client();
+  final http.Client _client;
+
   Future<List<Plant>> fetchPlants(UserModel user) async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('${ApiConfig.baseUrl}/api/users/${user.username}/album/'),
       headers: {'Authorization': 'Token ${user.token}'},
     );

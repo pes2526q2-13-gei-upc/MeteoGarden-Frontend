@@ -42,13 +42,15 @@ class PlantingResult {
 }
 
 class GardenService {
-  GardenService();
+  GardenService({http.Client? client}) : _client = client ?? http.Client();
+
+  final http.Client _client;
 
   Future<List<GardenPot>> fetchGardenPlants({
     required String username,
     required String gardenName,
   }) async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse(
         '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/plants/',
       ),
@@ -66,7 +68,7 @@ class GardenService {
     required String gardenName,
     required int potNumber,
   }) async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse(
         '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/plant/',
       ),
@@ -92,7 +94,7 @@ class GardenService {
       '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/water/',
     );
 
-    final response = await http.patch(url);
+    final response = await _client.patch(url);
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
@@ -105,7 +107,7 @@ class GardenService {
   }
 
   Future<List<SeedOption>> fetchSeeds(String username) async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('${ApiConfig.baseUrl}/api/users/$username/seeds/'),
     );
 
@@ -118,7 +120,7 @@ class GardenService {
   }
 
   Future<List<ProductItem>> fetchProducts(String username) async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('${ApiConfig.baseUrl}/api/users/$username/products/'),
     );
 
@@ -137,7 +139,7 @@ class GardenService {
     required String productName,
   }) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/api/use_product/');
-    final response = await http.post(
+    final response = await _client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
@@ -170,7 +172,7 @@ class GardenService {
       '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/planting/',
     );
 
-    final response = await http.post(
+    final response = await _client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'scientificName': scientificName}),
@@ -197,7 +199,7 @@ class GardenService {
       '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/collect/',
     );
 
-    final response = await http.post(
+    final response = await _client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'plant': scientificName}),
@@ -223,7 +225,7 @@ class GardenService {
       '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/delete/',
     );
 
-    final response = await http.delete(
+    final response = await _client.delete(
       url,
       headers: {'Content-Type': 'application/json'},
     );
@@ -241,7 +243,7 @@ class GardenService {
     String scientificName,
     String lang,
   ) async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse(
         '${ApiConfig.baseUrl}/api/plants/info?scientificName=$scientificName&lang=$lang',
       ),

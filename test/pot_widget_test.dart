@@ -34,16 +34,7 @@ void main() {
     testWidgets('no mostra planta ni barra si el test no està ocupat', (
       WidgetTester tester,
     ) async {
-      final pot = GardenPot(
-        potNumber: 1,
-        occupied: false,
-        plant: null,
-        growthPhase: null,
-        healthLevel: null,
-        waterLevel: null,
-        plantedAt: null,
-        lastWateredAt: null,
-      );
+      final pot = _buildEmptyPot();
 
       await tester.pumpWidget(
         _wrapWithApp(
@@ -58,6 +49,35 @@ void main() {
       expect(find.byType(LinearProgressIndicator), findsNothing);
       expect(find.byIcon(Icons.local_florist), findsNothing);
       expect(find.byKey(const Key('garden_pot_1_empty')), findsOneWidget);
+    });
+
+    testWidgets('no mostra planta si occupied és true però plant és null', (
+      WidgetTester tester,
+    ) async {
+      final pot = GardenPot(
+        potNumber: 1,
+        occupied: true,
+        plant: null,
+        growthPhase: null,
+        healthLevel: null,
+        waterLevel: 80,
+        plantedAt: null,
+        lastWateredAt: null,
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(
+          SizedBox(
+            width: 140,
+            height: 140,
+            child: PotWidget(pot: pot, onTap: () {}),
+          ),
+        ),
+      );
+
+      expect(find.byKey(const Key('garden_pot_1_empty')), findsOneWidget);
+      expect(find.byIcon(Icons.local_florist), findsNothing);
+      expect(find.byType(LinearProgressIndicator), findsNothing);
     });
 
     testWidgets('mostra la barra d’aigua si waterLevel no és null', (
@@ -86,6 +106,62 @@ void main() {
       );
 
       expect(progress.value, 0.75);
+    });
+
+    testWidgets('clampa waterLevel per sota de 0 a 0', (
+      WidgetTester tester,
+    ) async {
+      final pot = _buildPot(
+        occupied: true,
+        commonName: 'Menta',
+        scientificName: 'Mentha spicata',
+        imageUrl: '',
+        waterLevel: -20,
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(
+          SizedBox(
+            width: 140,
+            height: 140,
+            child: PotWidget(pot: pot, onTap: () {}),
+          ),
+        ),
+      );
+
+      final progress = tester.widget<LinearProgressIndicator>(
+        find.byType(LinearProgressIndicator),
+      );
+
+      expect(progress.value, 0.0);
+    });
+
+    testWidgets('clampa waterLevel per sobre de 100 a 1', (
+      WidgetTester tester,
+    ) async {
+      final pot = _buildPot(
+        occupied: true,
+        commonName: 'Menta',
+        scientificName: 'Mentha spicata',
+        imageUrl: '',
+        waterLevel: 150,
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(
+          SizedBox(
+            width: 140,
+            height: 140,
+            child: PotWidget(pot: pot, onTap: () {}),
+          ),
+        ),
+      );
+
+      final progress = tester.widget<LinearProgressIndicator>(
+        find.byType(LinearProgressIndicator),
+      );
+
+      expect(progress.value, 1.0);
     });
 
     testWidgets('no mostra la barra d’aigua si waterLevel és null', (
@@ -152,16 +228,7 @@ void main() {
     ) async {
       bool tapped = false;
 
-      final pot = GardenPot(
-        potNumber: 1,
-        occupied: false,
-        plant: null,
-        growthPhase: null,
-        healthLevel: null,
-        waterLevel: null,
-        plantedAt: null,
-        lastWateredAt: null,
-      );
+      final pot = _buildEmptyPot();
 
       await tester.pumpWidget(
         _wrapWithApp(
@@ -184,7 +251,7 @@ void main() {
       expect(tapped, true);
     });
 
-    testWidgets('mostra icona fallback si no hi ha imageUrl', (
+    testWidgets('mostra icona fallback groga si no hi ha imageUrl', (
       WidgetTester tester,
     ) async {
       final pot = _buildPot(
@@ -209,6 +276,32 @@ void main() {
 
       expect(icon.color, Colors.yellow);
       expect(find.byType(Image), findsOneWidget);
+    });
+
+    testWidgets('mostra icona fallback groga si imageUrl és null', (
+      WidgetTester tester,
+    ) async {
+      final pot = _buildPot(
+        occupied: true,
+        commonName: 'Roser',
+        scientificName: 'Rosa canina',
+        imageUrl: null,
+        waterLevel: 50,
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(
+          SizedBox(
+            width: 140,
+            height: 140,
+            child: PotWidget(pot: pot, onTap: () {}),
+          ),
+        ),
+      );
+
+      final icon = tester.widget<Icon>(find.byIcon(Icons.local_florist));
+
+      expect(icon.color, Colors.yellow);
     });
 
     testWidgets('mostra Image.network si hi ha imageUrl', (
@@ -239,6 +332,88 @@ void main() {
       expect(find.byIcon(Icons.local_florist), findsNothing);
       expect(find.byKey(const Key('garden_pot_1_occupied')), findsOneWidget);
     });
+
+    testWidgets('mostra escut si el test té una poció activa', (
+      WidgetTester tester,
+    ) async {
+      final pot = _buildPot(
+        occupied: true,
+        commonName: 'Menta',
+        scientificName: 'Mentha spicata',
+        imageUrl: '',
+        waterLevel: 50,
+        activeProducts: [
+          ActivePotion(
+            name: 'Escut',
+            appliedAt: DateTime.now().subtract(const Duration(minutes: 10)),
+            expiresAt: DateTime.now().add(const Duration(hours: 1)),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(
+          SizedBox(
+            width: 140,
+            height: 140,
+            child: PotWidget(pot: pot, onTap: () {}),
+          ),
+        ),
+      );
+
+      final assetImages = tester
+          .widgetList<Image>(find.byType(Image))
+          .whereType<Image>()
+          .where((image) => image.image is AssetImage)
+          .map((image) => image.image as AssetImage)
+          .toList();
+
+      expect(
+        assetImages.any((image) => image.assetName == 'assets/images/escut.png'),
+        isTrue,
+      );
+    });
+
+    testWidgets('no mostra escut si la poció està expirada', (
+      WidgetTester tester,
+    ) async {
+      final pot = _buildPot(
+        occupied: true,
+        commonName: 'Menta',
+        scientificName: 'Mentha spicata',
+        imageUrl: '',
+        waterLevel: 50,
+        activeProducts: [
+          ActivePotion(
+            name: 'Escut',
+            appliedAt: DateTime.now().subtract(const Duration(hours: 2)),
+            expiresAt: DateTime.now().subtract(const Duration(hours: 1)),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(
+          SizedBox(
+            width: 140,
+            height: 140,
+            child: PotWidget(pot: pot, onTap: () {}),
+          ),
+        ),
+      );
+
+      final assetImages = tester
+          .widgetList<Image>(find.byType(Image))
+          .whereType<Image>()
+          .where((image) => image.image is AssetImage)
+          .map((image) => image.image as AssetImage)
+          .toList();
+
+      expect(
+        assetImages.any((image) => image.assetName == 'assets/images/escut.png'),
+        isFalse,
+      );
+    });
   });
 }
 
@@ -248,12 +423,26 @@ Widget _wrapWithApp(Widget child) {
   );
 }
 
+GardenPot _buildEmptyPot() {
+  return GardenPot(
+    potNumber: 1,
+    occupied: false,
+    plant: null,
+    growthPhase: null,
+    healthLevel: null,
+    waterLevel: null,
+    plantedAt: null,
+    lastWateredAt: null,
+  );
+}
+
 GardenPot _buildPot({
   required bool occupied,
   required String commonName,
   required String scientificName,
-  required String imageUrl,
+  required String? imageUrl,
   required double? waterLevel,
+  List<ActivePotion> activeProducts = const [],
 }) {
   return GardenPot(
     potNumber: 1,
@@ -263,6 +452,7 @@ GardenPot _buildPot({
     waterLevel: waterLevel,
     plantedAt: DateTime(2026, 4, 20),
     lastWateredAt: DateTime(2026, 4, 22),
+    activeProducts: activeProducts,
     plant: PlantData(
       scientificName: scientificName,
       commonName: commonName,

@@ -10,7 +10,12 @@ import 'dart:io';
 import 'package:image/image.dart' as img;
 
 class PlantCameraScreen extends StatefulWidget {
-  const PlantCameraScreen({super.key});
+  final bool enableCamera;
+
+  const PlantCameraScreen({
+    super.key,
+    this.enableCamera = true,
+  });
 
   @override
   State<PlantCameraScreen> createState() => _PlantCameraScreenState();
@@ -33,14 +38,19 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   // Inicialitzar càmera
   bool _cameraInitialized = false;
 
-  @override
+ @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    if (!widget.enableCamera) {
+      return;
+    }
+
     if (!_cameraInitialized) {
       _cameraInitialized = true;
       _initCamera();
     }
-  }
+}
 
   Future<void> _initCamera() async {
     final l10n = AppLocalizations.of(context)!;
@@ -95,7 +105,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
 
       final user = Provider.of<UserModel>(context, listen: false);
 
-      final result = await PlantService.identifyPlant(
+      final result = await PlantService().identifyPlant(
         username: user.username,
         imagePath: croppedImagePath,
         organ: _selectedPlantType,

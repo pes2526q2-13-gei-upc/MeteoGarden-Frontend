@@ -16,7 +16,11 @@ class PlantIdentificationException implements Exception {
 }
 
 class PlantService {
-  static Future<PlantIdentification> identifyPlant({
+  PlantService({http.Client? client}) : _client = client ?? http.Client();
+
+  final http.Client _client;
+
+  Future<PlantIdentification> identifyPlant({
     required String username,
     required String imagePath,
     String organ = 'leaf',
@@ -29,9 +33,9 @@ class PlantService {
         ..fields['organ'] = organ
         ..files.add(await http.MultipartFile.fromPath('image', imagePath));
 
-      final streamedResponse = await request.send().timeout(
-        const Duration(seconds: 40),
-      );
+      final streamedResponse = await _client.send(request).timeout(
+            const Duration(seconds: 40),
+          );
 
       final response = await http.Response.fromStream(streamedResponse);
       final body = _decodeJsonSafely(response.body);
