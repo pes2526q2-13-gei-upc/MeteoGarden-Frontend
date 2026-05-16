@@ -15,7 +15,9 @@ const Color _deepGreen = Color(0xFF1B5E20);
 const Color _cardWhite = Colors.white;
 
 class FriendsPage extends StatefulWidget {
-  const FriendsPage({super.key});
+  final AmicsService? amicsService;
+
+  const FriendsPage({super.key, this.amicsService});
 
   @override
   State<FriendsPage> createState() => _FriendsPageState();
@@ -23,7 +25,7 @@ class FriendsPage extends StatefulWidget {
 
 class _FriendsPageState extends State<FriendsPage>
     with SingleTickerProviderStateMixin {
-  final AmicsService _amicsService = AmicsService();
+  late final AmicsService _amicsService;
   late TabController _tabController;
 
   List<Map<String, dynamic>> _friends = [];
@@ -35,10 +37,11 @@ class _FriendsPageState extends State<FriendsPage>
 
   @override
   void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadAll());
-  }
+  super.initState();
+  _amicsService = widget.amicsService ?? AmicsService();
+  _tabController = TabController(length: 3, vsync: this);
+  WidgetsBinding.instance.addPostFrameCallback((_) => _loadAll());
+}
 
   @override
   void dispose() {
