@@ -99,3 +99,41 @@ Després, des del projecte Flutter:
 
 flutter test integration_test/<NOM_TEST_INTEGRACIO>.dart
 
+## Cobertura dels test unitaris
+
+flutter test --coverage
+
+Aquesta comanda executa tots els tests i genera el fitxer:
+
+coverage/lcov.info
+
+Aquest fitxer conté la informació de cobertura del projecte, és a dir, quines parts del codi han estat executades pels tests.
+
+Visualitzar la cobertura a VS Code
+
+Es pot instal·lar l’extensió Flutter Coverage a VS Code. Aquesta extensió permet llegir el fitxer coverage/lcov.info i mostrar visualment quines línies del codi estan cobertes pels tests.
+
+Passos:
+
+Executar:
+flutter test --coverage
+Instal·lar l’extensió Flutter Coverage a VS Code.
+Obrir el projecte a VS Code i visualitzar la cobertura generada.
+Generar un informe HTML de cobertura
+
+Per obtenir un informe més complet i visual, es pot utilitzar lcov.
+
+A Windows, es pot instal·lar amb Chocolatey. Cal obrir PowerShell com a administrador i executar:
+
+choco install lcov
+
+Després, des de l’arrel del projecte, generar l’informe HTML amb:
+
+genhtml coverage/lcov.info -o coverage/html
+
+Finalment, obrir l’informe al navegador:
+
+start coverage/html/index.html
+
+L’informe HTML permet veure la cobertura global del projecte i consultar fitxer per fitxer quines línies estan cobertes pels tests.
+

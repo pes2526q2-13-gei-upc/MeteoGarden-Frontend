@@ -5,7 +5,7 @@ import 'package:meteo_garden/widgets/pot_widget.dart';
 
 void main() {
   group('PotWidget', () {
-    testWidgets('mostra la planta i el nom si el test està ocupat', (
+    testWidgets('mostra la planta si el test està ocupat', (
       WidgetTester tester,
     ) async {
       final pot = _buildPot(
@@ -26,9 +26,9 @@ void main() {
         ),
       );
 
-      expect(find.text('Tomàquet'), findsOneWidget);
       expect(find.byIcon(Icons.local_florist), findsOneWidget);
       expect(find.byType(LinearProgressIndicator), findsOneWidget);
+      expect(find.byKey(const Key('garden_pot_1_occupied')), findsOneWidget);
     });
 
     testWidgets('no mostra planta ni barra si el test no està ocupat', (
@@ -57,10 +57,10 @@ void main() {
 
       expect(find.byType(LinearProgressIndicator), findsNothing);
       expect(find.byIcon(Icons.local_florist), findsNothing);
-      expect(find.byType(Text), findsNothing);
+      expect(find.byKey(const Key('garden_pot_1_empty')), findsOneWidget);
     });
 
-    testWidgets('mostra la barra d aigua si waterLevel no és null', (
+    testWidgets('mostra la barra d’aigua si waterLevel no és null', (
       WidgetTester tester,
     ) async {
       final pot = _buildPot(
@@ -88,7 +88,7 @@ void main() {
       expect(progress.value, 0.75);
     });
 
-    testWidgets('no mostra la barra d aigua si waterLevel és null', (
+    testWidgets('no mostra la barra d’aigua si waterLevel és null', (
       WidgetTester tester,
     ) async {
       final pot = _buildPot(
@@ -110,9 +110,10 @@ void main() {
       );
 
       expect(find.byType(LinearProgressIndicator), findsNothing);
+      expect(find.byIcon(Icons.local_florist), findsOneWidget);
     });
 
-    testWidgets('crida onTap quan es prem el test', (
+    testWidgets('crida onTap quan es prem el test ocupat', (
       WidgetTester tester,
     ) async {
       bool tapped = false;
@@ -140,7 +141,44 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byType(GestureDetector));
+      await tester.tap(find.byKey(const Key('garden_pot_1_occupied')));
+      await tester.pump();
+
+      expect(tapped, true);
+    });
+
+    testWidgets('crida onTap quan es prem el test buit', (
+      WidgetTester tester,
+    ) async {
+      bool tapped = false;
+
+      final pot = GardenPot(
+        potNumber: 1,
+        occupied: false,
+        plant: null,
+        growthPhase: null,
+        healthLevel: null,
+        waterLevel: null,
+        plantedAt: null,
+        lastWateredAt: null,
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(
+          SizedBox(
+            width: 140,
+            height: 140,
+            child: PotWidget(
+              pot: pot,
+              onTap: () {
+                tapped = true;
+              },
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('garden_pot_1_empty')));
       await tester.pump();
 
       expect(tapped, true);
@@ -168,7 +206,9 @@ void main() {
       );
 
       final icon = tester.widget<Icon>(find.byIcon(Icons.local_florist));
+
       expect(icon.color, Colors.yellow);
+      expect(find.byType(Image), findsOneWidget);
     });
 
     testWidgets('mostra Image.network si hi ha imageUrl', (
@@ -192,8 +232,12 @@ void main() {
         ),
       );
 
-      expect(find.byType(Image), findsWidgets);
-      expect(find.text('Roser'), findsOneWidget);
+      final images = tester.widgetList<Image>(find.byType(Image)).toList();
+
+      expect(images, isNotEmpty);
+      expect(images.any((image) => image.image is NetworkImage), isTrue);
+      expect(find.byIcon(Icons.local_florist), findsNothing);
+      expect(find.byKey(const Key('garden_pot_1_occupied')), findsOneWidget);
     });
   });
 }

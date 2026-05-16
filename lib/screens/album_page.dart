@@ -22,15 +22,35 @@ class AlbumPage extends StatefulWidget {
 
 class _AlbumPageState extends State<AlbumPage> {
   String mapLanguage(String language) {
-    switch (language) {
-      case 'Català':
+    final normalized = language.trim().toLowerCase();
+
+    switch (normalized) {
+      case 'ca':
+      case 'cat':
+      case 'català':
+      case 'catala':
+      case 'catalan':
         return 'ca';
-      case 'Castellà':
+
+      case 'es':
+      case 'esp':
+      case 'castellà':
+      case 'castella':
+      case 'castellano':
+      case 'spanish':
+      case 'español':
+      case 'espanyol':
         return 'es';
-      case 'English':
+
+      case 'en':
+      case 'eng':
+      case 'english':
+      case 'anglès':
+      case 'angles':
         return 'en';
+
       default:
-        return 'en';
+        return 'ca';
     }
   }
 

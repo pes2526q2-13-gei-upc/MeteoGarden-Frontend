@@ -60,8 +60,8 @@
   "albumNumber": "plantas descubiertas",
 
   "shopTitle": "Tienda",
-  "shopSeedsTab": "Semillas 🌱",
-  "shopOtherTab": "Otros 🛒",
+  "shopSeedsTab": "Semillas",
+  "shopOtherTab": "Otros",
   "shopLoadError": "No se han podido cargar los productos.",
   "shopConnectionError": "Error de conexión o procesando los datos.",
   "shopPurchaseProcessingError": "Error al procesar la compra.",
@@ -190,9 +190,9 @@
   "photoCameraInitError": "No se ha podido inicializar la cámara.",
   "photoUnexpectedError": "Se ha producido un error inesperado.",
   "photoTakePlantPicture": "Fotografía la planta",
-  "photoTreeMode": "Árbol",
+  "photoTreeMode": "Hoja",
   "photoFlowerMode": "Flor",
-  "photoTreeModeSelected": "Modo árbol seleccionado",
+  "photoTreeModeSelected": "Modo hoja seleccionado",
   "photoFlowerModeSelected": "Modo flor seleccionado",
   "photoIdentifyingPlant": "Identificando planta...",
   "photoCenterPlantInFrame": "Centra la planta dentro del marco",
@@ -374,5 +374,78 @@
 "missionsClaimedSectionTitle": "Ya reclamadas",
 "missionsTagClaimed": "Reclamada",
 "missionsInProgress": "En curso",
-"missionsRewardCoins": "monedas"
+"missionsRewardCoins": "monedas",
+
+"solarIrradianceLabel": "Irradiancia solar",
+
+"friends": "Amigos",
+"sent": "Enviadas",
+"received": "Recibidas",
+"sendFriendRequestTooltip": "Enviar solicitud de amistad",
+"friendsCount": "{count, plural, =1{1 amigo} other{{count} amigos}}",
+"@friendsCount": {
+  "placeholders": {
+    "count": { "type": "int" }
+  }
+},
+"friendsCountWithRequests": "{friends, plural, =1{1 amigo} other{{friends} amigos}} · {requests, plural, =1{1 solicitud} other{{requests} solicitudes}}",
+"@friendsCountWithRequests": {
+  "placeholders": {
+    "friends": { "type": "int" },
+    "requests": { "type": "int" }
+  }
+},
+"noFriendsYet": "Todavía no tienes amigos.\n¡Añade uno con el botón superior!",
+"noSentRequests": "No tienes ninguna solicitud enviada pendiente.",
+"noReceivedRequests": "No tienes ninguna solicitud de amistad pendiente.",
+"cancel": "Cancelar",
+"accept": "Aceptar",
+"reject": "Rechazar",
+"addFriend": "Añadir amigo",
+"addFriendSubtitle": "Busca un usuario y envíale una solicitud.",
+"usernameHint": "Nombre de usuario...",
+"visitGarden": "Visita su jardín",
+"sendRequest": "Enviar solicitud",
+"tryAgain": "Volver a intentarlo",
+"gardenLoadError": "No se ha podido cargar el jardín.",
+"emptyFriendGarden": "Este jardín no tiene macetas.",
+"likeGarden": "Dar me gusta",
+"likedGarden": "Me gusta enviado",
+"close": "Cerrar",
+"friendOptions": "Opciones del amigo",
+"deleteFriend": "Eliminar amigo",
+"deleteFriendTitle": "Eliminar amigo",
+"deleteFriendMessage": "¿Seguro que quieres eliminar a @{username} de tu lista de amigos?",
+"@deleteFriendMessage": {
+  "placeholders": {
+    "username": {
+      "type": "String"
+    }
+  }
+},
+"delete": "Eliminar",
+"friendRequestSentSuccessfully": "Solicitud enviada correctamente",
+"loginEmptyFields": "Introduce el nombre de usuario y la contraseña.",
+"loginInvalidCredentials": "Nombre de usuario o contraseña incorrectos.",
+"loginServerError": "No se ha podido iniciar sesión. Inténtalo de nuevo más tarde.",
+"loginConnectionError": "No se ha podido conectar con el servidor.",
+
+"calendarAllCategories": "Todas las categorías",
+  "calendarFilters": "Filtros",
+  "calendarCategory": "Categoría",
+  "calendarAll": "Todas",
+  "calendarClear": "Limpiar",
+  "calendarDayTitle": "Día {day} — {month}",
+  "@calendarDayTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarFiltersTooltip": "Filtros"
 }
+

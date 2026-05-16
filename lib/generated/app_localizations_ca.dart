@@ -146,10 +146,10 @@ class AppLocalizationsCa extends AppLocalizations {
   String get shopTitle => 'Botiga';
 
   @override
-  String get shopSeedsTab => 'Llavors 🌱';
+  String get shopSeedsTab => 'Llavors';
 
   @override
-  String get shopOtherTab => 'Altres 🛒';
+  String get shopOtherTab => 'Altres';
 
   @override
   String get shopLoadError => 'No s\'han pogut carregar els productes.';
@@ -390,13 +390,13 @@ class AppLocalizationsCa extends AppLocalizations {
   String get photoTakePlantPicture => 'Fotografia la planta';
 
   @override
-  String get photoTreeMode => 'Arbre';
+  String get photoTreeMode => 'Fulla';
 
   @override
   String get photoFlowerMode => 'Flor';
 
   @override
-  String get photoTreeModeSelected => 'Mode arbre seleccionat';
+  String get photoTreeModeSelected => 'Mode fulla seleccionat';
 
   @override
   String get photoFlowerModeSelected => 'Mode flor seleccionat';
@@ -846,4 +846,157 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get missionsRewardCoins => 'monedes';
+
+  @override
+  String get friends => 'Amics';
+
+  @override
+  String get sent => 'Enviades';
+
+  @override
+  String get received => 'Rebudes';
+
+  @override
+  String get sendFriendRequestTooltip => 'Enviar sol·licitud d\'amistat';
+
+  @override
+  String friendsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count amics',
+      one: '1 amic',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String friendsCountWithRequests(int friends, int requests) {
+    String _temp0 = intl.Intl.pluralLogic(
+      friends,
+      locale: localeName,
+      other: '$friends amics',
+      one: '1 amic',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      requests,
+      locale: localeName,
+      other: '$requests sol·licituds',
+      one: '1 sol·licitud',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String get noFriendsYet =>
+      'Encara no tens amics.\nAfegeix-ne amb el botó superior!';
+
+  @override
+  String get noSentRequests => 'No tens cap sol·licitud enviada pendent.';
+
+  @override
+  String get noReceivedRequests =>
+      'No tens cap sol·licitud d\'amistat pendent.';
+
+  @override
+  String get cancel => 'Cancel·lar';
+
+  @override
+  String get accept => 'Acceptar';
+
+  @override
+  String get reject => 'Rebutjar';
+
+  @override
+  String get addFriend => 'Afegir amic';
+
+  @override
+  String get addFriendSubtitle => 'Busca un usuari i envia-li una sol·licitud.';
+
+  @override
+  String get usernameHint => 'Nom d\'usuari...';
+
+  @override
+  String get visitGarden => 'Visita el seu jardí';
+
+  @override
+  String get sendRequest => 'Enviar sol·licitud';
+
+  @override
+  String get tryAgain => 'Tornar a intentar';
+
+  @override
+  String get gardenLoadError => 'No s\'ha pogut carregar el jardí.';
+
+  @override
+  String get emptyFriendGarden => 'Aquest jardí no té testos.';
+
+  @override
+  String get likeGarden => 'Fer m\'agrada';
+
+  @override
+  String get likedGarden => 'M\'agrada fet';
+
+  @override
+  String get close => 'Tancar';
+
+  @override
+  String get friendOptions => 'Opcions de l\'amic';
+
+  @override
+  String get deleteFriend => 'Eliminar amic';
+
+  @override
+  String get deleteFriendTitle => 'Eliminar amic';
+
+  @override
+  String deleteFriendMessage(String username) {
+    return 'Segur que vols eliminar @$username de la teva llista d\'amics?';
+  }
+
+  @override
+  String get delete => 'Eliminar';
+
+  @override
+  String get friendRequestSentSuccessfully =>
+      'Sol·licitud enviada correctament';
+
+  @override
+  String get loginEmptyFields =>
+      'Introdueix el nom d\'usuari i la contrasenya.';
+
+  @override
+  String get loginInvalidCredentials =>
+      'Nom d\'usuari o contrasenya incorrectes.';
+
+  @override
+  String get loginServerError =>
+      'No s\'ha pogut iniciar sessió. Torna-ho a provar més tard.';
+
+  @override
+  String get loginConnectionError =>
+      'No s\'ha pogut connectar amb el servidor.';
+
+  @override
+  String get calendarAllCategories => 'Totes les categories';
+
+  @override
+  String get calendarFilters => 'Filtres';
+
+  @override
+  String get calendarCategory => 'Categoria';
+
+  @override
+  String get calendarAll => 'Totes';
+
+  @override
+  String get calendarClear => 'Netejar';
+
+  @override
+  String calendarDayTitle(int day, String month) {
+    return 'Dia $day — $month';
+  }
+
+  @override
+  String get calendarFiltersTooltip => 'Filtres';
 }

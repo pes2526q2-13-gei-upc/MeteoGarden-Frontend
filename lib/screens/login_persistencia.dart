@@ -9,6 +9,7 @@ import '../models/url.dart';
 import 'dart:convert';
 import 'package:meteo_garden/generated/app_localizations.dart';
 import '../models/avatar_user.dart';
+import '../models/weather_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -87,6 +88,15 @@ class _SplashScreenState extends State<SplashScreen> {
           newMonedes: data['numCoins'] ?? 0,
           newGardens: gardenNames,
         );
+
+        final city = data['city'] ?? '';
+
+        if (city.toString().trim().isNotEmpty) {
+          Provider.of<WeatherProvider>(
+            context,
+            listen: false,
+          ).fetchWeather(city, forceRefresh: true);
+        }
 
         await _checkAvatar();
       } else {

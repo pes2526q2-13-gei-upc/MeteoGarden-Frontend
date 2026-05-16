@@ -54,7 +54,6 @@ class _GardenPageState extends State<GardenPage> {
 
       final user = Provider.of<UserModel>(context, listen: false);
 
-      // Usamos el provider para obtener el tiempo
       Provider.of<WeatherProvider>(
         context,
         listen: false,
@@ -138,7 +137,7 @@ class _GardenPageState extends State<GardenPage> {
             Navigator.of(context).pop();
             CenteredMessage.show(
               context,
-              t.plantActionError,
+              e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
             );
           }
@@ -166,7 +165,7 @@ class _GardenPageState extends State<GardenPage> {
             Navigator.of(context).pop();
             CenteredMessage.show(
               context,
-              t.plantActionError,
+              e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
             );
           }
@@ -194,7 +193,7 @@ class _GardenPageState extends State<GardenPage> {
 
             CenteredMessage.show(
               context,
-              t.plantActionError,
+              e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
             );
           }
@@ -343,7 +342,7 @@ class _GardenPageState extends State<GardenPage> {
 
             CenteredMessage.show(
               context,
-              t.plantActionError,
+              e.toString().replaceFirst('Exception: ', ''),
               type: CenteredMessageType.error,
             );
           }

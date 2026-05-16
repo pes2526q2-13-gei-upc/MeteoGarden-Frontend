@@ -12,6 +12,7 @@ import 'avatar_editor_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../models/avatar_user.dart';
 import '../../widgets/centered_message.dart';
+import 'package:meteo_garden/models/plantes_desbl.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
@@ -20,6 +21,8 @@ class PerfilPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<UserModel>();
     final l10n = AppLocalizations.of(context)!;
+    final plantProvider = context.watch<PlantProvider>();
+    final plantsDiscovered = plantProvider.plants.length;
 
     return Scaffold(
       key: const Key('profile_page'),
@@ -57,7 +60,7 @@ class PerfilPage extends StatelessWidget {
                     city: user.city,
                     language: user.language,
                     coins: user.monedes,
-                    plantsDiscovered: user.numPlantsCollected,
+                    plantsDiscovered: plantsDiscovered,
                     onEdit: () async {
                       final profile = PerfilInfo(
                         username: user.username,
@@ -65,7 +68,7 @@ class PerfilPage extends StatelessWidget {
                         city: user.city,
                         language: user.language,
                         coins: user.monedes,
-                        plantsDiscovered: user.numPlantsCollected,
+                        plantsDiscovered: plantsDiscovered,
                       );
 
                       final updatedLanguage = await Navigator.of(context)
@@ -102,7 +105,7 @@ class PerfilPage extends StatelessWidget {
                       const SizedBox(height: 12),
                       _StatsGrid(
                         coins: user.monedes,
-                        plantsDiscovered: user.numPlantsCollected,
+                        plantsDiscovered: plantsDiscovered,
                       ),
                       const SizedBox(height: 24),
                       const _ActionButtons(),
