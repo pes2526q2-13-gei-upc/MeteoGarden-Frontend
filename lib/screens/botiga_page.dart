@@ -81,7 +81,6 @@ class _ShopPageState extends State<ShopPage>
     }
   }
 
-  
   Future<void> buyItem(bool isSeed, Map<String, dynamic> item) async {
     final l10n = AppLocalizations.of(context)!;
 
@@ -90,9 +89,8 @@ class _ShopPageState extends State<ShopPage>
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const Center(
-        child: CircularProgressIndicator(color: _primaryGreen),
-      ),
+      builder: (_) =>
+          const Center(child: CircularProgressIndicator(color: _primaryGreen)),
     );
 
     final token = Provider.of<UserModel>(context, listen: false).token;
@@ -150,7 +148,6 @@ class _ShopPageState extends State<ShopPage>
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  
   void _showItemDetails(
     BuildContext context,
     bool isSeed,
@@ -525,10 +522,7 @@ class _ShopPageState extends State<ShopPage>
 
     return TabBarView(
       controller: _tabController,
-      children: [
-        _buildItemList(seeds, true),
-        _buildItemList(products, false),
-      ],
+      children: [_buildItemList(seeds, true), _buildItemList(products, false)],
     );
   }
 
@@ -768,10 +762,7 @@ class _EmptyShopState extends StatelessWidget {
   final IconData icon;
   final String message;
 
-  const _EmptyShopState({
-    required this.icon,
-    required this.message,
-  });
+  const _EmptyShopState({required this.icon, required this.message});
 
   @override
   Widget build(BuildContext context) {

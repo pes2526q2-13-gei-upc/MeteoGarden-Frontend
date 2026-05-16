@@ -235,10 +235,7 @@ void main() {
       final images = tester.widgetList<Image>(find.byType(Image)).toList();
 
       expect(images, isNotEmpty);
-      expect(
-        images.any((image) => image.image is NetworkImage),
-        isTrue,
-      );
+      expect(images.any((image) => image.image is NetworkImage), isTrue);
       expect(find.byIcon(Icons.local_florist), findsNothing);
       expect(find.byKey(const Key('garden_pot_1_occupied')), findsOneWidget);
     });
@@ -247,9 +244,7 @@ void main() {
 
 Widget _wrapWithApp(Widget child) {
   return MaterialApp(
-    home: Scaffold(
-      body: Center(child: child),
-    ),
+    home: Scaffold(body: Center(child: child)),
   );
 }
 

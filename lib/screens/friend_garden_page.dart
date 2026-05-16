@@ -41,23 +41,23 @@ class _FriendGardenPageState extends State<FriendGardenPage> {
   }
 
   Future<void> _loadLikeState() async {
-  final token = Provider.of<UserModel>(context, listen: false).token;
+    final token = Provider.of<UserModel>(context, listen: false).token;
 
-  try {
-    final liked = await _amicsService.getGardenLikeState(
-      username: widget.friendUsername,
-      token: token,
-    );
+    try {
+      final liked = await _amicsService.getGardenLikeState(
+        username: widget.friendUsername,
+        token: token,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    setState(() {
-      _liked = liked;
-    });
-  } catch (_) {
-    // No bloquegem la pantalla si falla carregar l'estat del like.
+      setState(() {
+        _liked = liked;
+      });
+    } catch (_) {
+      // No bloquegem la pantalla si falla carregar l'estat del like.
+    }
   }
-}
 
   void _loadGarden() {
     _potsFuture = _gardenService.fetchGardenPlants(
@@ -87,10 +87,7 @@ class _FriendGardenPageState extends State<FriendGardenPage> {
     } catch (e) {
       if (!mounted) return;
 
-      _showSnack(
-        e.toString().replaceFirst('Exception: ', ''),
-        success: false,
-      );
+      _showSnack(e.toString().replaceFirst('Exception: ', ''), success: false);
     } finally {
       if (mounted) {
         setState(() => _likeSending = false);

@@ -126,10 +126,7 @@ class _LoginPageState extends State<LoginPage> {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "username": username,
-          "password": password,
-        }),
+        body: jsonEncode({"username": username, "password": password}),
       );
 
       if (!mounted) return;
@@ -319,7 +316,10 @@ class _LoginPageState extends State<LoginPage> {
                             if (_loginErrorMessage != null) ...[
                               Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 12,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.red.withValues(alpha: 0.08),
                                   borderRadius: BorderRadius.circular(14),
@@ -478,6 +478,14 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _fetchAndSaveProfile(String token) async {
     final url = Uri.parse('${ApiConfig.baseUrl}/api/get_profile/');
 
+    final userProvider = Provider.of<UserModel>(context, listen: false);
+    final plantProvider = Provider.of<PlantProvider>(context, listen: false);
+    final weatherProvider = Provider.of<WeatherProvider>(
+      context,
+      listen: false,
+    );
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     final response = await http.get(
       url,
       headers: {
@@ -491,13 +499,11 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
-      final userProvider = Provider.of<UserModel>(context, listen: false);
-
       final List<String> gardenNames = (data['gardens'] as List<dynamic>)
           .map((g) => g['gardenName'] as String)
           .toList();
 
-      Provider.of<UserModel>(context, listen: false).setProfile(
+      userProvider.setProfile(
         newUsername: data['username'] ?? '',
         newEmail: data['email'] ?? '',
         newCity: data['city'] ?? '',
@@ -508,23 +514,19 @@ class _LoginPageState extends State<LoginPage> {
         newGardens: gardenNames,
       );
 
-      await Provider.of<PlantProvider>(
-        context,
-        listen: false,
-      ).loadPlants(userProvider);
+      await plantProvider.loadPlants(userProvider);
+
+      if (!mounted) return;
 
       final city = data['city'] ?? '';
 
       if (city.toString().trim().isNotEmpty) {
-        Provider.of<WeatherProvider>(
-          context,
-          listen: false,
-        ).fetchWeather(city, forceRefresh: true);
+        weatherProvider.fetchWeather(city, forceRefresh: true);
       }
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(_t.profileLoadError)));
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text(_t.profileLoadError)),
+      );
     }
   }
 

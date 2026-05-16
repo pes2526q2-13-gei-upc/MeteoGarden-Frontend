@@ -10,28 +10,21 @@ class _EventFiltersResult {
   final String city;
   final String category;
 
-  const _EventFiltersResult({
-    required this.city,
-    required this.category,
-  });
+  const _EventFiltersResult({required this.city, required this.category});
 }
 
 class CalendarPage extends StatefulWidget {
   final String city;
   final EventsService? service;
 
-  const CalendarPage({
-    super.key,
-    required this.city,
-    this.service,
-  });
+  const CalendarPage({super.key, required this.city, this.service});
 
   @override
   State<CalendarPage> createState() => _CalendarPageState();
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-   late final EventsService _service;
+  late final EventsService _service;
 
   late DateTime _currentMonth;
   late String _filterCity;
@@ -57,7 +50,7 @@ class _CalendarPageState extends State<CalendarPage> {
     _filterCity = '';
     _loadCategories();
     _loadMonthCounts();
-}
+  }
 
   String _langCode(BuildContext context) {
     final user = Provider.of<UserModel>(context, listen: false);
@@ -350,14 +343,14 @@ class _CalendarPageState extends State<CalendarPage> {
     }
 
     categories.sort(
-      (a, b) => a.displayName
-          .toLowerCase()
-          .compareTo(b.displayName.toLowerCase()),
+      (a, b) =>
+          a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()),
     );
 
-    final selectedCategory = categories.any(
-      (category) => category.name.trim() == tempCategory.trim(),
-    )
+    final selectedCategory =
+        categories.any(
+          (category) => category.name.trim() == tempCategory.trim(),
+        )
         ? tempCategory.trim()
         : '';
 
@@ -366,11 +359,7 @@ class _CalendarPageState extends State<CalendarPage> {
       children: [
         Row(
           children: [
-            Icon(
-              Icons.category_outlined,
-              color: Color(0xFF4CAF50),
-              size: 20,
-            ),
+            Icon(Icons.category_outlined, color: Color(0xFF4CAF50), size: 20),
             SizedBox(width: 8),
             Text(
               l10n.calendarCategory,
@@ -399,8 +388,9 @@ class _CalendarPageState extends State<CalendarPage> {
                 ChoiceChip(
                   label: Text(l10n.calendarAll),
                   selected: selectedCategory.isEmpty,
-                  selectedColor:
-                      const Color(0xFF4CAF50).withValues(alpha: 0.18),
+                  selectedColor: const Color(
+                    0xFF4CAF50,
+                  ).withValues(alpha: 0.18),
                   backgroundColor: Colors.white,
                   labelStyle: TextStyle(
                     color: selectedCategory.isEmpty
@@ -431,15 +421,17 @@ class _CalendarPageState extends State<CalendarPage> {
                   return ChoiceChip(
                     label: Text(category.displayName),
                     selected: isSelected,
-                    selectedColor:
-                        const Color(0xFF4CAF50).withValues(alpha: 0.18),
+                    selectedColor: const Color(
+                      0xFF4CAF50,
+                    ).withValues(alpha: 0.18),
                     backgroundColor: Colors.white,
                     labelStyle: TextStyle(
                       color: isSelected
                           ? const Color(0xFF2E7D32)
                           : const Color(0xFF424242),
-                      fontWeight:
-                          isSelected ? FontWeight.w700 : FontWeight.w500,
+                      fontWeight: isSelected
+                          ? FontWeight.w700
+                          : FontWeight.w500,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -474,9 +466,7 @@ class _CalendarPageState extends State<CalendarPage> {
     try {
       final token = Provider.of<UserModel>(context, listen: false).token;
 
-      final categories = await _service.fetchCategories(
-        token: token,
-      );
+      final categories = await _service.fetchCategories(token: token);
 
       if (!mounted) return;
 
@@ -507,7 +497,9 @@ class _CalendarPageState extends State<CalendarPage> {
         year: _currentMonth.year,
         month: _currentMonth.month,
         city: _filterCity.trim().isEmpty ? null : _filterCity.trim(),
-        category: _filterCategory.trim().isEmpty ? null : _filterCategory.trim(),
+        category: _filterCategory.trim().isEmpty
+            ? null
+            : _filterCategory.trim(),
       );
       if (!mounted) return;
       setState(() {
@@ -546,7 +538,9 @@ class _CalendarPageState extends State<CalendarPage> {
         date: date,
         lang: lang,
         city: _filterCity.trim().isEmpty ? null : _filterCity.trim(),
-        category: _filterCategory.trim().isEmpty ? null : _filterCategory.trim(),
+        category: _filterCategory.trim().isEmpty
+            ? null
+            : _filterCategory.trim(),
       );
 
       if (!mounted) return;

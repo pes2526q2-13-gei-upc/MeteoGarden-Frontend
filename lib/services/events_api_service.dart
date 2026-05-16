@@ -11,9 +11,9 @@ class EventCount {
   const EventCount({required this.day, required this.total});
 
   factory EventCount.fromJson(Map<String, dynamic> json) => EventCount(
-        day: DateTime.parse(json['day'] as String),
-        total: json['total'] as int,
-      );
+    day: DateTime.parse(json['day'] as String),
+    total: json['total'] as int,
+  );
 }
 
 class EventCategory {
@@ -62,14 +62,14 @@ class EventSummary {
   bool get isFree => price == 0;
 
   factory EventSummary.fromJson(Map<String, dynamic> json) => EventSummary(
-        id: EventDetail.asString(json['id']),
-        title: EventDetail.asString(json['title']),
-        subtitle: EventDetail.asString(json['subtitle']),
-        city: EventDetail.asString(json['city']),
-        endDate: EventDetail.asDateTime(json['end_date']),
-        price: EventDetail.asDouble(json['price']),
-        image: EventDetail.asImage(json['image']),
-      );
+    id: EventDetail.asString(json['id']),
+    title: EventDetail.asString(json['title']),
+    subtitle: EventDetail.asString(json['subtitle']),
+    city: EventDetail.asString(json['city']),
+    endDate: EventDetail.asDateTime(json['end_date']),
+    price: EventDetail.asDouble(json['price']),
+    image: EventDetail.asImage(json['image']),
+  );
 }
 
 class EventDetail {
@@ -104,19 +104,19 @@ class EventDetail {
   bool get isFree => price == 0;
 
   factory EventDetail.fromJson(Map<String, dynamic> json) => EventDetail(
-        id: asString(json['id']),
-        title: asString(json['title']),
-        subtitle: asString(json['subtitle']),
-        description: asString(json['description']),
-        startDate: asDateTime(json['start_date']),
-        endDate: asDateTime(json['end_date']),
-        category: asCategory(json['category']),
-        price: asDouble(json['price']),
-        tags: asStringList(json['tags']),
-        image: asImage(json['image']),
-        city: asString(json['city']),
-        street: asString(json['street']),
-      );
+    id: asString(json['id']),
+    title: asString(json['title']),
+    subtitle: asString(json['subtitle']),
+    description: asString(json['description']),
+    startDate: asDateTime(json['start_date']),
+    endDate: asDateTime(json['end_date']),
+    category: asCategory(json['category']),
+    price: asDouble(json['price']),
+    tags: asStringList(json['tags']),
+    image: asImage(json['image']),
+    city: asString(json['city']),
+    street: asString(json['street']),
+  );
 
   static String asString(dynamic value) {
     if (value == null) return '';
@@ -197,38 +197,34 @@ class EventDetail {
 class EventsService {
   /// GET /api/events/categories
   /// Retorna les categories disponibles.
-  Future<List<EventCategory>> fetchCategories({
-  required String token,
-}) async {
-  final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/categories');
+  Future<List<EventCategory>> fetchCategories({required String token}) async {
+    final uri = Uri.parse('${ApiConfig.baseUrl}/api/events/categories');
 
-  final response = await http.get(
-    uri,
-    headers: {
-      'Authorization': 'Token $token',
-    },
-  );
+    final response = await http.get(
+      uri,
+      headers: {'Authorization': 'Token $token'},
+    );
 
-  if (response.statusCode != 200) {
-    throw Exception('Error carregant categories: ${response.statusCode}');
+    if (response.statusCode != 200) {
+      throw Exception('Error carregant categories: ${response.statusCode}');
+    }
+
+    final body = jsonDecode(utf8.decode(response.bodyBytes));
+
+    final List<dynamic> categories;
+    if (body is List<dynamic>) {
+      categories = body;
+    } else if (body is Map<String, dynamic>) {
+      categories = body['categories'] as List<dynamic>? ?? [];
+    } else {
+      categories = [];
+    }
+
+    return categories
+        .map((c) => EventCategory.fromJson(c as Map<String, dynamic>))
+        .where((c) => c.name.isNotEmpty)
+        .toList();
   }
-
-  final body = jsonDecode(utf8.decode(response.bodyBytes));
-
-  final List<dynamic> categories;
-  if (body is List<dynamic>) {
-    categories = body;
-  } else if (body is Map<String, dynamic>) {
-    categories = body['categories'] as List<dynamic>? ?? [];
-  } else {
-    categories = [];
-  }
-
-  return categories
-      .map((c) => EventCategory.fromJson(c as Map<String, dynamic>))
-      .where((c) => c.name.isNotEmpty)
-      .toList();
-}
 
   /// GET /api/events/count?year=&month=&city=&category=
   /// Retorna el recompte d'events per dia del mes indicat, aplicant filtres.

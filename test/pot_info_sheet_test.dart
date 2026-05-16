@@ -31,12 +31,13 @@ void main() {
       expect(find.textContaining('Últim reg:'), findsOneWidget);
       expect(find.textContaining('2026-03-25'), findsOneWidget);
       expect(find.byKey(const Key('water_plant_button')), findsOneWidget);
-      expect(find.byKey(const Key('collect_mature_plant_button')), findsNothing);
+      expect(
+        find.byKey(const Key('collect_mature_plant_button')),
+        findsNothing,
+      );
     });
 
-    testWidgets('mostra el nom comú de la planta', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('mostra el nom comú de la planta', (WidgetTester tester) async {
       final pot = _buildPot(
         commonName: 'Alfàbrega',
         scientificName: 'Ocimum basilicum',
@@ -101,7 +102,10 @@ void main() {
         );
 
         expect(find.text('Madura'), findsOneWidget);
-        expect(find.byKey(const Key('collect_mature_plant_button')), findsOneWidget);
+        expect(
+          find.byKey(const Key('collect_mature_plant_button')),
+          findsOneWidget,
+        );
       },
     );
 
@@ -119,15 +123,14 @@ void main() {
 
         await tester.pumpWidget(
           _wrapWithApp(
-            PotInfoSheet(
-              pot: pot,
-              onWater: () async {},
-              onCollect: null,
-            ),
+            PotInfoSheet(pot: pot, onWater: () async {}, onCollect: null),
           ),
         );
 
-        expect(find.byKey(const Key('collect_mature_plant_button')), findsNothing);
+        expect(
+          find.byKey(const Key('collect_mature_plant_button')),
+          findsNothing,
+        );
       },
     );
 

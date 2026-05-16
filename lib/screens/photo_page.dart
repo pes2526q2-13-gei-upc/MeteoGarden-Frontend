@@ -287,7 +287,7 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                           ),
 
                           const SizedBox(height: 12),
-                        
+
                           if (_isProcessing)
                             Padding(
                               padding: const EdgeInsets.only(top: 12),
@@ -418,36 +418,35 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   }
 
   Future<String> _cropCenterSquare(String imagePath) async {
-  final bytes = await File(imagePath).readAsBytes();
-  final originalImage = img.decodeImage(bytes);
+    final bytes = await File(imagePath).readAsBytes();
+    final originalImage = img.decodeImage(bytes);
 
-  if (originalImage == null) {
-    throw Exception('Could not decode image');
+    if (originalImage == null) {
+      throw Exception('Could not decode image');
+    }
+
+    final width = originalImage.width;
+    final height = originalImage.height;
+
+    final squareSize = width < height ? width : height;
+
+    final x = (width - squareSize) ~/ 2;
+    final y = (height - squareSize) ~/ 2;
+
+    final croppedImage = img.copyCrop(
+      originalImage,
+      x: x,
+      y: y,
+      width: squareSize,
+      height: squareSize,
+    );
+
+    final croppedFile = File(
+      '${Directory.systemTemp.path}/cropped_plant_${DateTime.now().millisecondsSinceEpoch}.jpg',
+    );
+
+    await croppedFile.writeAsBytes(img.encodeJpg(croppedImage, quality: 90));
+
+    return croppedFile.path;
   }
-
-  final width = originalImage.width;
-  final height = originalImage.height;
-
-  final squareSize = width < height ? width : height;
-
-  final x = (width - squareSize) ~/ 2;
-  final y = (height - squareSize) ~/ 2;
-
-  final croppedImage = img.copyCrop(
-    originalImage,
-    x: x,
-    y: y,
-    width: squareSize,
-    height: squareSize,
-  );
-
-  final croppedFile = File(
-    '${Directory.systemTemp.path}/cropped_plant_${DateTime.now().millisecondsSinceEpoch}.jpg',
-  );
-
-  await croppedFile.writeAsBytes(img.encodeJpg(croppedImage, quality: 90));
-
-  return croppedFile.path;
-}
-
 }

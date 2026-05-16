@@ -32,27 +32,13 @@ class FakeEventsService extends EventsService {
   bool throwOnDetail = false;
 
   @override
-  Future<List<EventCategory>> fetchCategories({
-    required String token,
-  }) async {
+  Future<List<EventCategory>> fetchCategories({required String token}) async {
     lastCategoriesToken = token;
 
     return [
-      EventCategory(
-        id: 1,
-        name: 'Música',
-        displayName: 'Music',
-      ),
-      EventCategory(
-        id: 2,
-        name: 'Teatre',
-        displayName: 'Theatre',
-      ),
-      EventCategory(
-        id: 3,
-        name: 'Cinema',
-        displayName: 'Cinema',
-      ),
+      EventCategory(id: 1, name: 'Música', displayName: 'Music'),
+      EventCategory(id: 2, name: 'Teatre', displayName: 'Theatre'),
+      EventCategory(id: 3, name: 'Cinema', displayName: 'Cinema'),
     ];
   }
 
@@ -73,11 +59,7 @@ class FakeEventsService extends EventsService {
       throw Exception('Error carregant recompte');
     }
 
-    return {
-      10: 2,
-      15: 1,
-      20: 3,
-    };
+    return {10: 2, 15: 1, 20: 3};
   }
 
   @override
@@ -172,10 +154,7 @@ Widget buildTestableCalendarPage({
       locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: CalendarPage(
-        city: '',
-        service: service,
-      ),
+      home: CalendarPage(city: '', service: service),
     ),
   );
 }
@@ -203,8 +182,9 @@ Future<void> openFilters(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('carrega la pantalla principal i crida categories amb token',
-      (WidgetTester tester) async {
+  testWidgets('carrega la pantalla principal i crida categories amb token', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -220,8 +200,9 @@ void main() {
     expect(service.lastCountCategory, isNull);
   });
 
-  testWidgets('mostra el text inicial sense filtres actius',
-      (WidgetTester tester) async {
+  testWidgets('mostra el text inicial sense filtres actius', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -229,8 +210,9 @@ void main() {
     expect(find.text('All cities · All categories'), findsOneWidget);
   });
 
-  testWidgets('obre el panell de filtres i mostra categories traduïdes',
-      (WidgetTester tester) async {
+  testWidgets('obre el panell de filtres i mostra categories traduïdes', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -244,29 +226,32 @@ void main() {
     expect(find.text('Cinema'), findsOneWidget);
   });
 
-  testWidgets('aplica filtre de ciutat i categoria i envia els paràmetres al servei',
-      (WidgetTester tester) async {
-    final service = FakeEventsService();
+  testWidgets(
+    'aplica filtre de ciutat i categoria i envia els paràmetres al servei',
+    (WidgetTester tester) async {
+      final service = FakeEventsService();
 
-    await pumpCalendar(tester, service);
-    await openFilters(tester);
+      await pumpCalendar(tester, service);
+      await openFilters(tester);
 
-    await tester.enterText(find.byType(TextField), 'Tarragona');
-    await tester.tap(find.text('Music'));
-    await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'Tarragona');
+      await tester.tap(find.text('Music'));
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.check));
-    await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.check));
+      await tester.pumpAndSettle();
 
-    expect(find.text('Tarragona · Music'), findsOneWidget);
+      expect(find.text('Tarragona · Music'), findsOneWidget);
 
-    expect(service.monthCountsCalls, 2);
-    expect(service.lastCountCity, 'Tarragona');
-    expect(service.lastCountCategory, 'Música');
-  });
+      expect(service.monthCountsCalls, 2);
+      expect(service.lastCountCity, 'Tarragona');
+      expect(service.lastCountCategory, 'Música');
+    },
+  );
 
-  testWidgets('neteja filtres i torna a enviar city/category com a null',
-      (WidgetTester tester) async {
+  testWidgets('neteja filtres i torna a enviar city/category com a null', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -295,8 +280,9 @@ void main() {
     expect(service.lastCountCategory, isNull);
   });
 
-  testWidgets('clicar un dia amb events mostra les targetes dels events',
-      (WidgetTester tester) async {
+  testWidgets('clicar un dia amb events mostra les targetes dels events', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -315,8 +301,9 @@ void main() {
     expect(find.text('Reus'), findsOneWidget);
   });
 
-  testWidgets('clicar el mateix dia dues vegades amaga els events',
-      (WidgetTester tester) async {
+  testWidgets('clicar el mateix dia dues vegades amaga els events', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -333,8 +320,9 @@ void main() {
     expect(find.text('Obra de teatre'), findsNothing);
   });
 
-  testWidgets('dia sense events mostra missatge buit',
-      (WidgetTester tester) async {
+  testWidgets('dia sense events mostra missatge buit', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -348,8 +336,7 @@ void main() {
     expect(find.byIcon(Icons.event_busy_outlined), findsOneWidget);
   });
 
-  testWidgets('obre el detall de l’event',
-      (WidgetTester tester) async {
+  testWidgets('obre el detall de l’event', (WidgetTester tester) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -370,8 +357,9 @@ void main() {
     expect(find.text('#nit'), findsOneWidget);
   });
 
-  testWidgets('canvia de mes amb les fletxes i recarrega el recompte',
-      (WidgetTester tester) async {
+  testWidgets('canvia de mes amb les fletxes i recarrega el recompte', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -391,8 +379,9 @@ void main() {
     expect(service.monthCountsCalls, initialCalls + 2);
   });
 
-  testWidgets('si falla el recompte mensual mostra pantalla d’error',
-      (WidgetTester tester) async {
+  testWidgets('si falla el recompte mensual mostra pantalla d’error', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
     service.throwOnCounts = true;
 
@@ -402,8 +391,9 @@ void main() {
     expect(find.textContaining('Error carregant recompte'), findsOneWidget);
   });
 
-  testWidgets('si falla carregar events del dia mostra error',
-      (WidgetTester tester) async {
+  testWidgets('si falla carregar events del dia mostra error', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -416,8 +406,9 @@ void main() {
     expect(find.textContaining('Error carregant events'), findsOneWidget);
   });
 
-  testWidgets('si falla carregar detall mostra error dins el diàleg',
-      (WidgetTester tester) async {
+  testWidgets('si falla carregar detall mostra error dins el diàleg', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(tester, service);
@@ -433,8 +424,9 @@ void main() {
     expect(find.textContaining('Error carregant detall'), findsOneWidget);
   });
 
-  testWidgets('amb idioma castellà envia lang es quan carrega events',
-      (WidgetTester tester) async {
+  testWidgets('amb idioma castellà envia lang es quan carrega events', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(
@@ -450,8 +442,9 @@ void main() {
     expect(service.lastEventsLang, 'es');
   });
 
-  testWidgets('amb idioma català envia lang ca quan carrega events',
-      (WidgetTester tester) async {
+  testWidgets('amb idioma català envia lang ca quan carrega events', (
+    WidgetTester tester,
+  ) async {
     final service = FakeEventsService();
 
     await pumpCalendar(
