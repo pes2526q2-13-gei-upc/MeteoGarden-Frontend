@@ -974,4 +974,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginConnectionError => 'Could not connect to the server.';
+
+  @override
+  String get calendarAllCategories => 'All categories';
+
+  @override
+  String get calendarFilters => 'Filters';
+
+  @override
+  String get calendarCategory => 'Category';
+
+  @override
+  String get calendarAll => 'All';
+
+  @override
+  String get calendarClear => 'Clear';
+
+  @override
+  String calendarDayTitle(int day, String month) {
+    return 'Day $day — $month';
+  }
+
+  @override
+  String get calendarFiltersTooltip => 'Filters';
 }

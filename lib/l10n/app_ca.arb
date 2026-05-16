@@ -431,6 +431,24 @@
 "loginEmptyFields": "Introdueix el nom d'usuari i la contrasenya.",
 "loginInvalidCredentials": "Nom d'usuari o contrasenya incorrectes.",
 "loginServerError": "No s'ha pogut iniciar sessió. Torna-ho a provar més tard.",
-"loginConnectionError": "No s'ha pogut connectar amb el servidor."
+"loginConnectionError": "No s'ha pogut connectar amb el servidor.",
+
+"calendarAllCategories": "Totes les categories",
+  "calendarFilters": "Filtres",
+  "calendarCategory": "Categoria",
+  "calendarAll": "Totes",
+  "calendarClear": "Netejar",
+  "calendarDayTitle": "Dia {day} — {month}",
+  "@calendarDayTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarFiltersTooltip": "Filtres"
 }
 

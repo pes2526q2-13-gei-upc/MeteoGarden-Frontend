@@ -425,6 +425,24 @@
 "loginEmptyFields": "Enter your username and password.",
 "loginInvalidCredentials": "Incorrect username or password.",
 "loginServerError": "Could not log in. Please try again later.",
-"loginConnectionError": "Could not connect to the server."
+"loginConnectionError": "Could not connect to the server.",
+
+"calendarAllCategories": "All categories",
+  "calendarFilters": "Filters",
+  "calendarCategory": "Category",
+  "calendarAll": "All",
+  "calendarClear": "Clear",
+  "calendarDayTitle": "Day {day} — {month}",
+  "@calendarDayTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarFiltersTooltip": "Filters"
 }
 

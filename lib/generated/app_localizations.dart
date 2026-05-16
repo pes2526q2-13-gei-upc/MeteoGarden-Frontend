@@ -1898,6 +1898,48 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'No s\'ha pogut connectar amb el servidor.'**
   String get loginConnectionError;
+
+  /// No description provided for @calendarAllCategories.
+  ///
+  /// In ca, this message translates to:
+  /// **'Totes les categories'**
+  String get calendarAllCategories;
+
+  /// No description provided for @calendarFilters.
+  ///
+  /// In ca, this message translates to:
+  /// **'Filtres'**
+  String get calendarFilters;
+
+  /// No description provided for @calendarCategory.
+  ///
+  /// In ca, this message translates to:
+  /// **'Categoria'**
+  String get calendarCategory;
+
+  /// No description provided for @calendarAll.
+  ///
+  /// In ca, this message translates to:
+  /// **'Totes'**
+  String get calendarAll;
+
+  /// No description provided for @calendarClear.
+  ///
+  /// In ca, this message translates to:
+  /// **'Netejar'**
+  String get calendarClear;
+
+  /// No description provided for @calendarDayTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Dia {day} — {month}'**
+  String calendarDayTitle(int day, String month);
+
+  /// No description provided for @calendarFiltersTooltip.
+  ///
+  /// In ca, this message translates to:
+  /// **'Filtres'**
+  String get calendarFiltersTooltip;
 }
 
 class _AppLocalizationsDelegate

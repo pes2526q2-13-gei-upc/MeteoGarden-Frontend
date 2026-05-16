@@ -975,4 +975,27 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get loginConnectionError =>
       'No se ha podido conectar con el servidor.';
+
+  @override
+  String get calendarAllCategories => 'Todas las categorías';
+
+  @override
+  String get calendarFilters => 'Filtros';
+
+  @override
+  String get calendarCategory => 'Categoría';
+
+  @override
+  String get calendarAll => 'Todas';
+
+  @override
+  String get calendarClear => 'Limpiar';
+
+  @override
+  String calendarDayTitle(int day, String month) {
+    return 'Día $day — $month';
+  }
+
+  @override
+  String get calendarFiltersTooltip => 'Filtros';
 }

@@ -6,36 +6,58 @@ import '../services/events_api_service.dart';
 
 // ─── Calendar Page ────────────────────────────────────────────────────────────
 
+class _EventFiltersResult {
+  final String city;
+  final String category;
+
+  const _EventFiltersResult({
+    required this.city,
+    required this.category,
+  });
+}
+
 class CalendarPage extends StatefulWidget {
   final String city;
+  final EventsService? service;
 
-  const CalendarPage({super.key, required this.city});
+  const CalendarPage({
+    super.key,
+    required this.city,
+    this.service,
+  });
 
   @override
   State<CalendarPage> createState() => _CalendarPageState();
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  final EventsService _service = EventsService();
+   late final EventsService _service;
 
   late DateTime _currentMonth;
   late String _filterCity;
+  String _filterCategory = '';
 
   Map<int, int> _countByDay = {};
+  List<EventCategory> _categories = [];
   List<EventSummary> _selectedDayEvents = [];
   int? _selectedDay;
   bool _loadingDay = false;
   bool _loadingMonth = true;
+  bool _loadingCategories = false;
   String? _error;
 
   @override
   void initState() {
     super.initState();
+
+    _service = widget.service ?? EventsService();
+
     final now = DateTime.now();
     _currentMonth = DateTime(now.year, now.month, 1);
-    _filterCity = widget.city;
+    _filterCity = '';
+    _loadCategories();
     _loadMonthCounts();
-  }
+}
 
   String _langCode(BuildContext context) {
     final user = Provider.of<UserModel>(context, listen: false);
@@ -64,95 +86,413 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
-  // ── City filter ─────────────────────────────────────────────────────────────
+  // ── Filters ────────────────────────────────────────────────────────────────
 
-  Future<void> _showCityFilterDialog() async {
+  bool get _hasActiveFilters =>
+      _filterCity.trim().isNotEmpty || _filterCategory.trim().isNotEmpty;
+
+  String _categoryDisplayName(String categoryName) {
+    final cleanName = categoryName.trim();
+
+    for (final category in _categories) {
+      if (category.name.trim() == cleanName) {
+        return category.displayName;
+      }
+    }
+
+    return cleanName;
+  }
+
+  Widget _buildActiveFiltersText() {
     final l10n = AppLocalizations.of(context)!;
-    final controller = TextEditingController(text: _filterCity);
 
-    final result = await showDialog<String?>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          l10n.filterByCity,
-          style: const TextStyle(
-            color: Color(0xFF1B5E20),
-            fontWeight: FontWeight.w700,
-          ),
+    final activeFilters = <String>[];
+    if (_filterCity.trim().isNotEmpty) {
+      activeFilters.add(_filterCity.trim());
+    }
+    if (_filterCategory.trim().isNotEmpty) {
+      activeFilters.add(_categoryDisplayName(_filterCategory));
+    }
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 180),
+      child: Text(
+        activeFilters.isEmpty
+            ? '${l10n.allCities} · ${l10n.calendarAllCategories}'
+            : activeFilters.join(' · '),
+        key: ValueKey(activeFilters.join('|')),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: activeFilters.isEmpty
+              ? const Color(0xFF757575)
+              : const Color(0xFF2E7D32),
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: controller,
-              autofocus: true,
-              decoration: InputDecoration(
-                hintText: l10n.writeCity,
-                prefixIcon: const Icon(
-                  Icons.location_on_outlined,
-                  color: Color(0xFF4CAF50),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Color(0xFF4CAF50)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(
-                    color: Color(0xFF4CAF50),
-                    width: 2,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextButton.icon(
-              onPressed: () => Navigator.pop(dialogContext, ''),
-              icon: const Icon(Icons.public, color: Color(0xFF757575)),
-              label: Text(
-                l10n.allCities,
-                style: const TextStyle(color: Color(0xFF757575)),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, null),
-            child: Text(
-              l10n.commonCancel,
-              style: const TextStyle(color: Color(0xFF9E9E9E)),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () =>
-                Navigator.pop(dialogContext, controller.text.trim()),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF4CAF50),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: Text(l10n.commonApply),
-          ),
-        ],
       ),
     );
+  }
 
-    if (result == null) return;
+  Future<void> _showFiltersSheet() async {
+    final l10n = AppLocalizations.of(context)!;
+    final initialCity = _filterCity.trim();
+    final initialCategory = _filterCategory.trim();
+
+    final result = await showModalBottomSheet<_EventFiltersResult>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        final cityController = TextEditingController(text: initialCity);
+        String tempCategory = initialCategory;
+
+        return StatefulBuilder(
+          builder: (context, setSheetState) => Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+            ),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+              padding: const EdgeInsets.fromLTRB(22, 16, 22, 22),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 42,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE0E0E0),
+                          borderRadius: BorderRadius.circular(99),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      children: [
+                        const Icon(Icons.tune, color: Color(0xFF4CAF50)),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            l10n.calendarFilters,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF1B5E20),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            Navigator.of(sheetContext).pop();
+                          },
+                          icon: const Icon(Icons.close),
+                          color: const Color(0xFF757575),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      controller: cityController,
+                      textInputAction: TextInputAction.done,
+                      decoration: InputDecoration(
+                        labelText: l10n.filterByCity,
+                        hintText: l10n.writeCity,
+                        prefixIcon: const Icon(
+                          Icons.location_on_outlined,
+                          color: Color(0xFF4CAF50),
+                        ),
+                        filled: true,
+                        fillColor: const Color(0xFFF5F9F0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF4CAF50),
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    _loadingCategories
+                        ? Container(
+                            height: 58,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF5F9F0),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const SizedBox(
+                              height: 22,
+                              width: 22,
+                              child: CircularProgressIndicator(
+                                color: Color(0xFF4CAF50),
+                                strokeWidth: 2.4,
+                              ),
+                            ),
+                          )
+                        : _buildCategoryChips(
+                            tempCategory: tempCategory,
+                            setSheetState: setSheetState,
+                            onCategoryChanged: (value) {
+                              tempCategory = value;
+                            },
+                          ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {
+                              cityController.clear();
+                              setSheetState(() {
+                                tempCategory = '';
+                              });
+                            },
+                            icon: const Icon(Icons.refresh),
+                            label: Text(l10n.calendarClear),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xFF4CAF50),
+                              side: const BorderSide(color: Color(0xFF4CAF50)),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              final newCity = cityController.text.trim();
+                              final newCategory = tempCategory.trim();
+
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              Navigator.of(sheetContext).pop(
+                                _EventFiltersResult(
+                                  city: newCity,
+                                  category: newCategory,
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.check),
+                            label: Text(l10n.commonApply),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF4CAF50),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (!mounted || result == null) return;
+
+    final newCity = result.city.trim();
+    final newCategory = result.category.trim();
+
+    if (newCity == _filterCity.trim() &&
+        newCategory == _filterCategory.trim()) {
+      return;
+    }
 
     setState(() {
-      _filterCity = result;
+      _filterCity = newCity;
+      _filterCategory = newCategory;
       _selectedDay = null;
       _selectedDayEvents = [];
     });
 
-    _loadMonthCounts();
+    await _loadMonthCounts();
+  }
+
+  Widget _buildCategoryChips({
+    required String tempCategory,
+    required StateSetter setSheetState,
+    required ValueChanged<String> onCategoryChanged,
+  }) {
+    final categories = <EventCategory>[];
+    final seenNames = <String>{};
+    final l10n = AppLocalizations.of(context)!;
+
+    for (final category in _categories) {
+      final name = category.name.trim();
+      if (name.isEmpty || seenNames.contains(name)) {
+        continue;
+      }
+
+      seenNames.add(name);
+      categories.add(category);
+    }
+
+    categories.sort(
+      (a, b) => a.displayName
+          .toLowerCase()
+          .compareTo(b.displayName.toLowerCase()),
+    );
+
+    final selectedCategory = categories.any(
+      (category) => category.name.trim() == tempCategory.trim(),
+    )
+        ? tempCategory.trim()
+        : '';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.category_outlined,
+              color: Color(0xFF4CAF50),
+              size: 20,
+            ),
+            SizedBox(width: 8),
+            Text(
+              l10n.calendarCategory,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF2E7D32),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Container(
+          width: double.infinity,
+          constraints: const BoxConstraints(maxHeight: 150),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF5F9F0),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: SingleChildScrollView(
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ChoiceChip(
+                  label: Text(l10n.calendarAll),
+                  selected: selectedCategory.isEmpty,
+                  selectedColor:
+                      const Color(0xFF4CAF50).withValues(alpha: 0.18),
+                  backgroundColor: Colors.white,
+                  labelStyle: TextStyle(
+                    color: selectedCategory.isEmpty
+                        ? const Color(0xFF2E7D32)
+                        : const Color(0xFF424242),
+                    fontWeight: selectedCategory.isEmpty
+                        ? FontWeight.w700
+                        : FontWeight.w500,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color: selectedCategory.isEmpty
+                          ? const Color(0xFF4CAF50)
+                          : const Color(0xFFD6D6D6),
+                    ),
+                  ),
+                  onSelected: (_) {
+                    setSheetState(() {
+                      onCategoryChanged('');
+                    });
+                  },
+                ),
+                ...categories.map((category) {
+                  final categoryName = category.name.trim();
+                  final isSelected = selectedCategory == categoryName;
+
+                  return ChoiceChip(
+                    label: Text(category.displayName),
+                    selected: isSelected,
+                    selectedColor:
+                        const Color(0xFF4CAF50).withValues(alpha: 0.18),
+                    backgroundColor: Colors.white,
+                    labelStyle: TextStyle(
+                      color: isSelected
+                          ? const Color(0xFF2E7D32)
+                          : const Color(0xFF424242),
+                      fontWeight:
+                          isSelected ? FontWeight.w700 : FontWeight.w500,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(
+                        color: isSelected
+                            ? const Color(0xFF4CAF50)
+                            : const Color(0xFFD6D6D6),
+                      ),
+                    ),
+                    onSelected: (_) {
+                      setSheetState(() {
+                        onCategoryChanged(categoryName);
+                      });
+                    },
+                  );
+                }),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   // ── Data loading ────────────────────────────────────────────────────────────
+
+  Future<void> _loadCategories() async {
+    setState(() {
+      _loadingCategories = true;
+    });
+
+    try {
+      final token = Provider.of<UserModel>(context, listen: false).token;
+
+      final categories = await _service.fetchCategories(
+        token: token,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _categories = categories;
+        _loadingCategories = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+
+      setState(() {
+        _categories = [];
+        _loadingCategories = false;
+      });
+    }
+  }
 
   Future<void> _loadMonthCounts() async {
     setState(() {
@@ -166,6 +506,8 @@ class _CalendarPageState extends State<CalendarPage> {
       final counts = await _service.fetchEventCountByDay(
         year: _currentMonth.year,
         month: _currentMonth.month,
+        city: _filterCity.trim().isEmpty ? null : _filterCity.trim(),
+        category: _filterCategory.trim().isEmpty ? null : _filterCategory.trim(),
       );
       if (!mounted) return;
       setState(() {
@@ -200,16 +542,12 @@ class _CalendarPageState extends State<CalendarPage> {
     });
 
     try {
-      List<EventSummary> events;
-      if (_filterCity.isNotEmpty) {
-        events = await _service.fetchEventsByCity(
-          city: _filterCity,
-          date: date,
-          lang: lang,
-        );
-      } else {
-        events = await _service.fetchAllEvents(date: date, lang: lang);
-      }
+      final events = await _service.fetchEvents(
+        date: date,
+        lang: lang,
+        city: _filterCity.trim().isEmpty ? null : _filterCity.trim(),
+        category: _filterCategory.trim().isEmpty ? null : _filterCategory.trim(),
+      );
 
       if (!mounted) return;
       setState(() {
@@ -318,101 +656,43 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildHeader() {
-    final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
       child: Stack(
+        alignment: Alignment.center,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 52),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/logo.png',
-                          height: 28,
-                          errorBuilder: (_, _, _) => const Icon(
-                            Icons.eco,
-                            color: Color(0xFF4CAF50),
-                            size: 28,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        const Text(
-                          'MeteoGarden',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2E7D32),
-                          ),
-                        ),
-                      ],
+                    Image.asset(
+                      'assets/images/logo.png',
+                      height: 28,
+                      errorBuilder: (_, _, _) => const Icon(
+                        Icons.eco,
+                        color: Color(0xFF4CAF50),
+                        size: 28,
+                      ),
                     ),
-                    const SizedBox(height: 6),
-                    // Chip de ciutat clicable
-                    GestureDetector(
-                      onTap: _showCityFilterDialog,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _filterCity.isNotEmpty
-                              ? const Color(0xFFE8F5E9)
-                              : const Color(0xFFF5F5F5),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: _filterCity.isNotEmpty
-                                ? const Color(0xFF4CAF50)
-                                : const Color(0xFFBDBDBD),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              _filterCity.isNotEmpty
-                                  ? Icons.location_on
-                                  : Icons.public,
-                              size: 13,
-                              color: _filterCity.isNotEmpty
-                                  ? const Color(0xFF4CAF50)
-                                  : const Color(0xFF757575),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              _filterCity.isNotEmpty
-                                  ? _filterCity
-                                  : l10n.allCities,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: _filterCity.isNotEmpty
-                                    ? const Color(0xFF2E7D32)
-                                    : const Color(0xFF757575),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(
-                              Icons.edit,
-                              size: 11,
-                              color: _filterCity.isNotEmpty
-                                  ? const Color(0xFF4CAF50)
-                                  : const Color(0xFF9E9E9E),
-                            ),
-                          ],
-                        ),
+                    const SizedBox(width: 6),
+                    const Text(
+                      'MeteoGarden',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2E7D32),
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 4),
+                _buildActiveFiltersText(),
+              ],
+            ),
           ),
           Positioned(
             left: 0,
@@ -420,6 +700,34 @@ class _CalendarPageState extends State<CalendarPage> {
             child: IconButton(
               icon: const Icon(Icons.arrow_back, color: Color(0xFF4CAF50)),
               onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                IconButton(
+                  tooltip: AppLocalizations.of(context)!.calendarFiltersTooltip,
+                  icon: const Icon(Icons.tune, color: Color(0xFF4CAF50)),
+                  onPressed: _showFiltersSheet,
+                ),
+                if (_hasActiveFilters)
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      width: 9,
+                      height: 9,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFF7043),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 1.5),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ],
@@ -496,10 +804,11 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildSelectedDayHeader() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 6),
       child: Text(
-        'Dia $_selectedDay — $_monthLabel',
+        l10n.calendarDayTitle(_selectedDay!, _monthLabel),
         style: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w700,

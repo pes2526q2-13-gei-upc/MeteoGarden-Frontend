@@ -428,6 +428,24 @@
 "loginEmptyFields": "Introduce el nombre de usuario y la contraseña.",
 "loginInvalidCredentials": "Nombre de usuario o contraseña incorrectos.",
 "loginServerError": "No se ha podido iniciar sesión. Inténtalo de nuevo más tarde.",
-"loginConnectionError": "No se ha podido conectar con el servidor."
+"loginConnectionError": "No se ha podido conectar con el servidor.",
+
+"calendarAllCategories": "Todas las categorías",
+  "calendarFilters": "Filtros",
+  "calendarCategory": "Categoría",
+  "calendarAll": "Todas",
+  "calendarClear": "Limpiar",
+  "calendarDayTitle": "Día {day} — {month}",
+  "@calendarDayTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarFiltersTooltip": "Filtros"
 }
 

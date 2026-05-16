@@ -12,7 +12,7 @@ void main() {
       final pot = _buildPot(
         commonName: 'Tomàquet',
         scientificName: 'Solanum lycopersicum',
-        growthPhase: 'sprout',
+        growthPhase: 'germination',
         waterLevel: 60,
         healthLevel: 80,
         lastWateredAt: DateTime(2026, 3, 25, 10, 0),
@@ -23,18 +23,20 @@ void main() {
       );
 
       expect(find.text('Tomàquet'), findsOneWidget);
-      expect(find.text('Brot'), findsOneWidget);
+      expect(find.textContaining('Brot'), findsNothing);
       expect(find.text("Nivell d'Aigua"), findsOneWidget);
       expect(find.text('Salut'), findsOneWidget);
       expect(find.text('60%'), findsOneWidget);
       expect(find.text('80%'), findsOneWidget);
       expect(find.textContaining('Últim reg:'), findsOneWidget);
       expect(find.textContaining('2026-03-25'), findsOneWidget);
-      expect(find.text('Regar planta'), findsOneWidget);
-      expect(find.text('Recollir planta'), findsNothing);
+      expect(find.byKey(const Key('water_plant_button')), findsOneWidget);
+      expect(find.byKey(const Key('collect_mature_plant_button')), findsNothing);
     });
 
-    testWidgets('mostra el nom comú de la planta', (WidgetTester tester) async {
+    testWidgets('mostra el nom comú de la planta', (
+      WidgetTester tester,
+    ) async {
       final pot = _buildPot(
         commonName: 'Alfàbrega',
         scientificName: 'Ocimum basilicum',
@@ -59,7 +61,7 @@ void main() {
         potNumber: 1,
         occupied: true,
         plant: null,
-        growthPhase: 'growing',
+        growthPhase: 'growth',
         healthLevel: 50,
         waterLevel: 50,
         plantedAt: null,
@@ -71,7 +73,8 @@ void main() {
       );
 
       expect(find.text('Planta'), findsOneWidget);
-      expect(find.text('Creixent'), findsOneWidget);
+      expect(find.text('Planta'), findsOneWidget);
+      expect(find.text('50%'), findsWidgets);
       expect(find.textContaining('Últim reg:'), findsOneWidget);
     });
 
@@ -98,7 +101,7 @@ void main() {
         );
 
         expect(find.text('Madura'), findsOneWidget);
-        expect(find.text('Recollir planta'), findsOneWidget);
+        expect(find.byKey(const Key('collect_mature_plant_button')), findsOneWidget);
       },
     );
 
@@ -116,11 +119,15 @@ void main() {
 
         await tester.pumpWidget(
           _wrapWithApp(
-            PotInfoSheet(pot: pot, onWater: () async {}, onCollect: null),
+            PotInfoSheet(
+              pot: pot,
+              onWater: () async {},
+              onCollect: null,
+            ),
           ),
         );
 
-        expect(find.text('Recollir planta'), findsNothing);
+        expect(find.byKey(const Key('collect_mature_plant_button')), findsNothing);
       },
     );
 
@@ -130,7 +137,7 @@ void main() {
       final pot = _buildPot(
         commonName: 'Tomàquet',
         scientificName: 'Solanum lycopersicum',
-        growthPhase: 'growing',
+        growthPhase: 'growth',
         waterLevel: 100,
         healthLevel: 90,
         lastWateredAt: DateTime(2026, 3, 25),
@@ -140,7 +147,27 @@ void main() {
         _wrapWithApp(PotInfoSheet(pot: pot, onWater: () async {})),
       );
 
-      expect(find.text('Regar planta'), findsNothing);
+      expect(find.byKey(const Key('water_plant_button')), findsNothing);
+    });
+
+    testWidgets('no mostra el botó de regar si la planta està morta', (
+      WidgetTester tester,
+    ) async {
+      final pot = _buildPot(
+        commonName: 'Tomàquet',
+        scientificName: 'Solanum lycopersicum',
+        growthPhase: 'dead',
+        waterLevel: 40,
+        healthLevel: 0,
+        lastWateredAt: DateTime(2026, 3, 25),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(PotInfoSheet(pot: pot, onWater: () async {})),
+      );
+
+      expect(find.text('Morta'), findsOneWidget);
+      expect(find.byKey(const Key('water_plant_button')), findsNothing);
     });
 
     testWidgets('crida onWater quan es prem el botó de regar', (
@@ -151,7 +178,7 @@ void main() {
       final pot = _buildPot(
         commonName: 'Tomàquet',
         scientificName: 'Solanum lycopersicum',
-        growthPhase: 'growing',
+        growthPhase: 'growth',
         waterLevel: 40,
         healthLevel: 90,
         lastWateredAt: DateTime(2026, 3, 25),
@@ -168,7 +195,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('Regar planta'));
+      await tester.tap(find.byKey(const Key('water_plant_button')));
       await tester.pump();
 
       expect(watered, true);
@@ -200,10 +227,96 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('Recollir planta'));
+      await tester.tap(find.byKey(const Key('collect_mature_plant_button')));
       await tester.pump();
 
       expect(collected, true);
+    });
+
+    testWidgets('mostra botó de pocions si onPotion no és null', (
+      WidgetTester tester,
+    ) async {
+      bool openedPotion = false;
+
+      final pot = _buildPot(
+        commonName: 'Menta',
+        scientificName: 'Mentha spicata',
+        growthPhase: 'growth',
+        waterLevel: 80,
+        healthLevel: 90,
+        lastWateredAt: DateTime(2026, 3, 25),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(
+          PotInfoSheet(
+            pot: pot,
+            onWater: () async {},
+            onPotion: () {
+              openedPotion = true;
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('open_potion_selection_button')));
+      await tester.pump();
+
+      expect(openedPotion, true);
+    });
+
+    testWidgets('mostra botó d’eliminar si onDeletePlant no és null', (
+      WidgetTester tester,
+    ) async {
+      bool deleted = false;
+
+      final pot = _buildPot(
+        commonName: 'Menta',
+        scientificName: 'Mentha spicata',
+        growthPhase: 'growth',
+        waterLevel: 80,
+        healthLevel: 90,
+        lastWateredAt: DateTime(2026, 3, 25),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(
+          PotInfoSheet(
+            pot: pot,
+            onWater: () async {},
+            onDeletePlant: () async {
+              deleted = true;
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('delete_plant_button')));
+      await tester.pump();
+
+      expect(deleted, true);
+    });
+
+    testWidgets('mostra les barres d’aigua i salut amb els valors correctes', (
+      WidgetTester tester,
+    ) async {
+      final pot = _buildPot(
+        commonName: 'Lavanda',
+        scientificName: 'Lavandula angustifolia',
+        growthPhase: 'growth',
+        waterLevel: 25,
+        healthLevel: 75,
+        lastWateredAt: DateTime(2026, 3, 25),
+      );
+
+      await tester.pumpWidget(
+        _wrapWithApp(PotInfoSheet(pot: pot, onWater: () async {})),
+      );
+
+      expect(find.byKey(const Key('plant_water_info')), findsOneWidget);
+      expect(find.byKey(const Key('plant_health_info')), findsOneWidget);
+      expect(find.text('25%'), findsOneWidget);
+      expect(find.text('75%'), findsOneWidget);
     });
   });
 }
@@ -217,7 +330,6 @@ Widget _wrapWithApp(Widget child) {
   );
 }
 
-// mock de les dades d'un pot
 GardenPot _buildPot({
   required String commonName,
   required String scientificName,

@@ -976,4 +976,27 @@ class AppLocalizationsCa extends AppLocalizations {
   @override
   String get loginConnectionError =>
       'No s\'ha pogut connectar amb el servidor.';
+
+  @override
+  String get calendarAllCategories => 'Totes les categories';
+
+  @override
+  String get calendarFilters => 'Filtres';
+
+  @override
+  String get calendarCategory => 'Categoria';
+
+  @override
+  String get calendarAll => 'Totes';
+
+  @override
+  String get calendarClear => 'Netejar';
+
+  @override
+  String calendarDayTitle(int day, String month) {
+    return 'Dia $day — $month';
+  }
+
+  @override
+  String get calendarFiltersTooltip => 'Filtres';
 }

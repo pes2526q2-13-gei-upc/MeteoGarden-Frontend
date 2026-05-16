@@ -114,7 +114,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byType(InkWell));
+    await tester.tap(find.byType(InkWell).last);
     await tester.pump();
 
     expect(clicked, true);
