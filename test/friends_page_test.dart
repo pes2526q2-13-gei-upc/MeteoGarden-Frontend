@@ -18,15 +18,23 @@ class FakeAmicsService extends AmicsService {
   List<String> sentRequests = ['oriol'];
   List<String> receivedRequests = ['albert'];
 
+  bool throwOnLoad = false;
+
   String? deletedUsername;
   String? cancelledUsername;
   String? answeredRequester;
   String? answeredAction;
+  String? searchedQuery;
+  String? requestedUsername;
 
   @override
   Future<List<Map<String, dynamic>>> fetchFriends({
     required String token,
   }) async {
+    if (throwOnLoad) {
+      throw Exception('Error carregant amics');
+    }
+
     return friends;
   }
 
@@ -35,6 +43,10 @@ class FakeAmicsService extends AmicsService {
     required String action,
     required String token,
   }) async {
+    if (throwOnLoad) {
+      throw Exception('Error carregant sol·licituds');
+    }
+
     if (action == 'sent') return sentRequests;
     if (action == 'received') return receivedRequests;
     return [];
@@ -85,8 +97,11 @@ class FakeAmicsService extends AmicsService {
     required String query,
     required String token,
   }) async {
+    searchedQuery = query;
+
     return [
       {'username': 'marta'},
+      {'username': 'jana'},
     ];
   }
 
@@ -95,6 +110,7 @@ class FakeAmicsService extends AmicsService {
     required String requestedUsername,
     required String token,
   }) async {
+    this.requestedUsername = requestedUsername;
     sentRequests.add(requestedUsername);
     return 'Sol·licitud enviada correctament';
   }
@@ -274,7 +290,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.more_vert_rounded));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.textContaining('Eliminar').last);
+    await tester.tap(find.byIcon(Icons.person_remove_rounded).last);
     await tester.pumpAndSettle();
 
     await tester.tap(find.byIcon(Icons.delete_outline_rounded));
@@ -282,5 +298,140 @@ void main() {
 
     expect(fakeService.deletedUsername, 'laia');
     expect(find.text('laia'), findsNothing);
+  });
+
+  testWidgets('mostra estat buit quan no hi ha amics', (tester) async {
+    final fakeService = FakeAmicsService()
+      ..friends = []
+      ..sentRequests = []
+      ..receivedRequests = [];
+
+    await tester.pumpWidget(
+      makeTestableWidget(
+        child: FriendsPage(amicsService: fakeService),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.people_outline), findsOneWidget);
+  });
+
+  testWidgets('mostra estat buit quan no hi ha sol·licituds enviades',
+      (tester) async {
+    final fakeService = FakeAmicsService()
+      ..sentRequests = [];
+
+    await tester.pumpWidget(
+      makeTestableWidget(
+        child: FriendsPage(amicsService: fakeService),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.outbox_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.send_outlined), findsOneWidget);
+  });
+
+  testWidgets('mostra estat buit quan no hi ha sol·licituds rebudes',
+      (tester) async {
+    final fakeService = FakeAmicsService()
+      ..receivedRequests = [];
+
+    await tester.pumpWidget(
+      makeTestableWidget(
+        child: FriendsPage(amicsService: fakeService),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.mark_email_unread_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.inbox_outlined), findsOneWidget);
+  });
+
+  testWidgets('mostra pantalla d’error quan falla la càrrega', (tester) async {
+    final fakeService = FakeAmicsService()..throwOnLoad = true;
+
+    await tester.pumpWidget(
+      makeTestableWidget(
+        child: FriendsPage(amicsService: fakeService),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.wifi_off_rounded), findsOneWidget);
+    expect(find.text('Error carregant amics'), findsOneWidget);
+  });
+
+  testWidgets('obre el diàleg per afegir amic', (tester) async {
+    final fakeService = FakeAmicsService();
+
+    await tester.pumpWidget(
+      makeTestableWidget(
+        child: FriendsPage(amicsService: fakeService),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.person_add_alt_1_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.search), findsOneWidget);
+  });
+
+  testWidgets('cerca usuaris i amaga l’usuari actual dels resultats',
+      (tester) async {
+    final fakeService = FakeAmicsService();
+
+    await tester.pumpWidget(
+      makeTestableWidget(
+        child: FriendsPage(amicsService: fakeService),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.person_add_alt_1_rounded));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'mar');
+    await tester.pumpAndSettle();
+
+    expect(fakeService.searchedQuery, 'mar');
+    expect(find.text('marta'), findsOneWidget);
+    expect(find.text('jana'), findsNothing);
+  });
+
+  testWidgets('pot enviar una sol·licitud des del diàleg d’afegir amic',
+      (tester) async {
+    final fakeService = FakeAmicsService();
+
+    await tester.pumpWidget(
+      makeTestableWidget(
+        child: FriendsPage(amicsService: fakeService),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.person_add_alt_1_rounded));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'mar');
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.textContaining('Enviar').last);
+    await tester.pumpAndSettle();
+
+    expect(fakeService.requestedUsername, 'marta');
+    expect(find.text('Sol·licitud enviada correctament'), findsOneWidget);
   });
 }
