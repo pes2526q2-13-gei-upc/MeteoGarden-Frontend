@@ -16,9 +16,13 @@ class MissionException implements Exception {
 }
 
 class MissionService {
-  static Future<List<Mission>> fetchMissions({required String token}) async {
+  static Future<List<Mission>> fetchMissions({
+    required String token,
+    http.Client? client,
+  }) async {
+    final c = client ?? http.Client();
     try {
-      final response = await http.get(
+      final response = await c.get(
         Uri.parse('${ApiConfig.baseUrl}/api/user/missions/'),
         headers: {
           'Content-Type': 'application/json',
@@ -52,9 +56,11 @@ class MissionService {
   static Future<int> claimMission({
     required String token,
     required Mission mission,
+    http.Client? client,
   }) async {
+    final c = client ?? http.Client();
     try {
-      final response = await http.post(
+      final response = await c.post(
         Uri.parse('${ApiConfig.baseUrl}/api/user/missions/claim/'),
         headers: {
           'Content-Type': 'application/json',
