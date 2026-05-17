@@ -146,7 +146,10 @@ void main() {
     // Input:  currentNumber=3, goal=5
     // Output: percentage = 0.6
     test('calcula el percentatge correctament', () {
-      expect(_buildMission(currentNumber: 3, goal: 5).percentage, closeTo(0.6, 0.001));
+      expect(
+        _buildMission(currentNumber: 3, goal: 5).percentage,
+        closeTo(0.6, 0.001),
+      );
     });
 
     // Input:  currentNumber=5, goal=5 (missió completada)
@@ -224,8 +227,17 @@ void main() {
         return http.Response(
           jsonEncode({
             'missions': [
-              _missionJson(name: 'Plantar 5 roses', currentNumber: 3, state: 'in progress'),
-              _missionJson(name: 'Regar 10 cops', goal: 10, currentNumber: 10, state: 'completed'),
+              _missionJson(
+                name: 'Plantar 5 roses',
+                currentNumber: 3,
+                state: 'in progress',
+              ),
+              _missionJson(
+                name: 'Regar 10 cops',
+                goal: 10,
+                currentNumber: 10,
+                state: 'completed',
+              ),
             ],
           }),
           200,
@@ -233,7 +245,10 @@ void main() {
         );
       });
 
-      final missions = await MissionService.fetchMissions(token: 'test-token', client: client);
+      final missions = await MissionService.fetchMissions(
+        token: 'test-token',
+        client: client,
+      );
 
       expect(missions.length, 2);
       expect(missions[0].name, 'Plantar 5 roses');
@@ -249,37 +264,64 @@ void main() {
         return http.Response(jsonEncode({'missions': []}), 200);
       });
 
-      final missions = await MissionService.fetchMissions(token: 'test-token', client: client);
+      final missions = await MissionService.fetchMissions(
+        token: 'test-token',
+        client: client,
+      );
 
       expect(missions, isEmpty);
     });
 
     // Input:  resposta HTTP 401
     // Output: llança MissionException amb statusCode=401
-    test('llança MissionException amb statusCode si el servidor retorna 401', () {
-      final client = MockClient((_) async => http.Response('Unauthorized', 401));
+    test(
+      'llança MissionException amb statusCode si el servidor retorna 401',
+      () {
+        final client = MockClient(
+          (_) async => http.Response('Unauthorized', 401),
+        );
 
-      expect(
-        () => MissionService.fetchMissions(token: 'token-invàlid', client: client),
-        throwsA(isA<MissionException>().having((e) => e.statusCode, 'statusCode', 401)),
-      );
-    });
+        expect(
+          () => MissionService.fetchMissions(
+            token: 'token-invàlid',
+            client: client,
+          ),
+          throwsA(
+            isA<MissionException>().having(
+              (e) => e.statusCode,
+              'statusCode',
+              401,
+            ),
+          ),
+        );
+      },
+    );
 
     // Input:  resposta HTTP 500
     // Output: llança MissionException amb statusCode=500
     test('llança MissionException si el servidor retorna 500', () {
-      final client = MockClient((_) async => http.Response('Internal Server Error', 500));
+      final client = MockClient(
+        (_) async => http.Response('Internal Server Error', 500),
+      );
 
       expect(
         () => MissionService.fetchMissions(token: 'test-token', client: client),
-        throwsA(isA<MissionException>().having((e) => e.statusCode, 'statusCode', 500)),
+        throwsA(
+          isA<MissionException>().having(
+            (e) => e.statusCode,
+            'statusCode',
+            500,
+          ),
+        ),
       );
     });
 
     // Input:  client que llança SocketException (sense connexió)
     // Output: llança MissionException amb missatge de connexió
     test('llança MissionException de connexió si no hi ha xarxa', () {
-      final client = MockClient((_) async => throw const SocketException('No network'));
+      final client = MockClient(
+        (_) async => throw const SocketException('No network'),
+      );
 
       expect(
         () => MissionService.fetchMissions(token: 'test-token', client: client),
@@ -345,53 +387,73 @@ void main() {
           client: client,
         ),
         throwsA(
-          isA<MissionException>().having((e) => e.message, 'message', 'Mission already claimed'),
+          isA<MissionException>().having(
+            (e) => e.message,
+            'message',
+            'Mission already claimed',
+          ),
         ),
       );
     });
 
     // Input:  resposta HTTP 400 amb {"error": "Mission in progress"}
     // Output: llança MissionException amb message = 'Mission in progress'
-    test('llança MissionException "Mission in progress" si la missió no és completada', () {
-      final client = MockClient((_) async {
-        return http.Response(
-          jsonEncode({'error': 'Mission in progress'}),
-          400,
-          headers: {'content-type': 'application/json'},
-        );
-      });
+    test(
+      'llança MissionException "Mission in progress" si la missió no és completada',
+      () {
+        final client = MockClient((_) async {
+          return http.Response(
+            jsonEncode({'error': 'Mission in progress'}),
+            400,
+            headers: {'content-type': 'application/json'},
+          );
+        });
 
-      expect(
-        () => MissionService.claimMission(
-          token: 'test-token',
-          mission: _buildServiceMission(rewardCoins: 50),
-          client: client,
-        ),
-        throwsA(
-          isA<MissionException>().having((e) => e.message, 'message', 'Mission in progress'),
-        ),
-      );
-    });
+        expect(
+          () => MissionService.claimMission(
+            token: 'test-token',
+            mission: _buildServiceMission(rewardCoins: 50),
+            client: client,
+          ),
+          throwsA(
+            isA<MissionException>().having(
+              (e) => e.message,
+              'message',
+              'Mission in progress',
+            ),
+          ),
+        );
+      },
+    );
 
     // Input:  resposta HTTP 400 amb body no-JSON (text pla)
     // Output: llança MissionException amb message = '' (cap clau 'error' trobada)
-    test('llança MissionException amb missatge buit si el body no és JSON vàlid', () {
-      final client = MockClient((_) async => http.Response('Bad Request', 400));
+    test(
+      'llança MissionException amb missatge buit si el body no és JSON vàlid',
+      () {
+        final client = MockClient(
+          (_) async => http.Response('Bad Request', 400),
+        );
 
-      expect(
-        () => MissionService.claimMission(
-          token: 'test-token',
-          mission: _buildServiceMission(rewardCoins: 50),
-          client: client,
-        ),
-        throwsA(isA<MissionException>().having((e) => e.message, 'message', '')),
-      );
-    });
+        expect(
+          () => MissionService.claimMission(
+            token: 'test-token',
+            mission: _buildServiceMission(rewardCoins: 50),
+            client: client,
+          ),
+          throwsA(
+            isA<MissionException>().having((e) => e.message, 'message', ''),
+          ),
+        );
+      },
+    );
 
     // Input:  client que llança SocketException (sense connexió)
     // Output: llança MissionException amb missatge de connexió
     test('llança MissionException de connexió si no hi ha xarxa', () {
-      final client = MockClient((_) async => throw const SocketException('No network'));
+      final client = MockClient(
+        (_) async => throw const SocketException('No network'),
+      );
 
       expect(
         () => MissionService.claimMission(
