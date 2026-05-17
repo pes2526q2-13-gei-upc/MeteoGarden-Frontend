@@ -3,6 +3,10 @@ import 'package:http/http.dart' as http;
 import '../models/url.dart';
 
 class AmicsService {
+  AmicsService({http.Client? client}) : _client = client ?? http.Client();
+
+  final http.Client _client;
+
   /// Cerca usuaris que continguin [query] al seu nom d'usuari.
   /// Retorna una llista de maps amb 'username' i 'avatar'.
   Future<List<Map<String, dynamic>>> searchUsers({
@@ -12,7 +16,7 @@ class AmicsService {
     final uri = Uri.parse(
       '${ApiConfig.baseUrl}/api/search/?q=${Uri.encodeComponent(query)}',
     );
-    final response = await http.get(uri, headers: _headers(token));
+    final response = await _client.get(uri, headers: _headers(token));
 
     _checkStatus(response);
     final List<dynamic> data = jsonDecode(response.body);
@@ -24,7 +28,7 @@ class AmicsService {
     required String token,
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/friends/');
-    final response = await http.get(uri, headers: _headers(token));
+    final response = await _client.get(uri, headers: _headers(token));
 
     _checkStatus(response);
 
@@ -57,7 +61,7 @@ class AmicsService {
     required String token,
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/friends/send_request/');
-    final response = await http.post(
+    final response = await _client.post(
       uri,
       headers: _headers(token),
       body: jsonEncode({'requested': requestedUsername}),
@@ -105,7 +109,7 @@ class AmicsService {
 
     final bodyToSend = {'requester': requesterUsername, 'action': action};
 
-    final response = await http.post(
+    final response = await _client.post(
       uri,
       headers: _headers(token),
       body: jsonEncode(bodyToSend),
@@ -142,7 +146,7 @@ class AmicsService {
 
     final bodyToSend = {'requested': requestedUsername};
 
-    final response = await http.post(
+    final response = await _client.post(
       uri,
       headers: _headers(token),
       body: jsonEncode(bodyToSend),
@@ -210,7 +214,7 @@ class AmicsService {
     required String token,
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/friends/$username');
-    final response = await http.delete(uri, headers: _headers(token));
+    final response = await _client.delete(uri, headers: _headers(token));
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
     if (response.statusCode == 200) {
@@ -226,7 +230,7 @@ class AmicsService {
     required String token,
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/friends/likes/$username/');
-    final response = await http.post(uri, headers: _headers(token));
+    final response = await _client.post(uri, headers: _headers(token));
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
 
@@ -243,7 +247,7 @@ class AmicsService {
     required String token,
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/friends/likes/$username/');
-    final response = await http.get(uri, headers: _headers(token));
+    final response = await _client.get(uri, headers: _headers(token));
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
 
@@ -277,7 +281,7 @@ class AmicsService {
     request.headers.addAll(_headers(token));
     request.body = jsonEncode(body);
 
-    final streamedResponse = await http.Client().send(request);
+    final streamedResponse = await _client.send(request);
     return http.Response.fromStream(streamedResponse);
   }
 
@@ -289,7 +293,7 @@ class AmicsService {
     required String token,
   }) async {
     final uri = Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar');
-    final response = await http.get(uri, headers: _headers(token));
+    final response = await _client.get(uri, headers: _headers(token));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as Map<String, dynamic>;

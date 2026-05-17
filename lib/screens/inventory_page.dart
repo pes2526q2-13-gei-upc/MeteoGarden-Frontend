@@ -5,8 +5,9 @@ import '../services/garden_service.dart';
 
 class InventoryPage extends StatefulWidget {
   final String username;
+  final GardenService? gardenService;
 
-  const InventoryPage({super.key, required this.username});
+  const InventoryPage({super.key, required this.username, this.gardenService});
 
   @override
   State<InventoryPage> createState() => _InventoryPageState();
@@ -27,7 +28,7 @@ class _InventoryPageState extends State<InventoryPage>
   @override
   void initState() {
     super.initState();
-    _api = GardenService();
+    _api = widget.gardenService ?? GardenService();
     _tabController = TabController(length: 2, vsync: this);
     _loadInventory();
   }

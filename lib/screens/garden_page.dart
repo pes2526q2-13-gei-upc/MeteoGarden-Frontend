@@ -23,11 +23,13 @@ import 'weather_details_page.dart';
 class GardenPage extends StatefulWidget {
   final String username;
   final String gardenName;
+  final GardenService? gardenService;
 
   const GardenPage({
     super.key,
     required this.username,
     required this.gardenName,
+    this.gardenService,
   });
 
   @override
@@ -42,7 +44,7 @@ class _GardenPageState extends State<GardenPage> {
   void initState() {
     super.initState();
 
-    _gardenService = GardenService();
+    _gardenService = widget.gardenService ?? GardenService();
 
     _potsFuture = _gardenService.fetchGardenPlants(
       username: widget.username,
@@ -561,6 +563,7 @@ class _GardenPageState extends State<GardenPage> {
               ),
               SizedBox(height: height * 0.008),
               GestureDetector(
+                key: const Key('garden_album_button'),
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   Navigator.of(
@@ -578,6 +581,7 @@ class _GardenPageState extends State<GardenPage> {
               ),
               SizedBox(height: height * 0.008),
               GestureDetector(
+                key: const Key('garden_calendar_button'),
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   Navigator.of(context).push(
@@ -603,6 +607,7 @@ class _GardenPageState extends State<GardenPage> {
               children: [
                 _buildCoinsChip(monedes, width, height),
                 GestureDetector(
+                  key: const Key('garden_shop_button'),
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
                     Navigator.of(

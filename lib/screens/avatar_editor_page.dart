@@ -13,8 +13,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AvatarEditorPage extends StatefulWidget {
   final bool isNewUser;
+  final Map<String, List<String>>? initialOptionsForTests;
 
-  const AvatarEditorPage({super.key, this.isNewUser = true});
+  const AvatarEditorPage({
+    super.key,
+    this.isNewUser = true,
+    this.initialOptionsForTests,
+  });
 
   @override
   State<AvatarEditorPage> createState() => _AvatarEditorPageState();
@@ -54,31 +59,38 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     _initializeData();
   }
 
-  // ==========================================
-  // INICIALIZACIÓN SECUENCIAL
-  // ==========================================
   Future<void> _initializeData() async {
-    // 1. Primero cargamos las opciones disponibles
+    if (widget.initialOptionsForTests != null) {
+      options = widget.initialOptionsForTests!;
+
+      if (widget.isNewUser) {
+        _setDefaultsFromOptions();
+      } else {
+        await _fetchUserAvatar();
+      }
+
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+
+      return;
+    }
+
     await _fetchAvatarOptions();
 
     if (!mounted) return;
 
-    // 2. Decidimos qué datos cargar según el tipo de usuario
     if (widget.isNewUser) {
       _setDefaultsFromOptions();
     } else {
       await _fetchUserAvatar();
     }
 
-    // 3. Quitamos el estado de carga
     if (mounted) {
       setState(() => isLoading = false);
     }
   }
 
-  // ==========================================
-  // CARGAR OPCIONES DESDE LA API
-  // ==========================================
   Future<void> _fetchAvatarOptions() async {
     try {
       final response = await http.get(
