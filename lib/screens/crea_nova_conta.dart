@@ -7,6 +7,7 @@ import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
 import 'avatar_editor_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../widgets/centered_message.dart';
 
 class CreaNovaConta extends StatefulWidget {
   const CreaNovaConta({super.key});
@@ -171,9 +172,11 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(
+      CenteredMessage.show(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.createAccountSuccess)));
+        l10n.createAccountSuccess,
+        type: CenteredMessageType.success,
+      );
 
       Navigator.pushReplacement(
         context,
@@ -183,9 +186,11 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       );
     } else {
       debugPrint("Error: ${response.body}");
-      ScaffoldMessenger.of(
+      CenteredMessage.show(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.createAccountError)));
+        l10n.createAccountError,
+        type: CenteredMessageType.error,
+      );
     }
   }
 
@@ -221,9 +226,11 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
         newGardens: gardenNames,
       );
     } else {
-      ScaffoldMessenger.of(
+      CenteredMessage.show(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.profileLoadError)));
+        l10n.profileLoadError,
+        type: CenteredMessageType.error,
+      );
     }
   }
 
