@@ -217,36 +217,58 @@ class _InventoryPageState extends State<InventoryPage>
           ),
           child: Padding(
             padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _PlantImage(
-                  imageUrl: product.imageUrl,
-                  height: 120,
-                  fallbackIcon: Icons.science,
-                  fallbackColor: Color.fromARGB(255, 182, 194, 87),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  product.productName,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2E7D32),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _PlantImage(
+                    imageUrl: product.imageUrl,
+                    height: 120,
+                    fallbackIcon: Icons.science,
+                    fallbackColor: const Color.fromARGB(255, 182, 194, 87),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.inventoryQuantity(product.amount),
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("Tancar"),
-                ),
-              ],
+
+                  const SizedBox(height: 16),
+
+                  Text(
+                    product.productName,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2E7D32),
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Text(
+                    l10n.inventoryQuantity(product.amount),
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                  ),
+
+                  if (product.description != null &&
+                      product.description!.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    Text(
+                      product.description!,
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1.5,
+                        color: Colors.grey.shade800,
+                      ),
+                    ),
+                  ],
+
+                  const SizedBox(height: 16),
+
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(l10n.commonClose),
+                  ),
+                ],
+              ),
             ),
           ),
         );
