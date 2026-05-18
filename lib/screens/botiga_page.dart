@@ -158,7 +158,7 @@ class _ShopPageState extends State<ShopPage>
     final String name = isSeed
         ? (item['commonName'] ?? item['scientificName'])
         : item['name'];
-    final String? description = isSeed ? item['description'] : null;
+    final String? description = item['description']?.toString();
     final int price = item['price'] ?? 0;
 
     final String imageUrl = item['image_url']?.toString() ?? '';
@@ -249,7 +249,7 @@ class _ShopPageState extends State<ShopPage>
                 ],
               ),
               const SizedBox(height: 20),
-              if (description != null) ...[
+              if (description != null && description.isNotEmpty) ...[
                 Text(
                   l10n.commonDescription,
                   style: TextStyle(
