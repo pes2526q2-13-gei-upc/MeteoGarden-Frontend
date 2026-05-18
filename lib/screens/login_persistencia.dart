@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:meteo_garden/generated/app_localizations.dart';
 import '../models/avatar_user.dart';
 import '../models/weather_provider.dart';
+import 'package:meteo_garden/models/plantes_desbl.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -78,7 +79,9 @@ class _SplashScreenState extends State<SplashScreen> {
             .map((g) => g['gardenName'] as String)
             .toList();
 
-        Provider.of<UserModel>(context, listen: false).setProfile(
+        final userModel = Provider.of<UserModel>(context, listen: false);
+
+        userModel.setProfile(
           newUsername: data['username'] ?? '',
           newEmail: data['email'] ?? '',
           newCity: data['city'] ?? '',
@@ -88,6 +91,17 @@ class _SplashScreenState extends State<SplashScreen> {
           newMonedes: data['numCoins'] ?? 0,
           newGardens: gardenNames,
         );
+
+        try {
+          await Provider.of<PlantProvider>(
+            context,
+            listen: false,
+          ).loadPlants(userModel);
+        } catch (e) {
+          debugPrint('Error carregant plantes descobertes en persistència: $e');
+        }
+
+        if (!mounted) return;
 
         final city = data['city'] ?? '';
 
