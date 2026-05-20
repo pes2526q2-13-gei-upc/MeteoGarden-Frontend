@@ -88,13 +88,14 @@ class _InventoryPageState extends State<InventoryPage>
     final list = _products
         .where(
           (p) =>
-              p.productName.toLowerCase().contains(_searchQuery.toLowerCase()),
+              p.displayName.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+            p.productName.toLowerCase().contains(_searchQuery.toLowerCase()),
         )
         .toList();
 
     list.sort(
       (a, b) =>
-          a.productName.toLowerCase().compareTo(b.productName.toLowerCase()),
+           a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()),
     );
 
     return list;
@@ -231,7 +232,7 @@ class _InventoryPageState extends State<InventoryPage>
                   const SizedBox(height: 16),
 
                   Text(
-                    product.productName,
+                    product.displayName,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 20,
@@ -670,7 +671,7 @@ class _ProductCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                product.productName,
+                product.displayName,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/garden.dart';
 import '../models/seed_option.dart';
 import '../models/url.dart';
+import 'package:flutter/foundation.dart';
 
 class PlantingResult {
   final String message;
@@ -118,49 +119,80 @@ class GardenService {
 
     throw Exception('Error carregant llavors: ${response.statusCode}');
   }
+Future<List<ProductItem>> fetchProducts(String username) async {
+  final url = Uri.parse('${ApiConfig.baseUrl}/api/users/$username/products/');
 
-  Future<List<ProductItem>> fetchProducts(String username) async {
-    final response = await _client.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/products/'),
-    );
+  debugPrint('INVENTORY REQUEST URL: $url');
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      return data.map((e) => ProductItem.fromJson(e)).toList();
+  final response = await _client.get(url);
+
+  debugPrint('INVENTORY STATUS CODE: ${response.statusCode}');
+  debugPrint('INVENTORY RAW BODY: ${response.body}');
+
+  if (response.statusCode == 200) {
+    final List<dynamic> data = jsonDecode(response.body);
+
+    debugPrint('INVENTORY DECODED DATA: $data');
+
+    for (final item in data) {
+      debugPrint('PRODUCT ITEM FROM BACK: $item');
+      debugPrint('productName: ${item['productName']}');
+      debugPrint('displayName: ${item['displayName']}');
+      debugPrint('display_name: ${item['display_name']}');
+      debugPrint('description: ${item['description']}');
+      debugPrint('displayDescription: ${item['displayDescription']}');
+      debugPrint('display_description: ${item['display_description']}');
     }
 
-    throw Exception('Error carregant pocions: ${response.statusCode}');
+    return data.map((e) => ProductItem.fromJson(e)).toList();
   }
+
+  throw Exception('Error carregant pocions: ${response.statusCode}');
+}
 
   Future<String> applyPotion({
-    required String username,
-    required String gardenName,
-    required int potNumber,
-    required String productName,
-  }) async {
-    final url = Uri.parse('${ApiConfig.baseUrl}/api/use_product/');
-    final response = await _client.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'pot_number': potNumber,
-        'product_name': productName,
-        'username': username,
-        'garden_name': gardenName,
-      }),
-    );
-    final data = jsonDecode(response.body);
-    if (response.statusCode != 200 || data['error'] != null) {
-      throw Exception(data['error'] ?? 'Error aplicant la poció');
-    }
-    final isInstant = data['isInstant'] == true;
-    final product = data['product'] ?? productName;
-    if (isInstant) {
-      return 'Poció $product aplicada correctament';
-    } else {
-      return 'Efecte $product activat';
-    }
+  required String username,
+  required String gardenName,
+  required int potNumber,
+  required String productName,
+  required String token,
+}) async {
+  final url = Uri.parse('${ApiConfig.baseUrl}/api/use_product/');
+
+  final response = await _client.post(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token $token',
+    },
+    body: jsonEncode({
+      'pot_number': potNumber,
+      'product_name': productName,
+      'username': username,
+      'garden_name': gardenName,
+    }),
+  );
+
+  final data = jsonDecode(utf8.decode(response.bodyBytes));
+
+  if (response.statusCode != 200 || data['error'] != null) {
+    throw Exception(data['error'] ?? 'Error aplicant la poció');
   }
+
+  final isInstant = data['isInstant'] == true;
+
+  final product =
+      data['displayName'] ??
+      data['display_name'] ??
+      data['product'] ??
+      productName;
+
+  if (isInstant) {
+    return 'Poció $product aplicada correctament';
+  } else {
+    return 'Efecte $product activat';
+  }
+}
 
   Future<PlantingResult> plantSeed({
     required String username,

@@ -20,23 +20,32 @@ class SeedOption {
 
 class ProductItem {
   final String productName;
+   final String displayName;
   final int amount;
   final String? imageUrl;
   final String? description;
 
   ProductItem({
     required this.productName,
+    required this.displayName,
     required this.amount,
     this.imageUrl,
     this.description,
   });
 
   factory ProductItem.fromJson(Map<String, dynamic> json) {
+    final internalName =
+        (json['productName'] ?? json['product_name'] ?? json['name'] ?? '')
+            .toString();
+
     return ProductItem(
-      productName: json['productName'] as String,
-      amount: json['amount'] as int,
-      imageUrl: json['image_url'] as String?,
-      description: json['description'] as String?,
+      productName: internalName,
+      displayName:
+          (json['displayName'] ?? json['display_name'] ?? internalName)
+              .toString(),
+      amount: json['amount'] ?? 0,
+      imageUrl: json['image_url'],
+      description: json['description'],
     );
   }
 }

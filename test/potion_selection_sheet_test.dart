@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
+import 'package:meteo_garden/models/dades_usr.dart';
 import 'package:meteo_garden/models/garden.dart';
 import 'package:meteo_garden/models/seed_option.dart';
 import 'package:meteo_garden/services/garden_service.dart';
 import 'package:meteo_garden/widgets/potion_selection_sheet.dart';
+import 'package:provider/provider.dart';
 
 class FakeGardenService extends GardenService {
   bool throwOnFetchProducts = false;
@@ -16,10 +18,23 @@ class FakeGardenService extends GardenService {
   String? appliedGardenName;
   int? appliedPotNumber;
   String? appliedProductName;
+  String? appliedToken;
 
   List<ProductItem> products = [
-    ProductItem(productName: 'Poció de creixement', amount: 2, imageUrl: ''),
-    ProductItem(productName: 'Poció màgica', amount: 1, imageUrl: ''),
+    ProductItem(
+      productName: 'growth_potion',
+      displayName: 'Poció de creixement',
+      amount: 2,
+      imageUrl: '',
+      description: 'Accelera el creixement de la planta.',
+    ),
+    ProductItem(
+      productName: 'magic_potion',
+      displayName: 'Poció màgica',
+      amount: 1,
+      imageUrl: '',
+      description: 'Poció màgica de prova.',
+    ),
   ];
 
   @override
@@ -39,11 +54,13 @@ class FakeGardenService extends GardenService {
     required String gardenName,
     required int potNumber,
     required String productName,
+    required String token,
   }) async {
     appliedUsername = username;
     appliedGardenName = gardenName;
     appliedPotNumber = potNumber;
     appliedProductName = productName;
+    appliedToken = token;
 
     if (throwOnApplyPotion) {
       throw Exception('No es pot aplicar la poció fake');
@@ -71,36 +88,53 @@ Widget makeTestableWidget({
   required FakeGardenService gardenService,
   required Future<void> Function(int potNumber) onPotionSuccess,
 }) {
-  return MaterialApp(
-    locale: const Locale('ca'),
-    localizationsDelegates: const [
-      AppLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    supportedLocales: AppLocalizations.supportedLocales,
-    home: Scaffold(
-      body: Center(
-        child: Builder(
-          builder: (context) {
-            return ElevatedButton(
-              onPressed: () {
-                showModalBottomSheet<void>(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (_) => PotionSelectionSheet(
-                    pot: fakePot(),
-                    username: 'jana',
-                    gardenName: 'JardiJana',
-                    gardenService: gardenService,
-                    onPotionSuccess: onPotionSuccess,
-                  ),
-                );
-              },
-              child: const Text('Obrir pocions'),
-            );
-          },
+  final userModel = UserModel();
+
+  userModel.setToken('fake-token');
+  userModel.setProfile(
+    newUsername: 'jana',
+    newEmail: 'jana@test.com',
+    newCity: 'Barcelona',
+    newLanguage: 'ca',
+    newLastEntry: '',
+    newNumPlantsCollected: 0,
+    newMonedes: 25,
+    newGardens: const ['JardiJana'],
+  );
+
+  return ChangeNotifierProvider<UserModel>.value(
+    value: userModel,
+    child: MaterialApp(
+      locale: const Locale('ca'),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(
+        body: Center(
+          child: Builder(
+            builder: (context) {
+              return ElevatedButton(
+                onPressed: () {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (_) => PotionSelectionSheet(
+                      pot: fakePot(),
+                      username: 'jana',
+                      gardenName: 'JardiJana',
+                      gardenService: gardenService,
+                      onPotionSuccess: onPotionSuccess,
+                    ),
+                  );
+                },
+                child: const Text('Obrir pocions'),
+              );
+            },
+          ),
         ),
       ),
     ),
@@ -192,7 +226,8 @@ void main() {
     expect(gardenService.appliedUsername, 'jana');
     expect(gardenService.appliedGardenName, 'JardiJana');
     expect(gardenService.appliedPotNumber, 3);
-    expect(gardenService.appliedProductName, 'Poció de creixement');
+    expect(gardenService.appliedProductName, 'growth_potion');
+    expect(gardenService.appliedToken, 'fake-token');
 
     expect(find.text('Poció aplicada correctament'), findsOneWidget);
     expect(find.text('Tancar'), findsOneWidget);
@@ -239,7 +274,8 @@ void main() {
     await tester.tap(find.byType(ElevatedButton).last);
     await tester.pumpAndSettle();
 
-    expect(gardenService.appliedProductName, 'Poció de creixement');
+    expect(gardenService.appliedProductName, 'growth_potion');
+    expect(gardenService.appliedToken, 'fake-token');
     expect(find.text('No es pot aplicar la poció fake'), findsOneWidget);
     expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
   });
@@ -271,4 +307,29 @@ void main() {
 
     expect(find.byIcon(Icons.local_drink), findsWidgets);
   });
+
+  testWidgets('mostra Image.network si la poció té imatge', (tester) async {
+  final gardenService = FakeGardenService()
+    ..products = [
+      ProductItem(
+        productName: 'hydration_shield',
+        displayName: 'Escut hidratant',
+        amount: 1,
+        imageUrl: 'https://example.com/potion.png',
+        description: 'Redueix la pèrdua d’aigua.',
+      ),
+    ];
+
+  await openPotionSheet(tester, gardenService: gardenService);
+
+  expect(find.text('Escut hidratant'), findsOneWidget);
+
+  final networkImages = tester
+      .widgetList<Image>(find.byType(Image))
+      .where((image) => image.image is NetworkImage)
+      .toList();
+
+  expect(networkImages.length, 1);
+  expect(networkImages.first.image, isA<NetworkImage>());
+});
 }

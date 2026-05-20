@@ -330,14 +330,15 @@ class TestGardenService implements GardenService {
   }
 
   @override
-  Future<String> applyPotion({
-    required String username,
-    required String gardenName,
-    required int potNumber,
-    required String productName,
-  }) async {
-    throw UnimplementedError();
-  }
+Future<String> applyPotion({
+  required String username,
+  required String gardenName,
+  required int potNumber,
+  required String productName,
+  required String token,
+}) async {
+  throw UnimplementedError();
+}
 
   @override
   Future<String> collectPlant({

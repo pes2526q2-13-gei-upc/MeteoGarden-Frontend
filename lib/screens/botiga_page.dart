@@ -157,7 +157,7 @@ class _ShopPageState extends State<ShopPage>
 
     final String name = isSeed
         ? (item['commonName'] ?? item['scientificName'])
-        : item['name'];
+        : (item['displayName'] ?? item['display_name'] ?? item['name']);
     final String? description = item['description']?.toString();
     final int price = item['price'] ?? 0;
 
@@ -547,7 +547,7 @@ class _ShopPageState extends State<ShopPage>
           final item = items[index];
           final name = isSeed
               ? (item['commonName'] ?? item['scientificName'])
-              : item['name'];
+              : (item['displayName'] ?? item['display_name'] ?? item['name']);
           final price = item['price'] ?? 0;
 
           final String imageUrl = item['image_url']?.toString() ?? '';

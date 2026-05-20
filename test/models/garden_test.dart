@@ -8,19 +8,22 @@ void main() {
       final expiresAt = DateTime(2026, 5, 17, 10);
 
       final potion = ActivePotion(
-        name: 'Fertilitzant',
+        name: 'fertilizer',
+        displayName: 'Fertilitzant',
         appliedAt: appliedAt,
         expiresAt: expiresAt,
       );
 
-      expect(potion.name, 'Fertilitzant');
+      expect(potion.name, 'fertilizer');
+      expect(potion.displayName, 'Fertilitzant');
       expect(potion.appliedAt, appliedAt);
       expect(potion.expiresAt, expiresAt);
     });
 
     test('isActive retorna true si encara no ha expirat', () {
       final potion = ActivePotion(
-        name: 'Poció activa',
+        name: 'active_potion',
+        displayName: 'Poció activa',
         appliedAt: DateTime.now().subtract(const Duration(hours: 1)),
         expiresAt: DateTime.now().add(const Duration(hours: 1)),
       );
@@ -30,7 +33,8 @@ void main() {
 
     test('isActive retorna false si ja ha expirat', () {
       final potion = ActivePotion(
-        name: 'Poció expirada',
+        name: 'expired_potion',
+        displayName: 'Poció expirada',
         appliedAt: DateTime.now().subtract(const Duration(hours: 2)),
         expiresAt: DateTime.now().subtract(const Duration(hours: 1)),
       );
@@ -38,7 +42,57 @@ void main() {
       expect(potion.isActive, isFalse);
     });
 
-    test('fromJson converteix correctament el JSON', () {
+    test('fromJson converteix correctament el JSON amb displayName', () {
+      final potion = ActivePotion.fromJson({
+        'name': 'fertilizer',
+        'displayName': 'Fertilitzant',
+        'applied_at': '2026-05-16T10:00:00',
+        'expires_at': '2026-05-17T10:00:00',
+      });
+
+      expect(potion.name, 'fertilizer');
+      expect(potion.displayName, 'Fertilitzant');
+      expect(potion.appliedAt, DateTime.parse('2026-05-16T10:00:00'));
+      expect(potion.expiresAt, DateTime.parse('2026-05-17T10:00:00'));
+    });
+
+    test('fromJson accepta display_name del backend', () {
+      final potion = ActivePotion.fromJson({
+        'name': 'fertilizer',
+        'display_name': 'Fertilitzant',
+        'applied_at': '2026-05-16T10:00:00',
+        'expires_at': '2026-05-17T10:00:00',
+      });
+
+      expect(potion.name, 'fertilizer');
+      expect(potion.displayName, 'Fertilitzant');
+    });
+
+    test('fromJson accepta product_name com a nom intern', () {
+      final potion = ActivePotion.fromJson({
+        'product_name': 'fertilizer',
+        'display_name': 'Fertilitzant',
+        'applied_at': '2026-05-16T10:00:00',
+        'expires_at': '2026-05-17T10:00:00',
+      });
+
+      expect(potion.name, 'fertilizer');
+      expect(potion.displayName, 'Fertilitzant');
+    });
+
+    test('fromJson accepta productName com a nom intern', () {
+      final potion = ActivePotion.fromJson({
+        'productName': 'fertilizer',
+        'displayName': 'Fertilitzant',
+        'applied_at': '2026-05-16T10:00:00',
+        'expires_at': '2026-05-17T10:00:00',
+      });
+
+      expect(potion.name, 'fertilizer');
+      expect(potion.displayName, 'Fertilitzant');
+    });
+
+    test('fromJson usa name com a displayName si no arriba cap displayName', () {
       final potion = ActivePotion.fromJson({
         'name': 'Fertilitzant',
         'applied_at': '2026-05-16T10:00:00',
@@ -46,8 +100,7 @@ void main() {
       });
 
       expect(potion.name, 'Fertilitzant');
-      expect(potion.appliedAt, DateTime.parse('2026-05-16T10:00:00'));
-      expect(potion.expiresAt, DateTime.parse('2026-05-17T10:00:00'));
+      expect(potion.displayName, 'Fertilitzant');
     });
   });
 
@@ -187,7 +240,8 @@ void main() {
         lastWateredAt: null,
         activeProducts: [
           ActivePotion(
-            name: 'Fertilitzant',
+            name: 'fertilizer',
+            displayName: 'Fertilitzant',
             appliedAt: DateTime.now().subtract(const Duration(hours: 1)),
             expiresAt: DateTime.now().add(const Duration(hours: 1)),
           ),
@@ -209,7 +263,8 @@ void main() {
         lastWateredAt: null,
         activeProducts: [
           ActivePotion(
-            name: 'Fertilitzant',
+            name: 'fertilizer',
+            displayName: 'Fertilitzant',
             appliedAt: DateTime.now().subtract(const Duration(hours: 3)),
             expiresAt: DateTime.now().subtract(const Duration(hours: 1)),
           ),
@@ -238,7 +293,8 @@ void main() {
           'image_url': 'https://example.com/menta.png',
           'active_products': [
             {
-              'name': 'Poció activa',
+              'name': 'active_potion',
+              'displayName': 'Poció activa',
               'applied_at': DateTime.now()
                   .subtract(const Duration(hours: 1))
                   .toIso8601String(),
@@ -268,7 +324,8 @@ void main() {
       expect(pot.plant!.imageUrl, 'https://example.com/menta.png');
 
       expect(pot.activeProducts.length, 1);
-      expect(pot.activeProducts.first.name, 'Poció activa');
+      expect(pot.activeProducts.first.name, 'active_potion');
+      expect(pot.activeProducts.first.displayName, 'Poció activa');
       expect(pot.hasBuff, isTrue);
     });
 
@@ -315,7 +372,8 @@ void main() {
           'image_url': null,
           'active_products': [
             {
-              'name': 'Poció activa',
+              'name': 'active_potion',
+              'displayName': 'Poció activa',
               'applied_at': DateTime.now()
                   .subtract(const Duration(hours: 1))
                   .toIso8601String(),
@@ -324,7 +382,8 @@ void main() {
                   .toIso8601String(),
             },
             {
-              'name': 'Poció expirada',
+              'name': 'expired_potion',
+              'displayName': 'Poció expirada',
               'applied_at': DateTime.now()
                   .subtract(const Duration(hours: 3))
                   .toIso8601String(),
@@ -337,7 +396,8 @@ void main() {
       });
 
       expect(pot.activeProducts.length, 1);
-      expect(pot.activeProducts.first.name, 'Poció activa');
+      expect(pot.activeProducts.first.name, 'active_potion');
+      expect(pot.activeProducts.first.displayName, 'Poció activa');
       expect(pot.hasBuff, isTrue);
     });
 

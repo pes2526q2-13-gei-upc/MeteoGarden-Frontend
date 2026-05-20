@@ -5,6 +5,7 @@ import 'package:meteo_garden/models/weather_provider.dart';
 void main() {
   group('WeatherProvider', () {
     late WeatherInfo fakeWeather;
+    const fakeToken = 'test-token';
 
     setUp(() {
       fakeWeather = WeatherInfo(
@@ -27,13 +28,17 @@ void main() {
 
     test('fetchWeather carrega el temps correctament', () async {
       final provider = WeatherProvider(
-        fetchWeatherFunction: ({required String city}) async {
+        fetchWeatherFunction: ({
+          required String city,
+          required String token,
+        }) async {
           expect(city, 'Barcelona');
+          expect(token, fakeToken);
           return fakeWeather;
         },
       );
 
-      await provider.fetchWeather('Barcelona');
+      await provider.fetchWeather('Barcelona', token: fakeToken);
 
       expect(provider.currentWeather, fakeWeather);
       expect(provider.currentWeather?.stationName, 'Barcelona');
@@ -48,7 +53,10 @@ void main() {
 
     test('fetchWeather activa isLoading mentre carrega', () async {
       final provider = WeatherProvider(
-        fetchWeatherFunction: ({required String city}) async {
+        fetchWeatherFunction: ({
+          required String city,
+          required String token,
+        }) async {
           await Future<void>.delayed(const Duration(milliseconds: 10));
           return fakeWeather;
         },
@@ -60,7 +68,7 @@ void main() {
         loadingStates.add(provider.isLoading);
       });
 
-      await provider.fetchWeather('Barcelona');
+      await provider.fetchWeather('Barcelona', token: fakeToken);
 
       expect(loadingStates, contains(true));
       expect(loadingStates.last, isFalse);
@@ -69,12 +77,15 @@ void main() {
 
     test('fetchWeather guarda error si el servei falla', () async {
       final provider = WeatherProvider(
-        fetchWeatherFunction: ({required String city}) async {
+        fetchWeatherFunction: ({
+          required String city,
+          required String token,
+        }) async {
           throw Exception('Error API');
         },
       );
 
-      await provider.fetchWeather('Barcelona');
+      await provider.fetchWeather('Barcelona', token: fakeToken);
 
       expect(provider.currentWeather, isNull);
       expect(provider.isLoading, isFalse);
@@ -87,7 +98,10 @@ void main() {
         var shouldFail = true;
 
         final provider = WeatherProvider(
-          fetchWeatherFunction: ({required String city}) async {
+          fetchWeatherFunction: ({
+            required String city,
+            required String token,
+          }) async {
             if (shouldFail) {
               throw Exception('Error inicial');
             }
@@ -96,14 +110,18 @@ void main() {
           },
         );
 
-        await provider.fetchWeather('Barcelona');
+        await provider.fetchWeather('Barcelona', token: fakeToken);
 
         expect(provider.error, contains('Error inicial'));
         expect(provider.currentWeather, isNull);
 
         shouldFail = false;
 
-        await provider.fetchWeather('Barcelona', forceRefresh: true);
+        await provider.fetchWeather(
+          'Barcelona',
+          token: fakeToken,
+          forceRefresh: true,
+        );
 
         expect(provider.error, isNull);
         expect(provider.currentWeather, fakeWeather);
@@ -117,14 +135,17 @@ void main() {
         var callCount = 0;
 
         final provider = WeatherProvider(
-          fetchWeatherFunction: ({required String city}) async {
+          fetchWeatherFunction: ({
+            required String city,
+            required String token,
+          }) async {
             callCount++;
             return fakeWeather;
           },
         );
 
-        await provider.fetchWeather('Barcelona');
-        await provider.fetchWeather('Barcelona');
+        await provider.fetchWeather('Barcelona', token: fakeToken);
+        await provider.fetchWeather('Barcelona', token: fakeToken);
 
         expect(callCount, 1);
         expect(provider.currentWeather, fakeWeather);
@@ -137,14 +158,22 @@ void main() {
         var callCount = 0;
 
         final provider = WeatherProvider(
-          fetchWeatherFunction: ({required String city}) async {
+          fetchWeatherFunction: ({
+            required String city,
+            required String token,
+          }) async {
             callCount++;
             return fakeWeather;
           },
         );
 
-        await provider.fetchWeather('Barcelona');
-        await provider.fetchWeather('Barcelona', forceRefresh: true);
+        await provider.fetchWeather('Barcelona', token: fakeToken);
+
+        await provider.fetchWeather(
+          'Barcelona',
+          token: fakeToken,
+          forceRefresh: true,
+        );
 
         expect(callCount, 2);
         expect(provider.currentWeather, fakeWeather);
@@ -153,7 +182,10 @@ void main() {
 
     test('notifica els listeners quan comença i acaba la càrrega', () async {
       final provider = WeatherProvider(
-        fetchWeatherFunction: ({required String city}) async {
+        fetchWeatherFunction: ({
+          required String city,
+          required String token,
+        }) async {
           return fakeWeather;
         },
       );
@@ -164,19 +196,22 @@ void main() {
         notifyCount++;
       });
 
-      await provider.fetchWeather('Barcelona');
+      await provider.fetchWeather('Barcelona', token: fakeToken);
 
       expect(notifyCount, 2);
     });
 
     test('no notifica listeners si ja té dades i no força refresh', () async {
       final provider = WeatherProvider(
-        fetchWeatherFunction: ({required String city}) async {
+        fetchWeatherFunction: ({
+          required String city,
+          required String token,
+        }) async {
           return fakeWeather;
         },
       );
 
-      await provider.fetchWeather('Barcelona');
+      await provider.fetchWeather('Barcelona', token: fakeToken);
 
       var notifyCount = 0;
 
@@ -184,7 +219,7 @@ void main() {
         notifyCount++;
       });
 
-      await provider.fetchWeather('Barcelona');
+      await provider.fetchWeather('Barcelona', token: fakeToken);
 
       expect(notifyCount, 0);
     });

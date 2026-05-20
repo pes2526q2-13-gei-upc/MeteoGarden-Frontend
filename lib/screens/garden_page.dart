@@ -59,7 +59,7 @@ class _GardenPageState extends State<GardenPage> {
       Provider.of<WeatherProvider>(
         context,
         listen: false,
-      ).fetchWeather(user.city);
+      ).fetchWeather(user.city, forceRefresh: true, token: user.token);
     });
   }
 
@@ -69,7 +69,7 @@ class _GardenPageState extends State<GardenPage> {
     Provider.of<WeatherProvider>(
       context,
       listen: false,
-    ).fetchWeather(user.city, forceRefresh: true);
+    ).fetchWeather(user.city, forceRefresh: true, token: user.token);
   }
 
   Future<void> _refreshSinglePot(int potNumber) async {
