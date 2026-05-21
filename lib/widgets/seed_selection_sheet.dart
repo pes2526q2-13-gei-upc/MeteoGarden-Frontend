@@ -9,6 +9,7 @@ class SeedSelectionSheet extends StatefulWidget {
   final List<SeedOption> seeds;
   final String username;
   final String gardenName;
+  final String token;
   final GardenService gardenService;
   final Future<void> Function(int potNumber) onPlantingSuccess;
 
@@ -18,6 +19,7 @@ class SeedSelectionSheet extends StatefulWidget {
     required this.seeds,
     required this.username,
     required this.gardenName,
+    required this.token,
     required this.gardenService,
     required this.onPlantingSuccess,
   });
@@ -46,6 +48,7 @@ class _SeedSelectionSheetState extends State<SeedSelectionSheet> {
         gardenName: widget.gardenName,
         potNumber: widget.pot.potNumber,
         scientificName: _selectedSeed!.scientificName,
+        token: widget.token,
       );
 
       setState(() {

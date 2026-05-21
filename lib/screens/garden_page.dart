@@ -46,10 +46,7 @@ class _GardenPageState extends State<GardenPage> {
 
     _gardenService = widget.gardenService ?? GardenService();
 
-    _potsFuture = _gardenService.fetchGardenPlants(
-      username: widget.username,
-      gardenName: widget.gardenName,
-    );
+    _potsFuture = _loadPots();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -61,6 +58,20 @@ class _GardenPageState extends State<GardenPage> {
         listen: false,
       ).fetchWeather(user.city);
     });
+  }
+
+  Future<List<GardenPot>> _loadPots() async {
+    final user = Provider.of<UserModel>(context, listen: false);
+    final token = user.token;
+
+    if (token.isEmpty) {
+      throw Exception('No hi ha token guardat');
+    }
+
+    return _gardenService.fetchGardenPlants(
+      username: widget.username,
+      gardenName: widget.gardenName,
+    );
   }
 
   void _refreshWeather() {
@@ -118,10 +129,17 @@ class _GardenPageState extends State<GardenPage> {
         pot: pot,
         onWater: () async {
           try {
+            final user = Provider.of<UserModel>(context, listen: false);
+            final token = user.token;
+
+            if (token.isEmpty) {
+              throw Exception('No hi ha token guardat');
+            }
             await _gardenService.waterPlant(
               username: widget.username,
               gardenName: widget.gardenName,
               potNumber: pot.potNumber,
+              token: token,
             );
 
             if (!mounted) return;
@@ -321,17 +339,26 @@ class _GardenPageState extends State<GardenPage> {
           );
 
           if (confirm != true) return;
+          if (!mounted) return;
 
           try {
+            final user = Provider.of<UserModel>(context, listen: false);
+            final token = user.token;
+            final navigator = Navigator.of(context);
+
+            if (token.isEmpty) {
+              throw Exception('No hi ha token guardat');
+            }
             await _gardenService.deletePlant(
               username: widget.username,
               gardenName: widget.gardenName,
               potNumber: pot.potNumber,
+              token: token,
             );
 
             if (!mounted) return;
 
-            Navigator.of(context).pop();
+            navigator.pop();
 
             CenteredMessage.show(
               context,
@@ -355,6 +382,12 @@ class _GardenPageState extends State<GardenPage> {
 
   Future<void> _showSeedSelection(GardenPot pot) async {
     try {
+      final user = Provider.of<UserModel>(context, listen: false);
+      final token = user.token;
+
+      if (token.isEmpty) {
+        throw Exception('No hi ha token guardat');
+      }
       final seeds = await _gardenService.fetchSeeds(widget.username);
 
       if (!mounted) return;
@@ -368,6 +401,7 @@ class _GardenPageState extends State<GardenPage> {
           seeds: seeds,
           username: widget.username,
           gardenName: widget.gardenName,
+          token: token,
           gardenService: _gardenService,
           onPlantingSuccess: _refreshSinglePot,
         ),
