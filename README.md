@@ -7,9 +7,8 @@ El frontend permet als usuaris interactuar amb l’aplicació des d’una interf
 Aquest frontend forma part del projecte MeteoGarden i ha estat desenvolupat amb Flutter i Dart amb l’objectiu d’oferir una aplicació mòbil multiplataforma, intuïtiva i accessible per gestionar jardins virtuals relacionats amb dades meteorològiques reals.
 
 
-============================================================
-TECNOLOGIES UTILITZADES
-============================================================
+
+### TECNOLOGIES UTILITZADES
 
 - Dart: llenguatge de programació utilitzat per desenvolupar l’aplicació.
 - Flutter: framework per crear aplicacions multiplataforma.
@@ -17,9 +16,7 @@ TECNOLOGIES UTILITZADES
 - Android Emulator o dispositiu Android físic: necessari per provar l’aplicació en entorn mòbil.
 
 
-============================================================
-INSTAL·LACIÓ DE DART I FLUTTER
-============================================================
+### INSTAL·LACIÓ DE DART I FLUTTER
 
 Per executar el projecte és necessari tenir instal·lat Flutter SDK.
 
@@ -49,9 +46,7 @@ També es pot comprovar si Flutter està ben instal·lat executant:
 Aquest comandament mostra l’estat de la instal·lació i indica si falta configurar algun component, com Android Studio, l’emulador o les eines d’Android.
 
 
-============================================================
-ÚS DE VISUAL STUDIO CODE
-============================================================
+### ÚS DE VISUAL STUDIO CODE
 
 Per treballar amb el projecte es recomana obrir la carpeta arrel del frontend amb Visual Studio Code.
 
@@ -72,9 +67,7 @@ Passos:
 Les extensions de Flutter i Dart permeten executar, depurar i gestionar l’aplicació directament des de Visual Studio Code.
 
 
-============================================================
-REQUISITS PREVIS
-============================================================
+### REQUISITS PREVIS
 
 Abans d’executar el projecte cal tenir instal·lat:
 
@@ -87,9 +80,7 @@ Abans d’executar el projecte cal tenir instal·lat:
 - Un emulador Android o un dispositiu físic connectat
 
 
-============================================================
-ARQUITECTURA DEL PROJECTE
-============================================================
+### ARQUITECTURA DEL PROJECTE
 
 El projecte està organitzat en diferents carpetes dins del directori lib/.
 
@@ -128,9 +119,7 @@ Descripció de les carpetes principals:
   Conté els fitxers de traducció i internacionalització.
 
 
-============================================================
-INTERNACIONALITZACIÓ
-============================================================
+### INTERNACIONALITZACIÓ
 
 L’aplicació utilitza fitxers de traducció per permetre la internacionalització de la interfície.
 
@@ -145,9 +134,7 @@ Per generar les traduccions cal executar:
 Aquest comandament genera els fitxers necessaris perquè l’aplicació pugui utilitzar els textos traduïts en els diferents idiomes configurats.
 
 
-============================================================
-INSTAL·LACIÓ DE DEPENDÈNCIES
-============================================================
+### INSTAL·LACIÓ DE DEPENDÈNCIES
 
 Abans d’executar el projecte, cal instal·lar les dependències definides al fitxer pubspec.yaml.
 
@@ -158,9 +145,7 @@ Des de l’arrel del projecte, executar:
 Aquest comandament descarrega totes les llibreries necessàries perquè el projecte pugui compilar i executar-se correctament.
 
 
-============================================================
-EXECUCIÓ DE L’APLICACIÓ
-============================================================
+### EXECUCIÓ DE L’APLICACIÓ
 
 Per executar l’aplicació en un emulador o dispositiu connectat:
 
@@ -186,9 +171,7 @@ Si apareixen errors després d’actualitzar dependències o canviar de branca, 
    flutter run
 
 
-============================================================
-FORMAT I ANÀLISI DE CODI
-============================================================
+### FORMAT I ANÀLISI DE CODI
 
 Per mantenir la consistència del codi, es recomana formatar i analitzar el projecte abans de fer commits.
 
@@ -206,9 +189,7 @@ També es poden executar les dues comandes seguides:
    dart analyze
 
 
-============================================================
-GIT WORKFLOW
-============================================================
+### GIT WORKFLOW
 
 El projecte segueix una organització basada en branques.
 
@@ -264,18 +245,14 @@ Per documentació es pot utilitzar:
    git checkout -b docs/nom-documentacio
 
 
-============================================================
-EXECUCIÓ DE TESTS
-============================================================
+### EXECUCIÓ DE TESTS
 
 Abans d’executar qualsevol test, cal instal·lar les dependències del projecte:
 
    flutter pub get
 
 
-------------------------------------------------------------
-TESTS UNITARIS
-------------------------------------------------------------
+### TESTS UNITARIS
 
 Els tests unitaris serveixen per comprovar components, funcions o parts concretes del codi de manera aïllada.
 
@@ -292,9 +269,7 @@ Exemple:
    flutter test test/garden_page_test.dart
 
 
-------------------------------------------------------------
-TESTS D’INTEGRACIÓ
-------------------------------------------------------------
+### TESTS D’INTEGRACIÓ
 
 Els tests d’integració serveixen per comprovar el funcionament conjunt de diferents parts del sistema.
 
@@ -313,9 +288,7 @@ Exemple:
    flutter test integration_test/login_integration_test.dart
 
 
-============================================================
-COBERTURA DELS TESTS UNITARIS
-============================================================
+### COBERTURA DELS TESTS UNITARIS
 
 Per executar els tests i generar la cobertura:
 
@@ -328,9 +301,7 @@ Aquesta comanda executa tots els tests i genera el fitxer:
 Aquest fitxer conté la informació de cobertura del projecte, és a dir, quines parts del codi han estat executades pels tests.
 
 
-============================================================
-VISUALITZAR LA COBERTURA A VISUAL STUDIO CODE
-============================================================
+### VISUALITZAR LA COBERTURA A VISUAL STUDIO CODE
 
 Es pot instal·lar l’extensió Flutter Coverage a Visual Studio Code.
 
@@ -349,9 +320,7 @@ Passos:
 4. Visualitzar la cobertura generada sobre els fitxers del projecte.
 
 
-============================================================
-GENERAR UN INFORME HTML DE COBERTURA
-============================================================
+### GENERAR UN INFORME HTML DE COBERTURA
 
 Per obtenir un informe més complet i visual, es pot utilitzar lcov.
 
@@ -372,9 +341,7 @@ Finalment, obrir l’informe al navegador:
 L’informe HTML permet veure la cobertura global del projecte i consultar fitxer per fitxer quines línies estan cobertes pels tests.
 
 
-============================================================
-COMANDES ÚTILS
-============================================================
+### COMANDES ÚTILS
 
 Comprovar l’estat de Flutter:
 
