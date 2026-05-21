@@ -44,6 +44,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
   City? selectedCity;
   bool isLoading = true;
   String? language;
+  String? usernameError;
 
   @override
   void initState() {
@@ -85,6 +86,20 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
     }
   }
 
+  String _requiredFieldMessage() {
+    final languageCode = AppLocalizations.of(context)?.localeName ?? 'ca';
+
+    switch (languageCode) {
+      case 'es':
+        return 'Este campo es obligatorio.';
+      case 'en':
+        return 'This field is required.';
+      case 'ca':
+      default:
+        return 'Aquest camp és obligatori.';
+    }
+  }
+
   Future<void> fetchCities() async {
     try {
       final response = await http.get(
@@ -121,6 +136,19 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
   void _actualitzar() async {
     final l10n = AppLocalizations.of(context)!;
     final url = Uri.parse("${ApiConfig.baseUrl}/api/edit_profile/");
+    final username = usernameController.text.trim();
+
+    if (username.isEmpty) {
+      setState(() {
+        usernameError = _requiredFieldMessage();
+      });
+
+      return;
+    }
+
+    setState(() {
+      usernameError = null;
+    });
 
     final response = await http.post(
       url,
@@ -130,7 +158,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
             "Token ${Provider.of<UserModel>(context, listen: false).token}",
       },
       body: jsonEncode({
-        'username': usernameController.text,
+        'username': username,
         'city': selectedCity?.name,
         'language': language,
         'stationCode': selectedCity?.code,
@@ -141,7 +169,7 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
 
     if (response.statusCode == 200) {
       Provider.of<UserModel>(context, listen: false).updateProfile(
-        newUsername: usernameController.text,
+        newUsername: username,
         newCity: selectedCity?.name,
         newLanguage: language,
       );
@@ -268,11 +296,19 @@ class _PerfilEditPageState extends State<PerfilEditPage> {
                           TextField(
                             key: const Key('edit_profile_username_field'),
                             controller: usernameController,
+                            onChanged: (_) {
+                              if (usernameError != null) {
+                                setState(() {
+                                  usernameError = null;
+                                });
+                              }
+                            },
                             decoration: defaultDecoration.copyWith(
                               labelText: l10n.loginUsernameLabel,
                               prefixIcon: const Icon(
                                 Icons.person_outline_rounded,
                               ),
+                              errorText: usernameError,
                             ),
                           ),
                           const SizedBox(height: 20),
