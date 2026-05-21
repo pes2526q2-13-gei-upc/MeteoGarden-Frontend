@@ -46,6 +46,11 @@ class GardenService {
 
   final http.Client _client;
 
+  Map<String, String> _headers(String token) => {
+    'Authorization': 'Token $token',
+    'Content-Type': 'application/json',
+  };
+
   Future<List<GardenPot>> fetchGardenPlants({
     required String username,
     required String gardenName,
@@ -89,12 +94,14 @@ class GardenService {
     required String username,
     required String gardenName,
     required int potNumber,
+    required String token,
   }) async {
     final url = Uri.parse(
       '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/water/',
     );
 
-    final response = await _client.patch(url);
+    final response = await _client.patch(url, headers: _headers(token));
+
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
@@ -167,6 +174,7 @@ class GardenService {
     required String gardenName,
     required int potNumber,
     required String scientificName,
+    required String token,
   }) async {
     final url = Uri.parse(
       '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/planting/',
@@ -174,7 +182,7 @@ class GardenService {
 
     final response = await _client.post(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: _headers(token),
       body: jsonEncode({'scientificName': scientificName}),
     );
 
@@ -220,15 +228,13 @@ class GardenService {
     required String username,
     required String gardenName,
     required int potNumber,
+    required String token,
   }) async {
     final url = Uri.parse(
       '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/delete/',
     );
 
-    final response = await _client.delete(
-      url,
-      headers: {'Content-Type': 'application/json'},
-    );
+    final response = await _client.delete(url, headers: _headers(token));
 
     final data = jsonDecode(response.body);
 

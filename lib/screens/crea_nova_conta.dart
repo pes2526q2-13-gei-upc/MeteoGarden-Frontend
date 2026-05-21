@@ -123,36 +123,34 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   }
 
   bool _isValidEmail(String email) {
-    final emailRegex = RegExp(
-      r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
-    );
+    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
 
     return emailRegex.hasMatch(email.trim());
   }
 
   String _invalidEmailMessage() {
-  switch (_pageLocale.languageCode) {
-    case 'es':
-      return 'Introduce un correo electrónico válido.';
-    case 'en':
-      return 'Enter a valid email address.';
-    case 'ca':
-    default:
-      return 'Introdueix un correu electrònic vàlid.';
+    switch (_pageLocale.languageCode) {
+      case 'es':
+        return 'Introduce un correo electrónico válido.';
+      case 'en':
+        return 'Enter a valid email address.';
+      case 'ca':
+      default:
+        return 'Introdueix un correu electrònic vàlid.';
+    }
   }
-}
 
-String _requiredFieldMessage() {
-  switch (_pageLocale.languageCode) {
-    case 'es':
-      return 'Este campo es obligatorio.';
-    case 'en':
-      return 'This field is required.';
-    case 'ca':
-    default:
-      return 'Aquest camp és obligatori.';
+  String _requiredFieldMessage() {
+    switch (_pageLocale.languageCode) {
+      case 'es':
+        return 'Este campo es obligatorio.';
+      case 'en':
+        return 'This field is required.';
+      case 'ca':
+      default:
+        return 'Aquest camp és obligatori.';
+    }
   }
-}
 
   Future<void> fetchCities() async {
     try {
@@ -194,8 +192,8 @@ String _requiredFieldMessage() {
       emailError = email.isEmpty
           ? requiredMessage
           : !_isValidEmail(email)
-              ? _invalidEmailMessage()
-              : null;
+          ? _invalidEmailMessage()
+          : null;
       cityError = selectedCity == null ? requiredMessage : null;
       passwordError = password.isEmpty ? requiredMessage : null;
       languageError = language == null ? requiredMessage : null;
@@ -422,23 +420,23 @@ String _requiredFieldMessage() {
                             const SizedBox(height: 16),
 
                             TextField(
-                            controller: emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            autocorrect: false,
-                            enableSuggestions: false,
-                            onChanged: (_) {
-                              if (emailError != null) {
-                                setState(() {
-                                  emailError = null;
-                                });
-                              }
-                            },
-                            decoration: defaultDecoration.copyWith(
-                              labelText: l10n.createAccountEmailLabel,
-                              prefixIcon: const Icon(Icons.email_outlined),
-                              errorText: emailError,
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              autocorrect: false,
+                              enableSuggestions: false,
+                              onChanged: (_) {
+                                if (emailError != null) {
+                                  setState(() {
+                                    emailError = null;
+                                  });
+                                }
+                              },
+                              decoration: defaultDecoration.copyWith(
+                                labelText: l10n.createAccountEmailLabel,
+                                prefixIcon: const Icon(Icons.email_outlined),
+                                errorText: emailError,
+                              ),
                             ),
-                          ),
                             const SizedBox(height: 16),
 
                             isLoadingCities
@@ -502,7 +500,7 @@ String _requiredFieldMessage() {
                                   ),
                                 ),
                               ),
-                            ],    
+                            ],
                             const SizedBox(height: 16),
 
                             TextField(
