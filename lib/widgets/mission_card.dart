@@ -79,7 +79,7 @@ class MissionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      mission.name,
+                      mission.displayName,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w900,
