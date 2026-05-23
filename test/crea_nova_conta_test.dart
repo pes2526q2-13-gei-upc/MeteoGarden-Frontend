@@ -148,8 +148,7 @@ class FakeHttpRequestData {
 }
 
 class FakeHttpClientRequest implements HttpClientRequest {
-  FakeHttpClientRequest(this.client, String method, this.url)
-      : _method = method;
+  FakeHttpClientRequest(this.client, String method, this.url) : _method = method;
 
   final FakeHttpClient client;
   final String _method;
@@ -420,6 +419,12 @@ Future<void> fillRequiredFields(WidgetTester tester) async {
   await tester.enterText(textFields.at(4), 'JardiJana');
 
   await tester.pump();
+
+  await tester.tap(find.byType(DropdownMenu<City>));
+  await tester.pumpAndSettle();
+
+  await tester.tap(find.text('Barcelona').last);
+  await tester.pumpAndSettle();
 }
 
 void main() {
@@ -438,7 +443,10 @@ void main() {
       expect(find.byType(CreaNovaConta), findsOneWidget);
       expect(find.text(l10n.createAccountWelcome), findsOneWidget);
       expect(find.text(l10n.createAccountSubtitle), findsOneWidget);
-      expect(client.requests.where((r) => r.url.path.endsWith('/api/stations/')), isNotEmpty);
+      expect(
+        client.requests.where((r) => r.url.path.endsWith('/api/stations/')),
+        isNotEmpty,
+      );
     });
   });
 
@@ -534,6 +542,7 @@ void main() {
       expect(find.text('jana@test.com'), findsOneWidget);
       expect(find.text('123456'), findsOneWidget);
       expect(find.text('JardiJana'), findsOneWidget);
+      expect(find.text('Barcelona'), findsWidgets);
     });
   });
 
@@ -719,7 +728,7 @@ void main() {
       await tester.pump();
 
       await tester.tap(createAccountButton(l10n));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       final registerRequests = client.requests.where(
         (request) => request.url.path.endsWith('/api/register/'),
@@ -730,7 +739,8 @@ void main() {
       expect(registerRequests.first.body, contains('"username":"jana"'));
       expect(registerRequests.first.body, contains('"email":"jana@test.com"'));
       expect(registerRequests.first.body, contains('"gardenName":"JardiJana"'));
-
+      expect(registerRequests.first.body, contains('"city":"Barcelona"'));
+      expect(registerRequests.first.body, contains('"stationCode":"08019"'));
       await finishCenteredMessageTimer(tester);
     });
   });
@@ -752,7 +762,7 @@ void main() {
       await tester.pump();
 
       await tester.tap(createAccountButton(l10n));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       final registerRequests = client.requests.where(
         (request) => request.url.path.endsWith('/api/register/'),
@@ -771,7 +781,6 @@ void main() {
       expect(userModel.city, 'Barcelona');
       expect(userModel.monedes, 30);
       expect(userModel.gardens, contains('JardiJana'));
-
       await finishCenteredMessageTimer(tester);
     });
   });
@@ -796,7 +805,7 @@ void main() {
       await tester.pump();
 
       await tester.tap(createAccountButton(l10n));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       final registerRequests = client.requests.where(
         (request) => request.url.path.endsWith('/api/register/'),
@@ -809,7 +818,6 @@ void main() {
       expect(registerRequests.length, 1);
       expect(profileRequests.length, 1);
       expect(userModel.token, 'fake-token');
-
       await finishCenteredMessageTimer(tester);
     });
   });

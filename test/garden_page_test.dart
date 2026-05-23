@@ -86,6 +86,7 @@ class FakeGardenService extends GardenService {
     required String username,
     required String gardenName,
     required int potNumber,
+    required String token,
   }) async {
     waterPlantCalls++;
 
@@ -117,6 +118,7 @@ class FakeGardenService extends GardenService {
     required String username,
     required String gardenName,
     required int potNumber,
+    required String token,
   }) async {
     deletePlantCalls++;
 
