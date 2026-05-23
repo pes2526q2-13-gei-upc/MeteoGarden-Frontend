@@ -252,38 +252,29 @@ class _AlbumPageState extends State<AlbumPage> {
             }
 
             if (plantProvider.plants.isEmpty) {
-              return RefreshIndicator(
-                onRefresh: _reloadPlants,
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  children: [
-                    AppHeader(
-                      title: t.albumTitle,
-                      extraInfo: '$totalPlantes ${t.albumNumber}',
-                    ),
-                    const SizedBox(height: 120),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const SizedBox(height: 24),
-                            Text(
-                              t.albumEmptyState,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF2E5E3E),
-                              ),
+              return Column(
+                children: [
+                  AppHeader(
+                    title: t.albumTitle,
+                    extraInfo: '$totalPlantes ${t.albumNumber}',
+                  ),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: _reloadPlants,
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.55,
+                            child: _AlbumEmptyState(
+                              message: t.albumEmptyState,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
             }
 
@@ -380,6 +371,45 @@ class _AlbumPageState extends State<AlbumPage> {
               ],
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _AlbumEmptyState extends StatelessWidget {
+  final String message;
+
+  const _AlbumEmptyState({
+    required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 28),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.92),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.grey.shade600,
+            fontSize: 15,
+            height: 1.35,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

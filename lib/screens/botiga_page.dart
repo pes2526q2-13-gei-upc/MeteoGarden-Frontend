@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
+import '../widgets/centered_message.dart';
 
 const Color _pageBackground = Color(0xFFF5F9F0);
 const Color _primaryGreen = Color(0xFF4CAF50);
@@ -123,11 +124,10 @@ class _ShopPageState extends State<ShopPage>
           listen: false,
         ).setCoins(jsonDecode(response.body)['coins_remaining']);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.shopPurchaseSuccess),
-            backgroundColor: _darkGreen,
-          ),
+        CenteredMessage.show(
+          context,
+          l10n.shopPurchaseSuccess,
+          type: CenteredMessageType.success,
         );
       } else {
         _showError(
@@ -143,9 +143,13 @@ class _ShopPageState extends State<ShopPage>
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(
+    if (!mounted) return;
+
+    CenteredMessage.show(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+      message,
+      type: CenteredMessageType.error,
+    );
   }
 
   void _showItemDetails(
