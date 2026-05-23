@@ -8,6 +8,8 @@ import 'package:meteo_garden/widgets/seed_selection_sheet.dart';
 
 void main() {
   group('SeedSelectionSheet', () {
+    const testToken = 'abc123';
+
     testWidgets('mostra estat buit si no hi ha llavors', (
       WidgetTester tester,
     ) async {
@@ -21,6 +23,7 @@ void main() {
             seeds: const [],
             username: 'jana',
             gardenName: 'Garden 1',
+            token: testToken,
             gardenService: gardenService,
             onPlantingSuccess: (potNumber) async {},
           ),
@@ -41,16 +44,8 @@ void main() {
       final gardenService = TestGardenService();
 
       final seeds = [
-        _buildSeed(
-          scientificName: 'Rosa canina',
-          amount: 3,
-          imageUrl: 'https://example.com/rosa.png',
-        ),
-        _buildSeed(
-          scientificName: 'Mentha spicata',
-          amount: 2,
-          imageUrl: 'https://example.com/menta.png',
-        ),
+        _buildSeed(scientificName: 'Rosa canina', amount: 3, imageUrl: null),
+        _buildSeed(scientificName: 'Mentha spicata', amount: 2, imageUrl: null),
       ];
 
       await tester.pumpWidget(
@@ -60,6 +55,7 @@ void main() {
             seeds: seeds,
             username: 'jana',
             gardenName: 'Garden 1',
+            token: testToken,
             gardenService: gardenService,
             onPlantingSuccess: (potNumber) async {},
           ),
@@ -85,11 +81,7 @@ void main() {
       final gardenService = TestGardenService();
 
       final seeds = [
-        _buildSeed(
-          scientificName: 'Rosa canina',
-          amount: 3,
-          imageUrl: 'https://example.com/rosa.png',
-        ),
+        _buildSeed(scientificName: 'Rosa canina', amount: 3, imageUrl: null),
       ];
 
       await tester.pumpWidget(
@@ -99,6 +91,7 @@ void main() {
             seeds: seeds,
             username: 'jana',
             gardenName: 'Garden 1',
+            token: testToken,
             gardenService: gardenService,
             onPlantingSuccess: (potNumber) async {},
           ),
@@ -115,7 +108,7 @@ void main() {
       expect(button.onPressed, isNotNull);
     });
 
-    testWidgets('crida plantSeed i mostra vista d èxit', (
+    testWidgets('crida plantSeed amb token i mostra vista d èxit', (
       WidgetTester tester,
     ) async {
       final pot = _buildEmptyPot();
@@ -134,11 +127,7 @@ void main() {
         );
 
       final seeds = [
-        _buildSeed(
-          scientificName: 'Rosa canina',
-          amount: 3,
-          imageUrl: 'https://example.com/rosa.png',
-        ),
+        _buildSeed(scientificName: 'Rosa canina', amount: 3, imageUrl: null),
       ];
 
       bool plantingSuccessCalled = false;
@@ -151,6 +140,7 @@ void main() {
             seeds: seeds,
             username: 'jana',
             gardenName: 'Garden 1',
+            token: testToken,
             gardenService: gardenService,
             onPlantingSuccess: (potNumber) async {
               plantingSuccessCalled = true;
@@ -170,6 +160,7 @@ void main() {
       expect(gardenService.lastPlantSeedGardenName, 'Garden 1');
       expect(gardenService.lastPlantSeedPotNumber, 1);
       expect(gardenService.lastPlantSeedScientificName, 'Rosa canina');
+      expect(gardenService.lastPlantSeedToken, testToken);
 
       expect(find.text('Plantada correctament'), findsOneWidget);
       expect(find.text('Tancar'), findsOneWidget);
@@ -188,11 +179,7 @@ void main() {
         ..plantSeedException = Exception('No queden llavors');
 
       final seeds = [
-        _buildSeed(
-          scientificName: 'Rosa canina',
-          amount: 3,
-          imageUrl: 'https://example.com/rosa.png',
-        ),
+        _buildSeed(scientificName: 'Rosa canina', amount: 3, imageUrl: null),
       ];
 
       await tester.pumpWidget(
@@ -202,6 +189,7 @@ void main() {
             seeds: seeds,
             username: 'jana',
             gardenName: 'Garden 1',
+            token: testToken,
             gardenService: gardenService,
             onPlantingSuccess: (potNumber) async {},
           ),
@@ -215,6 +203,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('No queden llavors'), findsOneWidget);
+      expect(gardenService.lastPlantSeedToken, testToken);
     });
   });
 }
@@ -244,7 +233,7 @@ GardenPot _buildEmptyPot() {
 SeedOption _buildSeed({
   required String scientificName,
   required int amount,
-  required String imageUrl,
+  String? imageUrl,
 }) {
   return SeedOption(
     scientificName: scientificName,
@@ -253,7 +242,7 @@ SeedOption _buildSeed({
   );
 }
 
-class TestGardenService implements GardenService {
+class TestGardenService extends GardenService {
   PlantingResult? plantSeedResult;
   Exception? plantSeedException;
 
@@ -261,6 +250,7 @@ class TestGardenService implements GardenService {
   String? lastPlantSeedGardenName;
   int? lastPlantSeedPotNumber;
   String? lastPlantSeedScientificName;
+  String? lastPlantSeedToken;
 
   String? lastFetchPotStatusUsername;
   String? lastFetchPotStatusGardenName;
@@ -272,11 +262,13 @@ class TestGardenService implements GardenService {
     required String gardenName,
     required int potNumber,
     required String scientificName,
+    required String token,
   }) async {
     lastPlantSeedUsername = username;
     lastPlantSeedGardenName = gardenName;
     lastPlantSeedPotNumber = potNumber;
     lastPlantSeedScientificName = scientificName;
+    lastPlantSeedToken = token;
 
     if (plantSeedException != null) {
       throw plantSeedException!;
@@ -315,6 +307,7 @@ class TestGardenService implements GardenService {
     required String username,
     required String gardenName,
     required int potNumber,
+    required String token,
   }) async {
     throw UnimplementedError();
   }
@@ -355,6 +348,7 @@ Future<String> applyPotion({
     required String username,
     required String gardenName,
     required int potNumber,
+    required String token,
   }) async {
     throw UnimplementedError();
   }

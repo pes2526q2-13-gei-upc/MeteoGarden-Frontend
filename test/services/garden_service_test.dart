@@ -34,7 +34,21 @@ void main() {
   group('GardenService', () {
     const username = 'jana';
     const gardenName = 'Jardi principal';
-    const token = 'fake-token';
+    const token = 'abc123';
+
+    void expectAuthHeader(http.BaseRequest request) {
+      final authHeader =
+          request.headers['Authorization'] ?? request.headers['authorization'];
+
+      expect(authHeader, 'Token $token');
+    }
+
+    void expectJsonContentType(http.BaseRequest request) {
+      final contentType =
+          request.headers['Content-Type'] ?? request.headers['content-type'];
+
+      expect(contentType, contains('application/json'));
+    }
 
     Map<String, dynamic> potJson({
       int potNumber = 1,
@@ -174,6 +188,8 @@ void main() {
             request.url.path,
             contains('/api/users/jana/gardens/Jardi%20principal/pots/1/water/'),
           );
+          expectAuthHeader(request);
+          expectJsonContentType(request);
 
           return http.Response(jsonEncode({'message': 'Planta regada'}), 200);
         }),
@@ -183,23 +199,31 @@ void main() {
         username: username,
         gardenName: gardenName,
         potNumber: 1,
+        token: token,
       );
 
       expect(message, 'Planta regada');
     });
 
-    test('waterPlant retorna missatge per defecte si no hi ha message', () async {
-      final service = GardenService(
-        client: MockClient((request) async {
-          return http.Response(jsonEncode({}), 200);
-        }),
-      );
+    test(
+      'waterPlant retorna missatge per defecte si no hi ha message',
+      () async {
+        final service = GardenService(
+          client: MockClient((request) async {
+            expect(request.method, 'PATCH');
+            expectAuthHeader(request);
+            expectJsonContentType(request);
 
-      final message = await service.waterPlant(
-        username: username,
-        gardenName: gardenName,
-        potNumber: 1,
-      );
+            return http.Response(jsonEncode({}), 200);
+          }),
+        );
+
+        final message = await service.waterPlant(
+          username: username,
+          gardenName: gardenName,
+          potNumber: 1,
+          token: token,
+        );
 
       expect(message, 'Plant watered successfully.');
     });
@@ -207,6 +231,10 @@ void main() {
     test('waterPlant llença error si statusCode no és 200', () async {
       final service = GardenService(
         client: MockClient((request) async {
+          expect(request.method, 'PATCH');
+          expectAuthHeader(request);
+          expectJsonContentType(request);
+
           return http.Response(jsonEncode({'error': 'No es pot regar'}), 400);
         }),
       );
@@ -216,6 +244,7 @@ void main() {
           username: username,
           gardenName: gardenName,
           potNumber: 1,
+          token: token,
         ),
         throwsA(
           predicate(
@@ -574,6 +603,8 @@ void main() {
               '/api/users/jana/gardens/Jardi%20principal/pots/1/planting/',
             ),
           );
+          expectAuthHeader(request);
+          expectJsonContentType(request);
 
           final body = jsonDecode(request.body) as Map<String, dynamic>;
           expect(body['scientificName'], 'Mentha spicata');
@@ -602,6 +633,7 @@ void main() {
         gardenName: gardenName,
         potNumber: 1,
         scientificName: 'Mentha spicata',
+        token: token,
       );
 
       expect(result.message, 'Plantada');
@@ -617,6 +649,10 @@ void main() {
     test('plantSeed retorna PlantingResult amb statusCode 201', () async {
       final service = GardenService(
         client: MockClient((request) async {
+          expect(request.method, 'POST');
+          expectAuthHeader(request);
+          expectJsonContentType(request);
+
           return http.Response(
             jsonEncode({
               'message': 'Plantada creada',
@@ -641,6 +677,7 @@ void main() {
         gardenName: gardenName,
         potNumber: 2,
         scientificName: 'Rosa rubiginosa',
+        token: token,
       );
 
       expect(result.potNumber, 2);
@@ -651,6 +688,10 @@ void main() {
     test('plantSeed llença error si statusCode no és 200 ni 201', () async {
       final service = GardenService(
         client: MockClient((request) async {
+          expect(request.method, 'POST');
+          expectAuthHeader(request);
+          expectJsonContentType(request);
+
           return http.Response(jsonEncode({'message': 'No tens llavors'}), 400);
         }),
       );
@@ -661,6 +702,7 @@ void main() {
           gardenName: gardenName,
           potNumber: 1,
           scientificName: 'Mentha spicata',
+          token: token,
         ),
         throwsA(
           predicate(
@@ -680,6 +722,11 @@ void main() {
               '/api/users/jana/gardens/Jardi%20principal/pots/1/collect/',
             ),
           );
+
+          final contentType =
+              request.headers['Content-Type'] ??
+              request.headers['content-type'];
+          expect(contentType, contains('application/json'));
 
           final body = jsonDecode(request.body) as Map<String, dynamic>;
           expect(body['plant'], 'Mentha spicata');
@@ -754,6 +801,8 @@ void main() {
               '/api/users/jana/gardens/Jardi%20principal/pots/1/delete/',
             ),
           );
+          expectAuthHeader(request);
+          expectJsonContentType(request);
 
           return http.Response(
             jsonEncode({'message': 'Planta eliminada'}),
@@ -766,23 +815,31 @@ void main() {
         username: username,
         gardenName: gardenName,
         potNumber: 1,
+        token: token,
       );
 
       expect(message, 'Planta eliminada');
     });
 
-    test('deletePlant retorna missatge per defecte si no hi ha message', () async {
-      final service = GardenService(
-        client: MockClient((request) async {
-          return http.Response(jsonEncode({}), 200);
-        }),
-      );
+    test(
+      'deletePlant retorna missatge per defecte si no hi ha message',
+      () async {
+        final service = GardenService(
+          client: MockClient((request) async {
+            expect(request.method, 'DELETE');
+            expectAuthHeader(request);
+            expectJsonContentType(request);
 
-      final message = await service.deletePlant(
-        username: username,
-        gardenName: gardenName,
-        potNumber: 1,
-      );
+            return http.Response(jsonEncode({}), 200);
+          }),
+        );
+
+        final message = await service.deletePlant(
+          username: username,
+          gardenName: gardenName,
+          potNumber: 1,
+          token: token,
+        );
 
       expect(message, 'Plant deleted successfully.');
     });
@@ -790,6 +847,10 @@ void main() {
     test('deletePlant llença error si statusCode no és 200', () async {
       final service = GardenService(
         client: MockClient((request) async {
+          expect(request.method, 'DELETE');
+          expectAuthHeader(request);
+          expectJsonContentType(request);
+
           return http.Response(
             jsonEncode({'error': 'No es pot eliminar'}),
             400,
@@ -802,6 +863,7 @@ void main() {
           username: username,
           gardenName: gardenName,
           potNumber: 1,
+          token: token,
         ),
         throwsA(
           predicate(

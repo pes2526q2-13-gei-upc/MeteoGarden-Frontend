@@ -50,6 +50,12 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   List<City> cities = [];
   City? selectedCity;
   bool isLoadingCities = true;
+  String? usernameError;
+  String? emailError;
+  String? cityError;
+  String? passwordError;
+  String? gardenError;
+  String? languageError;
 
   @override
   void initState() {
@@ -116,6 +122,36 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
     );
   }
 
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+
+    return emailRegex.hasMatch(email.trim());
+  }
+
+  String _invalidEmailMessage() {
+    switch (_pageLocale.languageCode) {
+      case 'es':
+        return 'Introduce un correo electrónico válido.';
+      case 'en':
+        return 'Enter a valid email address.';
+      case 'ca':
+      default:
+        return 'Introdueix un correu electrònic vàlid.';
+    }
+  }
+
+  String _requiredFieldMessage() {
+    switch (_pageLocale.languageCode) {
+      case 'es':
+        return 'Este campo es obligatorio.';
+      case 'en':
+        return 'This field is required.';
+      case 'ca':
+      default:
+        return 'Aquest camp és obligatori.';
+    }
+  }
+
   Future<void> fetchCities() async {
     try {
       final response = await http.get(
@@ -144,18 +180,49 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
   void _submit() async {
     final l10n = _t;
     final url = Uri.parse("${ApiConfig.baseUrl}/api/register/");
+    final username = usernameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final gardenName = nomjardiController.text.trim();
+
+    final requiredMessage = _requiredFieldMessage();
+
+    setState(() {
+      usernameError = username.isEmpty ? requiredMessage : null;
+      emailError = email.isEmpty
+          ? requiredMessage
+          : !_isValidEmail(email)
+          ? _invalidEmailMessage()
+          : null;
+      cityError = selectedCity == null ? requiredMessage : null;
+      passwordError = password.isEmpty ? requiredMessage : null;
+      languageError = language == null ? requiredMessage : null;
+      gardenError = gardenName.isEmpty ? requiredMessage : null;
+    });
+
+    final hasErrors =
+        usernameError != null ||
+        emailError != null ||
+        cityError != null ||
+        passwordError != null ||
+        languageError != null ||
+        gardenError != null;
+
+    if (hasErrors) {
+      return;
+    }
 
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
-        'username': usernameController.text,
-        'password': passwordController.text,
-        'email': emailController.text,
+        'username': username,
+        'password': password,
+        'email': email,
         'city': selectedCity?.name,
         'language': language,
         'stationCode': selectedCity?.code,
-        'gardenName': nomjardiController.text,
+        'gardenName': gardenName,
       }),
     );
 
@@ -335,11 +402,19 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
                             TextField(
                               controller: usernameController,
+                              onChanged: (_) {
+                                if (usernameError != null) {
+                                  setState(() {
+                                    usernameError = null;
+                                  });
+                                }
+                              },
                               decoration: defaultDecoration.copyWith(
                                 labelText: l10n.loginUsernameLabel,
                                 prefixIcon: const Icon(
                                   Icons.person_outline_rounded,
                                 ),
+                                errorText: usernameError,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -347,9 +422,19 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                             TextField(
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
+                              autocorrect: false,
+                              enableSuggestions: false,
+                              onChanged: (_) {
+                                if (emailError != null) {
+                                  setState(() {
+                                    emailError = null;
+                                  });
+                                }
+                              },
                               decoration: defaultDecoration.copyWith(
                                 labelText: l10n.createAccountEmailLabel,
                                 prefixIcon: const Icon(Icons.email_outlined),
+                                errorText: emailError,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -399,19 +484,41 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                                     onSelected: (City? city) {
                                       setState(() {
                                         selectedCity = city;
+                                        cityError = null;
                                       });
                                     },
                                   ),
+                            if (cityError != null) ...[
+                              const SizedBox(height: 6),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 12),
+                                child: Text(
+                                  cityError!,
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
                             const SizedBox(height: 16),
 
                             TextField(
                               controller: passwordController,
                               obscureText: true,
+                              onChanged: (_) {
+                                if (passwordError != null) {
+                                  setState(() {
+                                    passwordError = null;
+                                  });
+                                }
+                              },
                               decoration: defaultDecoration.copyWith(
                                 labelText: l10n.loginPasswordLabel,
                                 prefixIcon: const Icon(
                                   Icons.lock_outline_rounded,
                                 ),
+                                errorText: passwordError,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -421,6 +528,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                               decoration: defaultDecoration.copyWith(
                                 labelText: l10n.commonLanguage,
                                 prefixIcon: const Icon(Icons.language_rounded),
+                                errorText: languageError,
                               ),
                               icon: const Icon(Icons.arrow_drop_down_rounded),
                               items: [
@@ -441,6 +549,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                                 setState(() {
                                   language = value;
                                   _pageLocale = Locale(value ?? 'ca');
+                                  languageError = null;
                                 });
                               },
                             ),
@@ -448,11 +557,19 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
 
                             TextField(
                               controller: nomjardiController,
+                              onChanged: (_) {
+                                if (gardenError != null) {
+                                  setState(() {
+                                    gardenError = null;
+                                  });
+                                }
+                              },
                               decoration: defaultDecoration.copyWith(
                                 labelText: l10n.createAccountGardenNameLabel,
                                 prefixIcon: const Icon(
                                   Icons.local_florist_outlined,
                                 ),
+                                errorText: gardenError,
                               ),
                             ),
                             const SizedBox(height: 32),
