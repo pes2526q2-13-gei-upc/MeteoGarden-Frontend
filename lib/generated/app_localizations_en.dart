@@ -997,4 +997,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calendarFiltersTooltip => 'Filters';
+
+  @override
+  String get culturalEvents => 'Cultural events';
 }

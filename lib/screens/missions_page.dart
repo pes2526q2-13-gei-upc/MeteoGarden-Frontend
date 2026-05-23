@@ -5,6 +5,7 @@ import '../widgets/mission_card.dart';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../services/mission_service.dart';
+import '../widgets/centered_message.dart';
 
 class MissionsPage extends StatefulWidget {
   const MissionsPage({super.key});
@@ -46,6 +47,7 @@ class _MissionsPageState extends State<MissionsPage> {
 
   Future<void> _claimMission(Mission mission) async {
     final l10n = AppLocalizations.of(context)!;
+
     try {
       final token = Provider.of<UserModel>(context, listen: false).token;
       final coinsEarned = await MissionService.claimMission(
@@ -58,25 +60,29 @@ class _MissionsPageState extends State<MissionsPage> {
         userModel.setCoins(userModel.monedes + coinsEarned);
       }
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.missionsClaimSuccess),
-            backgroundColor: const Color(0xFF2F6B43),
-          ),
-        );
-        _fetchMissions();
-      }
+      if (!mounted) return;
+
+      CenteredMessage.show(
+        context,
+        l10n.missionsClaimSuccess,
+        type: CenteredMessageType.success,
+      );
+
+      await _fetchMissions();
     } on MissionException catch (e) {
       if (!mounted) return;
+
       final errorMsg = switch (e.message) {
         'Mission already claimed' => l10n.missionsErrorAlreadyClaimed,
         'Mission in progress' => l10n.missionsErrorInProgress,
         'Mission not found' => l10n.missionsErrorNotFound,
         _ => l10n.missionsErrorGeneric,
       };
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMsg), backgroundColor: Colors.red),
+
+      CenteredMessage.show(
+        context,
+        errorMsg,
+        type: CenteredMessageType.error,
       );
     }
   }

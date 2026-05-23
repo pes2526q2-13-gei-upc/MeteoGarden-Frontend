@@ -443,6 +443,7 @@
       }
     }
   },
-  "calendarFiltersTooltip": "Filters"
+  "calendarFiltersTooltip": "Filters",
+  "culturalEvents": "Cultural events"
 }
 

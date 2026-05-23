@@ -1940,6 +1940,12 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Filtres'**
   String get calendarFiltersTooltip;
+
+  /// No description provided for @culturalEvents.
+  ///
+  /// In ca, this message translates to:
+  /// **'Events culturals'**
+  String get culturalEvents;
 }
 
 class _AppLocalizationsDelegate

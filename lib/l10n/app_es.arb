@@ -446,6 +446,7 @@
       }
     }
   },
-  "calendarFiltersTooltip": "Filtros"
+  "calendarFiltersTooltip": "Filtros",
+  "culturalEvents": "Eventos culturales"
 }
 

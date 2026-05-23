@@ -999,4 +999,7 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get calendarFiltersTooltip => 'Filtres';
+
+  @override
+  String get culturalEvents => 'Events culturals';
 }
