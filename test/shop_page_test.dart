@@ -143,6 +143,8 @@ void main() {
 
       // El bottom sheet se ha cerrado tras comprar
       expect(find.text('Una semilla grande y amarilla'), findsNothing);
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpAndSettle();
     });
   });
 }

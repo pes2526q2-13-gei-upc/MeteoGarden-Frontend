@@ -1061,6 +1061,8 @@ void main() {
     await tester.pump();
 
     expect(observer.pushCount, greaterThan(initialPushes));
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
   });
 
   testWidgets('el botó de l’àlbum fa push de navegació', (tester) async {
