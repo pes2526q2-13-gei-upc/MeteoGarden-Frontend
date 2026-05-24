@@ -12,7 +12,12 @@
           "package_name": "com.meteogarden.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "504020085047-8d3mitao6hv33qrqklt80mn6umqvvrfn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA0tJbGmMfno4pLJ9FjTLL-KjHPeW6B9Fc"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "504020085047-8d3mitao6hv33qrqklt80mn6umqvvrfn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
