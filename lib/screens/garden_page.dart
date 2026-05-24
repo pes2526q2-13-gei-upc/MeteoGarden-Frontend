@@ -164,6 +164,8 @@ class _GardenPageState extends State<GardenPage> {
         },
         onCollect: () async {
           try {
+            final navigator = Navigator.of(context);
+
             await _gardenService.collectPlant(
               username: widget.username,
               gardenName: widget.gardenName,
@@ -172,6 +174,8 @@ class _GardenPageState extends State<GardenPage> {
             );
 
             if (!mounted) return;
+            
+            navigator.pop();
 
             CenteredMessage.show(
               context,
