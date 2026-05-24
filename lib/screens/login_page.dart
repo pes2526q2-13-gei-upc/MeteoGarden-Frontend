@@ -39,12 +39,12 @@ class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn _googleSignIn = kIsWeb
       ? GoogleSignIn(
           clientId:
-              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+            "504020085047-8d3mitao6hv33qrqklt80mn6umqvvrfn.apps.googleusercontent.com"
           scopes: ['email', 'profile', 'openid'],
         )
       : GoogleSignIn(
           serverClientId:
-              "413098408136-jci0fe83maj5uonf6s9v065cnobktrmt.apps.googleusercontent.com",
+            "504020085047-8d3mitao6hv33qrqklt80mn6umqvvrfn.apps.googleusercontent.com"
           scopes: ['email', 'profile', 'openid'],
         );
 
