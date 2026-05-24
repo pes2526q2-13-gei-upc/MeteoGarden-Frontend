@@ -444,6 +444,17 @@
     }
   },
   "calendarFiltersTooltip": "Filters",
-  "culturalEvents": "Cultural events"
+  "culturalEvents": "Cultural events",
+  "collectPlantDialogTitle": "Plant collected!",
+  "collectPlantCoinsReward": "+{coins} coins",
+  "@collectPlantCoinsReward": {
+    "placeholders": {
+      "coins": {
+        "type": "int"
+      }
+    }
+  },
+  "commonOk": "OK"
+  
 }
 

@@ -450,6 +450,17 @@
     }
   },
   "calendarFiltersTooltip": "Filtres",
-  "culturalEvents": "Events culturals"
+  "culturalEvents": "Events culturals",
+  "collectPlantDialogTitle": "Planta recollida!",
+  "collectPlantCoinsReward": "+{coins} monedes",
+  "@collectPlantCoinsReward": {
+    "placeholders": {
+      "coins": {
+        "type": "int"
+      }
+    }
+  },
+  "commonOk": "D’acord"
+  
 }
 

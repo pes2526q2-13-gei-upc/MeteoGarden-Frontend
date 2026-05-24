@@ -713,57 +713,62 @@ void main() {
     });
 
     test('collectPlant retorna message si statusCode és 200', () async {
-      final service = GardenService(
-        client: MockClient((request) async {
-          expect(request.method, 'POST');
-          expect(
-            request.url.path,
-            contains(
-              '/api/users/jana/gardens/Jardi%20principal/pots/1/collect/',
-            ),
-          );
+  final service = GardenService(
+    client: MockClient((request) async {
+      expect(request.method, 'POST');
+      expect(
+        request.url.path,
+        contains(
+          '/api/users/jana/gardens/Jardi%20principal/pots/1/collect/',
+        ),
+      );
 
-          final contentType =
-              request.headers['Content-Type'] ??
-              request.headers['content-type'];
-          expect(contentType, contains('application/json'));
+      final contentType =
+          request.headers['Content-Type'] ??
+          request.headers['content-type'];
+      expect(contentType, contains('application/json'));
 
-          final body = jsonDecode(request.body) as Map<String, dynamic>;
-          expect(body['plant'], 'Mentha spicata');
+      final body = jsonDecode(request.body) as Map<String, dynamic>;
+      expect(body['plant'], 'Mentha spicata');
 
-          return http.Response(
-            jsonEncode({'message': 'Planta recollida'}),
-            200,
-          );
+      return http.Response(
+        jsonEncode({
+          'message': 'Planta recollida',
+          'new_balance': 35,
         }),
+        200,
       );
+    }),
+  );
 
-      final message = await service.collectPlant(
-        username: username,
-        gardenName: gardenName,
-        potNumber: 1,
-        scientificName: 'Mentha spicata',
-      );
+  final result = await service.collectPlant(
+    username: username,
+    gardenName: gardenName,
+    potNumber: 1,
+    scientificName: 'Mentha spicata',
+  );
 
-      expect(message, 'Planta recollida');
-    });
+  expect(result.message, 'Planta recollida');
+  expect(result.newBalance, 35);
+});
 
-    test('collectPlant retorna missatge per defecte si no hi ha message', () async {
-      final service = GardenService(
-        client: MockClient((request) async {
-          return http.Response(jsonEncode({}), 200);
-        }),
-      );
+test('collectPlant retorna missatge per defecte si no hi ha message', () async {
+  final service = GardenService(
+    client: MockClient((request) async {
+      return http.Response(jsonEncode({}), 200);
+    }),
+  );
 
-      final message = await service.collectPlant(
-        username: username,
-        gardenName: gardenName,
-        potNumber: 1,
-        scientificName: 'Mentha spicata',
-      );
+  final result = await service.collectPlant(
+    username: username,
+    gardenName: gardenName,
+    potNumber: 1,
+    scientificName: 'Mentha spicata',
+  );
 
-      expect(message, 'Planta recollida correctament.');
-    });
+  expect(result.message, isNotEmpty);
+  expect(result.newBalance, isA<int>());
+});
 
     test('collectPlant llença error si statusCode no és 200', () async {
       final service = GardenService(

@@ -42,6 +42,23 @@ class PlantingResult {
   );
 }
 
+class CollectPlantResult {
+  final String message;
+  final int newBalance;
+
+  CollectPlantResult({
+    required this.message,
+    required this.newBalance,
+  });
+
+  factory CollectPlantResult.fromJson(Map<String, dynamic> json) {
+    return CollectPlantResult(
+      message: json['message'] ?? 'Plant collected successfully',
+      newBalance: json['new_balance'] ?? 0,
+    );
+  }
+}
+
 class GardenService {
   GardenService({http.Client? client}) : _client = client ?? http.Client();
 
@@ -229,32 +246,32 @@ Future<List<ProductItem>> fetchProducts(String username) async {
     }
   }
 
-  Future<String> collectPlant({
-    required String username,
-    required String gardenName,
-    required int potNumber,
-    required String scientificName,
-  }) async {
-    final url = Uri.parse(
-      '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/collect/',
+  Future<CollectPlantResult> collectPlant({
+  required String username,
+  required String gardenName,
+  required int potNumber,
+  required String scientificName,
+}) async {
+  final url = Uri.parse(
+    '${ApiConfig.baseUrl}/api/users/$username/gardens/$gardenName/pots/$potNumber/collect/',
+  );
+
+  final response = await _client.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'plant': scientificName}),
+  );
+
+  final data = jsonDecode(response.body);
+
+  if (response.statusCode == 200) {
+    return CollectPlantResult.fromJson(data);
+  } else {
+    throw Exception(
+      data['message'] ?? data['error'] ?? 'Error recollint la planta.',
     );
-
-    final response = await _client.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'plant': scientificName}),
-    );
-
-    final data = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      return data['message'] ?? 'Planta recollida correctament.';
-    } else {
-      throw Exception(
-        data['message'] ?? data['error'] ?? 'Error recollint la planta.',
-      );
-    }
   }
+}
 
   Future<String> deletePlant({
     required String username,

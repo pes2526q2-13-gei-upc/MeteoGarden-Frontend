@@ -323,18 +323,18 @@ class TestGardenService extends GardenService {
   }
 
   @override
-Future<String> applyPotion({
-  required String username,
-  required String gardenName,
-  required int potNumber,
-  required String productName,
-  required String token,
-}) async {
-  throw UnimplementedError();
-}
+  Future<String> applyPotion({
+    required String username,
+    required String gardenName,
+    required int potNumber,
+    required String productName,
+    required String token,
+  }) async {
+    throw UnimplementedError();
+  }
 
   @override
-  Future<String> collectPlant({
+  Future<CollectPlantResult> collectPlant({
     required String username,
     required String gardenName,
     required int potNumber,
@@ -359,13 +359,13 @@ Future<String> applyPotion({
     String lang,
   ) async {
     return {
-      "scientificName": scientificName,
-      "commonName": "Roser silvestre",
-      "family": "Rosaceae",
-      "canFlower": true,
-      "minTemperature": 5,
-      "maxTemperature": 30,
-      "description": "Descripció de prova",
+      'scientificName': scientificName,
+      'commonName': 'Roser silvestre',
+      'family': 'Rosaceae',
+      'canFlower': true,
+      'minTemperature': 5,
+      'maxTemperature': 30,
+      'description': 'Descripció de prova',
     };
   }
 }

@@ -1000,4 +1000,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get culturalEvents => 'Cultural events';
+
+  @override
+  String get collectPlantDialogTitle => 'Plant collected!';
+
+  @override
+  String collectPlantCoinsReward(int coins) {
+    return '+$coins coins';
+  }
+
+  @override
+  String get commonOk => 'OK';
 }

@@ -447,6 +447,16 @@
     }
   },
   "calendarFiltersTooltip": "Filtros",
-  "culturalEvents": "Eventos culturales"
+  "culturalEvents": "Eventos culturales",
+  "collectPlantDialogTitle": "¡Planta recolectada!",
+  "collectPlantCoinsReward": "+{coins} monedas",
+  "@collectPlantCoinsReward": {
+    "placeholders": {
+      "coins": {
+        "type": "int"
+      }
+    }
+  },
+  "commonOk": "De acuerdo"
 }
 
