@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "504020085047-m30o00afh5jc2j4jd3ci9vn6704ncg1d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.meteogarden.app",
+            "certificate_hash": "fa638abcb215e7204b4a34ce0ff52f4b4cd1a571"
+          }
+        },
+        {
           "client_id": "504020085047-8d3mitao6hv33qrqklt80mn6umqvvrfn.apps.googleusercontent.com",
           "client_type": 3
         }
