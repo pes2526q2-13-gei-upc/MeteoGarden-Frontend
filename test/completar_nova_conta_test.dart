@@ -12,6 +12,7 @@ import 'package:meteo_garden/models/dades_usr.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
 import 'package:meteo_garden/screens/completar_nova_conta.dart';
 import 'package:provider/provider.dart';
+import 'dart:typed_data';
 
 class FakeHttpClient implements HttpClient {
   int stationsStatusCode = 200;
@@ -123,7 +124,8 @@ class FakeHttpRequestData {
 }
 
 class FakeHttpClientRequest implements HttpClientRequest {
-  FakeHttpClientRequest(this.client, String method, this.url) : _method = method;
+  FakeHttpClientRequest(this.client, String method, this.url)
+    : _method = method;
 
   final FakeHttpClient client;
   final String _method;
@@ -215,10 +217,8 @@ class FakeHttpClientRequest implements HttpClientRequest {
 
 class FakeHttpClientResponse extends Stream<List<int>>
     implements HttpClientResponse {
-  FakeHttpClientResponse({
-    required this.statusCode,
-    required String body,
-  }) : _bodyBytes = utf8.encode(body);
+  FakeHttpClientResponse({required this.statusCode, required String body})
+    : _bodyBytes = utf8.encode(body);
 
   final List<int> _bodyBytes;
 
@@ -232,8 +232,8 @@ class FakeHttpClientResponse extends Stream<List<int>>
   String get reasonPhrase => '';
 
   @override
-  HttpHeaders get headers => FakeHttpHeaders()
-    ..set(HttpHeaders.contentTypeHeader, 'application/json');
+  HttpHeaders get headers =>
+      FakeHttpHeaders()..set(HttpHeaders.contentTypeHeader, 'application/json');
 
   @override
   bool get isRedirect => false;
@@ -324,15 +324,9 @@ class FakeHttpHeaders implements HttpHeaders {
 Widget makeTestableWidget({UserModel? userModel}) {
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<UserModel>.value(
-        value: userModel ?? UserModel(),
-      ),
-      ChangeNotifierProvider<AvatarUser>(
-        create: (_) => AvatarUser(),
-      ),
-      ChangeNotifierProvider<PlantProvider>(
-        create: (_) => PlantProvider(),
-      ),
+      ChangeNotifierProvider<UserModel>.value(value: userModel ?? UserModel()),
+      ChangeNotifierProvider<AvatarUser>(create: (_) => AvatarUser()),
+      ChangeNotifierProvider<PlantProvider>(create: (_) => PlantProvider()),
     ],
     child: const MaterialApp(
       locale: Locale('ca'),
@@ -355,10 +349,7 @@ Future<void> runWithFakeHttp(
   FakeHttpClient client,
   Future<void> Function() body,
 ) async {
-  await HttpOverrides.runZoned(
-    body,
-    createHttpClient: (_) => client,
-  );
+  await HttpOverrides.runZoned(body, createHttpClient: (_) => client);
 }
 
 Future<void> pumpCompleteGoogleProfilePage(
@@ -701,7 +692,10 @@ void main() {
 
       expect(registerRequests.length, 1);
       expect(registerRequests.first.method, 'POST');
-      expect(registerRequests.first.body, contains('"id_token":"fake-google-token"'));
+      expect(
+        registerRequests.first.body,
+        contains('"id_token":"fake-google-token"'),
+      );
       expect(registerRequests.first.body, contains('"username":"jana"'));
       expect(registerRequests.first.body, contains('"password":"123456"'));
       expect(registerRequests.first.body, contains('"email":"jana@test.com"'));
@@ -753,7 +747,10 @@ void main() {
       expect(registerRequests.length, 1);
       expect(profileRequests.length, 1);
 
-      expect(profileRequests.first.headers['authorization']?.first, 'Token fake-auth-token');
+      expect(
+        profileRequests.first.headers['authorization']?.first,
+        'Token fake-auth-token',
+      );
 
       expect(userModel.username, 'jana');
       expect(userModel.email, 'jana@test.com');
@@ -825,6 +822,6 @@ void main() {
   testWidgets('City no és igual a un objecte diferent', (tester) async {
     final city = City(code: '001', name: 'Barcelona');
 
-    expect(city == 'Barcelona', false);
+    expect(city.name == 'Barcelona', false);
   });
 }

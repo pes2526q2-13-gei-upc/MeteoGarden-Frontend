@@ -34,7 +34,11 @@ class Mission {
   factory Mission.fromJson(Map<String, dynamic> json) {
     return Mission(
       name: json['Name'] ?? '',
-      displayName: json['displayName'] ?? json['DisplayName'] ?? json['Name'] ?? '', //si falla por algun motivo coge el name normal
+      displayName:
+          json['displayName'] ??
+          json['DisplayName'] ??
+          json['Name'] ??
+          '', //si falla por algun motivo coge el name normal
       description: json['Description'] ?? '',
       goal: json['Goal'] ?? 0,
       action: json['Action'] ?? '',

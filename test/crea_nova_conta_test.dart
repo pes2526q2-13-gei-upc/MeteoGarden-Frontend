@@ -12,6 +12,7 @@ import 'package:meteo_garden/models/dades_usr.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
 import 'package:meteo_garden/screens/crea_nova_conta.dart';
 import 'package:provider/provider.dart';
+import 'dart:typed_data';
 
 class FakeHttpOverrides extends HttpOverrides {
   FakeHttpOverrides(this.client);
@@ -148,7 +149,8 @@ class FakeHttpRequestData {
 }
 
 class FakeHttpClientRequest implements HttpClientRequest {
-  FakeHttpClientRequest(this.client, String method, this.url) : _method = method;
+  FakeHttpClientRequest(this.client, String method, this.url)
+    : _method = method;
 
   final FakeHttpClient client;
   final String _method;
@@ -240,10 +242,8 @@ class FakeHttpClientRequest implements HttpClientRequest {
 
 class FakeHttpClientResponse extends Stream<List<int>>
     implements HttpClientResponse {
-  FakeHttpClientResponse({
-    required this.statusCode,
-    required String body,
-  }) : _bodyBytes = utf8.encode(body);
+  FakeHttpClientResponse({required this.statusCode, required String body})
+    : _bodyBytes = utf8.encode(body);
 
   final List<int> _bodyBytes;
 
@@ -257,8 +257,8 @@ class FakeHttpClientResponse extends Stream<List<int>>
   String get reasonPhrase => '';
 
   @override
-  HttpHeaders get headers => FakeHttpHeaders()
-    ..set(HttpHeaders.contentTypeHeader, 'application/json');
+  HttpHeaders get headers =>
+      FakeHttpHeaders()..set(HttpHeaders.contentTypeHeader, 'application/json');
 
   @override
   bool get isRedirect => false;
@@ -349,15 +349,9 @@ class FakeHttpHeaders implements HttpHeaders {
 Widget makeTestableWidget({UserModel? userModel}) {
   return MultiProvider(
     providers: [
-      ChangeNotifierProvider<UserModel>.value(
-        value: userModel ?? UserModel(),
-      ),
-      ChangeNotifierProvider<AvatarUser>(
-        create: (_) => AvatarUser(),
-      ),
-      ChangeNotifierProvider<PlantProvider>(
-        create: (_) => PlantProvider(),
-      ),
+      ChangeNotifierProvider<UserModel>.value(value: userModel ?? UserModel()),
+      ChangeNotifierProvider<AvatarUser>(create: (_) => AvatarUser()),
+      ChangeNotifierProvider<PlantProvider>(create: (_) => PlantProvider()),
     ],
     child: const MaterialApp(
       locale: Locale('ca'),
@@ -400,10 +394,7 @@ Future<void> runWithFakeHttp(
   FakeHttpClient client,
   Future<void> Function() body,
 ) async {
-  await HttpOverrides.runZoned(
-    body,
-    createHttpClient: (_) => client,
-  );
+  await HttpOverrides.runZoned(body, createHttpClient: (_) => client);
 }
 
 Finder createAccountButton(AppLocalizations l10n) {
@@ -710,40 +701,47 @@ void main() {
     });
   });
 
-  testWidgets('envia petició de registre i mostra error si backend retorna 400', (
-    tester,
-  ) async {
-    final client = FakeHttpClient()
-      ..registerStatusCode = 400
-      ..registerBody = {'error': 'username already exists'};
+  testWidgets(
+    'envia petició de registre i mostra error si backend retorna 400',
+    (tester) async {
+      final client = FakeHttpClient()
+        ..registerStatusCode = 400
+        ..registerBody = {'error': 'username already exists'};
 
-    await runWithFakeHttp(client, () async {
-      await pumpCreateAccountPage(tester);
+      await runWithFakeHttp(client, () async {
+        await pumpCreateAccountPage(tester);
 
-      final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
+        final l10n = await AppLocalizations.delegate.load(const Locale('ca'));
 
-      await fillRequiredFields(tester);
+        await fillRequiredFields(tester);
 
-      await tester.ensureVisible(createAccountButton(l10n));
-      await tester.pump();
+        await tester.ensureVisible(createAccountButton(l10n));
+        await tester.pump();
 
-      await tester.tap(createAccountButton(l10n));
-      await tester.pumpAndSettle();
+        await tester.tap(createAccountButton(l10n));
+        await tester.pumpAndSettle();
 
-      final registerRequests = client.requests.where(
-        (request) => request.url.path.endsWith('/api/register/'),
-      );
+        final registerRequests = client.requests.where(
+          (request) => request.url.path.endsWith('/api/register/'),
+        );
 
-      expect(registerRequests.length, 1);
-      expect(registerRequests.first.method, 'POST');
-      expect(registerRequests.first.body, contains('"username":"jana"'));
-      expect(registerRequests.first.body, contains('"email":"jana@test.com"'));
-      expect(registerRequests.first.body, contains('"gardenName":"JardiJana"'));
-      expect(registerRequests.first.body, contains('"city":"Barcelona"'));
-      expect(registerRequests.first.body, contains('"stationCode":"08019"'));
-      await finishCenteredMessageTimer(tester);
-    });
-  });
+        expect(registerRequests.length, 1);
+        expect(registerRequests.first.method, 'POST');
+        expect(registerRequests.first.body, contains('"username":"jana"'));
+        expect(
+          registerRequests.first.body,
+          contains('"email":"jana@test.com"'),
+        );
+        expect(
+          registerRequests.first.body,
+          contains('"gardenName":"JardiJana"'),
+        );
+        expect(registerRequests.first.body, contains('"city":"Barcelona"'));
+        expect(registerRequests.first.body, contains('"stationCode":"08019"'));
+        await finishCenteredMessageTimer(tester);
+      });
+    },
+  );
 
   testWidgets('registre correcte desa token, carrega perfil i navega', (
     tester,
@@ -842,6 +840,6 @@ void main() {
   testWidgets('City no és igual a un objecte d’un altre tipus', (tester) async {
     final city = City(code: '001', name: 'Barcelona');
 
-    expect(city == 'Barcelona', false);
+    expect(city.name == 'Barcelona', false);
   });
 }

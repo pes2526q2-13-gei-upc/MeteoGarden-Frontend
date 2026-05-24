@@ -20,9 +20,8 @@ class ActivePotion {
 
     return ActivePotion(
       name: internalName,
-      displayName:
-          (json['displayName'] ?? json['display_name'] ?? internalName)
-              .toString(),
+      displayName: (json['displayName'] ?? json['display_name'] ?? internalName)
+          .toString(),
       appliedAt: DateTime.parse(json['applied_at']),
       expiresAt: DateTime.parse(json['expires_at']),
     );

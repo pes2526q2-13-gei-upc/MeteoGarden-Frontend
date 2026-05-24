@@ -28,14 +28,12 @@ void main() {
 
     test('fetchWeather carrega el temps correctament', () async {
       final provider = WeatherProvider(
-        fetchWeatherFunction: ({
-          required String city,
-          required String token,
-        }) async {
-          expect(city, 'Barcelona');
-          expect(token, fakeToken);
-          return fakeWeather;
-        },
+        fetchWeatherFunction:
+            ({required String city, required String token}) async {
+              expect(city, 'Barcelona');
+              expect(token, fakeToken);
+              return fakeWeather;
+            },
       );
 
       await provider.fetchWeather('Barcelona', token: fakeToken);
@@ -53,13 +51,11 @@ void main() {
 
     test('fetchWeather activa isLoading mentre carrega', () async {
       final provider = WeatherProvider(
-        fetchWeatherFunction: ({
-          required String city,
-          required String token,
-        }) async {
-          await Future<void>.delayed(const Duration(milliseconds: 10));
-          return fakeWeather;
-        },
+        fetchWeatherFunction:
+            ({required String city, required String token}) async {
+              await Future<void>.delayed(const Duration(milliseconds: 10));
+              return fakeWeather;
+            },
       );
 
       final loadingStates = <bool>[];
@@ -77,12 +73,10 @@ void main() {
 
     test('fetchWeather guarda error si el servei falla', () async {
       final provider = WeatherProvider(
-        fetchWeatherFunction: ({
-          required String city,
-          required String token,
-        }) async {
-          throw Exception('Error API');
-        },
+        fetchWeatherFunction:
+            ({required String city, required String token}) async {
+              throw Exception('Error API');
+            },
       );
 
       await provider.fetchWeather('Barcelona', token: fakeToken);
@@ -98,16 +92,14 @@ void main() {
         var shouldFail = true;
 
         final provider = WeatherProvider(
-          fetchWeatherFunction: ({
-            required String city,
-            required String token,
-          }) async {
-            if (shouldFail) {
-              throw Exception('Error inicial');
-            }
+          fetchWeatherFunction:
+              ({required String city, required String token}) async {
+                if (shouldFail) {
+                  throw Exception('Error inicial');
+                }
 
-            return fakeWeather;
-          },
+                return fakeWeather;
+              },
         );
 
         await provider.fetchWeather('Barcelona', token: fakeToken);
@@ -135,13 +127,11 @@ void main() {
         var callCount = 0;
 
         final provider = WeatherProvider(
-          fetchWeatherFunction: ({
-            required String city,
-            required String token,
-          }) async {
-            callCount++;
-            return fakeWeather;
-          },
+          fetchWeatherFunction:
+              ({required String city, required String token}) async {
+                callCount++;
+                return fakeWeather;
+              },
         );
 
         await provider.fetchWeather('Barcelona', token: fakeToken);
@@ -158,13 +148,11 @@ void main() {
         var callCount = 0;
 
         final provider = WeatherProvider(
-          fetchWeatherFunction: ({
-            required String city,
-            required String token,
-          }) async {
-            callCount++;
-            return fakeWeather;
-          },
+          fetchWeatherFunction:
+              ({required String city, required String token}) async {
+                callCount++;
+                return fakeWeather;
+              },
         );
 
         await provider.fetchWeather('Barcelona', token: fakeToken);
@@ -182,12 +170,10 @@ void main() {
 
     test('notifica els listeners quan comença i acaba la càrrega', () async {
       final provider = WeatherProvider(
-        fetchWeatherFunction: ({
-          required String city,
-          required String token,
-        }) async {
-          return fakeWeather;
-        },
+        fetchWeatherFunction:
+            ({required String city, required String token}) async {
+              return fakeWeather;
+            },
       );
 
       var notifyCount = 0;
@@ -203,12 +189,10 @@ void main() {
 
     test('no notifica listeners si ja té dades i no força refresh', () async {
       final provider = WeatherProvider(
-        fetchWeatherFunction: ({
-          required String city,
-          required String token,
-        }) async {
-          return fakeWeather;
-        },
+        fetchWeatherFunction:
+            ({required String city, required String token}) async {
+              return fakeWeather;
+            },
       );
 
       await provider.fetchWeather('Barcelona', token: fakeToken);

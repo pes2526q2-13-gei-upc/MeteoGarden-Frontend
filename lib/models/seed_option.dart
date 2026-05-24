@@ -20,7 +20,7 @@ class SeedOption {
 
 class ProductItem {
   final String productName;
-   final String displayName;
+  final String displayName;
   final int amount;
   final String? imageUrl;
   final String? description;
@@ -40,9 +40,8 @@ class ProductItem {
 
     return ProductItem(
       productName: internalName,
-      displayName:
-          (json['displayName'] ?? json['display_name'] ?? internalName)
-              .toString(),
+      displayName: (json['displayName'] ?? json['display_name'] ?? internalName)
+          .toString(),
       amount: json['amount'] ?? 0,
       imageUrl: json['image_url'],
       description: json['description'],

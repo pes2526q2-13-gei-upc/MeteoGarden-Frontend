@@ -266,9 +266,7 @@ class _AlbumPageState extends State<AlbumPage> {
                         children: [
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.55,
-                            child: _AlbumEmptyState(
-                              message: t.albumEmptyState,
-                            ),
+                            child: _AlbumEmptyState(message: t.albumEmptyState),
                           ),
                         ],
                       ),
@@ -380,9 +378,7 @@ class _AlbumPageState extends State<AlbumPage> {
 class _AlbumEmptyState extends StatelessWidget {
   final String message;
 
-  const _AlbumEmptyState({
-    required this.message,
-  });
+  const _AlbumEmptyState({required this.message});
 
   @override
   Widget build(BuildContext context) {

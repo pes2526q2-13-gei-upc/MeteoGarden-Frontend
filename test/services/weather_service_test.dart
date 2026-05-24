@@ -96,10 +96,7 @@ void main() {
         }),
       );
 
-      await service.fetchCurrent(
-        city: 'Barcelona',
-        token: fakeToken,
-      );
+      await service.fetchCurrent(city: 'Barcelona', token: fakeToken);
     });
 
     test('fetchCurrent llença excepció si statusCode no és 200', () async {
@@ -112,15 +109,11 @@ void main() {
       );
 
       expect(
-        () => service.fetchCurrent(
-          city: 'Barcelona',
-          token: fakeToken,
-        ),
+        () => service.fetchCurrent(city: 'Barcelona', token: fakeToken),
         throwsA(
           predicate(
             (e) =>
-                e is Exception &&
-                e.toString().contains('Error backend: 404'),
+                e is Exception && e.toString().contains('Error backend: 404'),
           ),
         ),
       );
@@ -134,10 +127,7 @@ void main() {
       );
 
       expect(
-        () => service.fetchCurrent(
-          city: 'Barcelona',
-          token: fakeToken,
-        ),
+        () => service.fetchCurrent(city: 'Barcelona', token: fakeToken),
         throwsA(isA<FormatException>()),
       );
     });
@@ -155,10 +145,7 @@ void main() {
       );
 
       expect(
-        () => service.fetchCurrent(
-          city: 'Barcelona',
-          token: fakeToken,
-        ),
+        () => service.fetchCurrent(city: 'Barcelona', token: fakeToken),
         throwsA(isA<TypeError>()),
       );
     });

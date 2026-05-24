@@ -10,6 +10,7 @@ import 'package:meteo_garden/models/dades_usr.dart';
 import 'package:meteo_garden/models/perfil_info.dart';
 import 'package:meteo_garden/screens/perfil_edit_page.dart';
 import 'package:provider/provider.dart';
+import 'dart:typed_data';
 
 class FakeHttpClient implements HttpClient {
   int stationsStatusCode = 200;
@@ -203,10 +204,8 @@ class FakeHttpClientRequest implements HttpClientRequest {
 
 class FakeHttpClientResponse extends Stream<List<int>>
     implements HttpClientResponse {
-  FakeHttpClientResponse({
-    required this.statusCode,
-    required String body,
-  }) : _bodyBytes = utf8.encode(body);
+  FakeHttpClientResponse({required this.statusCode, required String body})
+    : _bodyBytes = utf8.encode(body);
 
   final List<int> _bodyBytes;
 
@@ -220,8 +219,8 @@ class FakeHttpClientResponse extends Stream<List<int>>
   String get reasonPhrase => '';
 
   @override
-  HttpHeaders get headers => FakeHttpHeaders()
-    ..set(HttpHeaders.contentTypeHeader, 'application/json');
+  HttpHeaders get headers =>
+      FakeHttpHeaders()..set(HttpHeaders.contentTypeHeader, 'application/json');
 
   @override
   bool get isRedirect => false;
@@ -336,9 +335,7 @@ Widget makeTestableWidget({
     value: userModel,
     child: MaterialApp(
       locale: const Locale('ca'),
-      navigatorObservers: [
-        if (navigatorObserver != null) navigatorObserver,
-      ],
+      navigatorObservers: [?navigatorObserver],
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -381,10 +378,7 @@ Future<void> runWithFakeHttp(
   FakeHttpClient client,
   Future<void> Function() body,
 ) async {
-  await HttpOverrides.runZoned(
-    body,
-    createHttpClient: (_) => client,
-  );
+  await HttpOverrides.runZoned(body, createHttpClient: (_) => client);
 }
 
 Future<void> finishCenteredMessageTimer(WidgetTester tester) async {
@@ -433,10 +427,7 @@ void main() {
 
     await runWithFakeHttp(client, () async {
       await tester.pumpWidget(
-        makeTestableWidget(
-          profile: fakeProfile(),
-          userModel: userModel,
-        ),
+        makeTestableWidget(profile: fakeProfile(), userModel: userModel),
       );
 
       expect(find.byType(PerfilEditPage), findsOneWidget);
@@ -460,7 +451,10 @@ void main() {
       );
 
       expect(find.byKey(const Key('edit_profile_page')), findsOneWidget);
-      expect(find.byKey(const Key('edit_profile_username_field')), findsOneWidget);
+      expect(
+        find.byKey(const Key('edit_profile_username_field')),
+        findsOneWidget,
+      );
       expect(find.text('JardineroFiel'), findsOneWidget);
     });
   });
@@ -488,23 +482,24 @@ void main() {
     });
   });
 
-  testWidgets('carrega ciutats però no selecciona cap si la ciutat no coincideix', (
-    tester,
-  ) async {
-    final client = FakeHttpClient();
-    final userModel = buildUserModel();
+  testWidgets(
+    'carrega ciutats però no selecciona cap si la ciutat no coincideix',
+    (tester) async {
+      final client = FakeHttpClient();
+      final userModel = buildUserModel();
 
-    await runWithFakeHttp(client, () async {
-      await pumpPerfilEditPage(
-        tester,
-        profile: fakeProfile(city: 'Tarragona'),
-        userModel: userModel,
-      );
+      await runWithFakeHttp(client, () async {
+        await pumpPerfilEditPage(
+          tester,
+          profile: fakeProfile(city: 'Tarragona'),
+          userModel: userModel,
+        );
 
-      expect(find.byType(DropdownMenu<City>), findsOneWidget);
-      expect(find.text('Tarragona'), findsNothing);
-    });
-  });
+        expect(find.byType(DropdownMenu<City>), findsOneWidget);
+        expect(find.text('Tarragona'), findsNothing);
+      });
+    },
+  );
 
   testWidgets('si fetchCities retorna error deixa de mostrar loading', (
     tester,
@@ -812,7 +807,10 @@ void main() {
 
       expect(editRequests.length, 1);
       expect(editRequests.first.method, 'POST');
-      expect(editRequests.first.headers['authorization']?.first, 'Token fake-token');
+      expect(
+        editRequests.first.headers['authorization']?.first,
+        'Token fake-token',
+      );
       expect(editRequests.first.body, contains('"username":"NouNom"'));
       expect(editRequests.first.body, contains('"city":"Vic"'));
       expect(editRequests.first.body, contains('"language":"es"'));
@@ -857,41 +855,44 @@ void main() {
     });
   });
 
-  testWidgets('actualitzar perfil envia ciutat null si no hi ha ciutat seleccionada', (
-    tester,
-  ) async {
-    final client = FakeHttpClient();
-    final userModel = buildUserModel();
+  testWidgets(
+    'actualitzar perfil envia ciutat null si no hi ha ciutat seleccionada',
+    (tester) async {
+      final client = FakeHttpClient();
+      final userModel = buildUserModel();
 
-    await runWithFakeHttp(client, () async {
-      await pumpPerfilEditPage(
-        tester,
-        profile: fakeProfile(city: 'NoExisteix', language: 'ca'),
-        userModel: userModel,
-      );
+      await runWithFakeHttp(client, () async {
+        await pumpPerfilEditPage(
+          tester,
+          profile: fakeProfile(city: 'NoExisteix', language: 'ca'),
+          userModel: userModel,
+        );
 
-      await tester.enterText(
-        find.byKey(const Key('edit_profile_username_field')),
-        'SenseCiutat',
-      );
+        await tester.enterText(
+          find.byKey(const Key('edit_profile_username_field')),
+          'SenseCiutat',
+        );
 
-      await tester.ensureVisible(find.byKey(const Key('save_profile_button')));
-      await tester.pump();
+        await tester.ensureVisible(
+          find.byKey(const Key('save_profile_button')),
+        );
+        await tester.pump();
 
-      await tester.tap(find.byKey(const Key('save_profile_button')));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
+        await tester.tap(find.byKey(const Key('save_profile_button')));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
 
-      final editRequests = client.requests.where(
-        (request) => request.url.path.endsWith('/api/edit_profile/'),
-      );
+        final editRequests = client.requests.where(
+          (request) => request.url.path.endsWith('/api/edit_profile/'),
+        );
 
-      expect(editRequests.length, 1);
-      expect(editRequests.first.body, contains('"username":"SenseCiutat"'));
-      expect(editRequests.first.body, contains('"city":null'));
-      expect(editRequests.first.body, contains('"stationCode":null'));
-    });
-  });
+        expect(editRequests.length, 1);
+        expect(editRequests.first.body, contains('"username":"SenseCiutat"'));
+        expect(editRequests.first.body, contains('"city":null'));
+        expect(editRequests.first.body, contains('"stationCode":null'));
+      });
+    },
+  );
 
   testWidgets('City.fromJson crea una ciutat correctament', (tester) async {
     final city = City.fromJson({'code': '08019', 'name': 'Barcelona'});
@@ -913,6 +914,6 @@ void main() {
   testWidgets('City no és igual a un objecte d’un altre tipus', (tester) async {
     final city = City(code: '001', name: 'Barcelona');
 
-    expect(city == 'Barcelona', false);
+    expect(city.name == 'Barcelona', false);
   });
 }

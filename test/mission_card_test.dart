@@ -40,14 +40,7 @@ void main() {
 
     testWidgets('mostra el progrés actual i el percentatge', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(
-              currentNumber: 3,
-              goal: 5,
-            ),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(currentNumber: 3, goal: 5))),
       );
 
       expect(find.text('3 / 5'), findsOneWidget);
@@ -59,14 +52,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(
-              currentNumber: 10,
-              goal: 5,
-            ),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(currentNumber: 10, goal: 5))),
       );
 
       expect(find.text('10 / 5'), findsOneWidget);
@@ -75,14 +61,7 @@ void main() {
 
     testWidgets('mostra 0% si el goal és zero', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(
-              currentNumber: 0,
-              goal: 0,
-            ),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(currentNumber: 0, goal: 0))),
       );
 
       expect(find.text('0 / 0'), findsOneWidget);
@@ -91,13 +70,7 @@ void main() {
 
     testWidgets('mostra la recompensa en monedes', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(
-              rewardCoins: 25,
-            ),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(rewardCoins: 25))),
       );
 
       expect(find.textContaining('+25'), findsOneWidget);
@@ -108,9 +81,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           MissionCard(
-            mission: _mission(
-              plantRewardCommonName: 'Roser silvestre',
-            ),
+            mission: _mission(plantRewardCommonName: 'Roser silvestre'),
           ),
         ),
       );
@@ -123,13 +94,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(
-              plantRewardCommonName: null,
-            ),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(plantRewardCommonName: null))),
       );
 
       expect(find.text('Roser silvestre'), findsNothing);
@@ -163,24 +128,25 @@ void main() {
       expect(claimed, isTrue);
     });
 
-    testWidgets('no mostra botó de claim si està completada però no té callback', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(
-              missionState: 'COMPLETED',
-              currentNumber: 5,
-              goal: 5,
+    testWidgets(
+      'no mostra botó de claim si està completada però no té callback',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            MissionCard(
+              mission: _mission(
+                missionState: 'COMPLETED',
+                currentNumber: 5,
+                goal: 5,
+              ),
+              onClaim: null,
             ),
-            onClaim: null,
           ),
-        ),
-      );
+        );
 
-      expect(find.byType(ElevatedButton), findsNothing);
-    });
+        expect(find.byType(ElevatedButton), findsNothing);
+      },
+    );
 
     testWidgets('no mostra botó de claim si està en progrés', (tester) async {
       await tester.pumpWidget(
@@ -218,11 +184,7 @@ void main() {
 
     testWidgets('canvia la icona segons action PLANT', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(action: 'PLANT'),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(action: 'PLANT'))),
       );
 
       expect(find.byIcon(Icons.local_florist), findsOneWidget);
@@ -230,11 +192,7 @@ void main() {
 
     testWidgets('canvia la icona segons action WATER', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(action: 'WATER'),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(action: 'WATER'))),
       );
 
       expect(find.byIcon(Icons.water_drop), findsOneWidget);
@@ -242,11 +200,7 @@ void main() {
 
     testWidgets('canvia la icona segons action COLLECT', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(action: 'COLLECT'),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(action: 'COLLECT'))),
       );
 
       expect(find.byIcon(Icons.eco), findsOneWidget);
@@ -254,11 +208,7 @@ void main() {
 
     testWidgets('canvia la icona segons action FLOWER', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(action: 'FLOWER'),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(action: 'FLOWER'))),
       );
 
       expect(find.byIcon(Icons.yard), findsOneWidget);
@@ -266,11 +216,7 @@ void main() {
 
     testWidgets('canvia la icona segons action DIE', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(action: 'DIE'),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(action: 'DIE'))),
       );
 
       expect(find.byIcon(Icons.sentiment_dissatisfied), findsOneWidget);
@@ -280,11 +226,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        _wrap(
-          MissionCard(
-            mission: _mission(action: 'UNKNOWN'),
-          ),
-        ),
+        _wrap(MissionCard(mission: _mission(action: 'UNKNOWN'))),
       );
 
       expect(find.byIcon(Icons.flag), findsOneWidget);
@@ -296,9 +238,7 @@ Widget _wrap(Widget child) {
   return MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
-    home: Scaffold(
-      body: child,
-    ),
+    home: Scaffold(body: child),
   );
 }
 

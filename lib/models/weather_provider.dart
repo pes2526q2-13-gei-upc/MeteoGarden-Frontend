@@ -3,15 +3,12 @@ import '../models/weather_info.dart';
 import '../services/weather_service.dart';
 
 typedef FetchWeatherFunction =
-    Future<WeatherInfo> Function({
-      required String city,
-      required String token,
-    });
+    Future<WeatherInfo> Function({required String city, required String token});
 
 class WeatherProvider extends ChangeNotifier {
   WeatherProvider({FetchWeatherFunction? fetchWeatherFunction})
-      : _fetchWeatherFunction =
-            fetchWeatherFunction ?? WeatherService().fetchCurrent;
+    : _fetchWeatherFunction =
+          fetchWeatherFunction ?? WeatherService().fetchCurrent;
 
   final FetchWeatherFunction _fetchWeatherFunction;
 
@@ -35,10 +32,7 @@ class WeatherProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _currentWeather = await _fetchWeatherFunction(
-        city: city,
-        token: token,
-      );
+      _currentWeather = await _fetchWeatherFunction(city: city, token: token);
     } catch (e) {
       _error = e.toString();
     } finally {

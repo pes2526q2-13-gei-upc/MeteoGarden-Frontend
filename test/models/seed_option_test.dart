@@ -82,21 +82,24 @@ void main() {
       expect(product.description, isNull);
     });
 
-    test('fromJson converteix correctament el JSON amb productName i displayName', () {
-      final product = ProductItem.fromJson({
-        'productName': 'watering_can',
-        'displayName': 'Regadora',
-        'amount': 3,
-        'image_url': 'https://example.com/regadora.png',
-        'description': 'Serveix per regar les plantes.',
-      });
+    test(
+      'fromJson converteix correctament el JSON amb productName i displayName',
+      () {
+        final product = ProductItem.fromJson({
+          'productName': 'watering_can',
+          'displayName': 'Regadora',
+          'amount': 3,
+          'image_url': 'https://example.com/regadora.png',
+          'description': 'Serveix per regar les plantes.',
+        });
 
-      expect(product.productName, 'watering_can');
-      expect(product.displayName, 'Regadora');
-      expect(product.amount, 3);
-      expect(product.imageUrl, 'https://example.com/regadora.png');
-      expect(product.description, 'Serveix per regar les plantes.');
-    });
+        expect(product.productName, 'watering_can');
+        expect(product.displayName, 'Regadora');
+        expect(product.amount, 3);
+        expect(product.imageUrl, 'https://example.com/regadora.png');
+        expect(product.description, 'Serveix per regar les plantes.');
+      },
+    );
 
     test('fromJson accepta product_name i display_name del backend', () {
       final product = ProductItem.fromJson({
@@ -130,19 +133,22 @@ void main() {
       expect(product.description, 'Restaura una quantitat moderada de salut.');
     });
 
-    test('fromJson usa productName com a displayName si no arriba displayName', () {
-      final product = ProductItem.fromJson({
-        'productName': 'Adob',
-        'amount': 6,
-        'image_url': null,
-      });
+    test(
+      'fromJson usa productName com a displayName si no arriba displayName',
+      () {
+        final product = ProductItem.fromJson({
+          'productName': 'Adob',
+          'amount': 6,
+          'image_url': null,
+        });
 
-      expect(product.productName, 'Adob');
-      expect(product.displayName, 'Adob');
-      expect(product.amount, 6);
-      expect(product.imageUrl, isNull);
-      expect(product.description, isNull);
-    });
+        expect(product.productName, 'Adob');
+        expect(product.displayName, 'Adob');
+        expect(product.amount, 6);
+        expect(product.imageUrl, isNull);
+        expect(product.description, isNull);
+      },
+    );
 
     test('fromJson posa amount a 0 si no arriba amount', () {
       final product = ProductItem.fromJson({

@@ -243,9 +243,7 @@ Widget makeTestableWidget({
     providers: [
       ChangeNotifierProvider<UserModel>.value(value: userModel),
       ChangeNotifierProvider<WeatherProvider>.value(value: weatherProvider),
-      ChangeNotifierProvider<PlantProvider>(
-        create: (_) => PlantProvider(),
-      ),
+      ChangeNotifierProvider<PlantProvider>(create: (_) => PlantProvider()),
     ],
     child: MaterialApp(
       locale: const Locale('ca'),
@@ -734,10 +732,7 @@ void main() {
       expiresAt: DateTime.now().add(const Duration(hours: 1)),
     );
 
-    final pot = fakeOccupiedPot(
-      potNumber: 1,
-      activeProducts: [activePotion],
-    );
+    final pot = fakeOccupiedPot(potNumber: 1, activeProducts: [activePotion]);
 
     expect(pot.hasBuff, true);
 
@@ -763,10 +758,7 @@ void main() {
       expiresAt: DateTime.now().subtract(const Duration(hours: 1)),
     );
 
-    final pot = fakeOccupiedPot(
-      potNumber: 1,
-      activeProducts: [inactivePotion],
-    );
+    final pot = fakeOccupiedPot(potNumber: 1, activeProducts: [inactivePotion]);
 
     expect(pot.hasBuff, false);
   });
@@ -855,9 +847,7 @@ void main() {
   testWidgets('CollectPlantResult.fromJson funciona sense new_balance', (
     tester,
   ) async {
-    final result = CollectPlantResult.fromJson({
-      'message': 'Planta recollida',
-    });
+    final result = CollectPlantResult.fromJson({'message': 'Planta recollida'});
 
     expect(result.message, 'Planta recollida');
     expect(result.newBalance, isA<int>());
@@ -1005,91 +995,94 @@ void main() {
     expect(gardenService.fetchPotStatusCalls, 0);
   });
 
-  testWidgets('confirmar eliminar planta crida deletePlant i refresca el test', (
-    tester,
-  ) async {
-    final gardenService = FakeGardenService();
-    final weatherProvider = FakeWeatherProvider();
+  testWidgets(
+    'confirmar eliminar planta crida deletePlant i refresca el test',
+    (tester) async {
+      final gardenService = FakeGardenService();
+      final weatherProvider = FakeWeatherProvider();
 
-    final sheet = await openOccupiedPotSheet(
-      tester,
-      gardenService,
-      weatherProvider,
-    );
+      final sheet = await openOccupiedPotSheet(
+        tester,
+        gardenService,
+        weatherProvider,
+      );
 
-    final deleteFuture = sheet.onDeletePlant!();
+      final deleteFuture = sheet.onDeletePlant!();
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    expect(find.byType(Dialog), findsOneWidget);
+      expect(find.byType(Dialog), findsOneWidget);
 
-    await tester.tap(find.byType(ElevatedButton).last);
-    await tester.pump();
+      await tester.tap(find.byType(ElevatedButton).last);
+      await tester.pump();
 
-    await deleteFuture;
-    await finishCenteredMessageTimer(tester);
+      await deleteFuture;
+      await finishCenteredMessageTimer(tester);
 
-    expect(gardenService.deletePlantCalls, 1);
-    expect(gardenService.fetchPotStatusCalls, 1);
-  });
+      expect(gardenService.deletePlantCalls, 1);
+      expect(gardenService.fetchPotStatusCalls, 1);
+    },
+  );
 
-  testWidgets('eliminar planta sense token mostra error i no crida deletePlant', (
-    tester,
-  ) async {
-    final gardenService = FakeGardenService();
-    final weatherProvider = FakeWeatherProvider();
+  testWidgets(
+    'eliminar planta sense token mostra error i no crida deletePlant',
+    (tester) async {
+      final gardenService = FakeGardenService();
+      final weatherProvider = FakeWeatherProvider();
 
-    final sheet = await openOccupiedPotSheet(
-      tester,
-      gardenService,
-      weatherProvider,
-    );
+      final sheet = await openOccupiedPotSheet(
+        tester,
+        gardenService,
+        weatherProvider,
+      );
 
-    setUserToken(tester, '');
+      setUserToken(tester, '');
 
-    final deleteFuture = sheet.onDeletePlant!();
+      final deleteFuture = sheet.onDeletePlant!();
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    expect(find.byType(Dialog), findsOneWidget);
+      expect(find.byType(Dialog), findsOneWidget);
 
-    await tester.tap(find.byType(ElevatedButton).last);
-    await tester.pump();
+      await tester.tap(find.byType(ElevatedButton).last);
+      await tester.pump();
 
-    await deleteFuture;
-    await finishCenteredMessageTimer(tester);
+      await deleteFuture;
+      await finishCenteredMessageTimer(tester);
 
-    expect(gardenService.deletePlantCalls, 0);
-    expect(gardenService.fetchPotStatusCalls, 0);
-  });
+      expect(gardenService.deletePlantCalls, 0);
+      expect(gardenService.fetchPotStatusCalls, 0);
+    },
+  );
 
-  testWidgets('error en eliminar planta mostra missatge i no refresca el test', (
-    tester,
-  ) async {
-    final gardenService = FakeGardenService()..throwOnDelete = true;
-    final weatherProvider = FakeWeatherProvider();
+  testWidgets(
+    'error en eliminar planta mostra missatge i no refresca el test',
+    (tester) async {
+      final gardenService = FakeGardenService()..throwOnDelete = true;
+      final weatherProvider = FakeWeatherProvider();
 
-    final sheet = await openOccupiedPotSheet(
-      tester,
-      gardenService,
-      weatherProvider,
-    );
+      final sheet = await openOccupiedPotSheet(
+        tester,
+        gardenService,
+        weatherProvider,
+      );
 
-    final deleteFuture = sheet.onDeletePlant!();
+      final deleteFuture = sheet.onDeletePlant!();
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    expect(find.byType(Dialog), findsOneWidget);
+      expect(find.byType(Dialog), findsOneWidget);
 
-    await tester.tap(find.byType(ElevatedButton).last);
-    await tester.pump();
+      await tester.tap(find.byType(ElevatedButton).last);
+      await tester.pump();
 
-    await deleteFuture;
-    await finishCenteredMessageTimer(tester);
+      await deleteFuture;
+      await finishCenteredMessageTimer(tester);
 
-    expect(gardenService.deletePlantCalls, 1);
-    expect(gardenService.fetchPotStatusCalls, 0);
-  });
+      expect(gardenService.deletePlantCalls, 1);
+      expect(gardenService.fetchPotStatusCalls, 0);
+    },
+  );
 
   testWidgets('el botó d’inventari existeix a la pàgina del jardí', (
     tester,
@@ -1180,10 +1173,7 @@ void main() {
 
   testWidgets('funciona amb layout petit', (tester) async {
     final gardenService = FakeGardenService()
-      ..pots = [
-        fakeEmptyPot(potNumber: 1),
-        fakeEmptyPot(potNumber: 2),
-      ];
+      ..pots = [fakeEmptyPot(potNumber: 1), fakeEmptyPot(potNumber: 2)];
 
     final weatherProvider = FakeWeatherProvider()
       ..fakeWeather = fakeWeatherInfo();
@@ -1201,10 +1191,7 @@ void main() {
 
   testWidgets('funciona amb layout mitjà', (tester) async {
     final gardenService = FakeGardenService()
-      ..pots = [
-        fakeEmptyPot(potNumber: 1),
-        fakeEmptyPot(potNumber: 2),
-      ];
+      ..pots = [fakeEmptyPot(potNumber: 1), fakeEmptyPot(potNumber: 2)];
 
     final weatherProvider = FakeWeatherProvider()
       ..fakeWeather = fakeWeatherInfo();

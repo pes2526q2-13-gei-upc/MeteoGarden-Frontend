@@ -116,73 +116,77 @@ void main() {
     expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
   });
 
-  testWidgets('mostra error si les credencials són incorrectes amb status 401', (
+  testWidgets(
+    'mostra error si les credencials són incorrectes amb status 401',
+    (tester) async {
+      final client = MockClient((request) async {
+        if (request.url.path.endsWith('/api/login/')) {
+          return http.Response(
+            jsonEncode({'error': 'Invalid credentials'}),
+            401,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+
+        return http.Response('{}', 404);
+      });
+
+      await tester.pumpWidget(buildLoginPage(client: client));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('login_username_field')),
+        'jana',
+      );
+      await tester.enterText(
+        find.byKey(const Key('login_password_field')),
+        'wrong-password',
+      );
+
+      await tester.tap(find.byKey(const Key('login_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'mostra error si les credencials són incorrectes amb status 400',
+    (tester) async {
+      final client = MockClient((request) async {
+        if (request.url.path.endsWith('/api/login/')) {
+          return http.Response(
+            jsonEncode({'error': 'Bad request'}),
+            400,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+
+        return http.Response('{}', 404);
+      });
+
+      await tester.pumpWidget(buildLoginPage(client: client));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('login_username_field')),
+        'jana',
+      );
+      await tester.enterText(
+        find.byKey(const Key('login_password_field')),
+        'wrong-password',
+      );
+
+      await tester.tap(find.byKey(const Key('login_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
+    },
+  );
+
+  testWidgets('mostra error de servidor si el login retorna 500', (
     tester,
   ) async {
-    final client = MockClient((request) async {
-      if (request.url.path.endsWith('/api/login/')) {
-        return http.Response(
-          jsonEncode({'error': 'Invalid credentials'}),
-          401,
-          headers: {'content-type': 'application/json'},
-        );
-      }
-
-      return http.Response('{}', 404);
-    });
-
-    await tester.pumpWidget(buildLoginPage(client: client));
-    await tester.pumpAndSettle();
-
-    await tester.enterText(
-      find.byKey(const Key('login_username_field')),
-      'jana',
-    );
-    await tester.enterText(
-      find.byKey(const Key('login_password_field')),
-      'wrong-password',
-    );
-
-    await tester.tap(find.byKey(const Key('login_button')));
-    await tester.pumpAndSettle();
-
-    expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
-  });
-
-  testWidgets('mostra error si les credencials són incorrectes amb status 400', (
-    tester,
-  ) async {
-    final client = MockClient((request) async {
-      if (request.url.path.endsWith('/api/login/')) {
-        return http.Response(
-          jsonEncode({'error': 'Bad request'}),
-          400,
-          headers: {'content-type': 'application/json'},
-        );
-      }
-
-      return http.Response('{}', 404);
-    });
-
-    await tester.pumpWidget(buildLoginPage(client: client));
-    await tester.pumpAndSettle();
-
-    await tester.enterText(
-      find.byKey(const Key('login_username_field')),
-      'jana',
-    );
-    await tester.enterText(
-      find.byKey(const Key('login_password_field')),
-      'wrong-password',
-    );
-
-    await tester.tap(find.byKey(const Key('login_button')));
-    await tester.pumpAndSettle();
-
-    expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
-  });
-
-  testWidgets('mostra error de servidor si el login retorna 500', (tester) async {
     final client = MockClient((request) async {
       if (request.url.path.endsWith('/api/login/')) {
         return http.Response('Server error', 500);

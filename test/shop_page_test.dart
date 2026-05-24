@@ -211,8 +211,8 @@ void main() {
         }
 
         if (request.url.toString().endsWith(
-              '/api/shop/seeds/Helianthus%20annuus/',
-            )) {
+          '/api/shop/seeds/Helianthus%20annuus/',
+        )) {
           return jsonResponse({
             'scientificName': 'Helianthus annuus',
             'commonName': 'Girasol Gigante',
@@ -288,8 +288,8 @@ void main() {
         }
 
         if (request.url.toString().endsWith(
-              '/api/shop/products/Small%20Heal/',
-            )) {
+          '/api/shop/products/Small%20Heal/',
+        )) {
           return jsonResponse({
             'name': 'Small Heal',
             'displayName': 'Cura petita',
@@ -367,9 +367,7 @@ void main() {
       await clearCenteredMessageTimer(tester);
     });
 
-    testWidgets('mostra error si falla el detall d’una llavor', (
-      tester,
-    ) async {
+    testWidgets('mostra error si falla el detall d’una llavor', (tester) async {
       final client = MockClient((request) async {
         if (request.url.path == '/api/shop/seeds/') {
           return jsonResponse([
@@ -435,10 +433,9 @@ void main() {
         }
 
         if (request.url.path == '/api/users/jana/buy/') {
-          return jsonResponse(
-            {'error': 'No tens prou monedes'},
-            statusCode: 400,
-          );
+          return jsonResponse({
+            'error': 'No tens prou monedes',
+          }, statusCode: 400);
         }
 
         return jsonResponse({'error': 'not found'}, statusCode: 404);
@@ -485,10 +482,7 @@ void main() {
       expect(find.text('Rosa Mágica'), findsOneWidget);
       expect(seedCalls, 1);
 
-      await tester.drag(
-        find.byType(ListView),
-        const Offset(0, 500),
-      );
+      await tester.drag(find.byType(ListView), const Offset(0, 500));
 
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));

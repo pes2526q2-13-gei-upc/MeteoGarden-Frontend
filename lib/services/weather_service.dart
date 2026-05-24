@@ -19,9 +19,7 @@ class WeatherService {
 
     final res = await _client.get(
       uri,
-      headers: {
-        'Authorization': 'Token $token',
-      },
+      headers: {'Authorization': 'Token $token'},
     );
 
     if (res.statusCode != 200) {

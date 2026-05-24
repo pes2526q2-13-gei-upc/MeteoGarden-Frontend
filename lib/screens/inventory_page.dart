@@ -88,14 +88,16 @@ class _InventoryPageState extends State<InventoryPage>
     final list = _products
         .where(
           (p) =>
-              p.displayName.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-            p.productName.toLowerCase().contains(_searchQuery.toLowerCase()),
+              p.displayName.toLowerCase().contains(
+                _searchQuery.toLowerCase(),
+              ) ||
+              p.productName.toLowerCase().contains(_searchQuery.toLowerCase()),
         )
         .toList();
 
     list.sort(
       (a, b) =>
-           a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()),
+          a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase()),
     );
 
     return list;

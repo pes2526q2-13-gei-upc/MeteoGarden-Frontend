@@ -111,10 +111,7 @@ Future<void> pumpInventoryPage(
 
   await tester.pumpWidget(
     makeTestableWidget(
-      child: InventoryPage(
-        username: 'jana',
-        gardenService: gardenService,
-      ),
+      child: InventoryPage(username: 'jana', gardenService: gardenService),
     ),
   );
 
@@ -158,14 +155,8 @@ void main() {
 
     expect(find.byKey(const Key('inventory_products_grid')), findsOneWidget);
 
-    expect(
-      find.byKey(const Key('product_card_growth_potion')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const Key('product_card_fertilizer')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('product_card_growth_potion')), findsOneWidget);
+    expect(find.byKey(const Key('product_card_fertilizer')), findsOneWidget);
 
     expect(find.text('Pocio de creixement'), findsOneWidget);
     expect(find.text('Fertilitzant'), findsOneWidget);
@@ -196,14 +187,8 @@ void main() {
     await tester.enterText(find.byType(TextField), 'fert');
     await tester.pumpAndSettle();
 
-    expect(
-      find.byKey(const Key('product_card_fertilizer')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const Key('product_card_growth_potion')),
-      findsNothing,
-    );
+    expect(find.byKey(const Key('product_card_fertilizer')), findsOneWidget);
+    expect(find.byKey(const Key('product_card_growth_potion')), findsNothing);
   });
 
   testWidgets('filtra els productes amb el cercador per productName', (
@@ -219,14 +204,8 @@ void main() {
     await tester.enterText(find.byType(TextField), 'growth');
     await tester.pumpAndSettle();
 
-    expect(
-      find.byKey(const Key('product_card_growth_potion')),
-      findsOneWidget,
-    );
-    expect(
-      find.byKey(const Key('product_card_fertilizer')),
-      findsNothing,
-    );
+    expect(find.byKey(const Key('product_card_growth_potion')), findsOneWidget);
+    expect(find.byKey(const Key('product_card_fertilizer')), findsNothing);
   });
 
   testWidgets('mostra estat buit si no hi ha llavors', (tester) async {
@@ -312,7 +291,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Fertilitzant'), findsWidgets);
-    expect(find.textContaining('Millora l’estat general de la planta.'), findsOneWidget);
+    expect(
+      find.textContaining('Millora l’estat general de la planta.'),
+      findsOneWidget,
+    );
     expect(find.text('Tancar'), findsOneWidget);
 
     await tester.tap(find.text('Tancar'));

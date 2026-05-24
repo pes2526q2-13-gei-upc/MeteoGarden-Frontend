@@ -282,25 +282,28 @@ void main() {
       expect(missions, isEmpty);
     });
 
-    test('llança MissionException amb statusCode si el servidor retorna 401', () {
-      final client = MockClient(
-        (_) async => http.Response('Unauthorized', 401),
-      );
+    test(
+      'llança MissionException amb statusCode si el servidor retorna 401',
+      () {
+        final client = MockClient(
+          (_) async => http.Response('Unauthorized', 401),
+        );
 
-      expect(
-        () => MissionService.fetchMissions(
-          token: 'token-invàlid',
-          client: client,
-        ),
-        throwsA(
-          isA<MissionException>().having(
-            (e) => e.statusCode,
-            'statusCode',
-            401,
+        expect(
+          () => MissionService.fetchMissions(
+            token: 'token-invàlid',
+            client: client,
           ),
-        ),
-      );
-    });
+          throwsA(
+            isA<MissionException>().having(
+              (e) => e.statusCode,
+              'statusCode',
+              401,
+            ),
+          ),
+        );
+      },
+    );
 
     test('llança MissionException si el servidor retorna 500', () {
       final client = MockClient(
@@ -366,28 +369,31 @@ void main() {
       expect(coins, 0);
     });
 
-    test('continua identificant la missió amb name i no amb displayName', () async {
-      String? sentBody;
+    test(
+      'continua identificant la missió amb name i no amb displayName',
+      () async {
+        String? sentBody;
 
-      final client = MockClient((request) async {
-        sentBody = request.body;
-        return http.Response(jsonEncode({'status': 'ok'}), 200);
-      });
+        final client = MockClient((request) async {
+          sentBody = request.body;
+          return http.Response(jsonEncode({'status': 'ok'}), 200);
+        });
 
-      await MissionService.claimMission(
-        token: 'test-token',
-        mission: _buildServiceMission(
-          rewardCoins: 50,
-          name: 'INTERNAL_MISSION_ID',
-          displayName: 'Nom traduït visible',
-        ),
-        client: client,
-      );
+        await MissionService.claimMission(
+          token: 'test-token',
+          mission: _buildServiceMission(
+            rewardCoins: 50,
+            name: 'INTERNAL_MISSION_ID',
+            displayName: 'Nom traduït visible',
+          ),
+          client: client,
+        );
 
-      expect(sentBody, isNotNull);
-      expect(sentBody, contains('INTERNAL_MISSION_ID'));
-      expect(sentBody, isNot(contains('Nom traduït visible')));
-    });
+        expect(sentBody, isNotNull);
+        expect(sentBody, contains('INTERNAL_MISSION_ID'));
+        expect(sentBody, isNot(contains('Nom traduït visible')));
+      },
+    );
 
     test('llança MissionException amb la clau d\'error del servidor 400', () {
       final client = MockClient((_) async {
@@ -439,22 +445,25 @@ void main() {
       );
     });
 
-    test('llança MissionException amb missatge buit si el body no és JSON vàlid', () {
-      final client = MockClient(
-        (_) async => http.Response('Bad Request', 400),
-      );
+    test(
+      'llança MissionException amb missatge buit si el body no és JSON vàlid',
+      () {
+        final client = MockClient(
+          (_) async => http.Response('Bad Request', 400),
+        );
 
-      expect(
-        () => MissionService.claimMission(
-          token: 'test-token',
-          mission: _buildServiceMission(rewardCoins: 50),
-          client: client,
-        ),
-        throwsA(
-          isA<MissionException>().having((e) => e.message, 'message', ''),
-        ),
-      );
-    });
+        expect(
+          () => MissionService.claimMission(
+            token: 'test-token',
+            mission: _buildServiceMission(rewardCoins: 50),
+            client: client,
+          ),
+          throwsA(
+            isA<MissionException>().having((e) => e.message, 'message', ''),
+          ),
+        );
+      },
+    );
 
     test('llança MissionException de connexió si no hi ha xarxa', () {
       final client = MockClient(

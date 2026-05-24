@@ -92,16 +92,19 @@ void main() {
       expect(potion.displayName, 'Fertilitzant');
     });
 
-    test('fromJson usa name com a displayName si no arriba cap displayName', () {
-      final potion = ActivePotion.fromJson({
-        'name': 'Fertilitzant',
-        'applied_at': '2026-05-16T10:00:00',
-        'expires_at': '2026-05-17T10:00:00',
-      });
+    test(
+      'fromJson usa name com a displayName si no arriba cap displayName',
+      () {
+        final potion = ActivePotion.fromJson({
+          'name': 'Fertilitzant',
+          'applied_at': '2026-05-16T10:00:00',
+          'expires_at': '2026-05-17T10:00:00',
+        });
 
-      expect(potion.name, 'Fertilitzant');
-      expect(potion.displayName, 'Fertilitzant');
-    });
+        expect(potion.name, 'Fertilitzant');
+        expect(potion.displayName, 'Fertilitzant');
+      },
+    );
   });
 
   group('PlantData', () {

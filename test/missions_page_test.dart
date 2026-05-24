@@ -288,7 +288,7 @@ void main() {
                 ),
               ];
             },
-            claimMission: (_, __) async {
+            claimMission: (_, _) async {
               throw MissionException('Mission in progress', statusCode: 400);
             },
             onCoinsEarned: (coins) {

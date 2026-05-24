@@ -8,8 +8,6 @@ import 'package:meteo_garden/models/dades_usr.dart';
 import 'package:meteo_garden/screens/photo_page.dart';
 import 'package:meteo_garden/services/plant_service.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
-import 'package:image/image.dart' as img;
 
 Widget makeTestablePhotoPage({
   Future<String> Function()? takePictureForTest,
@@ -117,13 +115,10 @@ void main() {
         tester,
         takePictureForTest: () async => '/tmp/original.jpg',
         cropImageForTest: (imagePath) async => '/tmp/cropped.jpg',
-        identifyPlantForTest: ({
-          required username,
-          required imagePath,
-          required organ,
-        }) async {
-          return null;
-        },
+        identifyPlantForTest:
+            ({required username, required imagePath, required organ}) async {
+              return null;
+            },
         reloadPlantsForTest: (_) async {},
       );
 
@@ -132,14 +127,15 @@ void main() {
       expect(find.text('MeteoGarden'), findsOneWidget);
       expect(find.byIcon(Icons.park), findsOneWidget);
       expect(find.byIcon(Icons.local_florist), findsOneWidget);
-      expect(find.byKey(const Key('take_plant_picture_button')), findsOneWidget);
+      expect(
+        find.byKey(const Key('take_plant_picture_button')),
+        findsOneWidget,
+      );
       expect(find.byIcon(Icons.photo), findsOneWidget);
       expect(find.byIcon(Icons.cameraswitch), findsOneWidget);
     });
 
-    testWidgets('per defecte envia organ leaf quan es fa foto', (
-      tester,
-    ) async {
+    testWidgets('per defecte envia organ leaf quan es fa foto', (tester) async {
       String? capturedUsername;
       String? capturedImagePath;
       String? capturedOrgan;
@@ -152,16 +148,13 @@ void main() {
           expect(imagePath, '/tmp/original.jpg');
           return '/tmp/cropped.jpg';
         },
-        identifyPlantForTest: ({
-          required username,
-          required imagePath,
-          required organ,
-        }) async {
-          capturedUsername = username;
-          capturedImagePath = imagePath;
-          capturedOrgan = organ;
-          return null;
-        },
+        identifyPlantForTest:
+            ({required username, required imagePath, required organ}) async {
+              capturedUsername = username;
+              capturedImagePath = imagePath;
+              capturedOrgan = organ;
+              return null;
+            },
         reloadPlantsForTest: (_) async {
           reloadCalled = true;
         },
@@ -177,23 +170,18 @@ void main() {
       expect(reloadCalled, isTrue);
     });
 
-    testWidgets('si selecciona flor envia organ flower', (
-      tester,
-    ) async {
+    testWidgets('si selecciona flor envia organ flower', (tester) async {
       String? capturedOrgan;
 
       await pumpPhotoPage(
         tester,
         takePictureForTest: () async => '/tmp/original.jpg',
         cropImageForTest: (_) async => '/tmp/cropped.jpg',
-        identifyPlantForTest: ({
-          required username,
-          required imagePath,
-          required organ,
-        }) async {
-          capturedOrgan = organ;
-          return null;
-        },
+        identifyPlantForTest:
+            ({required username, required imagePath, required organ}) async {
+              capturedOrgan = organ;
+              return null;
+            },
         reloadPlantsForTest: (_) async {},
       );
 
@@ -206,23 +194,18 @@ void main() {
       expect(capturedOrgan, 'flower');
     });
 
-    testWidgets('pot tornar de flower a leaf i envia leaf', (
-      tester,
-    ) async {
+    testWidgets('pot tornar de flower a leaf i envia leaf', (tester) async {
       String? capturedOrgan;
 
       await pumpPhotoPage(
         tester,
         takePictureForTest: () async => '/tmp/original.jpg',
         cropImageForTest: (_) async => '/tmp/cropped.jpg',
-        identifyPlantForTest: ({
-          required username,
-          required imagePath,
-          required organ,
-        }) async {
-          capturedOrgan = organ;
-          return null;
-        },
+        identifyPlantForTest:
+            ({required username, required imagePath, required organ}) async {
+              capturedOrgan = organ;
+              return null;
+            },
         reloadPlantsForTest: (_) async {},
       );
 
@@ -245,15 +228,12 @@ void main() {
           tester,
           takePictureForTest: () async => '/tmp/original.jpg',
           cropImageForTest: (_) async => '/tmp/cropped.jpg',
-          identifyPlantForTest: ({
-            required username,
-            required imagePath,
-            required organ,
-          }) async {
-            throw PlantIdentificationException(
-              'No s’ha pogut identificar la planta',
-            );
-          },
+          identifyPlantForTest:
+              ({required username, required imagePath, required organ}) async {
+                throw PlantIdentificationException(
+                  'No s’ha pogut identificar la planta',
+                );
+              },
           reloadPlantsForTest: (_) async {},
         );
 
@@ -273,13 +253,10 @@ void main() {
         tester,
         takePictureForTest: () async => '/tmp/original.jpg',
         cropImageForTest: (_) async => '/tmp/cropped.jpg',
-        identifyPlantForTest: ({
-          required username,
-          required imagePath,
-          required organ,
-        }) async {
-          throw Exception('server down');
-        },
+        identifyPlantForTest:
+            ({required username, required imagePath, required organ}) async {
+              throw Exception('server down');
+            },
         reloadPlantsForTest: (_) async {},
       );
 
@@ -291,9 +268,7 @@ void main() {
       await clearSnackBarTimer(tester);
     });
 
-    testWidgets('si falla la captura mostra error inesperat', (
-      tester,
-    ) async {
+    testWidgets('si falla la captura mostra error inesperat', (tester) async {
       var cropCalled = false;
       var identifyCalled = false;
 
@@ -306,14 +281,11 @@ void main() {
           cropCalled = true;
           return '/tmp/cropped.jpg';
         },
-        identifyPlantForTest: ({
-          required username,
-          required imagePath,
-          required organ,
-        }) async {
-          identifyCalled = true;
-          return null;
-        },
+        identifyPlantForTest:
+            ({required username, required imagePath, required organ}) async {
+              identifyCalled = true;
+              return null;
+            },
         reloadPlantsForTest: (_) async {},
       );
 
@@ -327,9 +299,7 @@ void main() {
       await clearSnackBarTimer(tester);
     });
 
-    testWidgets('si el crop falla mostra error inesperat', (
-      tester,
-    ) async {
+    testWidgets('si el crop falla mostra error inesperat', (tester) async {
       var identifyCalled = false;
 
       await pumpPhotoPage(
@@ -338,14 +308,11 @@ void main() {
         cropImageForTest: (_) async {
           throw Exception('crop failed');
         },
-        identifyPlantForTest: ({
-          required username,
-          required imagePath,
-          required organ,
-        }) async {
-          identifyCalled = true;
-          return null;
-        },
+        identifyPlantForTest:
+            ({required username, required imagePath, required organ}) async {
+              identifyCalled = true;
+              return null;
+            },
         reloadPlantsForTest: (_) async {},
       );
 
@@ -367,14 +334,11 @@ void main() {
         tester,
         takePictureForTest: () async => '/tmp/original.jpg',
         cropImageForTest: (_) async => '/tmp/cropped.jpg',
-        identifyPlantForTest: ({
-          required username,
-          required imagePath,
-          required organ,
-        }) async {
-          identifyCalled = true;
-          return null;
-        },
+        identifyPlantForTest:
+            ({required username, required imagePath, required organ}) async {
+              identifyCalled = true;
+              return null;
+            },
         reloadPlantsForTest: (_) async {
           throw Exception('reload failed');
         },
@@ -389,57 +353,56 @@ void main() {
       await clearSnackBarTimer(tester);
     });
 
-    testWidgets('evita dobles identificacions si es prem el botó dues vegades ràpid', (
-      tester,
-    ) async {
-      var identifyCalls = 0;
-      final completer = Completer<void>();
+    testWidgets(
+      'evita dobles identificacions si es prem el botó dues vegades ràpid',
+      (tester) async {
+        var identifyCalls = 0;
+        final completer = Completer<void>();
 
-      await pumpPhotoPage(
-        tester,
-        takePictureForTest: () async => '/tmp/original.jpg',
-        cropImageForTest: (_) async => '/tmp/cropped.jpg',
-        identifyPlantForTest: ({
-          required username,
-          required imagePath,
-          required organ,
-        }) async {
-          identifyCalls++;
-          await completer.future;
-          return null;
-        },
-        reloadPlantsForTest: (_) async {},
-      );
+        await pumpPhotoPage(
+          tester,
+          takePictureForTest: () async => '/tmp/original.jpg',
+          cropImageForTest: (_) async => '/tmp/cropped.jpg',
+          identifyPlantForTest:
+              ({required username, required imagePath, required organ}) async {
+                identifyCalls++;
+                await completer.future;
+                return null;
+              },
+          reloadPlantsForTest: (_) async {},
+        );
 
-      final button = find.byKey(const Key('take_plant_picture_button'));
+        final button = find.byKey(const Key('take_plant_picture_button'));
 
-      await tester.tap(button);
-      await tester.pump();
+        await tester.tap(button);
+        await tester.pump();
 
-      await tester.tap(button);
-      await tester.pump();
+        await tester.tap(button);
+        await tester.pump();
 
-      expect(identifyCalls, 1);
+        expect(identifyCalls, 1);
 
-      completer.complete();
-      await tester.pumpAndSettle();
-    });
+        completer.complete();
+        await tester.pumpAndSettle();
+      },
+    );
 
-    testWidgets('si enableCamera és false i no hi ha fake preview mostra loading', (
-      tester,
-    ) async {
-      configureMobileTestView(tester);
+    testWidgets(
+      'si enableCamera és false i no hi ha fake preview mostra loading',
+      (tester) async {
+        configureMobileTestView(tester);
 
-      await tester.pumpWidget(
-        makeTestablePhotoPage(
-          enableCamera: false,
-          useFakeCameraPreview: false,
-        ),
-      );
+        await tester.pumpWidget(
+          makeTestablePhotoPage(
+            enableCamera: false,
+            useFakeCameraPreview: false,
+          ),
+        );
 
-      await tester.pump();
+        await tester.pump();
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    });
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      },
+    );
   });
 }

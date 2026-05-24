@@ -57,7 +57,7 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
         gardenName: widget.gardenName,
         potNumber: widget.pot.potNumber,
         productName: _selectedPotion!.productName,
-        token: userModel.token!,
+        token: userModel.token,
       );
 
       setState(() {

@@ -69,7 +69,7 @@ class _MissionsPageState extends State<MissionsPage> {
       });
     }
   }
-  
+
   Future<void> _claimMission(Mission mission) async {
     final l10n = AppLocalizations.of(context)!;
 
@@ -78,10 +78,7 @@ class _MissionsPageState extends State<MissionsPage> {
 
       final coinsEarned = widget.claimMission != null
           ? await widget.claimMission!(token, mission)
-          : await MissionService.claimMission(
-              token: token,
-              mission: mission,
-            );
+          : await MissionService.claimMission(token: token, mission: mission);
 
       if (coinsEarned > 0 && mounted) {
         if (widget.onCoinsEarned != null) {
@@ -111,14 +108,9 @@ class _MissionsPageState extends State<MissionsPage> {
         _ => l10n.missionsErrorGeneric,
       };
 
-      CenteredMessage.show(
-        context,
-        errorMsg,
-        type: CenteredMessageType.error,
-      );
+      CenteredMessage.show(context, errorMsg, type: CenteredMessageType.error);
     }
   }
-
 
   int get _completedCount =>
       _missions.where((m) => m.isCompleted || m.isClaimed).length;

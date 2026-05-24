@@ -289,7 +289,8 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                 ),
               ),
             )
-          : !useFakePreview && (controller == null || _initializeControllerFuture == null)
+          : !useFakePreview &&
+                (controller == null || _initializeControllerFuture == null)
           ? const Center(child: CircularProgressIndicator())
           : FutureBuilder(
               future: _initializeControllerFuture ?? Future.value(),

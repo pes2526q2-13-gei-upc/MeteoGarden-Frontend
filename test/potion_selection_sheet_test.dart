@@ -309,27 +309,27 @@ void main() {
   });
 
   testWidgets('mostra Image.network si la poció té imatge', (tester) async {
-  final gardenService = FakeGardenService()
-    ..products = [
-      ProductItem(
-        productName: 'hydration_shield',
-        displayName: 'Escut hidratant',
-        amount: 1,
-        imageUrl: 'https://example.com/potion.png',
-        description: 'Redueix la pèrdua d’aigua.',
-      ),
-    ];
+    final gardenService = FakeGardenService()
+      ..products = [
+        ProductItem(
+          productName: 'hydration_shield',
+          displayName: 'Escut hidratant',
+          amount: 1,
+          imageUrl: 'https://example.com/potion.png',
+          description: 'Redueix la pèrdua d’aigua.',
+        ),
+      ];
 
-  await openPotionSheet(tester, gardenService: gardenService);
+    await openPotionSheet(tester, gardenService: gardenService);
 
-  expect(find.text('Escut hidratant'), findsOneWidget);
+    expect(find.text('Escut hidratant'), findsOneWidget);
 
-  final networkImages = tester
-      .widgetList<Image>(find.byType(Image))
-      .where((image) => image.image is NetworkImage)
-      .toList();
+    final networkImages = tester
+        .widgetList<Image>(find.byType(Image))
+        .where((image) => image.image is NetworkImage)
+        .toList();
 
-  expect(networkImages.length, 1);
-  expect(networkImages.first.image, isA<NetworkImage>());
-});
+    expect(networkImages.length, 1);
+    expect(networkImages.first.image, isA<NetworkImage>());
+  });
 }
