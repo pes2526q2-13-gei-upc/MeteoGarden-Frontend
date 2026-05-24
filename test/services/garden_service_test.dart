@@ -318,14 +318,18 @@ void main() {
           return http.Response(
             jsonEncode([
               {
-                'productName': 'Fertilitzant',
+                'productName': 'fertilizer',
+                'displayName': 'Fertilitzant',
                 'amount': 3,
                 'image_url': 'fertilitzant.png',
+                'description': 'Millora la planta.',
               },
               {
-                'productName': 'Poció de creixement',
+                'productName': 'growth_potion',
+                'displayName': 'Poció de creixement',
                 'amount': 1,
                 'image_url': null,
+                'description': null,
               },
             ]),
             200,
@@ -336,12 +340,46 @@ void main() {
       final products = await service.fetchProducts(username);
 
       expect(products.length, 2);
-      expect(products[0].productName, 'Fertilitzant');
+
+      expect(products[0].productName, 'fertilizer');
+      expect(products[0].displayName, 'Fertilitzant');
       expect(products[0].amount, 3);
       expect(products[0].imageUrl, 'fertilitzant.png');
-      expect(products[1].productName, 'Poció de creixement');
+      expect(products[0].description, 'Millora la planta.');
+
+      expect(products[1].productName, 'growth_potion');
+      expect(products[1].displayName, 'Poció de creixement');
       expect(products[1].amount, 1);
       expect(products[1].imageUrl, isNull);
+      expect(products[1].description, isNull);
+    });
+
+    test('fetchProducts accepta display_name del backend', () async {
+      final service = GardenService(
+        client: MockClient((request) async {
+          return http.Response(
+            jsonEncode([
+              {
+                'product_name': 'medium_heal',
+                'display_name': 'Curació mitjana',
+                'amount': 2,
+                'image_url': null,
+                'description': 'Restaura salut.',
+              },
+            ]),
+            200,
+          );
+        }),
+      );
+
+      final products = await service.fetchProducts(username);
+
+      expect(products.length, 1);
+      expect(products.first.productName, 'medium_heal');
+      expect(products.first.displayName, 'Curació mitjana');
+      expect(products.first.amount, 2);
+      expect(products.first.imageUrl, isNull);
+      expect(products.first.description, 'Restaura salut.');
     });
 
     test('fetchProducts llença excepció si statusCode no és 200', () async {
@@ -368,15 +406,12 @@ void main() {
         client: MockClient((request) async {
           expect(request.method, 'POST');
           expect(request.url.path, contains('/api/use_product/'));
-
-          final contentType =
-              request.headers['Content-Type'] ??
-              request.headers['content-type'];
-          expect(contentType, contains('application/json'));
+          expect(request.headers['Content-Type'], 'application/json');
+          expect(request.headers['Authorization'], 'Token $token');
 
           final body = jsonDecode(request.body) as Map<String, dynamic>;
           expect(body['pot_number'], 1);
-          expect(body['product_name'], 'Fertilitzant');
+          expect(body['product_name'], 'fertilizer');
           expect(body['username'], username);
           expect(body['garden_name'], gardenName);
 
@@ -391,7 +426,8 @@ void main() {
         username: username,
         gardenName: gardenName,
         potNumber: 1,
-        productName: 'Fertilitzant',
+        productName: 'fertilizer',
+        token: token,
       );
 
       expect(message, 'Poció Fertilitzant aplicada correctament');
@@ -400,6 +436,8 @@ void main() {
     test('applyPotion retorna missatge per poció no instantània', () async {
       final service = GardenService(
         client: MockClient((request) async {
+          expect(request.headers['Authorization'], 'Token $token');
+
           return http.Response(
             jsonEncode({'isInstant': false, 'product': 'Escut'}),
             200,
@@ -411,15 +449,75 @@ void main() {
         username: username,
         gardenName: gardenName,
         potNumber: 1,
-        productName: 'Escut',
+        productName: 'hydration_shield',
+        token: token,
       );
 
       expect(message, 'Efecte Escut activat');
     });
 
+    test('applyPotion usa displayName si ve al body', () async {
+      final service = GardenService(
+        client: MockClient((request) async {
+          expect(request.headers['Authorization'], 'Token $token');
+
+          return http.Response.bytes(
+            utf8.encode(
+              jsonEncode({
+                'isInstant': true,
+                'displayName': 'Fertilitzant traduït',
+              }),
+            ),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          );
+        }),
+      );
+
+      final message = await service.applyPotion(
+        username: username,
+        gardenName: gardenName,
+        potNumber: 1,
+        productName: 'fertilizer',
+        token: token,
+      );
+
+      expect(message, 'Poció Fertilitzant traduït aplicada correctament');
+    });
+
+    test('applyPotion usa display_name si ve al body', () async {
+      final service = GardenService(
+        client: MockClient((request) async {
+          expect(request.headers['Authorization'], 'Token $token');
+
+          return http.Response.bytes(
+            utf8.encode(
+              jsonEncode({
+                'isInstant': false,
+                'display_name': 'Escut hidratant',
+              }),
+            ),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          );
+        }),
+      );
+
+      final message = await service.applyPotion(
+        username: username,
+        gardenName: gardenName,
+        potNumber: 1,
+        productName: 'hydration_shield',
+        token: token,
+      );
+
+      expect(message, 'Efecte Escut hidratant activat');
+    });
     test('applyPotion usa productName si product no ve al body', () async {
       final service = GardenService(
         client: MockClient((request) async {
+          expect(request.headers['Authorization'], 'Token $token');
+
           return http.Response(jsonEncode({'isInstant': true}), 200);
         }),
       );
@@ -429,6 +527,7 @@ void main() {
         gardenName: gardenName,
         potNumber: 1,
         productName: 'Producte fallback',
+        token: token,
       );
 
       expect(message, 'Poció Producte fallback aplicada correctament');
@@ -437,6 +536,8 @@ void main() {
     test('applyPotion llença error si statusCode no és 200', () async {
       final service = GardenService(
         client: MockClient((request) async {
+          expect(request.headers['Authorization'], 'Token $token');
+
           return http.Response(
             jsonEncode({'error': 'No tens aquest producte'}),
             400,
@@ -449,7 +550,8 @@ void main() {
           username: username,
           gardenName: gardenName,
           potNumber: 1,
-          productName: 'Fertilitzant',
+          productName: 'fertilizer',
+          token: token,
         ),
         throwsA(
           predicate(
@@ -466,6 +568,8 @@ void main() {
       () async {
         final service = GardenService(
           client: MockClient((request) async {
+            expect(request.headers['Authorization'], 'Token $token');
+
             return http.Response(jsonEncode({'error': 'Error aplicant'}), 200);
           }),
         );
@@ -475,7 +579,8 @@ void main() {
             username: username,
             gardenName: gardenName,
             potNumber: 1,
-            productName: 'Fertilitzant',
+            productName: 'fertilizer',
+            token: token,
           ),
           throwsA(
             predicate(
@@ -625,20 +730,21 @@ void main() {
           expect(body['plant'], 'Mentha spicata');
 
           return http.Response(
-            jsonEncode({'message': 'Planta recollida'}),
+            jsonEncode({'message': 'Planta recollida', 'new_balance': 35}),
             200,
           );
         }),
       );
 
-      final message = await service.collectPlant(
+      final result = await service.collectPlant(
         username: username,
         gardenName: gardenName,
         potNumber: 1,
         scientificName: 'Mentha spicata',
       );
 
-      expect(message, 'Planta recollida');
+      expect(result.message, 'Planta recollida');
+      expect(result.newBalance, 35);
     });
 
     test(
@@ -650,14 +756,15 @@ void main() {
           }),
         );
 
-        final message = await service.collectPlant(
+        final result = await service.collectPlant(
           username: username,
           gardenName: gardenName,
           potNumber: 1,
           scientificName: 'Mentha spicata',
         );
 
-        expect(message, 'Planta recollida correctament.');
+        expect(result.message, isNotEmpty);
+        expect(result.newBalance, isA<int>());
       },
     );
 

@@ -650,43 +650,56 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
       child: Stack(
-        alignment: Alignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 52),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/images/logo.png',
-                      height: 28,
-                      errorBuilder: (_, _, _) => const Icon(
-                        Icons.eco,
-                        color: Color(0xFF4CAF50),
-                        size: 28,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/images/logo.png',
+                          height: 28,
+                          errorBuilder: (_, _, _) => const Icon(
+                            Icons.eco,
+                            color: Color(0xFF4CAF50),
+                            size: 28,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Text(
+                          'MeteoGarden',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2E7D32),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.culturalEvents,
+                      key: const Key('calendar_title'),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF1B5E20),
                       ),
                     ),
-                    const SizedBox(width: 6),
-                    const Text(
-                      'MeteoGarden',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2E7D32),
-                      ),
-                    ),
+                    _buildActiveFiltersText(),
                   ],
                 ),
-                const SizedBox(height: 4),
-                _buildActiveFiltersText(),
-              ],
-            ),
+              ),
+            ],
           ),
           Positioned(
             left: 0,
@@ -703,7 +716,7 @@ class _CalendarPageState extends State<CalendarPage> {
               clipBehavior: Clip.none,
               children: [
                 IconButton(
-                  tooltip: AppLocalizations.of(context)!.calendarFiltersTooltip,
+                  tooltip: l10n.calendarFiltersTooltip,
                   icon: const Icon(Icons.tune, color: Color(0xFF4CAF50)),
                   onPressed: _showFiltersSheet,
                 ),

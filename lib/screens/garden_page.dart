@@ -56,7 +56,7 @@ class _GardenPageState extends State<GardenPage> {
       Provider.of<WeatherProvider>(
         context,
         listen: false,
-      ).fetchWeather(user.city);
+      ).fetchWeather(user.city, forceRefresh: true, token: user.token);
     });
   }
 
@@ -80,7 +80,7 @@ class _GardenPageState extends State<GardenPage> {
     Provider.of<WeatherProvider>(
       context,
       listen: false,
-    ).fetchWeather(user.city, forceRefresh: true);
+    ).fetchWeather(user.city, forceRefresh: true, token: user.token);
   }
 
   Future<void> _refreshSinglePot(int potNumber) async {
@@ -104,6 +104,139 @@ class _GardenPageState extends State<GardenPage> {
     setState(() {
       _potsFuture = Future.value(updatedPots);
     });
+  }
+
+  Future<void> _showCollectSuccessDialog(CollectPlantResult result) async {
+    if (!mounted) return;
+
+    final t = AppLocalizations.of(context)!;
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(22),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF5F9F0),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: const Color(0xFF4CAF50).withValues(alpha: 0.35),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 58,
+                  height: 58,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xFFDFF3DF),
+                  ),
+                  child: const Icon(
+                    Icons.eco,
+                    color: Color(0xFF2E7D32),
+                    size: 34,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                Text(
+                  t.collectPlantDialogTitle,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 21,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1B5E20),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Text(
+                  result.message,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Color(0xFF355E3B),
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.75),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: const Color(0xFF4CAF50).withValues(alpha: 0.18),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.monetization_on,
+                        color: Color(0xFFD6A300),
+                        size: 26,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          t.collectPlantCoinsReward(10),
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF2F4F2F),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 22),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF4CAF50),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      t.commonOk,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> onTapPot(GardenPot pot) async {
@@ -164,7 +297,9 @@ class _GardenPageState extends State<GardenPage> {
         },
         onCollect: () async {
           try {
-            await _gardenService.collectPlant(
+            final navigator = Navigator.of(context);
+
+            final result = await _gardenService.collectPlant(
               username: widget.username,
               gardenName: widget.gardenName,
               potNumber: pot.potNumber,
@@ -173,16 +308,19 @@ class _GardenPageState extends State<GardenPage> {
 
             if (!mounted) return;
 
-            CenteredMessage.show(
-              context,
-              t.plantCollectedSuccess,
-              type: CenteredMessageType.success,
-            );
+            final user = Provider.of<UserModel>(context, listen: false);
+            user.setCoins(result.newBalance);
+
+            navigator.pop();
+
+            await _showCollectSuccessDialog(result);
+
             await _refreshSinglePot(pot.potNumber);
           } catch (e) {
             if (!mounted) return;
 
             Navigator.of(context).pop();
+
             CenteredMessage.show(
               context,
               e.toString().replaceFirst('Exception: ', ''),

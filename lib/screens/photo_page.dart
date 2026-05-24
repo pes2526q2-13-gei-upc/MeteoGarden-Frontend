@@ -9,10 +9,44 @@ import 'package:meteo_garden/models/plantes_desbl.dart';
 import 'dart:io';
 import 'package:image/image.dart' as img;
 
+typedef IdentifyPlantForTest =
+    Future<dynamic> Function({
+      required String username,
+      required String imagePath,
+      required String organ,
+    });
+
 class PlantCameraScreen extends StatefulWidget {
   final bool enableCamera;
 
-  const PlantCameraScreen({super.key, this.enableCamera = true});
+  // Només per tests: permet renderitzar la UI sense càmera real.
+  final bool useFakeCameraPreview;
+
+  // Només per tests: simula la captura d'imatge.
+  final Future<String> Function()? takePictureForTest;
+
+  // Només per tests: simula el crop de la imatge.
+  final Future<String> Function(String imagePath)? cropImageForTest;
+
+  // Només per tests: simula PlantService().identifyPlant(...)
+  final IdentifyPlantForTest? identifyPlantForTest;
+
+  // Només per tests: evita haver de construir PlantResultPage real.
+  final bool navigateToResultPage;
+
+  // Només per tests: simula context.read<PlantProvider>().loadPlants(user)
+  final Future<void> Function(UserModel user)? reloadPlantsForTest;
+
+  const PlantCameraScreen({
+    super.key,
+    this.enableCamera = true,
+    this.useFakeCameraPreview = false,
+    this.takePictureForTest,
+    this.cropImageForTest,
+    this.identifyPlantForTest,
+    this.navigateToResultPage = true,
+    this.reloadPlantsForTest,
+  });
 
   @override
   State<PlantCameraScreen> createState() => _PlantCameraScreenState();
@@ -38,6 +72,15 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    if (widget.useFakeCameraPreview) {
+      if (!_cameraInitialized) {
+        _cameraInitialized = true;
+        _initializeControllerFuture = Future.value();
+        setState(() {});
+      }
+      return;
+    }
 
     if (!widget.enableCamera) {
       return;
@@ -85,7 +128,10 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   Future<void> _takePicture() async {
     final l10n = AppLocalizations.of(context)!;
 
-    if (_controller == null || _initializeControllerFuture == null) return;
+    if (!widget.useFakeCameraPreview &&
+        (_controller == null || _initializeControllerFuture == null)) {
+      return;
+    }
 
     if (_isProcessing) return;
 
@@ -95,29 +141,55 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
     });
 
     try {
-      await _initializeControllerFuture!;
-      final image = await _controller!.takePicture();
-      final croppedImagePath = await _cropCenterSquare(image.path);
+      await (_initializeControllerFuture ?? Future.value());
+
+      final String imagePath;
+      if (widget.takePictureForTest != null) {
+        imagePath = await widget.takePictureForTest!();
+      } else {
+        final image = await _controller!.takePicture();
+        imagePath = image.path;
+      }
+
+      final String croppedImagePath;
+      if (widget.cropImageForTest != null) {
+        croppedImagePath = await widget.cropImageForTest!(imagePath);
+      } else {
+        croppedImagePath = await _cropCenterSquare(imagePath);
+      }
+
       if (!mounted) return;
 
       final user = Provider.of<UserModel>(context, listen: false);
 
-      final result = await PlantService().identifyPlant(
-        username: user.username,
-        imagePath: croppedImagePath,
-        organ: _selectedPlantType,
-      );
+      final result = widget.identifyPlantForTest != null
+          ? await widget.identifyPlantForTest!(
+              username: user.username,
+              imagePath: croppedImagePath,
+              organ: _selectedPlantType,
+            )
+          : await PlantService().identifyPlant(
+              username: user.username,
+              imagePath: croppedImagePath,
+              organ: _selectedPlantType,
+            );
 
       if (!mounted) return;
 
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => PlantResultPage(result: result)),
-      );
+      if (widget.navigateToResultPage) {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => PlantResultPage(result: result)),
+        );
+      }
 
       if (!mounted) return;
 
-      await context.read<PlantProvider>().loadPlants(user);
+      if (widget.reloadPlantsForTest != null) {
+        await widget.reloadPlantsForTest!(user);
+      } else {
+        await context.read<PlantProvider>().loadPlants(user);
+      }
     } on PlantIdentificationException catch (e) {
       if (!mounted) return;
 
@@ -201,11 +273,12 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final controller = _controller;
+    final useFakePreview = widget.useFakeCameraPreview;
 
     return Scaffold(
       key: const Key('plant_camera_screen'),
       backgroundColor: Colors.black,
-      body: _errorMessage != null && controller == null
+      body: _errorMessage != null && controller == null && !useFakePreview
           ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -216,10 +289,11 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                 ),
               ),
             )
-          : controller == null || _initializeControllerFuture == null
+          : !useFakePreview &&
+                (controller == null || _initializeControllerFuture == null)
           ? const Center(child: CircularProgressIndicator())
           : FutureBuilder(
-              future: _initializeControllerFuture,
+              future: _initializeControllerFuture ?? Future.value(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return const Center(child: CircularProgressIndicator());
@@ -228,10 +302,14 @@ class _PlantCameraScreenState extends State<PlantCameraScreen> {
                 return Stack(
                   fit: StackFit.expand,
                   children: [
-                    CameraPreview(controller),
-
+                    if (useFakePreview)
+                      Container(
+                        key: const Key('fake_camera_preview'),
+                        color: Colors.black,
+                      )
+                    else
+                      CameraPreview(controller!),
                     Container(color: Colors.black.withValues(alpha: 0.15)),
-
                     SafeArea(
                       child: Column(
                         children: [

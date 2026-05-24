@@ -7,12 +7,15 @@ import 'package:meteo_garden/services/weather_service.dart';
 
 void main() {
   group('WeatherService', () {
+    const fakeToken = 'test-token';
+
     test('fetchCurrent retorna WeatherInfo si la resposta és 200', () async {
       final service = WeatherService(
         client: MockClient((request) async {
           expect(request.method, 'GET');
           expect(request.url.path, contains('/api/weather/current/'));
           expect(request.url.queryParameters['stationName'], 'Barcelona');
+          expect(request.headers['Authorization'], 'Token $fakeToken');
 
           return http.Response(
             jsonEncode({
@@ -28,7 +31,10 @@ void main() {
         }),
       );
 
-      final weather = await service.fetchCurrent(city: 'Barcelona');
+      final weather = await service.fetchCurrent(
+        city: 'Barcelona',
+        token: fakeToken,
+      );
 
       expect(weather.stationName, 'Barcelona');
       expect(weather.temp, 22.5);
@@ -42,6 +48,7 @@ void main() {
       final service = WeatherService(
         client: MockClient((request) async {
           expect(request.url.queryParameters['stationName'], 'Sant Cugat');
+          expect(request.headers['Authorization'], 'Token $fakeToken');
 
           return http.Response(
             jsonEncode({
@@ -57,7 +64,10 @@ void main() {
         }),
       );
 
-      final weather = await service.fetchCurrent(city: 'Sant Cugat');
+      final weather = await service.fetchCurrent(
+        city: 'Sant Cugat',
+        token: fakeToken,
+      );
 
       expect(weather.stationName, 'Sant Cugat');
       expect(weather.temp, 18.0);
@@ -67,15 +77,39 @@ void main() {
       expect(weather.relativeHumidity, 70.0);
     });
 
+    test('fetchCurrent envia el token correctament al header', () async {
+      final service = WeatherService(
+        client: MockClient((request) async {
+          expect(request.headers['Authorization'], 'Token $fakeToken');
+
+          return http.Response(
+            jsonEncode({
+              'stationName': 'Barcelona',
+              'temperature': 22.5,
+              'precipitation': '0',
+              'wind': 12.3,
+              'solarIrradiance': 450.0,
+              'relativeHumidity': 65.0,
+            }),
+            200,
+          );
+        }),
+      );
+
+      await service.fetchCurrent(city: 'Barcelona', token: fakeToken);
+    });
+
     test('fetchCurrent llença excepció si statusCode no és 200', () async {
       final service = WeatherService(
         client: MockClient((request) async {
+          expect(request.headers['Authorization'], 'Token $fakeToken');
+
           return http.Response(jsonEncode({'error': 'No trobat'}), 404);
         }),
       );
 
       expect(
-        () => service.fetchCurrent(city: 'Barcelona'),
+        () => service.fetchCurrent(city: 'Barcelona', token: fakeToken),
         throwsA(
           predicate(
             (e) =>
@@ -93,7 +127,7 @@ void main() {
       );
 
       expect(
-        () => service.fetchCurrent(city: 'Barcelona'),
+        () => service.fetchCurrent(city: 'Barcelona', token: fakeToken),
         throwsA(isA<FormatException>()),
       );
     });
@@ -111,7 +145,7 @@ void main() {
       );
 
       expect(
-        () => service.fetchCurrent(city: 'Barcelona'),
+        () => service.fetchCurrent(city: 'Barcelona', token: fakeToken),
         throwsA(isA<TypeError>()),
       );
     });

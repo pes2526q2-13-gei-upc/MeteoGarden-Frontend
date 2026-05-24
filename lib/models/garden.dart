@@ -1,10 +1,12 @@
 class ActivePotion {
   final String name;
+  final String displayName;
   final DateTime appliedAt;
   final DateTime expiresAt;
 
   ActivePotion({
     required this.name,
+    required this.displayName,
     required this.appliedAt,
     required this.expiresAt,
   });
@@ -12,8 +14,14 @@ class ActivePotion {
   bool get isActive => DateTime.now().isBefore(expiresAt);
 
   factory ActivePotion.fromJson(Map<String, dynamic> json) {
+    final internalName =
+        (json['name'] ?? json['product_name'] ?? json['productName'] ?? '')
+            .toString();
+
     return ActivePotion(
-      name: json['name'] as String,
+      name: internalName,
+      displayName: (json['displayName'] ?? json['display_name'] ?? internalName)
+          .toString(),
       appliedAt: DateTime.parse(json['applied_at']),
       expiresAt: DateTime.parse(json['expires_at']),
     );

@@ -109,7 +109,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Provider.of<WeatherProvider>(
             context,
             listen: false,
-          ).fetchWeather(city, forceRefresh: true);
+          ).fetchWeather(city, forceRefresh: true, token: token);
         }
 
         await _checkAvatar();

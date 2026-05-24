@@ -3,7 +3,7 @@ import '../models/weather_info.dart';
 import '../services/weather_service.dart';
 
 typedef FetchWeatherFunction =
-    Future<WeatherInfo> Function({required String city});
+    Future<WeatherInfo> Function({required String city, required String token});
 
 class WeatherProvider extends ChangeNotifier {
   WeatherProvider({FetchWeatherFunction? fetchWeatherFunction})
@@ -20,7 +20,11 @@ class WeatherProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> fetchWeather(String city, {bool forceRefresh = false}) async {
+  Future<void> fetchWeather(
+    String city, {
+    required String token,
+    bool forceRefresh = false,
+  }) async {
     if (_currentWeather != null && !forceRefresh) return;
 
     _isLoading = true;
@@ -28,7 +32,7 @@ class WeatherProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _currentWeather = await _fetchWeatherFunction(city: city);
+      _currentWeather = await _fetchWeatherFunction(city: city, token: token);
     } catch (e) {
       _error = e.toString();
     } finally {

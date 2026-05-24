@@ -16,7 +16,9 @@ import '../models/weather_provider.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final http.Client? client;
+
+  const LoginPage({super.key, this.client});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -26,6 +28,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final storage = const FlutterSecureStorage();
+
+  http.Client get _client => widget.client ?? http.Client();
 
   Locale _loginLocale = const Locale('ca');
   String? _loginErrorMessage;
@@ -123,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
     final url = Uri.parse('${ApiConfig.baseUrl}/api/login/');
 
     try {
-      final response = await http.post(
+      final response = await _client.post(
         url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"username": username, "password": password}),
@@ -187,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      final response = await http.post(
+      final response = await _client.post(
         Uri.parse("${ApiConfig.baseUrl}/api/auth/google/verify"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"id_token": tokenToSend}),
@@ -487,7 +491,7 @@ class _LoginPageState extends State<LoginPage> {
     );
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    final response = await http.get(
+    final response = await _client.get(
       url,
       headers: {
         "Content-Type": "application/json",
@@ -522,7 +526,7 @@ class _LoginPageState extends State<LoginPage> {
       final city = data['city'] ?? '';
 
       if (city.toString().trim().isNotEmpty) {
-        weatherProvider.fetchWeather(city, forceRefresh: true);
+        weatherProvider.fetchWeather(city, forceRefresh: true, token: token);
       }
     } else {
       scaffoldMessenger.showSnackBar(
@@ -535,7 +539,7 @@ class _LoginPageState extends State<LoginPage> {
     final user = Provider.of<UserModel>(context, listen: false);
     String username = user.username;
 
-    final avatarResponse = await http.get(
+    final avatarResponse = await _client.get(
       Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar'),
     );
 

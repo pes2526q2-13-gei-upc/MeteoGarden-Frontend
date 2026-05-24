@@ -279,7 +279,7 @@ class _ActiveBuffBadge extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  potion.name,
+                  potion.displayName,
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,

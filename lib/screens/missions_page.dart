@@ -5,9 +5,21 @@ import '../widgets/mission_card.dart';
 import 'package:provider/provider.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../services/mission_service.dart';
+import '../widgets/centered_message.dart';
 
 class MissionsPage extends StatefulWidget {
-  const MissionsPage({super.key});
+  final Future<List<Mission>> Function(String token)? fetchMissions;
+  final Future<int> Function(String token, Mission mission)? claimMission;
+  final void Function(int coins)? onCoinsEarned;
+  final String? tokenOverride;
+
+  const MissionsPage({
+    super.key,
+    this.fetchMissions,
+    this.claimMission,
+    this.onCoinsEarned,
+    this.tokenOverride,
+  });
 
   @override
   State<MissionsPage> createState() => _MissionsPageState();
@@ -17,6 +29,11 @@ class _MissionsPageState extends State<MissionsPage> {
   List<Mission> _missions = [];
   bool _isLoading = true;
   String? _error;
+
+  String _getToken() {
+    return widget.tokenOverride ??
+        Provider.of<UserModel>(context, listen: false).token;
+  }
 
   @override
   void initState() {
@@ -29,14 +46,23 @@ class _MissionsPageState extends State<MissionsPage> {
       _isLoading = true;
       _error = null;
     });
+
     try {
-      final token = Provider.of<UserModel>(context, listen: false).token;
-      final missions = await MissionService.fetchMissions(token: token);
+      final token = _getToken();
+
+      final missions = widget.fetchMissions != null
+          ? await widget.fetchMissions!(token)
+          : await MissionService.fetchMissions(token: token);
+
+      if (!mounted) return;
+
       setState(() {
         _missions = missions;
         _isLoading = false;
       });
     } on MissionException catch (e) {
+      if (!mounted) return;
+
       setState(() {
         _error = e.message;
         _isLoading = false;
@@ -46,38 +72,43 @@ class _MissionsPageState extends State<MissionsPage> {
 
   Future<void> _claimMission(Mission mission) async {
     final l10n = AppLocalizations.of(context)!;
+
     try {
-      final token = Provider.of<UserModel>(context, listen: false).token;
-      final coinsEarned = await MissionService.claimMission(
-        token: token,
-        mission: mission,
-      );
+      final token = _getToken();
+
+      final coinsEarned = widget.claimMission != null
+          ? await widget.claimMission!(token, mission)
+          : await MissionService.claimMission(token: token, mission: mission);
 
       if (coinsEarned > 0 && mounted) {
-        final userModel = Provider.of<UserModel>(context, listen: false);
-        userModel.setCoins(userModel.monedes + coinsEarned);
+        if (widget.onCoinsEarned != null) {
+          widget.onCoinsEarned!(coinsEarned);
+        } else {
+          final userModel = Provider.of<UserModel>(context, listen: false);
+          userModel.setCoins(userModel.monedes + coinsEarned);
+        }
       }
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.missionsClaimSuccess),
-            backgroundColor: const Color(0xFF2F6B43),
-          ),
-        );
-        _fetchMissions();
-      }
+      if (!mounted) return;
+
+      CenteredMessage.show(
+        context,
+        l10n.missionsClaimSuccess,
+        type: CenteredMessageType.success,
+      );
+
+      await _fetchMissions();
     } on MissionException catch (e) {
       if (!mounted) return;
+
       final errorMsg = switch (e.message) {
         'Mission already claimed' => l10n.missionsErrorAlreadyClaimed,
         'Mission in progress' => l10n.missionsErrorInProgress,
         'Mission not found' => l10n.missionsErrorNotFound,
         _ => l10n.missionsErrorGeneric,
       };
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMsg), backgroundColor: Colors.red),
-      );
+
+      CenteredMessage.show(context, errorMsg, type: CenteredMessageType.error);
     }
   }
 

@@ -1,5 +1,6 @@
 class Mission {
   final String name;
+  final String displayName;
   final String description;
   final int goal;
   final String action;
@@ -15,6 +16,7 @@ class Mission {
 
   Mission({
     required this.name,
+    required this.displayName,
     required this.description,
     required this.goal,
     required this.action,
@@ -32,6 +34,11 @@ class Mission {
   factory Mission.fromJson(Map<String, dynamic> json) {
     return Mission(
       name: json['Name'] ?? '',
+      displayName:
+          json['displayName'] ??
+          json['DisplayName'] ??
+          json['Name'] ??
+          '', //si falla por algun motivo coge el name normal
       description: json['Description'] ?? '',
       goal: json['Goal'] ?? 0,
       action: json['Action'] ?? '',

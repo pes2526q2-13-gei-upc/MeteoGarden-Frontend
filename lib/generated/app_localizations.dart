@@ -1940,6 +1940,30 @@ abstract class AppLocalizations {
   /// In ca, this message translates to:
   /// **'Filtres'**
   String get calendarFiltersTooltip;
+
+  /// No description provided for @culturalEvents.
+  ///
+  /// In ca, this message translates to:
+  /// **'Events culturals'**
+  String get culturalEvents;
+
+  /// No description provided for @collectPlantDialogTitle.
+  ///
+  /// In ca, this message translates to:
+  /// **'Planta recollida!'**
+  String get collectPlantDialogTitle;
+
+  /// No description provided for @collectPlantCoinsReward.
+  ///
+  /// In ca, this message translates to:
+  /// **'+{coins} monedes'**
+  String collectPlantCoinsReward(int coins);
+
+  /// No description provided for @commonOk.
+  ///
+  /// In ca, this message translates to:
+  /// **'D’acord'**
+  String get commonOk;
 }
 
 class _AppLocalizationsDelegate

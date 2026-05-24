@@ -3,6 +3,8 @@ import '../models/garden.dart';
 import '../services/garden_service.dart';
 import '../models/seed_option.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:meteo_garden/models/dades_usr.dart';
 
 class PotionSelectionSheet extends StatefulWidget {
   final GardenPot pot;
@@ -49,11 +51,13 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
     });
 
     try {
+      final userModel = Provider.of<UserModel>(context, listen: false);
       final result = await widget.gardenService.applyPotion(
         username: widget.username,
         gardenName: widget.gardenName,
         potNumber: widget.pot.potNumber,
         productName: _selectedPotion!.productName,
+        token: userModel.token,
       );
 
       setState(() {
@@ -329,7 +333,7 @@ class _PotionSelectionSheetState extends State<PotionSelectionSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      potion.productName,
+                      potion.displayName,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,

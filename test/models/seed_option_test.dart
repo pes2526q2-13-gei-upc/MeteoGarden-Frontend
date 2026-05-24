@@ -54,49 +54,114 @@ void main() {
   group('ProductItem', () {
     test('constructor assigna correctament tots els camps', () {
       final product = ProductItem(
-        productName: 'Fertilitzant',
+        productName: 'fertilizer',
+        displayName: 'Fertilitzant',
         amount: 4,
         imageUrl: 'https://example.com/fertilitzant.png',
+        description: 'Ajuda al creixement de la planta.',
       );
 
-      expect(product.productName, 'Fertilitzant');
+      expect(product.productName, 'fertilizer');
+      expect(product.displayName, 'Fertilitzant');
       expect(product.amount, 4);
       expect(product.imageUrl, 'https://example.com/fertilitzant.png');
+      expect(product.description, 'Ajuda al creixement de la planta.');
     });
 
-    test('constructor accepta imageUrl null', () {
+    test('constructor accepta imageUrl i description null', () {
       final product = ProductItem(
-        productName: 'Poció de creixement',
+        productName: 'growth_potion',
+        displayName: 'Poció de creixement',
         amount: 1,
       );
 
-      expect(product.productName, 'Poció de creixement');
+      expect(product.productName, 'growth_potion');
+      expect(product.displayName, 'Poció de creixement');
       expect(product.amount, 1);
       expect(product.imageUrl, isNull);
+      expect(product.description, isNull);
     });
 
-    test('fromJson converteix correctament el JSON amb imatge', () {
+    test(
+      'fromJson converteix correctament el JSON amb productName i displayName',
+      () {
+        final product = ProductItem.fromJson({
+          'productName': 'watering_can',
+          'displayName': 'Regadora',
+          'amount': 3,
+          'image_url': 'https://example.com/regadora.png',
+          'description': 'Serveix per regar les plantes.',
+        });
+
+        expect(product.productName, 'watering_can');
+        expect(product.displayName, 'Regadora');
+        expect(product.amount, 3);
+        expect(product.imageUrl, 'https://example.com/regadora.png');
+        expect(product.description, 'Serveix per regar les plantes.');
+      },
+    );
+
+    test('fromJson accepta product_name i display_name del backend', () {
       final product = ProductItem.fromJson({
-        'productName': 'Regadora',
-        'amount': 3,
-        'image_url': 'https://example.com/regadora.png',
+        'product_name': 'fertilizer',
+        'display_name': 'Fertilitzant',
+        'amount': 6,
+        'image_url': null,
+        'description': null,
       });
 
-      expect(product.productName, 'Regadora');
-      expect(product.amount, 3);
-      expect(product.imageUrl, 'https://example.com/regadora.png');
+      expect(product.productName, 'fertilizer');
+      expect(product.displayName, 'Fertilitzant');
+      expect(product.amount, 6);
+      expect(product.imageUrl, isNull);
+      expect(product.description, isNull);
     });
 
-    test('fromJson converteix correctament el JSON sense imatge', () {
+    test('fromJson accepta name com a nom intern', () {
       final product = ProductItem.fromJson({
-        'productName': 'Adob',
-        'amount': 6,
+        'name': 'medium_heal',
+        'display_name': 'Curació mitjana',
+        'amount': 2,
+        'image_url': 'https://example.com/medium_heal.png',
+        'description': 'Restaura una quantitat moderada de salut.',
+      });
+
+      expect(product.productName, 'medium_heal');
+      expect(product.displayName, 'Curació mitjana');
+      expect(product.amount, 2);
+      expect(product.imageUrl, 'https://example.com/medium_heal.png');
+      expect(product.description, 'Restaura una quantitat moderada de salut.');
+    });
+
+    test(
+      'fromJson usa productName com a displayName si no arriba displayName',
+      () {
+        final product = ProductItem.fromJson({
+          'productName': 'Adob',
+          'amount': 6,
+          'image_url': null,
+        });
+
+        expect(product.productName, 'Adob');
+        expect(product.displayName, 'Adob');
+        expect(product.amount, 6);
+        expect(product.imageUrl, isNull);
+        expect(product.description, isNull);
+      },
+    );
+
+    test('fromJson posa amount a 0 si no arriba amount', () {
+      final product = ProductItem.fromJson({
+        'productName': 'hydration_shield',
+        'displayName': 'Escut hidratant',
         'image_url': null,
       });
 
-      expect(product.productName, 'Adob');
-      expect(product.amount, 6);
+      expect(product.productName, 'hydration_shield');
+      expect(product.displayName, 'Escut hidratant');
+      expect(product.amount, 0);
       expect(product.imageUrl, isNull);
+      expect(product.description, isNull);
     });
   });
 }

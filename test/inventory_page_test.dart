@@ -18,13 +18,25 @@ class FakeGardenService extends GardenService {
   String? fetchedPlantLanguage;
 
   List<SeedOption> seeds = [
-    SeedOption(scientificName: 'Aloe vera', amount: 2, imageUrl: ''),
-    SeedOption(scientificName: 'Basilicum', amount: 5, imageUrl: ''),
+    const SeedOption(scientificName: 'Aloe vera', amount: 2, imageUrl: ''),
+    const SeedOption(scientificName: 'Basilicum', amount: 5, imageUrl: ''),
   ];
 
   List<ProductItem> products = [
-    ProductItem(productName: 'Pocio de creixement', amount: 3, imageUrl: ''),
-    ProductItem(productName: 'Fertilitzant', amount: 1, imageUrl: ''),
+    ProductItem(
+      productName: 'growth_potion',
+      displayName: 'Pocio de creixement',
+      amount: 3,
+      imageUrl: '',
+      description: 'Accelera el creixement de la planta.',
+    ),
+    ProductItem(
+      productName: 'fertilizer',
+      displayName: 'Fertilitzant',
+      amount: 1,
+      imageUrl: '',
+      description: 'Millora l’estat general de la planta.',
+    ),
   ];
 
   @override
@@ -142,11 +154,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('inventory_products_grid')), findsOneWidget);
-    expect(
-      find.byKey(const Key('product_card_Pocio de creixement')),
-      findsOneWidget,
-    );
-    expect(find.byKey(const Key('product_card_Fertilitzant')), findsOneWidget);
+
+    expect(find.byKey(const Key('product_card_growth_potion')), findsOneWidget);
+    expect(find.byKey(const Key('product_card_fertilizer')), findsOneWidget);
+
     expect(find.text('Pocio de creixement'), findsOneWidget);
     expect(find.text('Fertilitzant'), findsOneWidget);
   });
@@ -163,7 +174,9 @@ void main() {
     expect(find.byKey(const Key('seed_card_Basilicum')), findsNothing);
   });
 
-  testWidgets('filtra els productes amb el cercador', (tester) async {
+  testWidgets('filtra els productes amb el cercador per displayName', (
+    tester,
+  ) async {
     final gardenService = FakeGardenService();
 
     await pumpInventoryPage(tester, gardenService: gardenService);
@@ -174,11 +187,25 @@ void main() {
     await tester.enterText(find.byType(TextField), 'fert');
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('product_card_Fertilitzant')), findsOneWidget);
-    expect(
-      find.byKey(const Key('product_card_Pocio de creixement')),
-      findsNothing,
-    );
+    expect(find.byKey(const Key('product_card_fertilizer')), findsOneWidget);
+    expect(find.byKey(const Key('product_card_growth_potion')), findsNothing);
+  });
+
+  testWidgets('filtra els productes amb el cercador per productName', (
+    tester,
+  ) async {
+    final gardenService = FakeGardenService();
+
+    await pumpInventoryPage(tester, gardenService: gardenService);
+
+    await tester.tap(find.byKey(const Key('inventory_products_tab')));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'growth');
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('product_card_growth_potion')), findsOneWidget);
+    expect(find.byKey(const Key('product_card_fertilizer')), findsNothing);
   });
 
   testWidgets('mostra estat buit si no hi ha llavors', (tester) async {
@@ -260,16 +287,43 @@ void main() {
     await tester.tap(find.byKey(const Key('inventory_products_tab')));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('product_card_Fertilitzant')));
+    await tester.tap(find.byKey(const Key('product_card_fertilizer')));
     await tester.pumpAndSettle();
 
     expect(find.text('Fertilitzant'), findsWidgets);
+    expect(
+      find.textContaining('Millora l’estat general de la planta.'),
+      findsOneWidget,
+    );
     expect(find.text('Tancar'), findsOneWidget);
 
     await tester.tap(find.text('Tancar'));
     await tester.pumpAndSettle();
 
     expect(find.text('Tancar'), findsNothing);
+  });
+
+  testWidgets('obre producte sense description i no falla', (tester) async {
+    final gardenService = FakeGardenService()
+      ..products = [
+        ProductItem(
+          productName: 'medium_heal',
+          displayName: 'Curació mitjana',
+          amount: 2,
+          imageUrl: '',
+        ),
+      ];
+
+    await pumpInventoryPage(tester, gardenService: gardenService);
+
+    await tester.tap(find.byKey(const Key('inventory_products_tab')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('product_card_medium_heal')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Curació mitjana'), findsWidgets);
+    expect(find.text('Tancar'), findsOneWidget);
   });
 
   testWidgets('el botó enrere fa pop de la pantalla', (tester) async {

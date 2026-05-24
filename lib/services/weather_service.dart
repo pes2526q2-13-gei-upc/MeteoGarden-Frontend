@@ -9,12 +9,18 @@ class WeatherService {
 
   final http.Client _client;
 
-  Future<WeatherInfo> fetchCurrent({required String city}) async {
+  Future<WeatherInfo> fetchCurrent({
+    required String city,
+    required String token,
+  }) async {
     final uri = Uri.parse(
       '${ApiConfig.baseUrl}/api/weather/current/?stationName=$city',
     );
 
-    final res = await _client.get(uri);
+    final res = await _client.get(
+      uri,
+      headers: {'Authorization': 'Token $token'},
+    );
 
     if (res.statusCode != 200) {
       throw Exception('Error backend: ${res.statusCode}');

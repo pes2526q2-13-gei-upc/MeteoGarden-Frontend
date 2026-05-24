@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
+import '../widgets/centered_message.dart';
 
 const Color _pageBackground = Color(0xFFF5F9F0);
 const Color _primaryGreen = Color(0xFF4CAF50);
@@ -24,19 +25,25 @@ class ShopPage extends StatefulWidget {
 class _ShopPageState extends State<ShopPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  bool isLoading = true;
+  bool isLoadingSeeds = true;
+  bool isLoadingProducts = false;
+  bool hasLoadedProducts = false;
   late final http.Client _client; // per al test
 
   List<dynamic> seeds = [];
   List<dynamic> products = [];
+  final Map<String, Map<String, dynamic>> _detailsCache = {};
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _client = widget.httpClient ?? http.Client(); // per al test
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      fetchShopItems();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await fetchSeeds();
+      // Carreguem productes en segon pla perquè quan l'usuari canviï de pestanya
+      // ja estiguin preparats o quasi preparats.
+      fetchProducts(silent: true);
     });
   }
 
@@ -46,11 +53,16 @@ class _ShopPageState extends State<ShopPage>
     super.dispose();
   }
 
-  // 1. OBTENIR DADES DE LA BOTIGA
-  Future<void> fetchShopItems() async {
+  Future<void> fetchSeeds() async {
     final l10n = AppLocalizations.of(context)!;
     final token = Provider.of<UserModel>(context, listen: false).token;
-    final url = Uri.parse('${ApiConfig.baseUrl}/api/shop/');
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/shop/seeds/');
+
+    if (mounted) {
+      setState(() {
+        isLoadingSeeds = true;
+      });
+    }
 
     try {
       final response = await _client.get(
@@ -61,23 +73,91 @@ class _ShopPageState extends State<ShopPage>
         },
       );
 
+      if (!mounted) return;
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        if (mounted) {
-          setState(() {
-            seeds = data['seeds'] ?? [];
-            products = data['products'] ?? [];
-            isLoading = false;
-          });
-        }
+        setState(() {
+          seeds = data is List ? data : [];
+          isLoadingSeeds = false;
+        });
       } else {
+        setState(() {
+          isLoadingSeeds = false;
+        });
         _showError(l10n.shopLoadError);
-        if (mounted) setState(() => isLoading = false);
       }
     } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        isLoadingSeeds = false;
+      });
       _showError(l10n.shopConnectionError);
-      if (mounted) setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> fetchProducts({bool silent = false}) async {
+    final l10n = AppLocalizations.of(context)!;
+    final token = Provider.of<UserModel>(context, listen: false).token;
+    final url = Uri.parse('${ApiConfig.baseUrl}/api/shop/products/');
+
+    if (hasLoadedProducts || isLoadingProducts) return;
+
+    if (mounted) {
+      setState(() {
+        isLoadingProducts = true;
+      });
+    }
+
+    try {
+      final response = await _client.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Token $token",
+        },
+      );
+
+      if (!mounted) return;
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        setState(() {
+          products = data is List ? data : [];
+          hasLoadedProducts = true;
+          isLoadingProducts = false;
+        });
+      } else {
+        setState(() {
+          isLoadingProducts = false;
+        });
+
+        if (!silent) {
+          _showError(l10n.shopLoadError);
+        }
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        isLoadingProducts = false;
+      });
+
+      if (!silent) {
+        _showError(l10n.shopConnectionError);
+      }
+    }
+  }
+
+  Future<void> refreshCurrentTab() async {
+    if (_tabController.index == 0) {
+      await fetchSeeds();
+    } else {
+      hasLoadedProducts = false;
+      await fetchProducts();
     }
   }
 
@@ -123,11 +203,10 @@ class _ShopPageState extends State<ShopPage>
           listen: false,
         ).setCoins(jsonDecode(response.body)['coins_remaining']);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.shopPurchaseSuccess),
-            backgroundColor: _darkGreen,
-          ),
+        CenteredMessage.show(
+          context,
+          l10n.shopPurchaseSuccess,
+          type: CenteredMessageType.success,
         );
       } else {
         _showError(
@@ -143,21 +222,91 @@ class _ShopPageState extends State<ShopPage>
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    if (!mounted) return;
+
+    CenteredMessage.show(context, message, type: CenteredMessageType.error);
+  }
+
+  Future<void> _openItemDetails(bool isSeed, Map<String, dynamic> item) async {
+    final String rawName = isSeed
+        ? item['scientificName']?.toString() ?? ''
+        : item['name']?.toString() ?? '';
+
+    if (rawName.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
+      _showError(l10n.shopLoadError);
+      return;
+    }
+
+    // Obrim el modal immediatament amb la info bàsica.
+    _showItemDetails(context, isSeed, item, isLoadingDetails: true);
+
+    // Si ja el tenim a la cache, actualitzem directament.
+    final cacheKey = '${isSeed ? "seed" : "product"}:$rawName';
+    final cachedItem = _detailsCache[cacheKey];
+
+    if (cachedItem != null) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      _showItemDetails(context, isSeed, cachedItem, isLoadingDetails: false);
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    final token = Provider.of<UserModel>(context, listen: false).token;
+    final String encodedName = Uri.encodeComponent(rawName);
+
+    final Uri url = isSeed
+        ? Uri.parse('${ApiConfig.baseUrl}/api/shop/seeds/$encodedName/')
+        : Uri.parse('${ApiConfig.baseUrl}/api/shop/products/$encodedName/');
+
+    try {
+      final response = await _client.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Token $token",
+        },
+      );
+
+      if (!mounted) return;
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> detailedItem =
+            jsonDecode(response.body) as Map<String, dynamic>;
+
+        _detailsCache[cacheKey] = detailedItem;
+
+        Navigator.pop(context);
+        _showItemDetails(
+          context,
+          isSeed,
+          detailedItem,
+          isLoadingDetails: false,
+        );
+      } else {
+        final data = jsonDecode(response.body);
+        Navigator.pop(context);
+        _showError(data['error'] ?? l10n.shopLoadError);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      _showError(l10n.shopConnectionError);
+    }
   }
 
   void _showItemDetails(
     BuildContext context,
     bool isSeed,
-    Map<String, dynamic> item,
-  ) {
+    Map<String, dynamic> item, {
+    bool isLoadingDetails = false,
+  }) {
     final l10n = AppLocalizations.of(context)!;
 
     final String name = isSeed
         ? (item['commonName'] ?? item['scientificName'])
-        : item['name'];
+        : (item['displayName'] ?? item['display_name'] ?? item['name']);
     final String? description = item['description']?.toString();
     final int price = item['price'] ?? 0;
 
@@ -259,15 +408,40 @@ class _ShopPageState extends State<ShopPage>
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  description,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade700,
-                    height: 1.4,
+
+                if (isLoadingDetails) ...[
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: _primaryGreen,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Carregant informació...',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
+                ] else if (description.isNotEmpty) ...[
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade700,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ],
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -369,6 +543,7 @@ class _ShopPageState extends State<ShopPage>
   Widget _buildHeader() {
     final l10n = AppLocalizations.of(context)!;
     final totalItems = seeds.length + products.length;
+    final isLoading = isLoadingSeeds && seeds.isEmpty;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
@@ -477,6 +652,11 @@ class _ShopPageState extends State<ShopPage>
           builder: (context, _) {
             return TabBar(
               controller: _tabController,
+              onTap: (index) {
+                if (index == 1 && !hasLoadedProducts) {
+                  fetchProducts();
+                }
+              },
               indicator: BoxDecoration(
                 color: _primaryGreen,
                 borderRadius: BorderRadius.circular(30),
@@ -514,20 +694,23 @@ class _ShopPageState extends State<ShopPage>
   }
 
   Widget _buildBody() {
+    return TabBarView(
+      controller: _tabController,
+      children: [
+        _buildItemList(seeds, true, isLoadingSeeds),
+        _buildItemList(products, false, isLoadingProducts && products.isEmpty),
+      ],
+    );
+  }
+
+  Widget _buildItemList(List<dynamic> items, bool isSeed, bool isLoading) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(color: _primaryGreen),
       );
     }
-
-    return TabBarView(
-      controller: _tabController,
-      children: [_buildItemList(seeds, true), _buildItemList(products, false)],
-    );
-  }
-
-  Widget _buildItemList(List<dynamic> items, bool isSeed) {
-    final l10n = AppLocalizations.of(context)!;
 
     if (items.isEmpty) {
       return _EmptyShopState(
@@ -538,7 +721,7 @@ class _ShopPageState extends State<ShopPage>
 
     return RefreshIndicator(
       color: _primaryGreen,
-      onRefresh: fetchShopItems,
+      onRefresh: refreshCurrentTab,
       child: ListView.builder(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
         physics: const BouncingScrollPhysics(),
@@ -547,7 +730,7 @@ class _ShopPageState extends State<ShopPage>
           final item = items[index];
           final name = isSeed
               ? (item['commonName'] ?? item['scientificName'])
-              : item['name'];
+              : (item['displayName'] ?? item['display_name'] ?? item['name']);
           final price = item['price'] ?? 0;
 
           final String imageUrl = item['image_url']?.toString() ?? '';
@@ -558,11 +741,8 @@ class _ShopPageState extends State<ShopPage>
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(22),
-                onTap: () => _showItemDetails(
-                  context,
-                  isSeed,
-                  item as Map<String, dynamic>,
-                ),
+                onTap: () =>
+                    _openItemDetails(isSeed, item as Map<String, dynamic>),
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
                   decoration: BoxDecoration(

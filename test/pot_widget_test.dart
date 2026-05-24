@@ -251,7 +251,7 @@ void main() {
       expect(tapped, true);
     });
 
-    testWidgets('mostra icona fallback groga si no hi ha imageUrl', (
+    testWidgets('mostra icona fallback groga si imageUrl és buit', (
       WidgetTester tester,
     ) async {
       final pot = _buildPot(
@@ -344,7 +344,8 @@ void main() {
         waterLevel: 50,
         activeProducts: [
           ActivePotion(
-            name: 'Escut',
+            name: 'shield',
+            displayName: 'Escut',
             appliedAt: DateTime.now().subtract(const Duration(minutes: 10)),
             expiresAt: DateTime.now().add(const Duration(hours: 1)),
           ),
@@ -363,7 +364,6 @@ void main() {
 
       final assetImages = tester
           .widgetList<Image>(find.byType(Image))
-          .whereType<Image>()
           .where((image) => image.image is AssetImage)
           .map((image) => image.image as AssetImage)
           .toList();
@@ -387,7 +387,8 @@ void main() {
         waterLevel: 50,
         activeProducts: [
           ActivePotion(
-            name: 'Escut',
+            name: 'shield',
+            displayName: 'Escut',
             appliedAt: DateTime.now().subtract(const Duration(hours: 2)),
             expiresAt: DateTime.now().subtract(const Duration(hours: 1)),
           ),
@@ -406,7 +407,6 @@ void main() {
 
       final assetImages = tester
           .widgetList<Image>(find.byType(Image))
-          .whereType<Image>()
           .where((image) => image.image is AssetImage)
           .map((image) => image.image as AssetImage)
           .toList();
