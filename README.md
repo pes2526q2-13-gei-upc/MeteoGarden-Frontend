@@ -7,7 +7,6 @@ El frontend permet als usuaris interactuar amb l’aplicació des d’una interf
 Aquest frontend forma part del projecte MeteoGarden i ha estat desenvolupat amb Flutter i Dart amb l’objectiu d’oferir una aplicació mòbil multiplataforma, intuïtiva i accessible per gestionar jardins virtuals relacionats amb dades meteorològiques reals.
 
 
-
 ### TECNOLOGIES UTILITZADES
 
 - Dart: llenguatge de programació utilitzat per desenvolupar l’aplicació.
