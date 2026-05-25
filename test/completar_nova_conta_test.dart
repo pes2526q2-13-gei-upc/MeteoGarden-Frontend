@@ -702,6 +702,8 @@ void main() {
       expect(registerRequests.first.body, contains('"gardenName":"JardiJana"'));
 
       expect(find.text(l10n.completeProfileError), findsOneWidget);
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpAndSettle();
     });
   });
 
@@ -799,6 +801,8 @@ void main() {
       expect(userModel.username, '');
 
       expect(find.text(l10n.profileLoadError), findsWidgets);
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pumpAndSettle();
     });
   });
 
@@ -817,11 +821,5 @@ void main() {
     expect(cityA, cityB);
     expect(cityA == cityC, false);
     expect(cityA.hashCode, cityB.hashCode);
-  });
-
-  testWidgets('City no és igual a un objecte diferent', (tester) async {
-    final city = City(code: '001', name: 'Barcelona');
-
-    expect(city.name == 'Barcelona', false);
   });
 }

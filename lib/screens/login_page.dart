@@ -39,12 +39,12 @@ class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn _googleSignIn = kIsWeb
       ? GoogleSignIn(
           clientId:
-            "504020085047-8d3mitao6hv33qrqklt80mn6umqvvrfn.apps.googleusercontent.com",
+              "504020085047-8d3mitao6hv33qrqklt80mn6umqvvrfn.apps.googleusercontent.com",
           scopes: ['email', 'profile', 'openid'],
         )
       : GoogleSignIn(
           serverClientId:
-            "504020085047-8d3mitao6hv33qrqklt80mn6umqvvrfn.apps.googleusercontent.com",
+              "504020085047-8d3mitao6hv33qrqklt80mn6umqvvrfn.apps.googleusercontent.com",
           scopes: ['email', 'profile', 'openid'],
         );
 
@@ -540,7 +540,7 @@ class _LoginPageState extends State<LoginPage> {
     String username = user.username;
 
     final avatarResponse = await _client.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar'),
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar/'),
     );
 
     if (!mounted) return;
