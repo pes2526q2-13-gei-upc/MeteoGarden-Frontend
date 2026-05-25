@@ -270,7 +270,7 @@ void main() {
         }
 
         if (request.method == 'GET' &&
-            request.url.path.endsWith('/api/users/jana/avatar')) {
+            request.url.path.endsWith('/api/users/jana/avatar/')) {
           return http.Response(
             jsonEncode({'error': 'Avatar error'}),
             500,

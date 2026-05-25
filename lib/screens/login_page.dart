@@ -540,7 +540,7 @@ class _LoginPageState extends State<LoginPage> {
     String username = user.username;
 
     final avatarResponse = await _client.get(
-      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar'),
+      Uri.parse('${ApiConfig.baseUrl}/api/users/$username/avatar/'),
     );
 
     if (!mounted) return;

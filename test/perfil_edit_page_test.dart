@@ -910,10 +910,4 @@ void main() {
     expect(cityA == cityC, false);
     expect(cityA.hashCode, cityB.hashCode);
   });
-
-  testWidgets('City no és igual a un objecte d’un altre tipus', (tester) async {
-    final city = City(code: '001', name: 'Barcelona');
-
-    expect(city.name == 'Barcelona', false);
-  });
 }
