@@ -13,11 +13,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AvatarEditorPage extends StatefulWidget {
   final bool isNewUser;
+  final String? token;
   final Map<String, List<String>>? initialOptionsForTests;
 
   const AvatarEditorPage({
     super.key,
     this.isNewUser = true,
+    this.token,
     this.initialOptionsForTests,
   });
 
@@ -283,7 +285,7 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
     final user = Provider.of<UserModel>(context, listen: false);
     final username = user.username;
 
-    String token = user.token;
+    String token = widget.token ?? user.token;
 
     if (token.isEmpty) {
       token = await storage.read(key: 'auth_token') ?? '';

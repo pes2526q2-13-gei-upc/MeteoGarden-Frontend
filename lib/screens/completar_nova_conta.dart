@@ -7,6 +7,7 @@ import 'package:meteo_garden/models/dades_usr.dart';
 import '../models/url.dart';
 import 'avatar_editor_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../widgets/centered_message.dart';
 
 class City {
   final String code;
@@ -110,8 +111,15 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      await storage.write(key: 'auth_token', value: data['token']);
-      await _fetchAndSaveProfile(data['token']);
+      final token = data['token'] ?? '';
+
+      await storage.write(key: 'auth_token', value: token);
+
+      if (!mounted) return;
+      Provider.of<UserModel>(context, listen: false).setToken(token);
+
+      await _fetchAndSaveProfile(token);
+
       if (!mounted) return;
 
       ScaffoldMessenger.of(
@@ -121,13 +129,15 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const AvatarEditorPage(isNewUser: true),
+          builder: (context) => AvatarEditorPage(isNewUser: true, token: token),
         ),
       );
     } else {
-      ScaffoldMessenger.of(
+      CenteredMessage.show(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.completeProfileError)));
+        l10n.completeProfileError,
+        type: CenteredMessageType.error,
+      );
     }
   }
 
@@ -145,9 +155,6 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
 
     if (!mounted) return;
 
-    debugPrint("PROFILE STATUS: ${response.statusCode}");
-    debugPrint("PROFILE BODY: ${response.body}");
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
@@ -155,7 +162,11 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
           .map((g) => g['gardenName'] as String)
           .toList();
 
-      Provider.of<UserModel>(context, listen: false).setProfile(
+      final userProvider = Provider.of<UserModel>(context, listen: false);
+
+      userProvider.setToken(token);
+
+      userProvider.setProfile(
         newUsername: data['username'] ?? '',
         newEmail: data['email'] ?? '',
         newCity: data['city'] ?? '',
@@ -166,9 +177,11 @@ class _CompleteGoogleProfilePageState extends State<CompleteGoogleProfilePage> {
         newGardens: gardenNames,
       );
     } else {
-      ScaffoldMessenger.of(
+      CenteredMessage.show(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.profileLoadError)));
+        l10n.profileLoadError,
+        type: CenteredMessageType.error,
+      );
     }
   }
 
