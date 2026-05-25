@@ -2,7 +2,7 @@ class PerfilInfo {
   final String username;
   final String email;
   final String city;
-  final String language;
+  final int level;
   final int coins;
   final int plantsDiscovered;
 
@@ -10,19 +10,19 @@ class PerfilInfo {
     required this.username,
     required this.email,
     required this.city,
-    required this.language,
+    required this.level,
     required this.coins,
     required this.plantsDiscovered,
   });
 
   factory PerfilInfo.fromJson(Map<String, dynamic> json) {
     return PerfilInfo(
-      username: json['username']?.toString() ?? '',
-      email: json['email']?.toString() ?? '',
-      city: json['city']?.toString() ?? '',
-      language: json['language']?.toString() ?? '',
-      coins: (json['coins'] ?? 0) as int,
-      plantsDiscovered: (json['plants_discovered'] ?? 0) as int,
+      username: (json['username'] ?? '') as String,
+      email: (json['email'] ?? '') as String,
+      city: (json['city'] ?? '') as String,
+      level: (json['level'] as num? ?? 1).toInt(),
+      coins: (json['coins'] as num? ?? 0).toInt(),
+      plantsDiscovered: (json['plants_discovered'] as num? ?? 0).toInt(),
     );
   }
 }
