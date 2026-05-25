@@ -6,6 +6,9 @@ class WeatherCard extends StatelessWidget {
   final String subtitle;
   final Widget trailing;
   final VoidCallback onRefresh;
+  final VoidCallback? onTap; // 👈 AÑADIMOS ESTO para la navegación
+  final double? precipitation;
+  final double? wind;
 
   const WeatherCard({
     super.key,
@@ -14,32 +17,21 @@ class WeatherCard extends StatelessWidget {
     required this.subtitle,
     required this.trailing,
     required this.onRefresh,
+    this.onTap, // 👈 Lo pedimos en el constructor
+    this.precipitation,
+    this.wind,
   });
 
   IconData _weatherIcon() {
     try {
-      final parts = title.split('·');
-      final precipitation = parts.length > 1
-          ? double.tryParse(parts[1].trim()) ?? 0.0
-          : 0.0;
+      final precipitationValue = precipitation ?? 0.0;
+      final windValue = wind ?? 0.0;
 
-      final windText = subtitle
-          .replaceAll('Vent:', '')
-          .replaceAll('m/s', '')
-          .trim();
-      final wind = double.tryParse(windText) ?? 0.0;
-
-      if (precipitation > 0) {
-        return Icons.grain;
-      }
-
-      if (wind >= 8) {
-        return Icons.air;
-      }
-
-      return Icons.wb_sunny;
+      if (precipitationValue > 0) return Icons.water_drop_rounded;
+      if (windValue >= 8) return Icons.air_rounded;
+      return Icons.wb_sunny_rounded;
     } catch (_) {
-      return Icons.cloud;
+      return Icons.cloud_rounded;
     }
   }
 
@@ -48,55 +40,73 @@ class WeatherCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onRefresh,
+        onTap:
+            onTap, // 👈 CAMBIAMOS ESTO: Ahora la tarjeta entera navega a detalles
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.35),
+            color: Colors.black.withValues(alpha: 0.28),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(_weatherIcon(), color: Colors.white, size: 28),
+              Icon(_weatherIcon(), color: Colors.white, size: 26),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       nomEstacio,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 3),
                     Text(
                       subtitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: Colors.white.withValues(alpha: 0.90),
                         fontSize: 13,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
-              IconTheme(
-                data: const IconThemeData(color: Colors.white),
-                child: trailing,
+              const SizedBox(width: 8),
+              // 👇 CAMBIAMOS ESTO: Envolvemos el icono en un IconButton para que refresque al pulsar solo el icono
+              Center(
+                child: IconButton(
+                  icon: trailing,
+                  color: Colors.white,
+                  iconSize: 24,
+                  onPressed:
+                      onRefresh, // 👈 El botón de refrescar ahora hace el onRefresh
+                  padding: EdgeInsets.zero,
+                  constraints:
+                      const BoxConstraints(), // Minimiza el padding extra del botón
+                ),
               ),
             ],
           ),

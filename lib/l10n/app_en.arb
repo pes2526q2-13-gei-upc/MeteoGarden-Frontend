@@ -1,0 +1,460 @@
+{
+  "appTitle": "MeteoGarden",
+
+  "commonBack": "Back",
+  "commonCancel": "Cancel",
+  "commonCity": "City",
+  "commonClose": "Close",
+  "commonContinue": "Continue",
+  "commonDescription": "Description",
+  "commonLanguage": "Language",
+  "commonRetry": "Retry",
+  "commonSave": "Save",
+  "commonSearch": "Search",
+  "commonEliminar": "Delete",
+
+  "loginWelcomeTitle": "Welcome to MeteoGarden",
+  "loginWelcomeSubtitle": "Log in to continue taking care of your garden.",
+
+  "loginUsernameLabel": "Username",
+  "loginUsernameHint": "Enter your username",
+
+  "loginPasswordLabel": "Password",
+  "loginPasswordHint": "Enter your password",
+
+  "loginButton": "Log in",
+  "loginContinueWith": "or continue with",
+
+  "loginNoAccount": "Don't have an account?",
+  "loginCreateAccount": "Create account",
+
+  "loginError": "Login error",
+  "loginGoogleError": "Google login error",
+  "profileLoadError": "Could not load profile",
+
+  "navGarden": "Garden",
+  "navFriends": "Friends",
+  "navCamera": "Camera",
+  "navMissions": "Missions",
+  "navProfile": "Profile",
+
+  "albumTitle": "My plant album",
+  "albumDiscoveredPlants": "Plants discovered",
+  "albumLoadingEncyclopedia": "Consulting encyclopedia...",
+  "albumDetailsLoadError": "Error loading details: {error}",
+  "@albumDetailsLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "albumUnknownPlant": "Unknown",
+  "albumNoDescription": "No description available.",
+  "albumFamilyLabel": "Family",
+  "albumBlooms": "Blooms",
+  "albumDoesNotBloom": "Does not bloom",
+  "albumDescriptionTitle": "Description",
+  "albumEmptyState": "You haven't discovered any plants yet 🌱\nKeep exploring!",
+  "albumPlantInfoLoadError": "Error loading plant information",
+  "albumNumber": "discovered plants",
+
+  "shopTitle": "Shop",
+  "shopSeedsTab": "Seeds",
+  "shopOtherTab": "Other",
+  "shopLoadError": "Could not load products.",
+  "shopConnectionError": "Connection error or error processing data.",
+  "shopPurchaseProcessingError": "Error processing purchase.",
+  "shopPurchaseSuccess": "Purchase completed successfully! 🌱",
+  "shopTotalPrice": "Total price:",
+  "shopBuyButton": "Buy",
+  "shopNoItemsAvailable": "No items available right now.",
+
+  "calendarUpcomingEvents": "Upcoming events",
+  "calendarNoEventsThisMonth": "There are no events this month",
+  "calendarClearFilters": "Clear filters",
+  "calendarNoEventsThisDay": "No events on this day",
+  "calendarFiltersTitle": "Filters",
+  "calendarClearAll": "Clear all",
+  "calendarSearchTextLabel": "Search by text",
+  "calendarSearchTextHint": "Name, description...",
+  "calendarCityLabel": "City",
+  "calendarCityHint": "Barcelona, Girona...",
+  "calendarCountyLabel": "County",
+  "calendarCountyHint": "Osona, Maresme...",
+  "calendarCategoryLabel": "Category",
+  "calendarCategoryHint": "Market, Concert, Route...",
+  "calendarMaxDistanceLabel": "Maximum distance",
+  "calendarMaxPriceLabel": "Maximum price",
+  "calendarApplyFilters": "Apply filters",
+  "calendarFree": "Free",
+  "calendarFreeAccent": "Free",
+  "calendarBuyTickets": "Buy tickets",
+  "calendarEventSingular": "event",
+  "calendarEventPlural": "events",
+
+  "calendarEventsCount": "{count} events",
+  "@calendarEventsCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "calendarSelectedDaySummary": "{day} {month} · {count} {eventWord}",
+  "@calendarSelectedDaySummary": {
+    "placeholders": {
+      "day": {},
+      "month": {},
+      "count": {},
+      "eventWord": {}
+    }
+  },
+
+  "calendarMaxDistanceChip": "≤{km} km",
+  "@calendarMaxDistanceChip": {
+    "placeholders": {
+      "km": {}
+    }
+  },
+
+  "calendarMaxPriceChip": "≤{price}€",
+  "@calendarMaxPriceChip": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+
+  "calendarSearchChip": "\"{query}\"",
+  "@calendarSearchChip": {
+    "placeholders": {
+      "query": {}
+    }
+  },
+
+  "calendarDistanceKm": "{km} km",
+  "@calendarDistanceKm": {
+    "placeholders": {
+      "km": {}
+    }
+  },
+
+  "calendarPriceEuros": "{price} €",
+  "@calendarPriceEuros": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+
+  "calendarPriceCompact": "{price}€",
+  "@calendarPriceCompact": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+
+  "weekdayMon": "Mon",
+  "weekdayTue": "Tue",
+  "weekdayWed": "Wed",
+  "weekdayThu": "Thu",
+  "weekdayFri": "Fri",
+  "weekdaySat": "Sat",
+  "weekdaySun": "Sun",
+
+  "monthJanuary": "January",
+  "monthFebruary": "February",
+  "monthMarch": "March",
+  "monthApril": "April",
+  "monthMay": "May",
+  "monthJune": "June",
+  "monthJuly": "July",
+  "monthAugust": "August",
+  "monthSeptember": "September",
+  "monthOctober": "October",
+  "monthNovember": "November",
+  "monthDecember": "December",
+
+  "monthShortJanuary": "Jan",
+  "monthShortFebruary": "Feb",
+  "monthShortMarch": "Mar",
+  "monthShortApril": "Apr",
+  "monthShortMay": "May",
+  "monthShortJune": "Jun",
+  "monthShortJuly": "Jul",
+  "monthShortAugust": "Aug",
+  "monthShortSeptember": "Sep",
+  "monthShortOctober": "Oct",
+  "monthShortNovember": "Nov",
+  "monthShortDecember": "Dec",
+
+  "photoNoCameraAvailable": "No camera available.",
+  "photoCameraInitError": "Could not initialize camera.",
+  "photoUnexpectedError": "An unexpected error occurred.",
+  "photoTakePlantPicture": "Take a picture of the plant",
+  "photoTreeMode": "Leaf",
+  "photoFlowerMode": "Flower",
+  "photoTreeModeSelected": "Leaf mode selected",
+  "photoFlowerModeSelected": "Flower mode selected",
+  "photoIdentifyingPlant": "Identifying plant...",
+  "photoCenterPlantInFrame": "Center the plant within the frame",
+
+  "plantResultTitle": "Identified plant",
+  "plantResultScientificName": "Scientific name",
+  "plantResultFamily": "Family",
+  "plantResultConfidence": "Confidence",
+  "plantResultTakeAnotherPhoto": "Take another photo",
+
+  "profileStatsTitle": "Statistics",
+  "profileDefaultUser": "User",
+  "profileCityNotDefined": "City not defined",
+  "profileCoins": "Coins",
+  "profileDiscovered": "Discovered",
+  "profileUserLabel": "User",
+  "profileEmailLabel": "Email",
+  "profileCityLabel": "City",
+  "profileLanguageLabel": "Language",
+  "profileEditButton": "Edit profile",
+  "profilePlants": "Plants",
+  "profileLogout": "Log out",
+  "profileDeleteAccountTitle": "Delete account",
+  "profileDeleteAccountMessage": "Are you sure you want to delete your account? This action is permanent and all your coins and discovered plants will be lost.",
+  "profileDeleteAccountError": "Error deleting account",
+  "profileDeleteAccountConfirm": "Yes, delete",
+
+  "createAccountTitle": "Create account",
+  "createAccountWelcome": "Welcome to Meteo Garden",
+  "createAccountSubtitle": "Fill in your details to get started",
+  "createAccountEmailLabel": "Email",
+  "createAccountGardenNameLabel": "Your garden's name",
+  "createAccountSuccess": "Account created successfully!",
+  "createAccountError": "Error creating account",
+
+  "completeProfileTitle": "Complete profile",
+  "completeProfileHeading": "We're almost there!",
+  "completeProfileSubtitle": "Complete this information to finish registering with Google",
+  "completeProfilePasswordOptional": "Password (Optional)",
+  "completeProfileSuccess": "Account completed successfully!",
+  "completeProfileError": "Error completing profile",
+
+  "profileEditTitle": "Edit profile",
+  "profileEditUserDataTitle": "User data",
+  "profileEditUpdated": "Profile updated",
+  "profileEditUpdateError": "Error updating profile",
+
+  "languageCatalan": "Catalan",
+  "languageSpanish": "Spanish",
+  "languageEnglish": "English",
+
+  "inventoryTitle": "Your inventory",
+  "inventorySearchHint": "Search for a seed or potion...",
+  "inventorySeedsTab": "Seeds",
+  "inventoryPotionsTab": "Potions",
+  "inventoryNoSeeds": "No seeds available",
+  "inventoryNoPotions": "No potions available",
+  "inventoryAvailableItems": "{count} items available",
+  "@inventoryAvailableItems": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "inventoryQuantity": "Quantity: {amount}",
+  "@inventoryQuantity": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+
+  "gardenLoadingSeedsError": "Error loading seeds",
+  "gardenLoadingWeather": "Loading weather...",
+  "gardenWaitMoment": "Wait a moment",
+  "gardenWeatherLoadError": "Could not load weather",
+  "gardenTapToRetry": "Tap to try again",
+  "gardenLoadingPotsError": "Error loading pots:",
+  "gardenNoPotsAvailable": "No pots available",
+  "gardenWeatherSummary": "Temperature: {temp}°C | Precipitation: {precipitation}",
+  "@gardenWeatherSummary": {
+    "placeholders": {
+      "temp": {},
+      "precipitation": {}
+    }
+  },
+  "gardenWindSummary": "Wind: {wind} m/s",
+  "@gardenWindSummary": {
+    "placeholders": {
+      "wind": {}
+    }
+  },
+"waterlabel": "Water Level",
+"salut": "Health",
+"lastReg": "Last watered: ",
+"regar": "Water plant",
+"recolectPlant": "Collect plant",
+"aplyPotion": "Apply potion",
+"selectPotion": "Select a potion for the pot",
+"errorPotions": "Error loading potions",
+"readyPotion": "Potion available to apply",
+"aplyingPotion": "Applying...",
+"noPotions": "You have no potions available",
+"extraPotions": "When you get some, you will be able to apply them here.",
+"testbuit": "Empty pot",
+"selectionLlavor": "Select a seed for the pot",
+"llavorDisp": "Seed available for planting",
+"plant": "Plant",
+"planting": "Planting...",
+"noLlavor": "You have no seeds available",
+"extraLlavor": "When you get some, you will be able to plant them here.",
+"confirmDeletePlant": "Are you sure you want to delete {plantName}?\nThis action cannot be undone.",
+"thisPlant": "this plant",
+"deletePlant": "Delete plant",
+
+"avatarLoadError": "Error loading the avatar",
+"createYourAvatar": "Create your Avatar",
+"editAvatar": "Edit Avatar",
+"errorLoadingOptions": "Error loading options",
+"errorConnectionOptions": "Connection error while loading options.",
+"errorConnectionAvatar": "Connection error while loading user avatar.",
+"errorSavingAvatar": "Error saving avatar",
+"errorConnectionSaving": "Connection error while saving avatar.",
+"noOptionsAvailable": "No options available",
+"continueButton": "Continue",
+"saveChangesButton": "Save Changes",
+"categoryBody": "Body",
+"categoryEyes": "Eyes",
+"categoryExpression": "Expression",
+"categoryHair": "Hair",
+"categoryFacialHair": "Facial Hair",
+"categoryClothing": "Clothing",
+"categoryAccessories": "Accessories",
+"errorMessageSession": "Error logging in",
+"connectionError": "Conneixon error",
+"finalitza": "Ends on",
+"allCities": "All cities",
+
+"phaseSeed": "Seed",
+"phaseGermination": "Germination",
+"phaseGrowth": "Growth",
+"phaseMature": "Mature",
+"phaseFlowering": "Flowering",
+"phaseDead": "Dead",
+
+"avatarLoadErrorPersist": "Error loading the avatar",
+
+"filterByCity": "Filter by city",
+"writeCity": "Enter a city...",
+"commonApply": "Apply",
+
+"plantWateredSuccess": "Plant watered successfully",
+"plantCollectedSuccess": "Plant collected successfully",
+"plantDeletedSuccess": "Plant deleted successfully",
+"plantActionError": "The action could not be completed",
+"plantLoadingSeedsError": "Seeds could not be loaded",
+
+"weatherDetailsTitle": "Weather details",
+"weatherStationLabel": "Meteorological Station",
+"temperatureLabel": "Temperature",
+"humidityLabel": "Humidity",
+"windLabel": "Wind",
+"precipitationLabel": "Precipitation",
+"solarIrradianceLabel": "Solar irradiance",
+
+"missionsTitle": "Missions",
+"missionsSubtitle": "Complete challenges and earn coins",
+"missionsCompleted": "Completed",
+"missionsTagCompleted": "Completed",
+"missionsTagInProgress": "In progress",
+"missionsEmpty": "No missions available",
+"missionsClaimSuccess": "Reward claimed!",
+"missionsErrorAlreadyClaimed": "This mission has already been claimed",
+"missionsErrorInProgress": "The mission is not completed yet",
+"missionsErrorNotFound": "Mission not found",
+"missionsErrorGeneric": "Could not claim the reward",
+"missionsClaim": "Claim 🎁",
+"missionsActiveSectionTitle": "Active missions",
+"missionsClaimedSectionTitle": "Already claimed",
+"missionsTagClaimed": "Claimed",
+"missionsInProgress": "In progress",
+"missionsRewardCoins": "coins",
+"solarIrradianceLabel": "Solar irradiance",
+
+"friends": "Friends",
+"sent": "Sent",
+"received": "Received",
+"sendFriendRequestTooltip": "Send friend request",
+"friendsCount": "{count, plural, =1{1 friend} other{{count} friends}}",
+"@friendsCount": {
+  "placeholders": {
+    "count": { "type": "int" }
+  }
+},
+"friendsCountWithRequests": "{friends, plural, =1{1 friend} other{{friends} friends}} · {requests, plural, =1{1 request} other{{requests} requests}}",
+"@friendsCountWithRequests": {
+  "placeholders": {
+    "friends": { "type": "int" },
+    "requests": { "type": "int" }
+  }
+},
+"noFriendsYet": "You don't have any friends yet.\nAdd one using the button above!",
+"noSentRequests": "You don't have any pending sent requests.",
+"noReceivedRequests": "You don't have any pending friend requests.",
+"cancel": "Cancel",
+"accept": "Accept",
+"reject": "Reject",
+"addFriend": "Add friend",
+"addFriendSubtitle": "Search for a user and send them a request.",
+"usernameHint": "Username...",
+"visitGarden": "Visit their garden",
+"sendRequest": "Send request",
+"tryAgain": "Try again",
+"gardenLoadError": "The garden could not be loaded.",
+"emptyFriendGarden": "This garden has no pots.",
+"likeGarden": "Like garden",
+"likedGarden": "Garden liked",
+"close": "Close",
+"friendOptions": "Friend options",
+"deleteFriend": "Remove friend",
+"deleteFriendTitle": "Remove friend",
+"deleteFriendMessage": "Are you sure you want to remove @{username} from your friends list?",
+"@deleteFriendMessage": {
+  "placeholders": {
+    "username": {
+      "type": "String"
+    }
+  }
+},
+"delete": "Remove",
+"friendRequestSentSuccessfully": "Friend request sent successfully",
+"loginEmptyFields": "Enter your username and password.",
+"loginInvalidCredentials": "Incorrect username or password.",
+"loginServerError": "Could not log in. Please try again later.",
+"loginConnectionError": "Could not connect to the server.",
+
+"calendarAllCategories": "All categories",
+  "calendarFilters": "Filters",
+  "calendarCategory": "Category",
+  "calendarAll": "All",
+  "calendarClear": "Clear",
+  "calendarDayTitle": "Day {day} — {month}",
+  "@calendarDayTitle": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarFiltersTooltip": "Filters",
+  "culturalEvents": "Cultural events",
+  "collectPlantDialogTitle": "Plant collected!",
+  "collectPlantCoinsReward": "+{coins} coins",
+  "@collectPlantCoinsReward": {
+    "placeholders": {
+      "coins": {
+        "type": "int"
+      }
+    }
+  },
+  "commonOk": "OK"
+  
+}
+
