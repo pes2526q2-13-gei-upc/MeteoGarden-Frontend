@@ -270,7 +270,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
         errorMessage,
         type: CenteredMessageType.error,
       );
-        }
+    }
   }
 
   Future<void> _fetchAndSaveProfile(String token) async {
