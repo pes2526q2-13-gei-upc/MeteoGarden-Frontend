@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
@@ -36,7 +35,9 @@ class NotificationService {
       android: androidSettings,
     );
 
-    await _localNotifications.initialize(settings);
+    await _localNotifications.initialize(
+      settings: settings,
+    );
   }
 
   static Future<void> showLocalNotification(RemoteMessage message) async {
@@ -51,10 +52,10 @@ class NotificationService {
     const details = NotificationDetails(android: androidDetails);
 
     await _localNotifications.show(
-      message.hashCode,
-      message.notification?.title ?? 'MeteoGarden',
-      message.notification?.body ?? '',
-      details,
+      id: message.hashCode,
+      title: message.notification?.title ?? 'MeteoGarden',
+      body: message.notification?.body ?? '',
+      notificationDetails: details,
     );
   }
 

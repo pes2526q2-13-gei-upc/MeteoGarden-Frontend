@@ -8,9 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:meteo_garden/models/weather_provider.dart';
-import 'package:meteo_garden/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

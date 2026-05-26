@@ -527,11 +527,14 @@ class _ActionButtons extends StatelessWidget {
   final storage = const FlutterSecureStorage();
 
   Future<void> _logout(BuildContext context) async {
-    final userToken = Provider.of<UserModel>(context, listen: false).token;
+    final userModel = Provider.of<UserModel>(context, listen: false);
+    final userToken = userModel.token;
 
     await NotificationService.deleteTokenFromBackend(userToken);
 
-    Provider.of<UserModel>(context, listen: false).logout();
+    if (!context.mounted) return;
+
+    userModel.logout();
     await storage.delete(key: 'auth_token');
 
     if (!context.mounted) return;
@@ -579,9 +582,13 @@ class _ActionButtons extends StatelessWidget {
               if (!context.mounted) return;
 
               if (response.statusCode == 200) {
+                final userModel = Provider.of<UserModel>(context, listen: false);
+
                 await NotificationService.deleteTokenFromBackend(token);
 
-                Provider.of<UserModel>(context, listen: false).logout();
+                if (!context.mounted) return;
+
+                userModel.logout();
                 await storage.delete(key: 'auth_token');
 
                 if (!context.mounted) return;
