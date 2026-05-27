@@ -253,9 +253,21 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
       );
     } else {
       debugPrint("Error: ${response.body}");
+
+      String errorMessage = l10n.createAccountError;
+
+      try {
+        final data = jsonDecode(response.body);
+        if (data is Map<String, dynamic> && data['error'] != null) {
+          errorMessage = data['error'].toString();
+        }
+      } catch (_) {
+        errorMessage = l10n.createAccountError;
+      }
+
       CenteredMessage.show(
         context,
-        l10n.createAccountError,
+        errorMessage,
         type: CenteredMessageType.error,
       );
     }
