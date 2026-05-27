@@ -13,7 +13,7 @@ class NotificationService {
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
   static final FlutterLocalNotificationsPlugin _localNotifications =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   static bool _listenersInitialized = false;
   static bool _tokenRefreshListenerInitialized = false;
@@ -29,15 +29,13 @@ class NotificationService {
   }
 
   static Future<void> initLocalNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    const settings = InitializationSettings(
-      android: androidSettings,
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
     );
 
-    await _localNotifications.initialize(
-      settings: settings,
-    );
+    const settings = InitializationSettings(android: androidSettings);
+
+    await _localNotifications.initialize(settings: settings);
   }
 
   static Future<void> showLocalNotification(RemoteMessage message) async {
@@ -76,9 +74,7 @@ class NotificationService {
         'Content-Type': 'application/json',
         'Authorization': 'Token $userToken',
       },
-      body: jsonEncode({
-        'token': fcmToken,
-      }),
+      body: jsonEncode({'token': fcmToken}),
     );
 
     debugPrint('FCM Token: $fcmToken');
@@ -103,9 +99,7 @@ class NotificationService {
         'Content-Type': 'application/json',
         'Authorization': 'Token $userToken',
       },
-      body: jsonEncode({
-        'token': fcmToken,
-      }),
+      body: jsonEncode({'token': fcmToken}),
     );
 
     debugPrint('Resposta eliminar FCM: ${response.statusCode}');
@@ -143,8 +137,8 @@ class NotificationService {
   }
 
   static Future<void> checkInitialNotification() async {
-    final RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
+    final RemoteMessage? initialMessage = await FirebaseMessaging.instance
+        .getInitialMessage();
 
     if (initialMessage != null) {
       debugPrint('App oberta des d’una notificació');
@@ -166,9 +160,7 @@ class NotificationService {
           'Content-Type': 'application/json',
           'Authorization': 'Token $userToken',
         },
-        body: jsonEncode({
-          'token': newFcmToken,
-        }),
+        body: jsonEncode({'token': newFcmToken}),
       );
 
       debugPrint('Resposta refresh FCM: ${response.statusCode}');
@@ -181,7 +173,7 @@ class NotificationService {
   static void _goToHomeFromNotification() {
     navigatorKey.currentState?.pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const HomeShell()),
-          (route) => false,
+      (route) => false,
     );
   }
 }

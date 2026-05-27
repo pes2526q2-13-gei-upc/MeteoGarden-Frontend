@@ -216,10 +216,7 @@ class _LoginPageState extends State<LoginPage> {
         } else {
           final token = data['token'];
 
-          Provider.of<UserModel>(
-            context,
-            listen: false,
-          ).setToken(token);
+          Provider.of<UserModel>(context, listen: false).setToken(token);
 
           await storage.write(key: 'auth_token', value: token);
 

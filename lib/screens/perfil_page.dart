@@ -582,7 +582,10 @@ class _ActionButtons extends StatelessWidget {
               if (!context.mounted) return;
 
               if (response.statusCode == 200) {
-                final userModel = Provider.of<UserModel>(context, listen: false);
+                final userModel = Provider.of<UserModel>(
+                  context,
+                  listen: false,
+                );
 
                 await NotificationService.deleteTokenFromBackend(token);
 
