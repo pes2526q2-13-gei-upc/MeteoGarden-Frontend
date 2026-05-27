@@ -13,6 +13,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../models/avatar_user.dart';
 import '../../widgets/centered_message.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
+import 'package:meteo_garden/services/notification_service.dart';
 
 class PerfilPage extends StatelessWidget {
   const PerfilPage({super.key});
@@ -526,7 +527,14 @@ class _ActionButtons extends StatelessWidget {
   final storage = const FlutterSecureStorage();
 
   Future<void> _logout(BuildContext context) async {
-    Provider.of<UserModel>(context, listen: false).logout();
+    final userModel = Provider.of<UserModel>(context, listen: false);
+    final userToken = userModel.token;
+
+    await NotificationService.deleteTokenFromBackend(userToken);
+
+    if (!context.mounted) return;
+
+    userModel.logout();
     await storage.delete(key: 'auth_token');
 
     if (!context.mounted) return;
@@ -574,8 +582,16 @@ class _ActionButtons extends StatelessWidget {
               if (!context.mounted) return;
 
               if (response.statusCode == 200) {
-                Provider.of<UserModel>(context, listen: false).logout();
+                final userModel = Provider.of<UserModel>(
+                  context,
+                  listen: false,
+                );
 
+                await NotificationService.deleteTokenFromBackend(token);
+
+                if (!context.mounted) return;
+
+                userModel.logout();
                 await storage.delete(key: 'auth_token');
 
                 if (!context.mounted) return;

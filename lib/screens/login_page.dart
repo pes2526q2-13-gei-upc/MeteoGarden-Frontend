@@ -14,6 +14,7 @@ import 'package:meteo_garden/generated/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/weather_provider.dart';
 import 'package:meteo_garden/models/plantes_desbl.dart';
+import 'package:meteo_garden/services/notification_service.dart';
 
 class LoginPage extends StatefulWidget {
   final http.Client? client;
@@ -137,16 +138,16 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        final token = data['token'];
 
-        Provider.of<UserModel>(context, listen: false).setToken(data['token']);
-        await storage.write(key: 'auth_token', value: data['token']);
+        Provider.of<UserModel>(context, listen: false).setToken(token);
+        await storage.write(key: 'auth_token', value: token);
 
-        await _fetchAndSaveProfile(data['token']);
+        await NotificationService.sendTokenToBackend(token);
 
+        await _fetchAndSaveProfile(token);
         if (!context.mounted) return;
-
         await _checkAvatar();
-        return;
       }
 
       if (response.statusCode == 400 || response.statusCode == 401) {
@@ -213,15 +214,17 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
         } else {
-          Provider.of<UserModel>(
-            context,
-            listen: false,
-          ).setToken(data["token"]);
-          await storage.write(key: 'auth_token', value: data['token']);
-          await _fetchAndSaveProfile(data['token']);
+          final token = data['token'];
+
+          Provider.of<UserModel>(context, listen: false).setToken(token);
+
+          await storage.write(key: 'auth_token', value: token);
+
+          await NotificationService.sendTokenToBackend(token);
+
+          await _fetchAndSaveProfile(token);
           if (!context.mounted) return;
           await _checkAvatar();
-          // el go to home es fa a la funcio de checkavatar, per que no es sobreposin el canvis de pantalla
         }
       } else {
         ScaffoldMessenger.of(
