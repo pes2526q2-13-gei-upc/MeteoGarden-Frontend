@@ -18,6 +18,17 @@ class Plant {
 class PlantProvider extends ChangeNotifier {
   PlantProvider({http.Client? client}) : _client = client ?? http.Client();
   final http.Client _client;
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  void _notifyIfActive() {
+    if (!_disposed) notifyListeners();
+  }
 
   Future<List<Plant>> fetchPlants(UserModel user) async {
     final response = await _client.get(
@@ -40,7 +51,7 @@ class PlantProvider extends ChangeNotifier {
 
   Future<void> loadPlants(UserModel user) async {
     isLoading = true;
-    notifyListeners();
+    _notifyIfActive();
 
     try {
       plants = await fetchPlants(user);
@@ -49,6 +60,6 @@ class PlantProvider extends ChangeNotifier {
     }
 
     isLoading = false;
-    notifyListeners();
+    _notifyIfActive();
   }
 }

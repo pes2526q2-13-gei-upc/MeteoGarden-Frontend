@@ -764,6 +764,7 @@ class _AvatarEditorPageState extends State<AvatarEditorPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: FilledButton(
+                    key: const Key('avatar_save_button'),
                     onPressed: isSaving ? null : _saveAvatar,
                     style: FilledButton.styleFrom(
                       backgroundColor: const Color(
