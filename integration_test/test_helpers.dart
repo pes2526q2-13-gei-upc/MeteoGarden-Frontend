@@ -26,14 +26,8 @@ Future<void> ensureLoggedIn(WidgetTester tester) async {
   }
 
   if (tester.any(find.byKey(const Key('login_button')))) {
-    await tester.enterText(
-      find.byKey(const Key('login_username_field')),
-      'j',
-    );
-    await tester.enterText(
-      find.byKey(const Key('login_password_field')),
-      'j',
-    );
+    await tester.enterText(find.byKey(const Key('login_username_field')), 'j');
+    await tester.enterText(find.byKey(const Key('login_password_field')), 'j');
     await tester.tap(find.byKey(const Key('login_button')));
     await _waitForGardenPage(tester);
     return;
@@ -66,14 +60,8 @@ Future<void> ensureLoggedIn(WidgetTester tester) async {
     reason: 'Amb storage buit hauria d\'apareixer la pantalla de login.',
   );
 
-  await tester.enterText(
-    find.byKey(const Key('login_username_field')),
-    'j',
-  );
-  await tester.enterText(
-    find.byKey(const Key('login_password_field')),
-    'j',
-  );
+  await tester.enterText(find.byKey(const Key('login_username_field')), 'j');
+  await tester.enterText(find.byKey(const Key('login_password_field')), 'j');
   await tester.tap(find.byKey(const Key('login_button')));
   await _waitForGardenPage(tester);
 }
@@ -158,7 +146,8 @@ Future<void> returnToGardenPage(WidgetTester tester) async {
   for (int attempt = 0; attempt < 16; attempt++) {
     await tester.pump(const Duration(milliseconds: 500));
 
-    final onGarden = tester.any(find.byKey(const Key('garden_inventory_button'))) &&
+    final onGarden =
+        tester.any(find.byKey(const Key('garden_inventory_button'))) &&
         !tester.any(find.byKey(const Key('shop_page'))) &&
         !tester.any(find.byKey(const Key('album_page'))) &&
         !tester.any(find.byType(BottomSheet));

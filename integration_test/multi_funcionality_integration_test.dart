@@ -117,8 +117,9 @@ void main() {
     await openAlbumFromGarden(tester);
 
     final hasGrid = tester.any(find.byKey(const Key('album_grid')));
-    final hasEmptyState =
-        tester.any(find.byKey(const Key('album_empty_state')));
+    final hasEmptyState = tester.any(
+      find.byKey(const Key('album_empty_state')),
+    );
 
     expect(
       hasGrid || hasEmptyState,
@@ -235,9 +236,7 @@ void main() {
   // ---------------------------------------------------------------------------
   // TEST 8: Logout des de PerfilPage
   // ---------------------------------------------------------------------------
-  testWidgets('Logout des de la pàgina de perfil', (
-    WidgetTester tester,
-  ) async {
+  testWidgets('Logout des de la pàgina de perfil', (WidgetTester tester) async {
     await ensureLoggedIn(tester);
 
     await tester.tap(find.byKey(const Key('nav_profile')));

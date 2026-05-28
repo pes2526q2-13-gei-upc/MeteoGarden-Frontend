@@ -89,14 +89,14 @@ void main() {
     expect(
       find.byType(Tab),
       findsNWidgets(3),
-      reason: 'FriendsPage hauria de tenir 3 pestanyes (amics, enviades, rebudes).',
+      reason:
+          'FriendsPage hauria de tenir 3 pestanyes (amics, enviades, rebudes).',
     );
 
     // Comprovem que el contingut de la primera pestanya carrega
     await tester.pumpAndSettle(const Duration(seconds: 3));
     final hasContent =
-        tester.any(find.byType(ListView)) ||
-        tester.any(find.byType(Center));
+        tester.any(find.byType(ListView)) || tester.any(find.byType(Center));
     expect(
       hasContent,
       isTrue,
@@ -179,12 +179,14 @@ void main() {
     expect(
       find.byIcon(Icons.chevron_left),
       findsOneWidget,
-      reason: 'El calendari hauria de mostrar la fletxa d\'anar al mes anterior.',
+      reason:
+          'El calendari hauria de mostrar la fletxa d\'anar al mes anterior.',
     );
     expect(
       find.byIcon(Icons.chevron_right),
       findsOneWidget,
-      reason: 'El calendari hauria de mostrar la fletxa d\'anar al mes seguent.',
+      reason:
+          'El calendari hauria de mostrar la fletxa d\'anar al mes seguent.',
     );
 
     // Naveguem al mes anterior
@@ -199,7 +201,8 @@ void main() {
     expect(
       find.byType(GestureDetector),
       findsWidgets,
-      reason: 'El calendari hauria de mostrar els dies del mes com a GestureDetectors.',
+      reason:
+          'El calendari hauria de mostrar els dies del mes com a GestureDetectors.',
     );
 
     // Tanquem el calendari
@@ -387,7 +390,8 @@ void main() {
     expect(
       find.byType(FilledButton),
       findsOneWidget,
-      reason: 'El formulari de registre hauria de tenir el boto de crear compte.',
+      reason:
+          'El formulari de registre hauria de tenir el boto de crear compte.',
     );
 
     // Tornem al login
@@ -419,7 +423,8 @@ void main() {
     expect(
       find.byType(OutlinedButton),
       findsOneWidget,
-      reason: 'La pantalla de login hauria de tenir el boto de login amb Google.',
+      reason:
+          'La pantalla de login hauria de tenir el boto de login amb Google.',
     );
 
     // Comprovem que té la icona de Google
@@ -489,7 +494,8 @@ void main() {
     expect(
       find.textContaining('%'),
       findsWidgets,
-      reason: 'El PotInfoSheet hauria de mostrar percentatges d\'aigua i salut.',
+      reason:
+          'El PotInfoSheet hauria de mostrar percentatges d\'aigua i salut.',
     );
 
     // Tanquem el sheet sense fer cap acció
