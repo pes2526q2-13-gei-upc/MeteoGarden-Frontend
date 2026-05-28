@@ -104,6 +104,7 @@ class _AlbumPageState extends State<AlbumPage> {
       context: context,
       builder: (context) {
         return Dialog(
+          key: const Key('album_plant_detail_dialog'),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -206,6 +207,7 @@ class _AlbumPageState extends State<AlbumPage> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
+                          key: const Key('album_detail_close_button'),
                           onPressed: () => Navigator.of(context).pop(),
                           child: Text(t.commonClose),
                         ),
@@ -232,6 +234,7 @@ class _AlbumPageState extends State<AlbumPage> {
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
+      key: const Key('album_page'),
       body: SafeArea(
         child: Consumer<PlantProvider>(
           builder: (context, plantProvider, child) {
@@ -266,7 +269,10 @@ class _AlbumPageState extends State<AlbumPage> {
                         children: [
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.55,
-                            child: _AlbumEmptyState(message: t.albumEmptyState),
+                            child: _AlbumEmptyState(
+                              key: const Key('album_empty_state'),
+                              message: t.albumEmptyState,
+                            ),
                           ),
                         ],
                       ),
@@ -286,6 +292,7 @@ class _AlbumPageState extends State<AlbumPage> {
                   child: RefreshIndicator(
                     onRefresh: _reloadPlants,
                     child: GridView.builder(
+                      key: const Key('album_grid'),
                       padding: const EdgeInsets.all(16),
                       physics: const AlwaysScrollableScrollPhysics(),
                       gridDelegate:
@@ -302,6 +309,7 @@ class _AlbumPageState extends State<AlbumPage> {
                         final nombreCientifico = planta.name;
 
                         return InkWell(
+                          key: Key('album_card_$index'),
                           borderRadius: BorderRadius.circular(16),
                           onTap: () {
                             _mostrarPopupDetalles(context, nombreCientifico);
@@ -378,7 +386,7 @@ class _AlbumPageState extends State<AlbumPage> {
 class _AlbumEmptyState extends StatelessWidget {
   final String message;
 
-  const _AlbumEmptyState({required this.message});
+  const _AlbumEmptyState({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {

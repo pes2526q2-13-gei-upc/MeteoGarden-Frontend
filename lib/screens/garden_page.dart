@@ -859,6 +859,7 @@ class _GardenPageState extends State<GardenPage> {
             final aspectRatio = itemHeight > 0 ? itemWidth / itemHeight : 1.0;
 
             return GridView.builder(
+              key: const Key('garden_pots_grid'),
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.fromLTRB(padding, 0, padding, 0),
               itemCount: pots.length,

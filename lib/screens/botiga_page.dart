@@ -99,6 +99,8 @@ class _ShopPageState extends State<ShopPage>
   }
 
   Future<void> fetchProducts({bool silent = false}) async {
+    if (!mounted) return;
+
     final l10n = AppLocalizations.of(context)!;
     final token = Provider.of<UserModel>(context, listen: false).token;
     final url = Uri.parse('${ApiConfig.baseUrl}/api/shop/products/');
@@ -869,6 +871,7 @@ class _ShopPageState extends State<ShopPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: const Key('shop_page'),
       backgroundColor: _pageBackground,
       body: Stack(
         children: [

@@ -458,6 +458,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                                     ),
                                   )
                                 : DropdownMenu<City>(
+                                    key: const Key('register_city_dropdown'),
                                     initialSelection: selectedCity,
                                     controller: ciutatSearchController,
                                     requestFocusOnTap: true,
@@ -587,6 +588,7 @@ class _CreaNovaContaState extends State<CreaNovaConta> {
                             const SizedBox(height: 32),
 
                             FilledButton.icon(
+                              key: const Key('register_submit_button'),
                               onPressed: _submit,
                               icon: const Icon(
                                 Icons.check_circle_outline_rounded,

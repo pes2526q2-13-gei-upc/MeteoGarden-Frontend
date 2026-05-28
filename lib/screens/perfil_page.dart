@@ -184,6 +184,7 @@ class _GameHeader extends StatelessWidget {
                     children: [
                       // --- CÍRCULO DEL AVATAR CLICKABLE ---
                       GestureDetector(
+                        key: const Key('edit_avatar_button'),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -562,6 +563,7 @@ class _ActionButtons extends StatelessWidget {
         content: Text(l10n.profileDeleteAccountMessage),
         actions: [
           TextButton(
+            key: const Key('delete_account_cancel_button'),
             onPressed: () => Navigator.of(ctx).pop(),
             child: Text(
               l10n.commonCancel,
@@ -569,6 +571,7 @@ class _ActionButtons extends StatelessWidget {
             ),
           ),
           ElevatedButton(
+            key: const Key('delete_account_confirm_button'),
             onPressed: () async {
               final user = Provider.of<UserModel>(context, listen: false);
               final token = user.token;
@@ -626,6 +629,7 @@ class _ActionButtons extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ElevatedButton.icon(
+          key: const Key('logout_button'),
           onPressed: () => _logout(context),
           icon: const Icon(Icons.logout, size: 20),
           label: Text(
@@ -645,6 +649,7 @@ class _ActionButtons extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         TextButton.icon(
+          key: const Key('delete_account_button'),
           onPressed: () => _confirmDeleteAccount(context),
           icon: const Icon(Icons.delete_forever, size: 20),
           label: Text(

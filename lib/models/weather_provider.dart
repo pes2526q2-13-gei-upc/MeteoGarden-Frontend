@@ -12,9 +12,21 @@ class WeatherProvider extends ChangeNotifier {
 
   final FetchWeatherFunction _fetchWeatherFunction;
 
+  bool _disposed = false;
+
   WeatherInfo? _currentWeather;
   bool _isLoading = false;
   String? _error;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  void _notifyIfActive() {
+    if (!_disposed) notifyListeners();
+  }
 
   WeatherInfo? get currentWeather => _currentWeather;
   bool get isLoading => _isLoading;
@@ -29,7 +41,7 @@ class WeatherProvider extends ChangeNotifier {
 
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _notifyIfActive();
 
     try {
       _currentWeather = await _fetchWeatherFunction(city: city, token: token);
@@ -37,7 +49,7 @@ class WeatherProvider extends ChangeNotifier {
       _error = e.toString();
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _notifyIfActive();
     }
   }
 }
